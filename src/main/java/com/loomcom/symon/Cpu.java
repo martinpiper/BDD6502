@@ -1226,7 +1226,7 @@ public class Cpu implements InstructionTable {
      * Will wrap-around if already at the bottom of the stack (This
      * is the same behavior as the real 6502)
      */
-    void stackPush(int data) throws MemoryAccessException {
+    public void stackPush(int data) throws MemoryAccessException {
         bus.write(0x100 + state.sp, data);
 
         if (state.sp == 0) {
@@ -1242,7 +1242,7 @@ public class Cpu implements InstructionTable {
      * Will wrap-around if already at the top of the stack (This
      * is the same behavior as the real 6502)
      */
-    int stackPop() throws MemoryAccessException {
+    public int stackPop() throws MemoryAccessException {
         if (state.sp == 0xff) {
             state.sp = 0x00;
         } else {
@@ -1255,7 +1255,7 @@ public class Cpu implements InstructionTable {
     /**
      * Peek at the value currently at the top of the stack
      */
-    int stackPeek() throws MemoryAccessException {
+    public int stackPeek() throws MemoryAccessException {
         return bus.read(0x100 + state.sp + 1);
     }
 
