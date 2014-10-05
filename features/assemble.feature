@@ -1,6 +1,6 @@
 Feature: Assemble 6502 code test
 
-  This assembles simple code and check the expected results after executing it
+  This assembles simple code and checks the expected results after executing it
 
 Scenario: Simple code test
   Given I have a simple 6502 system
