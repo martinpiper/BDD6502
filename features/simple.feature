@@ -9,7 +9,7 @@ Scenario: Simple code test
       | 78 ee 20 d0 60 4c 01 04 |
       | 00 01 02 03 04 05 06 07 |
   And I setup a 16 byte stack slide
-  When I execute the procedure at $400 for no more than 100 opcodes
+  When I execute the procedure at $400 for no more than 100 instructions
   Then I expect to see $d020 contain 1
   And I expect to see $409 contain 1
   And I expect to see $40f contain 7

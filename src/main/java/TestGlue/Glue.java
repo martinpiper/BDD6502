@@ -3,6 +3,8 @@ package TestGlue;
 import com.loomcom.symon.devices.Memory;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
+import cucumber.api.Scenario;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -19,6 +21,12 @@ public class Glue {
 	static private Machine machine = null;
 	static private int writingAddress = 0;
 	static private TreeMap labelMap = new TreeMap();
+	Scenario scenario = null;
+
+	@Before
+	public void BeforeHook(Scenario scenario) {
+		this.scenario = scenario;
+	}
 
 	private int valueToInt(String value) {
 		Object found = labelMap.get(value);
@@ -70,16 +78,16 @@ public class Glue {
 		}
 	}
 
-	@When("^I execute the procedure at (.+) for no more than (.+) opcodes$")
-	public void i_execute_the_procedure_at_for_no_more_than_opcodes(String arg1, String arg2) throws Throwable {
+	@When("^I execute the procedure at (.+) for no more than (.+) instructions$")
+	public void i_execute_the_procedure_at_for_no_more_than_instructions(String arg1, String arg2) throws Throwable {
 		boolean displayTrace = false;
 		String trace = System.getProperty("bdd6502.trace");
 		if ( null != trace && trace.indexOf("true") != -1 ) {
 			displayTrace = true;
 		}
 		machine.getCpu().setProgramCounter(valueToInt(arg1));
-		int maxCycles = valueToInt(arg2);
-		int numOpcodes = 0;
+		int maxInstructions = valueToInt(arg2);
+		int numInstructions = 0;
 
 		// Pushing lots of 0 onto the stack will eventually return to address 1
 		while (machine.getCpu().getProgramCounter() > 1) {
@@ -87,10 +95,11 @@ public class Glue {
 			if ( displayTrace ) {
 				System.out.print(machine.getCpu().getCpuState().toTraceEvent());
 			}
-			assertThat(numOpcodes++ , is(lessThanOrEqualTo(maxCycles)));
+			assertThat(numInstructions++ , is(lessThanOrEqualTo(maxInstructions)));
 		}
 
-		System.out.println( String.format("Executed %d opcodes" , numOpcodes));
+//		scenario.write(String.format("Executed %d instructions" , numInstructions));
+		System.out.println( String.format("Executed %d instructions" , numInstructions));
 	}
 
 	@Then("^I expect to see (.+) contain (.+)$")
