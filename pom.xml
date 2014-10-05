@@ -39,6 +39,7 @@
                 <configuration>
                     <archive>
                         <manifest>
+							<mainClass>TestRunner</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>

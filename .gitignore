@@ -63,3 +63,8 @@ $RECYCLE.BIN/
 .idea/
 target/
 BDD6502.iml
+
+# Output files during test runs
+test.a
+test.prg
+test.lbl
