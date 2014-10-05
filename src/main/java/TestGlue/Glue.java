@@ -12,9 +12,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.*;
 
 public class Glue {
 
@@ -73,7 +71,7 @@ public class Glue {
 	}
 
 	@When("^I execute the procedure at (.+) for no more than (.+) opcodes$")
-	public void i_execute_the_procedure_at_fo_no_more_than_opcodes(String arg1, String arg2) throws Throwable {
+	public void i_execute_the_procedure_at_for_no_more_than_opcodes(String arg1, String arg2) throws Throwable {
 		boolean displayTrace = false;
 		String trace = System.getProperty("bdd6502.trace");
 		if ( null != trace && trace.indexOf("true") != -1 ) {
@@ -81,7 +79,7 @@ public class Glue {
 		}
 		machine.getCpu().setProgramCounter(valueToInt(arg1));
 		int maxCycles = valueToInt(arg2);
-		int numCycles = 0;
+		int numOpcodes = 0;
 
 		// Pushing lots of 0 onto the stack will eventually return to address 1
 		while (machine.getCpu().getProgramCounter() > 1) {
@@ -89,8 +87,10 @@ public class Glue {
 			if ( displayTrace ) {
 				System.out.print(machine.getCpu().getCpuState().toTraceEvent());
 			}
-			assertThat(numCycles++ , is(lessThan(maxCycles)));
+			assertThat(numOpcodes++ , is(lessThanOrEqualTo(maxCycles)));
 		}
+
+		System.out.println( String.format("Executed %d opcodes" , numOpcodes));
 	}
 
 	@Then("^I expect to see (.+) contain (.+)$")
