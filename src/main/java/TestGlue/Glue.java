@@ -29,6 +29,9 @@ public class Glue {
 	}
 
 	private int valueToInt(String value) {
+		if ( null == value || value.isEmpty() ) {
+			return -1;
+		}
 		Object found = labelMap.get(value);
 		if ( null != found ) {
 			value = (String) found;
@@ -78,28 +81,51 @@ public class Glue {
 		}
 	}
 
-	@When("^I execute the procedure at (.+) for no more than (.+) instructions$")
-	public void i_execute_the_procedure_at_for_no_more_than_instructions(String arg1, String arg2) throws Throwable {
+	@When("^I execute the procedure at (.+) for no more than (.+) instructions until PC = (.+)$")
+	public void i_execute_the_procedure_at_for_no_more_than_instructions_until_pc(String arg1, String arg2, String arg3) throws Throwable {
 		boolean displayTrace = false;
 		String trace = System.getProperty("bdd6502.trace");
 		if ( null != trace && trace.indexOf("true") != -1 ) {
 			displayTrace = true;
 		}
-		machine.getCpu().setProgramCounter(valueToInt(arg1));
+
+		if ( !arg1.isEmpty() ) {
+			machine.getCpu().setProgramCounter(valueToInt(arg1));
+		}
+
 		int maxInstructions = valueToInt(arg2);
 		int numInstructions = 0;
+		int untilPC = valueToInt(arg3);
 
 		// Pushing lots of 0 onto the stack will eventually return to address 1
 		while (machine.getCpu().getProgramCounter() > 1) {
+			if ( untilPC == machine.getCpu().getProgramCounter() ) {
+				break;
+			}
 			machine.getCpu().step();
 			if ( displayTrace ) {
 				System.out.print(machine.getCpu().getCpuState().toTraceEvent());
 			}
-			assertThat(numInstructions++ , is(lessThanOrEqualTo(maxInstructions)));
+			assertThat(++numInstructions , is(lessThanOrEqualTo(maxInstructions)));
 		}
 
 //		scenario.write(String.format("Executed %d instructions" , numInstructions));
-		System.out.println( String.format("Executed %d instructions" , numInstructions));
+		System.out.println( String.format("Executed procedure %s for %d instructions" , arg1 , numInstructions));
+	}
+
+	@When("^I execute the procedure at (.+) for no more than (.+) instructions$")
+	public void i_execute_the_procedure_at_for_no_more_than_instructions(String arg1, String arg2) throws Throwable {
+		i_execute_the_procedure_at_for_no_more_than_instructions_until_pc(arg1 , arg2 , "");
+	}
+
+	@When("^I continue executing the procedure for no more than (.+) instructions$")
+	public void i_continue_executing_the_procedure_at_for_no_more_than_instructions(String arg1) throws Throwable {
+		i_execute_the_procedure_at_for_no_more_than_instructions_until_pc("" , arg1 , "");
+	}
+
+	@When("^I continue executing the procedure for no more than (.+) instructions until PC = (.+)$")
+	public void i_continue_executing_the_procedure_at_for_no_more_than_instructions_until_pc(String arg1, String arg2) throws Throwable {
+		i_execute_the_procedure_at_for_no_more_than_instructions_until_pc("" , arg1 , arg2);
 	}
 
 	@Then("^I expect to see (.+) contain (.+)$")
@@ -130,6 +156,18 @@ public class Glue {
 		while ((line = reader.readLine())!= null) {
 			sb.append(line + "\n");
 		}
+
+		reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+		sb = new StringBuffer();
+		while ((line = reader.readLine())!= null) {
+			sb.append(line + "\n");
+		}
+
+		if ( p.exitValue() != 0 ) {
+			throw new Exception(String.format("Return code: %d with message '%s'" , p.exitValue() , sb.toString() ) );
+		}
+
+		System.out.printf("After executing command line '%s' return code: %d with message '%s'\n" , arg1 , p.exitValue() , sb.toString());
 	}
 
 	@Given("^I load prg \"(.*?)\"$")
