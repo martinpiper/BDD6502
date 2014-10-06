@@ -23,7 +23,9 @@ Scenario: Simple code test
   And I load labels "test.lbl"
   Then I expect to see $400 contain $a9
   # The above code is actually 100 instructions long when executing
-  When I execute the procedure at start for no more than 100 instructions until PC = stopHere
+  When I execute the procedure at start for no more than 3 instructions until PC = stopHere
   # Note how the label "start" is used below and correctly resolves to be $400 when checking memory
+  Then I expect to see start contain 0
+  When I continue executing the procedure for no more than 97 instructions
   Then I expect to see start contain 32
   And I expect to see $402 contain $8d
