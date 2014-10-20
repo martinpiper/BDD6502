@@ -73,6 +73,11 @@ public class Glue {
 		}
 	}
 
+	@Given("^I write memory at (.+) with (.+)$")
+	public void i_write_memory_at_with(String arg1, String arg2) throws Throwable {
+		machine.getBus().write(valueToInt(arg1) , valueToInt(arg2));
+	}
+
 	@Given("^I setup a (.+) byte stack slide$")
 	public void i_setup_a_byte_stack_slide(String arg1) throws Throwable {
 		int i;
