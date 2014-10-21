@@ -9,9 +9,16 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -28,18 +35,57 @@ public class Glue {
 		this.scenario = scenario;
 	}
 
-	private int valueToInt(String value) {
-		if ( null == value || value.isEmpty() ) {
+	private int valueToInt(String valueIn) throws ScriptException {
+		if ( null == valueIn || valueIn.isEmpty() ) {
 			return -1;
 		}
-		Object found = labelMap.get(value);
-		if ( null != found ) {
-			value = (String) found;
+
+		// Find any labels or numbers in the expression that can be substituted for known labels etc
+		Pattern pattern = Pattern.compile("[\\w$]+");
+		Matcher matcher = pattern.matcher(valueIn);
+
+		class ToReplace {
+			public int start , end;
+			public String replacement;
 		}
-		if (value.charAt(0) == '$') {
-			return Integer.parseInt(value.substring(1) , 16);
+
+		List<ToReplace> toReplace = new ArrayList<ToReplace>();
+
+		while (matcher.find()) {
+			String value = matcher.group();
+			Object found = labelMap.get(value);
+			if (null != found) {
+				value = (String) found;
+			}
+			if (value.charAt(0) == '$') {
+				Integer ivalue = Integer.parseInt(value.substring(1), 16);
+				value = ivalue.toString();
+			}
+
+			if (!value.equals(matcher.group())) {
+				ToReplace entry = new ToReplace();
+				entry.start = matcher.start();
+				entry.end = matcher.end();
+				entry.replacement = value;
+				toReplace.add(entry);
+			}
 		}
-		return Integer.parseInt(value);
+
+		// Build the new string in reverse, so it keeps the indexes
+		Collections.reverse(toReplace);
+		for (ToReplace entry : toReplace) {
+			valueIn = valueIn.substring(0 , entry.start) + entry.replacement + valueIn.substring(entry.end);
+		}
+
+		// Evaluate the expression
+		ScriptEngineManager manager = new ScriptEngineManager();
+		ScriptEngine engine = manager.getEngineByName("JavaScript");
+		String functions = "function low(i) { return i & 255; }";
+		functions += "function hi(i) { return ~~(i/256); }";
+		Object temp = engine.eval(functions + valueIn);
+		String t = temp.toString();
+		Integer i = Integer.parseInt(t);
+		return i.intValue();
 	}
 
 	// simple.feature
@@ -70,6 +116,13 @@ public class Glue {
 					machine.getBus().write(writingAddress++ , Integer.parseInt(values[i], 16));
 				}
 			}
+		}
+	}
+
+	@Given("^I write the following bytes$")
+	public void i_write_the_following_bytes(List<String> arg1) throws Throwable {
+		for ( String arg : arg1) {
+			machine.getBus().write(writingAddress++ , valueToInt(arg));
 		}
 	}
 
