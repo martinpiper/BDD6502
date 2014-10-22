@@ -175,6 +175,7 @@ public class Glue {
 
 	@When("^I execute the procedure at (.+) for no more than (.+) instructions$")
 	public void i_execute_the_procedure_at_for_no_more_than_instructions(String arg1, String arg2) throws Throwable {
+		machine.getCpu().setStackPointer(0xff);
 		i_execute_the_procedure_at_for_no_more_than_instructions_until_pc(arg1 , arg2 , "");
 	}
 
