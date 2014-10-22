@@ -8,6 +8,7 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -248,7 +249,11 @@ public class Glue {
 			splits[0] = splits[0].trim();
 			String[] splits2 = splits[1].split(";");
 			splits2[0].trim();
-			labelMap.put(splits[0] , splits2[0]);
+			if (StringUtils.isNumeric(splits[0])) {
+				// If the value is numeric this will affect the operation of valueToInt so we avoid this by adding a prefix underscore
+				splits[0] = "_" + splits[0];
+			}
+			labelMap.put(splits[0], splits2[0]);
 		}
 		br.close();
 	}
