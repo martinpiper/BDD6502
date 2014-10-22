@@ -163,14 +163,14 @@ public class Glue {
 			}
 			machine.getCpu().step();
 			if ( displayTrace ) {
-				System.out.print(machine.getCpu().getCpuState().toTraceEvent());
+				scenario.write(machine.getCpu().getCpuState().toTraceEvent());
 			}
 			assertThat(++numInstructions , is(lessThanOrEqualTo(maxInstructions)));
 		}
 
 		String output = String.format("Executed procedure %s for %d instructions" , arg1 , numInstructions);
 		scenario.write(output);
-		System.out.println(output);
+//		System.out.println(output);
 	}
 
 	@When("^I execute the procedure at (.+) for no more than (.+) instructions$")
@@ -226,7 +226,7 @@ public class Glue {
 			throw new Exception(String.format("Return code: %d with message '%s'" , p.exitValue() , sb.toString() ) );
 		}
 
-		System.out.printf("After executing command line '%s' return code: %d with message '%s'\n" , arg1 , p.exitValue() , sb.toString());
+		scenario.write(String.format("After executing command line '%s' return code: %d with message '%s'\n" , arg1 , p.exitValue() , sb.toString()));
 	}
 
 	@Given("^I load prg \"(.*?)\"$")
@@ -281,6 +281,6 @@ public class Glue {
 			addrStart += 1;
 		}
 		scenario.write(hexOutput);
-		System.out.print(hexOutput);
+//		System.out.print(hexOutput);
 	}
 }
