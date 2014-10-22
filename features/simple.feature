@@ -41,3 +41,7 @@ Scenario: Demonstrate the 6502 simulator state is preserved between scenarios
 Scenario: Demonstrate evaluation of parameters
   When I write memory at $c000 + 12 - 3 with 12 + 7
   Then I expect to see 49161 contain 19
+
+Scenario: Demonstrate hex dump of specific memory
+  When I hex dump memory between $c000 and $c100
+

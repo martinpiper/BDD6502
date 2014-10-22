@@ -168,8 +168,9 @@ public class Glue {
 			assertThat(++numInstructions , is(lessThanOrEqualTo(maxInstructions)));
 		}
 
-//		scenario.write(String.format("Executed %d instructions" , numInstructions));
-		System.out.println( String.format("Executed procedure %s for %d instructions" , arg1 , numInstructions));
+		String output = String.format("Executed procedure %s for %d instructions" , arg1 , numInstructions);
+		scenario.write(output);
+		System.out.println(output);
 	}
 
 	@When("^I execute the procedure at (.+) for no more than (.+) instructions$")
@@ -189,7 +190,6 @@ public class Glue {
 
 	@Then("^I expect to see (.+) contain (.+)$")
 	public void i_expect_to_see_contain(String arg1, String arg2) throws Throwable {
-//		assertEquals(machine.getBus().read(valueToInt(arg1)) , valueToInt(arg2));
 		assertThat(machine.getBus().read(valueToInt(arg1)), is(equalTo(valueToInt(arg2))));
 	}
 
@@ -256,5 +256,31 @@ public class Glue {
 			labelMap.put(splits[0], splits2[0]);
 		}
 		br.close();
+	}
+
+	@When("^I hex dump memory between (.+) and (.+)$")
+	public void i_hex_dump_memory_between_$c_and_$c(String start, String end) throws Throwable {
+		int addrStart = valueToInt(start);
+		int addrEnd = valueToInt(end);
+		int cr = 0;
+		String hexOutput = "";
+		while ( addrStart < addrEnd ) {
+			if (cr == 0) {
+				hexOutput += String.format("%2s:", Integer.toHexString(addrStart).replace(' ', '0'));
+			}
+
+			String hex = String.format("%2s", Integer.toHexString(machine.getBus().read(addrStart))).replace(' ', '0');
+
+			hexOutput += " " + hex;
+			cr += 1;
+			if (cr >= 16) {
+				hexOutput += "\n";
+				cr = 0;
+			}
+
+			addrStart += 1;
+		}
+		scenario.write(hexOutput);
+		System.out.print(hexOutput);
 	}
 }
