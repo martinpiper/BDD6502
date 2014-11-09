@@ -27,6 +27,7 @@ Scenario: Simple code test
   # Note how the label "start" is used below and correctly resolves to be $400 when checking memory
   Then I expect to see start contain 32
   And I expect to see $402 contain $8d
+  And I expect to see $400 contain 32
 
 Scenario: Using expressions with labels
   When I write memory at start + 12 - 3 with 12 + 7
