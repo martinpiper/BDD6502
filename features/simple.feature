@@ -1,6 +1,8 @@
 Feature: Simple 6502 code test
 
-  Simple 6502 code test that runs a simple procedure (sei, inc $d020, rts ) and tests expected memory
+  Simple 6502 code test that runs a simple procedure (sei, inc $d020, rts, jmp $401 ) and tests expected memory.
+
+  This ensures the BDD6502 library is included and initialised properly.
 
 Scenario: Simple code test
   Given I have a simple 6502 system
