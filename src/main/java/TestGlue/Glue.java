@@ -140,8 +140,7 @@ public class Glue {
 		}
 	}
 
-	@When("^I execute the procedure at (.+) for no more than (.+) instructions until PC = (.+)$")
-	public void i_execute_the_procedure_at_for_no_more_than_instructions_until_pc(String arg1, String arg2, String arg3) throws Throwable {
+	public void executeProcedureAtForNoMoreThanInstructionsUntilPC(String arg1, String arg2, String arg3) throws Throwable {
 		boolean displayTrace = false;
 		String trace = System.getProperty("bdd6502.trace");
 		if ( null != trace && trace.indexOf("true") != -1 ) {
@@ -173,20 +172,27 @@ public class Glue {
 //		System.out.println(output);
 	}
 
+	@When("^I execute the procedure at (.+) for no more than (.+) instructions until PC = (.+)$")
+	public void i_execute_the_procedure_at_for_no_more_than_instructions_until_pc(String arg1, String arg2, String arg3) throws Throwable
+	{
+		machine.getCpu().setStackPointer(0xff);
+		executeProcedureAtForNoMoreThanInstructionsUntilPC(arg1, arg2, arg3);
+	}
+
 	@When("^I execute the procedure at (.+) for no more than (.+) instructions$")
 	public void i_execute_the_procedure_at_for_no_more_than_instructions(String arg1, String arg2) throws Throwable {
 		machine.getCpu().setStackPointer(0xff);
-		i_execute_the_procedure_at_for_no_more_than_instructions_until_pc(arg1 , arg2 , "");
+		executeProcedureAtForNoMoreThanInstructionsUntilPC(arg1, arg2, "");
 	}
 
 	@When("^I continue executing the procedure for no more than (.+) instructions$")
 	public void i_continue_executing_the_procedure_at_for_no_more_than_instructions(String arg1) throws Throwable {
-		i_execute_the_procedure_at_for_no_more_than_instructions_until_pc("" , arg1 , "");
+		executeProcedureAtForNoMoreThanInstructionsUntilPC("", arg1, "");
 	}
 
 	@When("^I continue executing the procedure for no more than (.+) instructions until PC = (.+)$")
 	public void i_continue_executing_the_procedure_at_for_no_more_than_instructions_until_pc(String arg1, String arg2) throws Throwable {
-		i_execute_the_procedure_at_for_no_more_than_instructions_until_pc("" , arg1 , arg2);
+		executeProcedureAtForNoMoreThanInstructionsUntilPC("" , arg1 , arg2);
 	}
 
 	@Then("^I expect to see (.+) contain (.+)$")
