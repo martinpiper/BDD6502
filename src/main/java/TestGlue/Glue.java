@@ -83,6 +83,14 @@ public class Glue {
 		ScriptEngine engine = manager.getEngineByName("JavaScript");
 		String functions = "function low(i) { return i & 255; }";
 		functions += "function hi(i) { return ~~(i/256); }";
+		functions += "stC = 1;";
+		functions += "stZ = 2;";
+		functions += "stI = 4;";
+		functions += "stD = 8;";
+//		functions += "stB = 16;";
+//		functions += "stS = 32;";
+		functions += "stV = 64;";
+		functions += "stN = 128;";
 		Object temp = engine.eval(functions + valueIn);
 		String t = temp.toString();
 		Integer i = Integer.parseInt(t);
@@ -200,6 +208,59 @@ public class Glue {
 		assertThat(machine.getBus().read(valueToInt(arg1)), is(equalTo(valueToInt(arg2))));
 	}
 
+	@Then("^I expect register (.+) to equal (.+)$")
+	public void i_expect_register_to_equal(String arg1, String arg2) throws Throwable {
+		int regValue = 0;
+
+		if (arg1.equalsIgnoreCase("a"))
+		{
+			regValue = machine.getCpu().getAccumulator();
+		}
+		else if (arg1.equalsIgnoreCase("x"))
+		{
+			regValue = machine.getCpu().getXRegister();
+		}
+		else if (arg1.equalsIgnoreCase("y"))
+		{
+			regValue = machine.getCpu().getYRegister();
+		}
+		else if (arg1.equalsIgnoreCase("st"))
+		{
+			regValue = machine.getCpu().getProcessorStatus() & (128 + 64 + 8 + 4 + 2 +1);
+		}
+		else
+		{
+			throw new Exception("Unknown register " + arg1);
+		}
+		assertThat(regValue, is(equalTo(valueToInt(arg2))));
+	}
+
+	@Then("^I expect register (.+) to contain (.+)$")
+	public void i_expect_register_to_contain(String arg1, String arg2) throws Throwable {
+		int regValue = 0;
+
+		if (arg1.equalsIgnoreCase("a"))
+		{
+			regValue = machine.getCpu().getAccumulator();
+		}
+		else if (arg1.equalsIgnoreCase("x"))
+		{
+			regValue = machine.getCpu().getXRegister();
+		}
+		else if (arg1.equalsIgnoreCase("y"))
+		{
+			regValue = machine.getCpu().getYRegister();
+		}
+		else if (arg1.equalsIgnoreCase("st"))
+		{
+			regValue = machine.getCpu().getProcessorStatus() & (128 + 64 + 8 + 4 + 2 +1);
+		}
+		else
+		{
+			throw new Exception("Unknown register " + arg1);
+		}
+		assertThat(regValue & valueToInt(arg2), is(equalTo(valueToInt(arg2))));
+	}
 
 	// assemble.feature
 	@Given("^I create file \"(.*?)\" with$")
