@@ -27,13 +27,13 @@ Scenario: Execute until PC and continue test
   And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
   And I load prg "test.prg"
   And I load labels "test.lbl"
-  Then I expect to see $400 contain $a9
+  Then I expect to see $400 equal $a9
   # The above code is actually 103 instructions long when executing
   When I execute the procedure at start for no more than 2 instructions until PC = stopHere
   # Note how the label "start" is used below and correctly resolves to be $400 when checking memory
-  Then I expect to see start contain $a9
+  Then I expect to see start equal $a9
   When I continue executing the procedure for no more than 4 instructions until PC = stopHere2
-  Then I expect to see start contain 0
+  Then I expect to see start equal 0
   When I continue executing the procedure for no more than 97 instructions
-  Then I expect to see start contain 32
-  And I expect to see $402 contain $a2
+  Then I expect to see start equal 32
+  And I expect to see $402 equal $a2

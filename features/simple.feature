@@ -19,30 +19,30 @@ Scenario: Simple code test
   And I write memory at $c000 with 12
   And I setup a 16 byte stack slide
   When I execute the procedure at $400 for no more than 3 instructions
-  Then I expect to see $d020 contain 1
-  And I expect to see $409 contain 1
-  And I expect to see $40f contain 7
-  And I expect to see 49152 contain $c
-  And I expect to see $c100 contain 12
-  And I expect to see $c101 contain 12
-  And I expect to see $c102 contain 192
-  And I expect to see $c103 contain 253
+  Then I expect to see $d020 equal 1
+  And I expect to see $409 equal 1
+  And I expect to see $40f equal 7
+  And I expect to see 49152 equal $c
+  And I expect to see $c100 equal 12
+  And I expect to see $c101 equal 12
+  And I expect to see $c102 equal 192
+  And I expect to see $c103 equal 253
 
 
 
 Scenario: Demonstrate the 6502 simulator state is preserved between scenarios
   # The previous scenario's state is preserved here so test it again
-  Then I expect to see $d020 contain 1
-  And I expect to see $409 contain 1
-  And I expect to see $40f contain 7
+  Then I expect to see $d020 equal 1
+  And I expect to see $409 equal 1
+  And I expect to see $40f equal 7
   When I fill memory with $ff
-  Then I expect to see $c000 contain $ff
+  Then I expect to see $c000 equal $ff
 
 
 
 Scenario: Demonstrate evaluation of parameters
   When I write memory at $c000 + 12 - 3 with 12 + 7
-  Then I expect to see 49161 contain 19
+  Then I expect to see 49161 equal 19
 
 
 

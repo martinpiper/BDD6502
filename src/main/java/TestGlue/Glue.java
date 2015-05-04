@@ -203,15 +203,24 @@ public class Glue {
 		executeProcedureAtForNoMoreThanInstructionsUntilPC("" , arg1 , arg2);
 	}
 
-	@Then("^I expect to see (.+) contain (.+)$")
-	public void i_expect_to_see_contain(String arg1, String arg2) throws Throwable {
+	@Then("^I expect to see (.+) equal (.+)$")
+	public void i_expect_to_see_equal(String arg1, String arg2) throws Throwable {
 		assertThat(machine.getBus().read(valueToInt(arg1)), is(equalTo(valueToInt(arg2))));
 	}
 
-	@Then("^I expect register (.+) to equal (.+)$")
-	public void i_expect_register_to_equal(String arg1, String arg2) throws Throwable {
-		int regValue = 0;
+	@Then("^I expect to see (.+) contain (.+)$")
+	public void i_expect_to_see_contain(String arg1, String arg2) throws Throwable {
+		assertThat(machine.getBus().read(valueToInt(arg1)) & valueToInt(arg2), is(equalTo(valueToInt(arg2))));
+	}
 
+	@Then("^I expect to see (.+) exclude (.+)$")
+	public void i_expect_to_see_exclude(String arg1, String arg2) throws Throwable {
+		assertThat(machine.getBus().read(valueToInt(arg1)) & valueToInt(arg2), is(equalTo(0)));
+	}
+
+	private int getRegValue(String arg1) throws Exception
+	{
+		int regValue;
 		if (arg1.equalsIgnoreCase("a"))
 		{
 			regValue = machine.getCpu().getAccumulator();
@@ -232,34 +241,31 @@ public class Glue {
 		{
 			throw new Exception("Unknown register " + arg1);
 		}
+		return regValue;
+	}
+
+	@Then("^I expect register (.+) equal (.+)$")
+	public void i_expect_register_equal(String arg1, String arg2) throws Throwable {
+		int regValue = 0;
+
+		regValue = getRegValue(arg1);
 		assertThat(regValue, is(equalTo(valueToInt(arg2))));
 	}
 
-	@Then("^I expect register (.+) to contain (.+)$")
-	public void i_expect_register_to_contain(String arg1, String arg2) throws Throwable {
+	@Then("^I expect register (.+) contain (.+)$")
+	public void i_expect_register_contain(String arg1, String arg2) throws Throwable {
 		int regValue = 0;
 
-		if (arg1.equalsIgnoreCase("a"))
-		{
-			regValue = machine.getCpu().getAccumulator();
-		}
-		else if (arg1.equalsIgnoreCase("x"))
-		{
-			regValue = machine.getCpu().getXRegister();
-		}
-		else if (arg1.equalsIgnoreCase("y"))
-		{
-			regValue = machine.getCpu().getYRegister();
-		}
-		else if (arg1.equalsIgnoreCase("st"))
-		{
-			regValue = machine.getCpu().getProcessorStatus() & (128 + 64 + 8 + 4 + 2 +1);
-		}
-		else
-		{
-			throw new Exception("Unknown register " + arg1);
-		}
+		regValue = getRegValue(arg1);
 		assertThat(regValue & valueToInt(arg2), is(equalTo(valueToInt(arg2))));
+	}
+
+	@Then("^I expect register (.+) exclude (.+)$")
+	public void i_expect_register_exclude(String arg1, String arg2) throws Throwable {
+		int regValue = 0;
+
+		regValue = getRegValue(arg1);
+		assertThat(regValue & valueToInt(arg2), is(equalTo(0)));
 	}
 
 	// assemble.feature
