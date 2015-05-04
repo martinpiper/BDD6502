@@ -268,6 +268,30 @@ public class Glue {
 		assertThat(regValue & valueToInt(arg2), is(equalTo(0)));
 	}
 
+	@Then("^I set register (.+) to (.+)$")
+	public void i_set_register_to(String arg1, String arg2) throws Throwable {
+		if (arg1.equalsIgnoreCase("a"))
+		{
+			machine.getCpu().setAccumulator(valueToInt(arg2));
+		}
+		else if (arg1.equalsIgnoreCase("x"))
+		{
+			machine.getCpu().setXRegister(valueToInt(arg2));
+		}
+		else if (arg1.equalsIgnoreCase("y"))
+		{
+			machine.getCpu().setYRegister(valueToInt(arg2));
+		}
+		else if (arg1.equalsIgnoreCase("st"))
+		{
+			machine.getCpu().setProcessorStatus(valueToInt(arg2));
+		}
+		else
+		{
+			throw new Exception("Unknown register " + arg1);
+		}
+	}
+
 	// assemble.feature
 	@Given("^I create file \"(.*?)\" with$")
 	public void i_create_file_with(String arg1, String arg2) throws Throwable {

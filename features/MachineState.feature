@@ -37,3 +37,36 @@ Scenario: Simple machine state test
   # Performs a logical bit set test
   And I expect register ST contain stZ
   And I expect register ST exclude stI
+
+
+  Scenario: Simple machine state write test
+    Given I have a simple 6502 system
+    And I create file "test.a" with
+  """
+  !sal
+  *=$400
+  start
+    sta $500
+    stx $501
+    sty $502
+    php
+    pla
+    sta $503
+    rts
+  """
+    And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
+    And I load prg "test.prg"
+    And I load labels "test.lbl"
+
+    When I set register A to 1
+    And I set register X to 2
+    And I set register Y to 3
+    And I set register ST to stZ
+    And I execute the procedure at start for no more than 100 instructions
+
+    # Note how the label "start" is used below and correctly resolves to be $400 when checking memory
+    Then I expect to see $500 equal 1
+    And I expect to see $501 equal 2
+    And I expect to see $502 equal 3
+    And I expect to see $503 contain stZ
+    And I expect to see $503 equal $32
