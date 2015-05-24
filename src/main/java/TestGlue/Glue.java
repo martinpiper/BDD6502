@@ -149,6 +149,7 @@ public class Glue {
 	}
 
 	public void executeProcedureAtForNoMoreThanInstructionsUntilPC(String arg1, String arg2, String arg3) throws Throwable {
+		checkScenario();
 		boolean displayTrace = false;
 		String trace = System.getProperty("bdd6502.trace");
 		if ( null != trace && trace.indexOf("true") != -1 ) {
@@ -178,6 +179,11 @@ public class Glue {
 		String output = String.format("Executed procedure %s for %d instructions" , arg1 , numInstructions);
 		scenario.write(output);
 //		System.out.println(output);
+	}
+
+	private void checkScenario()
+	{
+		assertThat("The Cucumber scenario is not set, use:\n@cucumber.api.java.Before\npublic void BeforeHook(cucumber.api.Scenario scenario) { c64.BeforeHook(scenario); }\n.", scenario, is(notNullValue()));
 	}
 
 	@When("^I execute the procedure at (.+) for no more than (.+) instructions until PC = (.+)$")
@@ -302,6 +308,7 @@ public class Glue {
 
 	@Given("^I run the command line: (.*)$")
 	public void i_run_the_command_line(String arg1) throws Throwable {
+		checkScenario();
 		// Write code here that turns the phrase above into concrete actions
 		Process p = Runtime.getRuntime().exec(arg1);
 		p.waitFor();
@@ -358,6 +365,7 @@ public class Glue {
 
 	@When("^I hex dump memory between (.+) and (.+)$")
 	public void i_hex_dump_memory_between_$c_and_$c(String start, String end) throws Throwable {
+		checkScenario();
 		int addrStart = valueToInt(start);
 		int addrEnd = valueToInt(end);
 		int cr = 0;
