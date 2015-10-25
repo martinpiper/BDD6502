@@ -36,7 +36,7 @@ public class Glue {
 		this.scenario = scenario;
 	}
 
-	private int valueToInt(String valueIn) throws ScriptException {
+	public int valueToInt(String valueIn) throws ScriptException {
 		if ( null == valueIn || valueIn.isEmpty() ) {
 			return -1;
 		}
