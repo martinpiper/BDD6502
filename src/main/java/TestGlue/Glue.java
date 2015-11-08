@@ -31,6 +31,9 @@ public class Glue {
 	static private TreeMap labelMap = new TreeMap();
 	Scenario scenario = null;
 
+	ScriptEngineManager manager = new ScriptEngineManager();
+	ScriptEngine engine = manager.getEngineByName("JavaScript");
+
 	@Before
 	public void BeforeHook(Scenario scenario) {
 		this.scenario = scenario;
@@ -79,10 +82,10 @@ public class Glue {
 		}
 
 		// Evaluate the expression
-		ScriptEngineManager manager = new ScriptEngineManager();
-		ScriptEngine engine = manager.getEngineByName("JavaScript");
 		String functions = "function low(i) { return i & 255; }";
-		functions += "function hi(i) { return ~~(i/256); }";
+		functions += "function lo(i) { return low(i); }";
+		functions += "function high(i) { return ~~(i/256); }";
+		functions += "function hi(i) { return high(i); }";
 		functions += "stC = 1;";
 		functions += "stZ = 2;";
 		functions += "stI = 4;";
@@ -159,7 +162,7 @@ public class Glue {
 	public void executeProcedureAtForNoMoreThanInstructionsUntilPC(String arg1, String arg2, String arg3) throws Throwable {
 		checkScenario();
 
-		String output = String.format("Execute procedure %s for no more than %s instructions until pc $s" , arg1 , arg2 , arg3);
+		String output = String.format("Execute procedure (%s) for no more than (%s) instructions until pc (%s)" , arg1 , arg2 , arg3);
 		scenario.write(output);
 //		System.out.println(output);
 
@@ -189,7 +192,7 @@ public class Glue {
 			assertThat(++numInstructions , is(lessThanOrEqualTo(maxInstructions)));
 		}
 
-		output = String.format("Executed procedure %s for %d instructions" , arg1 , numInstructions);
+		output = String.format("Executed procedure (%s) for %d instructions" , arg1 , numInstructions);
 		scenario.write(output);
 //		System.out.println(output);
 	}
