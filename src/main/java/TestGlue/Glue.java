@@ -93,7 +93,15 @@ public class Glue {
 		functions += "stN = 128;";
 		Object temp = engine.eval(functions + valueIn);
 		String t = temp.toString();
-		Integer i = Integer.parseInt(t);
+		Integer i = null;
+		try
+		{
+			i = Integer.parseInt(t);
+		}
+		catch (Exception e)
+		{
+			i = (int) Math.round(Double.parseDouble(t));
+		}
 		return i.intValue();
 	}
 
@@ -150,6 +158,11 @@ public class Glue {
 
 	public void executeProcedureAtForNoMoreThanInstructionsUntilPC(String arg1, String arg2, String arg3) throws Throwable {
 		checkScenario();
+
+		String output = String.format("Execute procedure %s for no more than %s instructions until pc $s" , arg1 , arg2 , arg3);
+		scenario.write(output);
+//		System.out.println(output);
+
 		boolean displayTrace = false;
 		String trace = System.getProperty("bdd6502.trace");
 		if ( null != trace && trace.indexOf("true") != -1 ) {
@@ -176,7 +189,7 @@ public class Glue {
 			assertThat(++numInstructions , is(lessThanOrEqualTo(maxInstructions)));
 		}
 
-		String output = String.format("Executed procedure %s for %d instructions" , arg1 , numInstructions);
+		output = String.format("Executed procedure %s for %d instructions" , arg1 , numInstructions);
 		scenario.write(output);
 //		System.out.println(output);
 	}
