@@ -8,6 +8,7 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.script.ScriptEngine;
@@ -386,22 +387,46 @@ public class Glue {
 		int addrEnd = valueToInt(end);
 		int cr = 0;
 		String hexOutput = "";
+		String section = "";
 		while ( addrStart < addrEnd ) {
 			if (cr == 0) {
 				hexOutput += String.format("%2s:", Integer.toHexString(addrStart).replace(' ', '0'));
 			}
 
-			String hex = String.format("%2s", Integer.toHexString(machine.getBus().read(addrStart))).replace(' ', '0');
+			if (cr == 8)
+			{
+				hexOutput += " ";
+			}
+
+			int theByte = machine.getBus().read(addrStart);
+			String hex = String.format("%2s", Integer.toHexString(theByte)).replace(' ', '0');
+
+			if (CharUtils.isAsciiPrintable((char)theByte))
+			{
+				section += (char)theByte;
+			}
+			else
+			{
+				section += '.';
+			}
 
 			hexOutput += " " + hex;
 			cr += 1;
 			if (cr >= 16) {
+				hexOutput += " : " + section;
 				hexOutput += "\n";
 				cr = 0;
+				section = "";
 			}
 
 			addrStart += 1;
 		}
+
+		if (!section.isEmpty())
+		{
+			hexOutput += " : " + section;
+		}
+
 		scenario.write(hexOutput);
 //		System.out.print(hexOutput);
 	}
