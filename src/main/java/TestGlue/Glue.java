@@ -15,10 +15,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +27,7 @@ public class Glue {
 	static private Machine machine = null;
 	static private int writingAddress = 0;
 	static private TreeMap labelMap = new TreeMap();
+	static private Map<String,Integer> calculationMap = new TreeMap<String,Integer>();
 	Scenario scenario = null;
 
 	ScriptEngineManager manager = new ScriptEngineManager();
@@ -43,6 +41,12 @@ public class Glue {
 	public int valueToInt(String valueIn) throws ScriptException {
 		if ( null == valueIn || valueIn.isEmpty() ) {
 			return -1;
+		}
+		String origValueIn = valueIn;
+		Integer cachedRet = calculationMap.get(origValueIn);
+		if (null != cachedRet)
+		{
+			return cachedRet.intValue();
 		}
 
 		// Find any labels or numbers in the expression that can be substituted for known labels etc
@@ -106,6 +110,7 @@ public class Glue {
 		{
 			i = (int) Math.round(Double.parseDouble(t));
 		}
+		calculationMap.put(origValueIn , i);
 		return i.intValue();
 	}
 
@@ -364,6 +369,7 @@ public class Glue {
 
 	@Given("^I load labels \"(.*?)\"$")
 	public void i_load_labels(String arg1) throws Throwable {
+		calculationMap.clear();
 		BufferedReader br = new BufferedReader(new FileReader(arg1));
 		String line;
 		while ((line = br.readLine()) != null) {
