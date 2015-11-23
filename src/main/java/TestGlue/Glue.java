@@ -246,7 +246,7 @@ public class Glue {
 		assertThat(machine.getBus().read(valueToInt(arg1)) & valueToInt(arg2), is(equalTo(0)));
 	}
 
-	private int getRegValue(String arg1) throws Exception
+	public int getRegValue(String arg1) throws Exception
 	{
 		int regValue;
 		if (arg1.equalsIgnoreCase("a"))
