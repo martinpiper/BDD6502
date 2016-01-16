@@ -296,7 +296,7 @@ public class Glue {
 		assertThat(regValue & valueToInt(arg2), is(equalTo(0)));
 	}
 
-	@Then("^I set register (.+) to (.+)$")
+	@When("^I set register (.+) to (.+)$")
 	public void i_set_register_to(String arg1, String arg2) throws Throwable {
 		if (arg1.equalsIgnoreCase("a"))
 		{

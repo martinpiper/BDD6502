@@ -70,3 +70,41 @@ Scenario: Simple machine state test
     And I expect to see $502 equal 3
     And I expect to see $503 contain stZ
     And I expect to see $503 equal $32
+
+
+  Scenario: Machine status register tests
+    Given I have a simple 6502 system
+
+    When I set register ST to 0
+    Then I expect register ST equal 0
+
+    When I set register ST to 1
+    Then I expect register ST equal stC
+
+    When I set register ST to 2
+    Then I expect register ST equal stZ
+
+    When I set register ST to 4
+    Then I expect register ST equal stI
+
+    When I set register ST to 8
+    Then I expect register ST equal stD
+
+    When I set register ST to 64
+    Then I expect register ST equal stV
+
+    When I set register ST to 128
+    Then I expect register ST equal stN
+
+    When I set register ST to 128+64
+    Then I expect register ST equal stN+stV
+    Then I expect register ST contain stN+stV
+    Then I expect register ST contain stN
+    Then I expect register ST contain stV
+
+
+    When I set register ST to 2+4
+    Then I expect register ST contain stZ
+    Then I expect register ST contain stI
+    Then I expect register ST equal stI+stZ
+    Then I expect register ST contain stI+stZ
