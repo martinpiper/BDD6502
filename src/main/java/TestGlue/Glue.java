@@ -50,7 +50,7 @@ public class Glue {
 		}
 
 		// Find any labels or numbers in the expression that can be substituted for known labels etc
-		Pattern pattern = Pattern.compile("[\\w$]+");
+		Pattern pattern = Pattern.compile("[\\w$%]+");
 		Matcher matcher = pattern.matcher(valueIn);
 
 		class ToReplace {
@@ -68,6 +68,10 @@ public class Glue {
 			}
 			if (value.charAt(0) == '$') {
 				Integer ivalue = Integer.parseInt(value.substring(1), 16);
+				value = ivalue.toString();
+			}
+			if (value.charAt(0) == '%') {
+				Integer ivalue = Integer.parseInt(value.substring(1), 2);
 				value = ivalue.toString();
 			}
 
@@ -435,5 +439,28 @@ public class Glue {
 
 		scenario.write(hexOutput);
 //		System.out.print(hexOutput);
+	}
+
+	@Then("^I expect memory (.+) to equal memory (.+)$")
+	public void i_expect_to_see_memory_equal_memory(String arg1, String arg2) throws Throwable {
+		assertThat(machine.getBus().read(valueToInt(arg1)), is(equalTo(machine.getBus().read(valueToInt(arg2)))));
+	}
+
+	@Then("^I expect memory (.+) to contain memory (.+)$")
+	public void i_expect_to_see_memory_contain_memory(String arg1, String arg2) throws Throwable {
+		assertThat(machine.getBus().read(valueToInt(arg1)) & machine.getBus().read(valueToInt(arg2)), is(equalTo(machine.getBus().read(valueToInt(arg2)))));
+	}
+
+	@Then("^I expect memory (.+) to exclude memory (.+)$")
+	public void i_expect_to_see_memory_exclude_memory(String arg1, String arg2) throws Throwable {
+		assertThat(machine.getBus().read(valueToInt(arg1)) & machine.getBus().read(valueToInt(arg2)), is(equalTo(0)));
+	}
+
+	@Given("^I set label (.+) equal to (.+)$")
+	public void iSetLabelFooEqualTo(String arg1 , String arg2) throws Throwable
+	{
+		int val = valueToInt(arg2);
+		String sval = Integer.toString(val);
+		labelMap.put(arg1,sval);
 	}
 }

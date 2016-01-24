@@ -52,47 +52,38 @@ public class SimpleMachine implements Machine {
         bus.addDevice(ram);
     }
 
-    @Override
     public Bus getBus() {
         return bus;
     }
 
-    @Override
     public Cpu getCpu() {
         return cpu;
     }
 
-    @Override
     public Memory getRam() {
         return ram;
     }
 
-    @Override
     public Memory getRom() {
         return null;
     }
 
-    @Override
     public void setRom(Memory rom) throws MemoryRangeException {
         // No-op
     }
 
-    @Override
     public int getRomBase() {
         return 0;
     }
 
-    @Override
     public int getRomSize() {
         return 0;
     }
 
-    @Override
     public int getMemorySize() {
         return BUS_TOP + 1;
     }
 
-    @Override
     public String getName() {
         return "Simple";
     }

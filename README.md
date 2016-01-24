@@ -16,7 +16,7 @@ This means scenarios and features can rely on the 6502 simulator state from scen
 The scenario step "* I have a simple 6502 system" will initialise the 6502 simulator state and fill memory to 0.
 The step "* I fill memory with <value>" will fill memory with a different value.
 
-To run the test code execute the command line: java -Dbdd6502.trace=true -jar BDD6502-1.0.3-SNAPSHOT-jar-with-dependencies.jar
+To run the test code execute the command line: java -Dbdd6502.trace=true -jar BDD6502-1.0.4-SNAPSHOT-jar-with-dependencies.jar
 
 If the Java property "bdd6502.trace" is set to be "true" then the simulator state is dumped for each cycle.
 This can be set on the command java line: jar -Dbdd6502.trace=true
