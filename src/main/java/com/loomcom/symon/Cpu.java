@@ -22,9 +22,10 @@
  */
 
 package com.loomcom.symon;
-
+import java.util.Deque;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.util.HexUtil;
+import java.util.LinkedList;
 
 /**
  * This class provides a simulation of the MOS 6502 CPU's state machine.
@@ -42,6 +43,11 @@ public class Cpu implements InstructionTable {
     // Bit 5 is always '1'
     public static final int P_OVERFLOW    = 0x40;
     public static final int P_NEGATIVE    = 0x80;
+    
+    public static final int Extra_XTest   = 0x01;
+    public static final int Extra_YTest   = 0x02;
+    public static final int Extra_ATest   = 0x04;
+    public static final int Extra_BRK     = 0xFF;
 
     // NMI vector
     public static final int NMI_VECTOR_L = 0xfffa;
@@ -74,7 +80,24 @@ public class Cpu implements InstructionTable {
     
     /* start time of op execution, needed for speed simulation */
     private long opBeginTime;
+    
+    private int extraStatus;
+    private boolean failOnBreak;
+    private boolean exitOnBreak;
+    private boolean overclock;
 
+    
+    protected class RegisterStackSet 
+    {
+        public static final int kNotSet = 0xFFFF;
+        public int a = kNotSet;
+        public int x = kNotSet;
+        public int y = kNotSet;
+    }
+    
+    private Deque<RegisterStackSet> testStack;
+    private Deque<Boolean> testStackNeedToPop;
+    
     /**
      * Construct a new CPU.
      */
@@ -84,6 +107,12 @@ public class Cpu implements InstructionTable {
 
     public Cpu(CpuBehavior behavior) {
         this.behavior = behavior;
+        failOnBreak = false;
+        exitOnBreak = false;
+        overclock = false;
+        testStackNeedToPop = new LinkedList<Boolean>();
+        testStack = new LinkedList<RegisterStackSet>();
+        testStackNeedToPop.addFirst(Boolean.FALSE);
     }
 
     /**
@@ -144,8 +173,28 @@ public class Cpu implements InstructionTable {
         state.a = 0;
         state.x = 0;
         state.y = 0;
+        
+        extraStatus = 0;
+        overclock = false;
     }
 
+    public void setFailOnBreak() { failOnBreak = true; }
+    public void clearFailOnBreak() { failOnBreak = false; }
+    public void setExitOnBreak() { exitOnBreak = true; }
+    public void clearExitOnBreak() { exitOnBreak = false; }
+    public boolean getFailOnBreak() { return failOnBreak; }
+    public boolean getExitOnBreak() { return exitOnBreak; }
+    public int getExtraStatus() { return extraStatus; }
+    public void setOverclock() { overclock = true; }
+    
+    public void initRegisterTestStackIfNeeded()
+    {
+        if( testStackNeedToPop.size() == 0 )
+        {
+            testStackNeedToPop.push(false);
+        }
+    }
+    
     public void step(int num) throws MemoryAccessException {
         for (int i = 0; i < num; i++) {
             step();
@@ -258,8 +307,31 @@ public class Cpu implements InstructionTable {
 
             /** Single Byte Instructions; Implied and Relative **/
             case 0x00: // BRK - Force Interrupt - Implied
-                if (!getIrqDisableFlag()) {
+                if( failOnBreak )
+                {
+                    extraStatus = Extra_BRK;
+                }
+                else if( exitOnBreak )
+                {
+                    state.pc = 0;
+                }
+                else if (!getIrqDisableFlag()) {
                     handleIrq(state.pc + 1);
+                }
+                break;
+            case 0x02: // PAT - Push A for Test 
+                if( testStackNeedToPop.peekFirst() == false)
+                {
+                    RegisterStackSet set = new RegisterStackSet();
+                    set.a = state.a;
+                    testStack.addFirst(set);
+                    testStackNeedToPop.removeFirst();
+                    testStackNeedToPop.addFirst(true);
+                }
+                else
+                {
+                    RegisterStackSet set = testStack.peekFirst();
+                    set.a = state.a;
                 }
                 break;
             case 0x08: // PHP - Push Processor Status - Implied
@@ -271,6 +343,21 @@ public class Cpu implements InstructionTable {
                     state.pc = relAddress(state.args[0]);
                 }
                 break;
+            case 0x12: // PXT - Push X for Test 
+                if( testStackNeedToPop.peekFirst() == Boolean.FALSE)
+                {
+                    RegisterStackSet set = new RegisterStackSet();
+                    set.x = state.x;
+                    testStack.addFirst(set);
+                    testStackNeedToPop.removeFirst();
+                    testStackNeedToPop.addFirst(Boolean.TRUE);
+                }
+                else
+                {
+                    RegisterStackSet set = testStack.peekFirst();
+                    set.x = state.x;
+                }
+                break;
             case 0x18: // CLC - Clear Carry Flag - Implied
                 clearCarryFlag();
                 break;
@@ -278,6 +365,22 @@ public class Cpu implements InstructionTable {
                 stackPush((state.pc - 1 >> 8) & 0xff); // PC high byte
                 stackPush(state.pc - 1 & 0xff);        // PC low byte
                 state.pc = address(state.args[0], state.args[1]);
+                testStackNeedToPop.addFirst(Boolean.FALSE);
+                break;
+            case 0x22: // PYT - Push Y for Test 
+                if( testStackNeedToPop.peekFirst() == Boolean.FALSE)
+                {
+                    RegisterStackSet set = new RegisterStackSet();
+                    set.y = state.y;
+                    testStack.addFirst(set);
+                    testStackNeedToPop.removeFirst();
+                    testStackNeedToPop.addFirst(Boolean.TRUE);
+                }
+                else
+                {
+                    RegisterStackSet set = testStack.peekFirst();
+                    set.y = state.y;
+                }
                 break;
             case 0x28: // PLP - Pull Processor Status - Implied
                 setProcessorStatus(stackPop());
@@ -287,6 +390,15 @@ public class Cpu implements InstructionTable {
                     state.pc = relAddress(state.args[0]);
                 }
                 break;
+            case 0x32: //TTA - Test Test A
+            {
+                 RegisterStackSet set = testStack.peekFirst();
+                 if( set.a != state.a)
+                 {
+                     extraStatus = Extra_ATest;
+                 }
+            }
+                 break;
             case 0x38: // SEC - Set Carry Flag - Implied
                 setCarryFlag();
                 break;
@@ -296,6 +408,15 @@ public class Cpu implements InstructionTable {
                 hi = stackPop();
                 setProgramCounter(address(lo, hi));
                 break;
+            case 0x42: //TTX - Test Test X
+            {
+                 RegisterStackSet set = testStack.peekFirst();
+                 if( set.x != state.x)
+                 {
+                     extraStatus = Extra_XTest;
+                 }
+            }
+                 break;
             case 0x48: // PHA - Push Accumulator - Implied
                 stackPush(state.a);
                 break;
@@ -304,6 +425,15 @@ public class Cpu implements InstructionTable {
                     state.pc = relAddress(state.args[0]);
                 }
                 break;
+            case 0x52: //TTY - Test Test Y
+            {
+                 RegisterStackSet set = testStack.peekFirst();
+                 if( set.y != state.y)
+                 {
+                     extraStatus = Extra_YTest;
+                 }
+            }
+                 break;
             case 0x58: // CLI - Clear Interrupt Disable - Implied
                 clearIrqDisableFlag();
                 break;
@@ -311,6 +441,14 @@ public class Cpu implements InstructionTable {
                 lo = stackPop();
                 hi = stackPop();
                 setProgramCounter((address(lo, hi) + 1) & 0xffff);
+                if( testStackNeedToPop.isEmpty() == false)
+                {
+                    if( testStackNeedToPop.peekFirst() == Boolean.TRUE)
+                    {
+                        testStack.removeFirst();
+                    }
+                    testStackNeedToPop.removeFirst();
+                }
                 break;
             case 0x68: // PLA - Pull Accumulator - Implied
                 state.a = stackPop();
@@ -1319,6 +1457,8 @@ public class Cpu implements InstructionTable {
      * Perform a busy-loop for CLOCK_IN_NS nanoseconds
      */
     private void delayLoop(int opcode) {
+        if( overclock == true ) return; // don't delay
+        
         int clockSteps = Cpu.instructionClocks[0xff & opcode];
         // Just a precaution. This could be better.
         if (clockSteps == 0) {
@@ -1428,7 +1568,7 @@ public class Cpu implements InstructionTable {
             sb.append("Y:" + HexUtil.byteToHex(y) + " ");
             sb.append("F:" + HexUtil.byteToHex(getStatusFlag()) + " ");
             sb.append("S:1" + HexUtil.byteToHex(sp) + " ");
-            sb.append(getProcessorStatusString() + "\n");
+            sb.append(getProcessorStatusString());
             return sb.toString();
         }
 
