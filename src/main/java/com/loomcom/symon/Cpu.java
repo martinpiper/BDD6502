@@ -85,6 +85,7 @@ public class Cpu implements InstructionTable {
     private boolean failOnBreak;
     private boolean exitOnBreak;
     private boolean overclock;
+    private boolean dontPopTestStackNextRTS;
 
     
     protected class RegisterStackSet 
@@ -110,6 +111,7 @@ public class Cpu implements InstructionTable {
         failOnBreak = false;
         exitOnBreak = false;
         overclock = false;
+        dontPopTestStackNextRTS = false;
         testStackNeedToPop = new LinkedList<Boolean>();
         testStack = new LinkedList<RegisterStackSet>();
         testStackNeedToPop.addFirst(Boolean.FALSE);
@@ -344,7 +346,7 @@ public class Cpu implements InstructionTable {
                 }
                 break;
             case 0x12: // PXT - Push X for Test 
-                if( testStackNeedToPop.peekFirst() == Boolean.FALSE)
+                if( testStackNeedToPop.peekFirst() == false)
                 {
                     RegisterStackSet set = new RegisterStackSet();
                     set.x = state.x;
@@ -368,7 +370,7 @@ public class Cpu implements InstructionTable {
                 testStackNeedToPop.addFirst(Boolean.FALSE);
                 break;
             case 0x22: // PYT - Push Y for Test 
-                if( testStackNeedToPop.peekFirst() == Boolean.FALSE)
+                if( testStackNeedToPop.peekFirst() == false)
                 {
                     RegisterStackSet set = new RegisterStackSet();
                     set.y = state.y;
@@ -441,14 +443,18 @@ public class Cpu implements InstructionTable {
                 lo = stackPop();
                 hi = stackPop();
                 setProgramCounter((address(lo, hi) + 1) & 0xffff);
-                if( testStackNeedToPop.isEmpty() == false)
+                if( testStackNeedToPop.isEmpty() == false && dontPopTestStackNextRTS == false)
                 {
-                    if( testStackNeedToPop.peekFirst() == Boolean.TRUE)
+                    if( testStackNeedToPop.peekFirst() == true)
                     {
                         testStack.removeFirst();
                     }
                     testStackNeedToPop.removeFirst();
                 }
+                dontPopTestStackNextRTS = false;
+                break;
+            case 0x62:
+                dontPopTestStackNextRTS = true;
                 break;
             case 0x68: // PLA - Pull Accumulator - Implied
                 state.a = stackPop();
