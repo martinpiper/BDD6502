@@ -41,10 +41,41 @@ public class Glue {
 		this.scenario = scenario;
 	}
 
+        public int valueToIntFast(String valueIn) throws ScriptException {
+            String origValueIn = valueIn.trim();
+            Object found = labelMap.get(origValueIn);
+		if (null != found) {
+                    origValueIn = (String)found;
+                }	
+		if (origValueIn.charAt(0) == '$') {
+                    Integer ivalue = Integer.parseInt(origValueIn.substring(1), 16);
+                    return ivalue.intValue();
+		}
+		if (origValueIn.charAt(0) == '%') {
+			Integer ivalue = Integer.parseInt(origValueIn.substring(1), 2);
+			return ivalue.intValue();
+		}
+                try 
+                {
+                        Integer ivalue = Integer.parseInt(origValueIn, 10);
+			return ivalue.intValue();
+                }
+                catch (Exception e)
+                {
+                    throw new ScriptException("Fast fail");
+                }
+			
+        }
+        
 	public int valueToInt(String valueIn) throws ScriptException {
 		if ( null == valueIn || valueIn.isEmpty() ) {
 			return -1;
 		}
+                if( (valueIn.contains("+") == false) && (valueIn.contains("-") == false) && (valueIn.contains("st") == false) && (valueIn.contains("*") == false) && (valueIn.contains("/") == false) )
+                {
+                    return valueToIntFast(valueIn);
+                }
+                
 		String origValueIn = valueIn;
 		Integer cachedRet = calculationMap.get(origValueIn);
 		if (null != cachedRet)
