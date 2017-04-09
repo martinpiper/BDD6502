@@ -26,218 +26,250 @@ package com.loomcom.symon;
 import com.loomcom.symon.devices.Device;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * The Bus ties the whole thing together, man.
  */
-public class Bus {
+public class Bus
+{
 
-    // The default address at which to load programs
-    public static int DEFAULT_LOAD_ADDRESS = 0x0200;
-	
-    // By default, our bus starts at 0, and goes up to 64K
-    private int startAddress = 0x0000;
-    private int endAddress = 0xffff;
+	// The default address at which to load programs
+	public static int DEFAULT_LOAD_ADDRESS = 0x0200;
 
-    // The CPU
-    private Cpu cpu;
+	// By default, our bus starts at 0, and goes up to 64K
+	private int startAddress = 0x0000;
+	private int endAddress = 0xffff;
 
-    // Ordered sets of IO devices, associated with their priority
-    private Map<Integer, SortedSet<Device>> deviceMap;
-    
-    // an array for quick lookup of adresses, brute-force style
-    private Device[] deviceAddressArray;
-    
+	// The CPU
+	private Cpu cpu;
 
-    public Bus(int size) {
-        this(0, size - 1);
-    }
+	// Ordered sets of IO devices, associated with their priority
+	private Map<Integer, SortedSet<Device>> deviceMap;
 
-    public Bus(int startAddress, int endAddress) {
-        this.deviceMap = new HashMap<Integer, SortedSet<Device>>();
-        this.startAddress = startAddress;
-        this.endAddress = endAddress;
-    }
+	// an array for quick lookup of adresses, brute-force style
+	private Device[] deviceAddressArray;
 
-    public int startAddress() {
-        return startAddress;
-    }
 
-    public int endAddress() {
-        return endAddress;
-    }
-    
-    private void buildDeviceAddressArray() {
-        int size = (this.endAddress - this.startAddress) + 1;
-        deviceAddressArray = new Device[size];
-   
-        // getDevices() provides an OrderedSet with devices ordered by priorities
-        for(Device device : getDevices()) {
-            MemoryRange range = device.getMemoryRange();
-            for(int address = range.startAddress; address <= range.endAddress; ++address) {
-                deviceAddressArray[address - this.startAddress] = device;
-            }
-        }
-        
-    }
+	public Bus(int size)
+	{
+		this(0, size - 1);
+	}
 
-    /**
-     * Add a device to the bus.
-     *
-     * @param device
-     * @param priority
-     * @throws MemoryRangeException
-     */
-    public void addDevice(Device device, int priority) throws MemoryRangeException {
-        
-        MemoryRange range = device.getMemoryRange();
-        if(range.startAddress() < this.startAddress || range.startAddress() > this.endAddress) {
-            throw new MemoryRangeException("start address of device " + device.getName() + " does not fall within the address range of the bus");
-        }
-        if(range.endAddress() < this.startAddress || range.endAddress() > this.endAddress) {
-            throw new MemoryRangeException("end address of device " + device.getName() + " does not fall within the address range of the bus");
-        }
-  
-        
-        SortedSet<Device> deviceSet = deviceMap.get(priority);
-        if(deviceSet == null) {
-            deviceSet = new TreeSet<Device>();
-            deviceMap.put(priority, deviceSet);
-        }
-        
-        device.setBus(this);
-        deviceSet.add(device);
-        buildDeviceAddressArray();
-    }
-    
-    /**
-     * Add a device to the bus. Throws a MemoryRangeException if the device overlaps with any others.
-     *
-     * @param device
-     * @throws MemoryRangeException
-     */
-    public void addDevice(Device device) throws MemoryRangeException {
-        addDevice(device, 0);
-    }
-    
+	public Bus(int startAddress, int endAddress)
+	{
+		this.deviceMap = new HashMap<Integer, SortedSet<Device>>();
+		this.startAddress = startAddress;
+		this.endAddress = endAddress;
+	}
 
-    /**
-     * Remove a device from the bus.
-     *
-     * @param device
-     */
-    public void removeDevice(Device device) {
-        for(SortedSet<Device> deviceSet : deviceMap.values()) {
-            deviceSet.remove(device);
-        }
-        buildDeviceAddressArray();
-    }
+	public int startAddress()
+	{
+		return startAddress;
+	}
 
-    public void addCpu(Cpu cpu) {
-        this.cpu = cpu;
-        cpu.setBus(this);
-    }
+	public int endAddress()
+	{
+		return endAddress;
+	}
 
-    /**
-     * Returns true if the memory map is full, i.e., there are no
-     * gaps between any IO devices.  All memory locations map to some
-     * device.
-     */
-    public boolean isComplete() {
-        if(deviceAddressArray == null) {
-            buildDeviceAddressArray();
-        }
-        
-        for(int address = startAddress; address <= endAddress; ++address) {
-            if(deviceAddressArray[address - startAddress] == null) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
+	private void buildDeviceAddressArray()
+	{
+		int size = (this.endAddress - this.startAddress) + 1;
+		deviceAddressArray = new Device[size];
 
-    public int read(int address) throws MemoryAccessException {
-        Device d = deviceAddressArray[address - this.startAddress];
-        if(d != null) {
-            MemoryRange range = d.getMemoryRange();
-            int devAddr = address - range.startAddress();
-            return d.read(devAddr) & 0xff;
-        }
-        
-        throw new MemoryAccessException("Bus read failed. No device at address " + String.format("$%04X", address));
-    }
+		// getDevices() provides an OrderedSet with devices ordered by priorities
+		for (Device device : getDevices())
+		{
+			MemoryRange range = device.getMemoryRange();
+			for (int address = range.startAddress; address <= range.endAddress; ++address)
+			{
+				deviceAddressArray[address - this.startAddress] = device;
+			}
+		}
 
-    public void write(int address, int value) throws MemoryAccessException {
-        Device d = deviceAddressArray[address - this.startAddress];
-        if(d != null) {
-            MemoryRange range = d.getMemoryRange();
-            int devAddr = address - range.startAddress();
-            d.write(devAddr, value);
-            return;
-        }
-        
-        throw new MemoryAccessException("Bus write failed. No device at address " + String.format("$%04X", address));
-    }
+	}
 
-    public void assertIrq() {
-        if (cpu != null) {
-            cpu.assertIrq();
-        }
-    }
+	/**
+	 * Add a device to the bus.
+	 *
+	 * @param device
+	 * @param priority
+	 * @throws MemoryRangeException
+	 */
+	public void addDevice(Device device, int priority) throws MemoryRangeException
+	{
 
-    public void clearIrq() {
-        if (cpu != null) {
-            cpu.clearIrq();
-        }
-    }
+		MemoryRange range = device.getMemoryRange();
+		if (range.startAddress() < this.startAddress || range.startAddress() > this.endAddress)
+		{
+			throw new MemoryRangeException("start address of device " + device.getName() + " does not fall within the address range of the bus");
+		}
+		if (range.endAddress() < this.startAddress || range.endAddress() > this.endAddress)
+		{
+			throw new MemoryRangeException("end address of device " + device.getName() + " does not fall within the address range of the bus");
+		}
 
-    public void assertNmi() {
-        if (cpu != null) {
-            cpu.assertNmi();
-        }
-    }
 
-    public void clearNmi() {
-        if (cpu != null) {
-            cpu.clearNmi();
-        }
-    }
+		SortedSet<Device> deviceSet = deviceMap.get(priority);
+		if (deviceSet == null)
+		{
+			deviceSet = new TreeSet<Device>();
+			deviceMap.put(priority, deviceSet);
+		}
 
-    public SortedSet<Device> getDevices() {
-        // create an ordered set of devices, ordered by device priorities
-        SortedSet<Device> devices = new TreeSet<Device>();
-        
-        List<Integer> priorities = new ArrayList<Integer>(deviceMap.keySet());
-        Collections.sort(priorities);
-        
-        for(int priority : priorities) {
-            SortedSet<Device> deviceSet = deviceMap.get(priority);
-            for(Device device : deviceSet) {
-                devices.add(device);
-            }
-        }
-        
-        return devices;
-    }
+		device.setBus(this);
+		deviceSet.add(device);
+		buildDeviceAddressArray();
+	}
 
-    public Cpu getCpu() {
-        return cpu;
-    }
+	/**
+	 * Add a device to the bus. Throws a MemoryRangeException if the device overlaps with any others.
+	 *
+	 * @param device
+	 * @throws MemoryRangeException
+	 */
+	public void addDevice(Device device) throws MemoryRangeException
+	{
+		addDevice(device, 0);
+	}
 
-    public void loadProgram(int... program) throws MemoryAccessException {
-        int address = getCpu().getProgramCounter();
-        int i = 0;
-        for (int d : program) {
-            write(address + i++, d);
-        }
-    }
+
+	/**
+	 * Remove a device from the bus.
+	 *
+	 * @param device
+	 */
+	public void removeDevice(Device device)
+	{
+		for (SortedSet<Device> deviceSet : deviceMap.values())
+		{
+			deviceSet.remove(device);
+		}
+		buildDeviceAddressArray();
+	}
+
+	public void addCpu(Cpu cpu)
+	{
+		this.cpu = cpu;
+		cpu.setBus(this);
+	}
+
+	/**
+	 * Returns true if the memory map is full, i.e., there are no
+	 * gaps between any IO devices.  All memory locations map to some
+	 * device.
+	 */
+	public boolean isComplete()
+	{
+		if (deviceAddressArray == null)
+		{
+			buildDeviceAddressArray();
+		}
+
+		for (int address = startAddress; address <= endAddress; ++address)
+		{
+			if (deviceAddressArray[address - startAddress] == null)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public int read(int address) throws MemoryAccessException
+	{
+		Device d = deviceAddressArray[address - this.startAddress];
+		if (d != null)
+		{
+			MemoryRange range = d.getMemoryRange();
+			int devAddr = address - range.startAddress();
+			return d.read(devAddr) & 0xff;
+		}
+
+		throw new MemoryAccessException("Bus read failed. No device at address " + String.format("$%04X", address));
+	}
+
+	public void write(int address, int value) throws MemoryAccessException
+	{
+		Device d = deviceAddressArray[address - this.startAddress];
+		if (d != null)
+		{
+			MemoryRange range = d.getMemoryRange();
+			int devAddr = address - range.startAddress();
+			d.write(devAddr, value);
+			return;
+		}
+
+		throw new MemoryAccessException("Bus write failed. No device at address " + String.format("$%04X", address));
+	}
+
+	public void assertIrq()
+	{
+		if (cpu != null)
+		{
+			cpu.assertIrq();
+		}
+	}
+
+	public void clearIrq()
+	{
+		if (cpu != null)
+		{
+			cpu.clearIrq();
+		}
+	}
+
+	public void assertNmi()
+	{
+		if (cpu != null)
+		{
+			cpu.assertNmi();
+		}
+	}
+
+	public void clearNmi()
+	{
+		if (cpu != null)
+		{
+			cpu.clearNmi();
+		}
+	}
+
+	public SortedSet<Device> getDevices()
+	{
+		// create an ordered set of devices, ordered by device priorities
+		SortedSet<Device> devices = new TreeSet<Device>();
+
+		List<Integer> priorities = new ArrayList<Integer>(deviceMap.keySet());
+		Collections.sort(priorities);
+
+		for (int priority : priorities)
+		{
+			SortedSet<Device> deviceSet = deviceMap.get(priority);
+			for (Device device : deviceSet)
+			{
+				devices.add(device);
+			}
+		}
+
+		return devices;
+	}
+
+	public Cpu getCpu()
+	{
+		return cpu;
+	}
+
+	public void loadProgram(int... program) throws MemoryAccessException
+	{
+		int address = getCpu().getProgramCounter();
+		int i = 0;
+		for (int d : program)
+		{
+			write(address + i++, d);
+		}
+	}
 }

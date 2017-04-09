@@ -23,92 +23,113 @@
 
 package com.loomcom.symon.devices;
 
-import java.io.*;
-import java.util.Arrays;
-
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
-public class Memory extends Device {
+import java.io.*;
+import java.util.Arrays;
 
-    private boolean readOnly;
-    private int[] mem;
+public class Memory extends Device
+{
 
-    /* Initialize all locations to 0x00 (BRK) */
-    private static final int DEFAULT_FILL = 0x00;
+	private boolean readOnly;
+	private int[] mem;
 
-    public Memory(int startAddress, int endAddress, boolean readOnly)
-            throws MemoryRangeException {
-        super(startAddress, endAddress, (readOnly ? "RO Memory" : "RW Memory"));
-        this.readOnly = readOnly;
-        this.mem = new int[this.size];
-        this.fill(DEFAULT_FILL);
-    }
+	/* Initialize all locations to 0x00 (BRK) */
+	private static final int DEFAULT_FILL = 0x00;
 
-    public Memory(int startAddress, int endAddress) throws MemoryRangeException {
-        this(startAddress, endAddress, false);
-    }
+	public Memory(int startAddress, int endAddress, boolean readOnly)
+			throws MemoryRangeException
+	{
+		super(startAddress, endAddress, (readOnly ? "RO Memory" : "RW Memory"));
+		this.readOnly = readOnly;
+		this.mem = new int[this.size];
+		this.fill(DEFAULT_FILL);
+	}
 
-    public static Memory makeROM(int startAddress, int endAddress, File f) throws MemoryRangeException, IOException {
-        Memory memory = new Memory(startAddress, endAddress, true);
-        memory.loadFromFile(f);
-        return memory;
-    }
+	public Memory(int startAddress, int endAddress) throws MemoryRangeException
+	{
+		this(startAddress, endAddress, false);
+	}
 
-    public static Memory makeRAM(int startAddress, int endAddress) throws MemoryRangeException {
-        Memory memory = new Memory(startAddress, endAddress, false);
-        return memory;
-    }
+	public static Memory makeROM(int startAddress, int endAddress, File f) throws MemoryRangeException, IOException
+	{
+		Memory memory = new Memory(startAddress, endAddress, true);
+		memory.loadFromFile(f);
+		return memory;
+	}
 
-    public void write(int address, int data) throws MemoryAccessException {
-        if (readOnly) {
-            throw new MemoryAccessException("Cannot write to read-only memory at address " + address);
-        } else {
-            this.mem[address] = data;
-        }
-    }
+	public static Memory makeRAM(int startAddress, int endAddress) throws MemoryRangeException
+	{
+		Memory memory = new Memory(startAddress, endAddress, false);
+		return memory;
+	}
 
-    /**
-     * Load the memory from a file.
-     *
-     * @param file The file to read an array of bytes from.
-     * @throws MemoryRangeException if the file and memory size do not match.
-     * @throws java.io.IOException if the file read fails.
-     */
-    public void loadFromFile(File file) throws MemoryRangeException, IOException {
-        if (file.canRead()) {
-            long fileSize = file.length();
+	public void write(int address, int data) throws MemoryAccessException
+	{
+		if (readOnly)
+		{
+			throw new MemoryAccessException("Cannot write to read-only memory at address " + address);
+		}
+		else
+		{
+			this.mem[address] = data;
+		}
+	}
 
-            if (fileSize > mem.length) {
-                throw new MemoryRangeException("File will not fit in available memory.");
-            } else {
-                int i = 0;
-                FileInputStream fis = new FileInputStream(file);
-                BufferedInputStream bis = new BufferedInputStream(fis);
-                DataInputStream dis = new DataInputStream(bis);
-                while (dis.available() != 0) {
-                    mem[i++] = dis.readUnsignedByte();
-                }
-            }
-        } else {
-            throw new IOException("Cannot open file " + file);
-        }
+	/**
+	 * Load the memory from a file.
+	 *
+	 * @param file The file to read an array of bytes from.
+	 * @throws MemoryRangeException if the file and memory size do not match.
+	 * @throws java.io.IOException  if the file read fails.
+	 */
+	public void loadFromFile(File file) throws MemoryRangeException, IOException
+	{
+		if (file.canRead())
+		{
+			long fileSize = file.length();
 
-    }
+			if (fileSize > mem.length)
+			{
+				throw new MemoryRangeException("File will not fit in available memory.");
+			}
+			else
+			{
+				int i = 0;
+				FileInputStream fis = new FileInputStream(file);
+				BufferedInputStream bis = new BufferedInputStream(fis);
+				DataInputStream dis = new DataInputStream(bis);
+				while (dis.available() != 0)
+				{
+					mem[i++] = dis.readUnsignedByte();
+				}
+			}
+		}
+		else
+		{
+			throw new IOException("Cannot open file " + file);
+		}
 
-    public int read(int address) throws MemoryAccessException {
-        return this.mem[address];
-    }
+	}
 
-    public void fill(int val) {
-        Arrays.fill(this.mem, val);
-    }
+	public int read(int address) throws MemoryAccessException
+	{
+		return this.mem[address];
+	}
 
-    public String toString() {
-        return "Memory: " + getMemoryRange().toString();
-    }
+	public void fill(int val)
+	{
+		Arrays.fill(this.mem, val);
+	}
 
-    public int[] getDmaAccess() {
-        return mem;
-    }
+	public String toString()
+	{
+		return "Memory: " + getMemoryRange().toString();
+	}
+
+	public int[] getDmaAccess()
+	{
+		return mem;
+	}
 }

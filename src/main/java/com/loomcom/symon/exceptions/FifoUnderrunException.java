@@ -26,8 +26,10 @@ package com.loomcom.symon.exceptions;
 /**
  * Indicates that a FIFO has underrun.
  */
-public class FifoUnderrunException extends SymonException {
-  public FifoUnderrunException(String msg) {
-    super(msg);
-  }
+public class FifoUnderrunException extends SymonException
+{
+	public FifoUnderrunException(String msg)
+	{
+		super(msg);
+	}
 }

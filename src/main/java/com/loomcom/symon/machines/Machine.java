@@ -30,23 +30,24 @@ import com.loomcom.symon.devices.Memory;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
 
-public interface Machine {
-    
-    public Bus getBus();
-    
-    public Cpu getCpu();
-    
-    public Memory getRam();
-    
-    public Memory getRom();
-    
-    public void setRom(Memory rom) throws MemoryRangeException;
-    
-    public int getRomBase();
-    
-    public int getRomSize();
-    
-    public int getMemorySize();
+public interface Machine
+{
 
-    String getName();
+	public Bus getBus();
+
+	public Cpu getCpu();
+
+	public Memory getRam();
+
+	public Memory getRom();
+
+	public void setRom(Memory rom) throws MemoryRangeException;
+
+	public int getRomBase();
+
+	public int getRomSize();
+
+	public int getMemorySize();
+
+	String getName();
 }
