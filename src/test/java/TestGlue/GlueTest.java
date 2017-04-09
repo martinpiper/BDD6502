@@ -59,7 +59,7 @@ public class GlueTest
 
 		glue.i_load_labels("src/test/resources/test.lbl");
 
-		for (int j = 0 ; j < 10 ; j++)
+		for (int j = 0; j < 10; j++)
 		{
 			System.out.println(j);
 			for (int i = 0; i < 100; i++)
