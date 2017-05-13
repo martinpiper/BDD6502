@@ -1,4 +1,4 @@
-import cucumber.api.cli.Main;
+import com.replicanet.cukesplus.Main;
 
 public class TestRunner
 {
