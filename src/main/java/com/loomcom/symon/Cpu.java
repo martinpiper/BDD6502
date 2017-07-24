@@ -76,6 +76,18 @@ public class Cpu implements InstructionTable
 	/* start time of op execution, needed for speed simulation */
 	private long opBeginTime;
 
+	private int clockCycles = 0;
+
+	public void resetClockCycles()
+	{
+		clockCycles = 0;
+	}
+
+	public int getClockCycles()
+	{
+		return clockCycles;
+	}
+
 	/**
 	 * Construct a new CPU.
 	 */
@@ -193,6 +205,8 @@ public class Cpu implements InstructionTable
 
 		// Decode the instruction and operands
 		state.instSize = Cpu.instructionSizes[state.ir];
+		int clockSteps = Cpu.instructionClocks[state.ir];
+		clockCycles += clockSteps;
 		for (int i = 0; i < state.instSize - 1; i++)
 		{
 			state.args[i] = bus.read(state.pc);

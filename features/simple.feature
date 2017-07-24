@@ -18,7 +18,9 @@ Feature: Simple 6502 code test
       | 256 - 3 |
     And I write memory at $c000 with 12
     And I setup a 16 byte stack slide
+    When I reset the cycle count
     When I execute the procedure at $400 for no more than 3 instructions
+    Then I expect the cycle count to be no more than 14 cycles
     Then I expect to see $d020 equal 1
     And I expect to see $409 equal 1
     And I expect to see $40f equal 7

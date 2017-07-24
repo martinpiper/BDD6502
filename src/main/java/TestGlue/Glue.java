@@ -242,7 +242,11 @@ public class Glue
 			assertThat(++numInstructions, is(lessThanOrEqualTo(maxInstructions)));
 		}
 
-		output = String.format("Executed procedure (%s) for %d instructions", arg1, numInstructions);
+		output = String.format("Executed procedure (%s) for %d instructions. Total cycle count %d", arg1, numInstructions , machine.getCpu().getClockCycles());
+
+		// MPi: TODO: Output debug syntax that matches the number of instructions/cycles
+		// MPi: TODO: Generate a execution profile report, in terms of cycles, that can read the ACME generated PDB file and map back to the source code
+
 		scenario.write(output);
 //		System.out.println(output);
 	}
@@ -529,5 +533,17 @@ public class Glue
 		int val = valueToInt(arg2);
 		String sval = Integer.toString(val);
 		labelMap.put(arg1, sval);
+	}
+
+	@When("^I reset the cycle count$")
+	public void iResetTheCycleCount() throws Throwable
+	{
+		machine.getCpu().resetClockCycles();
+	}
+
+	@Then("^I expect the cycle count to be no more than (.+) cycles$")
+	public void iExpectTheCycleCountToBeNoMoreThanCycles(String arg0) throws Throwable
+	{
+		assertThat(machine.getCpu().getClockCycles() , is(lessThanOrEqualTo(valueToInt(arg0))));
 	}
 }
