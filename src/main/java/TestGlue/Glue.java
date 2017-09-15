@@ -544,6 +544,8 @@ public class Glue
 	@Then("^I expect the cycle count to be no more than (.+) cycles$")
 	public void iExpectTheCycleCountToBeNoMoreThanCycles(String arg0) throws Throwable
 	{
-		assertThat(machine.getCpu().getClockCycles() , is(lessThanOrEqualTo(valueToInt(arg0))));
+		int iarg0 = valueToInt(arg0);
+		scenario.write(String.format("Checking cycles %d with %s delta %d percent %f%%\n", machine.getCpu().getClockCycles() , arg0 , machine.getCpu().getClockCycles() - iarg0 , 100.0f * machine.getCpu().getClockCycles() / iarg0));
+		assertThat(machine.getCpu().getClockCycles() , is(lessThanOrEqualTo(iarg0)));
 	}
 }
