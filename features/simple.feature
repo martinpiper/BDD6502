@@ -5,6 +5,9 @@ Feature: Simple 6502 code test
   This ensures the BDD6502 library is included and initialised properly.
 
   Scenario: Simple code test
+    Then assert that "($c100 - $c080) <= 160" is true
+    Then assert that "($c100 - $c080) <= 60" is false
+
     Given I have a simple 6502 system
     And I start writing memory at $400
     And I write the following hex bytes
@@ -29,8 +32,6 @@ Feature: Simple 6502 code test
     And I expect to see $c101 equal 12
     And I expect to see $c102 equal 192
     And I expect to see $c103 equal 253
-
-
 
   Scenario: Demonstrate the 6502 simulator state is preserved between scenarios
     # The previous scenario's state is preserved here so test it again

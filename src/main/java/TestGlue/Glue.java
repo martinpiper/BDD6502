@@ -127,6 +127,14 @@ public class Glue
 		functions += "stN = 128;";
 		Object temp = engine.eval(functions + valueIn);
 		String t = temp.toString();
+		if (t.compareToIgnoreCase("true") == 0)
+		{
+			return 1;
+		}
+		else if (t.compareToIgnoreCase("false") == 0)
+		{
+			return 0;
+		}
 		Integer i = null;
 		try
 		{
@@ -547,5 +555,17 @@ public class Glue
 		int iarg0 = valueToInt(arg0);
 		scenario.write(String.format("Checking cycles %d with %s delta %d percent %f%%\n", machine.getCpu().getClockCycles() , arg0 , machine.getCpu().getClockCycles() - iarg0 , 100.0f * machine.getCpu().getClockCycles() / iarg0));
 		assertThat(machine.getCpu().getClockCycles() , is(lessThanOrEqualTo(iarg0)));
+	}
+
+	@Then("^assert that \"([^\"]*)\" is true$")
+	public void assert_that_true(String arg1) throws Throwable
+	{
+		assertThat(valueToInt(arg1) , is(equalTo(1)));
+	}
+
+	@Then("^assert that \"([^\"]*)\" is false$")
+	public void assert_that_false(String arg1) throws Throwable
+	{
+		assertThat(valueToInt(arg1) , is(equalTo(0)));
 	}
 }
