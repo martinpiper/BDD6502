@@ -32,11 +32,10 @@ import java.util.Arrays;
 public class Memory extends Device
 {
 
-	private boolean readOnly;
-	private int[] mem;
-
 	/* Initialize all locations to 0x00 (BRK) */
 	private static final int DEFAULT_FILL = 0x00;
+	private boolean readOnly;
+	private int[] mem;
 
 	public Memory(int startAddress, int endAddress, boolean readOnly)
 			throws MemoryRangeException

@@ -8,17 +8,17 @@ Feature: Simple 6502 code test
     Then assert that "($c100 - $c080) <= 160" is true
     Then assert that "($c100 - $c080) <= 60" is false
 
-    Given I have a simple 6502 system
+    Given I have a simple overclocked 6502 system
     And I start writing memory at $400
     And I write the following hex bytes
-        | 78 ee 20 d0 60 4c 01 04 |
-        | 00 01 02 03 04 05 06 07 |
+      | 78 ee 20 d0 60 4c 01 04 |
+      | 00 01 02 03 04 05 06 07 |
     And I start writing memory at $c100
     And I write the following bytes
-      | 49152 + 12 |
+      | 49152 + 12      |
       | low(49152 + 12) |
-      | hi(49152 + 12) |
-      | 256 - 3 |
+      | hi(49152 + 12)  |
+      | 256 - 3         |
     And I write memory at $c000 with 12
     And I setup a 16 byte stack slide
     When I reset the cycle count
@@ -42,12 +42,9 @@ Feature: Simple 6502 code test
     Then I expect to see $c000 equal $ff
 
 
-
   Scenario: Demonstrate evaluation of parameters
     When I write memory at $c000 + 12 - 3 with 12 + 7
     Then I expect to see 49161 equal 19
-
-
 
 
   Scenario: Demonstrate hex dump of specific memory
