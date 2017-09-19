@@ -1,5 +1,6 @@
 package TestGlue;
 
+import com.loomcom.symon.Cpu;
 import com.loomcom.symon.devices.Memory;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
@@ -24,6 +25,17 @@ import static org.hamcrest.Matchers.*;
 
 public class Glue
 {
+	static private Glue glue = null;
+	static private Machine machine = null;
+	static private int writingAddress = 0;
+	static private TreeMap labelMap = new TreeMap();
+	static private TreeMap<Integer, String> reverseLabelMap = new TreeMap<Integer, String>();
+	static private Map<String, Integer> calculationMap = new TreeMap<String, Integer>();
+	static private boolean traceOveride = false;
+	Scenario scenario = null;
+	ScriptEngineManager manager = new ScriptEngineManager();
+	ScriptEngine engine = manager.getEngineByName("JavaScript");
+
 	public static Machine getMachine()
 	{
 		return machine;
@@ -34,21 +46,41 @@ public class Glue
 		return glue;
 	}
 
-	static private Glue glue = null;
-	static private Machine machine = null;
-	static private int writingAddress = 0;
-	static private TreeMap labelMap = new TreeMap();
-	static private Map<String, Integer> calculationMap = new TreeMap<String, Integer>();
-	Scenario scenario = null;
-
-	ScriptEngineManager manager = new ScriptEngineManager();
-	ScriptEngine engine = manager.getEngineByName("JavaScript");
-
 	@Before
 	public void BeforeHook(Scenario scenario)
 	{
 		glue = this;
 		this.scenario = scenario;
+	}
+
+	public int valueToIntFast(String valueIn) throws ScriptException
+	{
+		String origValueIn = valueIn.trim();
+		Object found = labelMap.get(origValueIn);
+		if (null != found)
+		{
+			origValueIn = (String) found;
+		}
+		if (origValueIn.charAt(0) == '$')
+		{
+			Integer ivalue = Integer.parseInt(origValueIn.substring(1), 16);
+			return ivalue.intValue();
+		}
+		if (origValueIn.charAt(0) == '%')
+		{
+			Integer ivalue = Integer.parseInt(origValueIn.substring(1), 2);
+			return ivalue.intValue();
+		}
+		try
+		{
+			Integer ivalue = Integer.parseInt(origValueIn, 10);
+			return ivalue.intValue();
+		}
+		catch (Exception e)
+		{
+			throw new ScriptException("Fast fail " + origValueIn);
+		}
+
 	}
 
 	public int valueToInt(String valueIn) throws ScriptException
@@ -57,6 +89,11 @@ public class Glue
 		{
 			return -1;
 		}
+		if ((valueIn.contains("+") == false) && (valueIn.contains("}") == false) && (valueIn.contains("{") == false) && (valueIn.contains(")") == false) && (valueIn.contains("(") == false) && (valueIn.contains("-") == false) && (valueIn.contains("st") == false) && (valueIn.contains("*") == false) && (valueIn.contains("/") == false))
+		{
+			return valueToIntFast(valueIn);
+		}
+
 		String origValueIn = valueIn;
 		Integer cachedRet = calculationMap.get(origValueIn);
 		if (null != cachedRet)
@@ -156,6 +193,14 @@ public class Glue
 		machine.getCpu().reset();
 	}
 
+	@Given("^I have a simple overclocked 6502 system$")
+	public void i_have_a_simple_overclocked_6502_system() throws Throwable
+	{
+		machine = new SimpleMachine();
+		machine.getCpu().reset();
+		machine.getCpu().setOverclock();
+	}
+
 	@Given("^I fill memory with (.+)$")
 	public void i_fill_memory_with(String arg1) throws Throwable
 	{
@@ -211,6 +256,115 @@ public class Glue
 		}
 	}
 
+	@Given("^That does fail on BRK$")
+	public void that_does_fail_on_brk() throws Throwable
+	{
+		machine.getCpu().setFailOnBreak();
+	}
+
+	@Given("^That does exit on BRK$")
+	public void that_does_exit_on_brk() throws Throwable
+	{
+		machine.getCpu().setExitOnBreak();
+	}
+
+	@Given("^I enable trace$")
+	public void i_enable_trace() throws Throwable
+	{
+		traceOveride = true;
+	}
+
+	@Given("^I disable trace$")
+	public void i_disable_trace() throws Throwable
+	{
+		traceOveride = false;
+	}
+
+	public void internalCPUStep(boolean displayTrace) throws Throwable
+	{
+		Integer addr = new Integer(machine.getCpu().getCpuState().pc);
+
+		machine.getCpu().step();
+		if (displayTrace)
+		{
+			Object label = reverseLabelMap.get(addr);
+			if (label != null)
+			{
+				scenario.write(label + ":");
+			}
+			scenario.write(machine.getCpu().getCpuState().toTraceEvent());
+		}
+		if (machine.getCpu().getFailOnBreak() == true)
+		{
+			if (machine.getCpu().getExtraStatus() == Cpu.Extra_BRK)
+			{
+				throw new Exception("BRK Hit @" + machine.getCpu().getProgramCounter());
+			}
+		}
+		if ((machine.getCpu().getExtraStatus() & Cpu.Extra_ATest) == Cpu.Extra_ATest)
+		{
+			throw new Exception("A has changed @" + machine.getCpu().getProgramCounter());
+		}
+		if ((machine.getCpu().getExtraStatus() & Cpu.Extra_XTest) == Cpu.Extra_XTest)
+		{
+			throw new Exception("X has changed @" + machine.getCpu().getProgramCounter());
+		}
+		if ((machine.getCpu().getExtraStatus() & Cpu.Extra_YTest) == Cpu.Extra_YTest)
+		{
+			throw new Exception("Y has changed @" + machine.getCpu().getProgramCounter());
+		}
+	}
+
+	public int getNBytesValueAt(int addr, int count) throws Throwable
+	{
+		int ret = 0;
+		int mul = 1;
+		for (int j = 0; j < count; ++j)
+		{
+			ret += machine.getBus().read(addr + j) * mul;
+			mul *= 256;
+		}
+		return ret;
+	}
+
+	public void executeProcedureAtUntilMemEquals(String arg1, String arg2, String arg3) throws Throwable
+	{
+		checkScenario();
+
+		String output = String.format("Execute procedure (%s) until (%s) is (%s)", arg1, arg2, arg3);
+		scenario.write(output);
+
+		boolean displayTrace = traceOveride;
+		String trace = System.getProperty("bdd6502.trace");
+		if (null != trace && trace.indexOf("true") != -1)
+		{
+			displayTrace = true;
+		}
+
+		if (!arg1.isEmpty())
+		{
+			machine.getCpu().setProgramCounter(valueToInt(arg1));
+		}
+
+		int addrToCheck = valueToInt(arg2);
+		int valueToCheckFor = valueToInt(arg3);
+		int numBytes = 1;
+		if (valueToCheckFor > 0xFFFF)
+		{
+			numBytes++;
+		}
+		if (valueToCheckFor > 0xFF)
+		{
+			numBytes++;
+		}
+
+		machine.getCpu().initRegisterTestStackIfNeeded();
+		while (getNBytesValueAt(addrToCheck, numBytes) != valueToCheckFor)
+		{
+			internalCPUStep(displayTrace);
+		}
+	}
+
 	public void executeProcedureAtForNoMoreThanInstructionsUntilPC(String arg1, String arg2, String arg3) throws Throwable
 	{
 		checkScenario();
@@ -219,7 +373,7 @@ public class Glue
 		scenario.write(output);
 //		System.out.println(output);
 
-		boolean displayTrace = false;
+		boolean displayTrace = traceOveride;
 		String trace = System.getProperty("bdd6502.trace");
 		if (null != trace && trace.indexOf("true") != -1)
 		{
@@ -235,6 +389,8 @@ public class Glue
 		int numInstructions = 0;
 		int untilPC = valueToInt(arg3);
 
+		machine.getCpu().initRegisterTestStackIfNeeded();
+
 		// Pushing lots of 0 onto the stack will eventually return to address 1
 		while (machine.getCpu().getProgramCounter() > 1)
 		{
@@ -242,19 +398,11 @@ public class Glue
 			{
 				break;
 			}
-			machine.getCpu().step();
-			if (displayTrace)
-			{
-				scenario.write(machine.getCpu().getCpuState().toTraceEvent());
-			}
+			internalCPUStep(displayTrace);
 			assertThat(++numInstructions, is(lessThanOrEqualTo(maxInstructions)));
 		}
 
-		output = String.format("Executed procedure (%s) for %d instructions. Total cycle count %d", arg1, numInstructions , machine.getCpu().getClockCycles());
-
-		// MPi: TODO: Output debug syntax that matches the number of instructions/cycles
-		// MPi: TODO: Generate a execution profile report, in terms of cycles, that can read the ACME generated PDB file and map back to the source code
-
+		output = String.format("Executed procedure (%s) for %d instructions", arg1, numInstructions);
 		scenario.write(output);
 //		System.out.println(output);
 	}
@@ -290,10 +438,35 @@ public class Glue
 		executeProcedureAtForNoMoreThanInstructionsUntilPC("", arg1, arg2);
 	}
 
+	@When("^Until (.+) = (.+) execute from (.+)$")
+	public void until_equals_execute_from(String arg1, String arg2, String arg3) throws Throwable
+	{
+		machine.getCpu().setStackPointer(0xff);
+		executeProcedureAtUntilMemEquals(arg3, arg1, arg2);
+	}
+
+	@When("^I continue executing until (.+) = (.+)$")
+	public void i_continue_executing_until(String arg1, String arg2) throws Throwable
+	{
+		executeProcedureAtUntilMemEquals("", arg1, arg2);
+	}
+
 	@Then("^I expect to see (.+) equal (.+)$")
 	public void i_expect_to_see_equal(String arg1, String arg2) throws Throwable
 	{
 		assertThat(machine.getBus().read(valueToInt(arg1)), is(equalTo(valueToInt(arg2))));
+	}
+
+	@Then("^I expect to see (.+) less than (.+)$")
+	public void i_expect_to_see_less_than(String arg1, String arg2) throws Throwable
+	{
+		assertThat(machine.getBus().read(valueToInt(arg1)), is(lessThan(valueToInt(arg2))));
+	}
+
+	@Then("^I expect to see (.+) greater than (.+)$")
+	public void i_expect_to_see_greater_than(String arg1, String arg2) throws Throwable
+	{
+		assertThat(machine.getBus().read(valueToInt(arg1)), is(greaterThan(valueToInt(arg2))));
 	}
 
 	@Then("^I expect to see (.+) contain (.+)$")
@@ -341,6 +514,24 @@ public class Glue
 
 		regValue = getRegValue(arg1);
 		assertThat(regValue, is(equalTo(valueToInt(arg2))));
+	}
+
+	@Then("^I expect register (.+) to be less than (.+)$")
+	public void i_expect_register_to_be_less_than(String arg1, String arg2) throws Throwable
+	{
+		int regValue = 0;
+
+		regValue = getRegValue(arg1);
+		assertThat(regValue, is(lessThan(valueToInt(arg2))));
+	}
+
+	@Then("^I expect register (.+) to be greater than (.+)$")
+	public void i_expect_register_to_be_greater_than(String arg1, String arg2) throws Throwable
+	{
+		int regValue = 0;
+
+		regValue = getRegValue(arg1);
+		assertThat(regValue, is(greaterThan(valueToInt(arg2))));
 	}
 
 	@Then("^I expect register (.+) contain (.+)$")
@@ -440,6 +631,19 @@ public class Glue
 		}
 	}
 
+	@Given("^I load bin \"(.*?)\" at (.+)$")
+	public void i_load_bin_at(String arg1, String arg2) throws Throwable
+	{
+		FileInputStream in = null;
+		in = new FileInputStream(arg1);
+		int addr = valueToInt(arg2);
+		int c;
+		while ((c = in.read()) != -1)
+		{
+			machine.getBus().write(addr++, c);
+		}
+	}
+
 	@Given("^I load labels \"(.*?)\"$")
 	public void i_load_labels(String arg1) throws Throwable
 	{
@@ -458,6 +662,14 @@ public class Glue
 				splits[0] = "_" + splits[0];
 			}
 			labelMap.put(splits[0], splits2[0]);
+			try
+			{
+				reverseLabelMap.put(new Integer(valueToInt(splits2[0])), splits[0]);
+			}
+			catch (Exception e)
+			{
+				// Ignore
+			}
 		}
 		br.close();
 	}
@@ -541,6 +753,92 @@ public class Glue
 		int val = valueToInt(arg2);
 		String sval = Integer.toString(val);
 		labelMap.put(arg1, sval);
+		reverseLabelMap.put(new Integer(sval), arg1);
+	}
+
+	@Then("^Joystick (\\d+) is (NONE|U|D|L|R|UL|UR|DL|DR|FIRE|UFIRE|ULFIRE|URFIRE|DFIRE|DLFIRE|DRFIRE|LFIRE|RFIRE)$")
+	public void joystick_X_is_DIR(int arg1, String arg2) throws Throwable
+	{
+		assertThat(arg1, is(lessThan(3)));
+		assertThat(arg1, is(greaterThan(0)));
+		int destMem = 0xDC00;
+		if (arg1 == 1)
+		{
+			destMem = 0xDC01;
+		}
+		if ("NONE".equals(arg2))
+		{
+			machine.getBus().write(destMem, 255);
+		}
+		else if ("U".equals(arg2))
+		{
+			machine.getBus().write(destMem, 254);
+		}
+		else if ("D".equals(arg2))
+		{
+			machine.getBus().write(destMem, 253);
+		}
+		else if ("L".equals(arg2))
+		{
+			machine.getBus().write(destMem, 251);
+		}
+		else if ("R".equals(arg2))
+		{
+			machine.getBus().write(destMem, 247);
+		}
+		else if ("UL".equals(arg2))
+		{
+			machine.getBus().write(destMem, 250);
+		}
+		else if ("UR".equals(arg2))
+		{
+			machine.getBus().write(destMem, 246);
+		}
+		else if ("DL".equals(arg2))
+		{
+			machine.getBus().write(destMem, 249);
+		}
+		else if ("DR".equals(arg2))
+		{
+			machine.getBus().write(destMem, 245);
+		}
+
+		if ("FIRE".equals(arg2))
+		{
+			machine.getBus().write(destMem, 239);
+		}
+		else if ("UFIRE".equals(arg2))
+		{
+			machine.getBus().write(destMem, 238);
+		}
+		else if ("DFIRE".equals(arg2))
+		{
+			machine.getBus().write(destMem, 237);
+		}
+		else if ("LFIRE".equals(arg2))
+		{
+			machine.getBus().write(destMem, 235);
+		}
+		else if ("RFIRE".equals(arg2))
+		{
+			machine.getBus().write(destMem, 231);
+		}
+		else if ("ULFIRE".equals(arg2))
+		{
+			machine.getBus().write(destMem, 234);
+		}
+		else if ("URFIRE".equals(arg2))
+		{
+			machine.getBus().write(destMem, 230);
+		}
+		else if ("DLFIRE".equals(arg2))
+		{
+			machine.getBus().write(destMem, 233);
+		}
+		else if ("DRFIRE".equals(arg2))
+		{
+			machine.getBus().write(destMem, 229);
+		}
 	}
 
 	@When("^I reset the cycle count$")
@@ -553,19 +851,19 @@ public class Glue
 	public void iExpectTheCycleCountToBeNoMoreThanCycles(String arg0) throws Throwable
 	{
 		int iarg0 = valueToInt(arg0);
-		scenario.write(String.format("Checking cycles %d with %s delta %d percent %f%%\n", machine.getCpu().getClockCycles() , arg0 , machine.getCpu().getClockCycles() - iarg0 , 100.0f * machine.getCpu().getClockCycles() / iarg0));
-		assertThat(machine.getCpu().getClockCycles() , is(lessThanOrEqualTo(iarg0)));
+		scenario.write(String.format("Checking cycles %d with %s delta %d percent %f%%\n", machine.getCpu().getClockCycles(), arg0, machine.getCpu().getClockCycles() - iarg0, 100.0f * machine.getCpu().getClockCycles() / iarg0));
+		assertThat(machine.getCpu().getClockCycles(), is(lessThanOrEqualTo(iarg0)));
 	}
 
 	@Then("^assert that \"([^\"]*)\" is true$")
 	public void assert_that_true(String arg1) throws Throwable
 	{
-		assertThat(valueToInt(arg1) , is(equalTo(1)));
+		assertThat(valueToInt(arg1), is(equalTo(1)));
 	}
 
 	@Then("^assert that \"([^\"]*)\" is false$")
 	public void assert_that_false(String arg1) throws Throwable
 	{
-		assertThat(valueToInt(arg1) , is(equalTo(0)));
+		assertThat(valueToInt(arg1), is(equalTo(0)));
 	}
 }

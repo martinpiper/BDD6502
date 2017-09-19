@@ -26,6 +26,9 @@ package com.loomcom.symon;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.util.HexUtil;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 /**
  * This class provides a simulation of the MOS 6502 CPU's state machine.
  * A simple interface allows this 6502 to read and write to a simulated bus,
@@ -44,6 +47,11 @@ public class Cpu implements InstructionTable
 	public static final int P_OVERFLOW = 0x40;
 	public static final int P_NEGATIVE = 0x80;
 
+	public static final int Extra_XTest = 0x01;
+	public static final int Extra_YTest = 0x02;
+	public static final int Extra_ATest = 0x04;
+	public static final int Extra_BRK = 0xFF;
+
 	// NMI vector
 	public static final int NMI_VECTOR_L = 0xfffa;
 	public static final int NMI_VECTOR_H = 0xfffb;
@@ -53,16 +61,12 @@ public class Cpu implements InstructionTable
 	// IRQ vector
 	public static final int IRQ_VECTOR_L = 0xfffe;
 	public static final int IRQ_VECTOR_H = 0xffff;
-
-	/* Simulated behavior */
-	private static CpuBehavior behavior;
-
-	/* The Bus */
-	private Bus bus;
-
 	/* The CPU state */
 	private static final CpuState state = new CpuState();
-
+	/* Simulated behavior */
+	private static CpuBehavior behavior;
+	/* The Bus */
+	private Bus bus;
 	/* Scratch space for addressing mode and effective address
 	 * calculations */
 	private int irAddressMode; // Bits 3-5 of IR:  [ | | |X|X|X| | ]
@@ -76,17 +80,15 @@ public class Cpu implements InstructionTable
 	/* start time of op execution, needed for speed simulation */
 	private long opBeginTime;
 
+	private int extraStatus;
+	private boolean failOnBreak;
+	private boolean exitOnBreak;
+	private boolean overclock;
+	private boolean dontPopTestStackNextRTS;
+
 	private int clockCycles = 0;
-
-	public void resetClockCycles()
-	{
-		clockCycles = 0;
-	}
-
-	public int getClockCycles()
-	{
-		return clockCycles;
-	}
+	private Deque<RegisterStackSet> testStack;
+	private Deque<Boolean> testStackNeedToPop;
 
 	/**
 	 * Construct a new CPU.
@@ -99,14 +101,23 @@ public class Cpu implements InstructionTable
 	public Cpu(CpuBehavior behavior)
 	{
 		this.behavior = behavior;
+		failOnBreak = false;
+		exitOnBreak = false;
+		overclock = false;
+		dontPopTestStackNextRTS = false;
+		testStackNeedToPop = new LinkedList<Boolean>();
+		testStack = new LinkedList<RegisterStackSet>();
+		testStackNeedToPop.addFirst(Boolean.FALSE);
 	}
 
-	/**
-	 * Set the bus reference for this CPU.
-	 */
-	public void setBus(Bus bus)
+	public void resetClockCycles()
 	{
-		this.bus = bus;
+		clockCycles = 0;
+	}
+
+	public int getClockCycles()
+	{
+		return clockCycles;
 	}
 
 	/**
@@ -117,14 +128,22 @@ public class Cpu implements InstructionTable
 		return bus;
 	}
 
-	public void setBehavior(CpuBehavior behavior)
+	/**
+	 * Set the bus reference for this CPU.
+	 */
+	public void setBus(Bus bus)
 	{
-		this.behavior = behavior;
+		this.bus = bus;
 	}
 
 	public CpuBehavior getBehavior()
 	{
 		return behavior;
+	}
+
+	public void setBehavior(CpuBehavior behavior)
+	{
+		this.behavior = behavior;
 	}
 
 	/**
@@ -133,7 +152,7 @@ public class Cpu implements InstructionTable
 	public void reset() throws MemoryAccessException
 	{
 		/* TODO: In reality, the stack pointer could be anywhere
-           on the stack after reset. This non-deterministic behavior might be
+		   on the stack after reset. This non-deterministic behavior might be
            worth while to simulate. */
 		state.sp = 0xff;
 
@@ -164,6 +183,57 @@ public class Cpu implements InstructionTable
 		state.a = 0;
 		state.x = 0;
 		state.y = 0;
+
+		extraStatus = 0;
+		overclock = false;
+	}
+
+	public void setFailOnBreak()
+	{
+		failOnBreak = true;
+	}
+
+	public void clearFailOnBreak()
+	{
+		failOnBreak = false;
+	}
+
+	public void setExitOnBreak()
+	{
+		exitOnBreak = true;
+	}
+
+	public void clearExitOnBreak()
+	{
+		exitOnBreak = false;
+	}
+
+	public boolean getFailOnBreak()
+	{
+		return failOnBreak;
+	}
+
+	public boolean getExitOnBreak()
+	{
+		return exitOnBreak;
+	}
+
+	public int getExtraStatus()
+	{
+		return extraStatus;
+	}
+
+	public void setOverclock()
+	{
+		overclock = true;
+	}
+
+	public void initRegisterTestStackIfNeeded()
+	{
+		if (testStackNeedToPop.size() == 0)
+		{
+			testStackNeedToPop.push(false);
+		}
 	}
 
 	public void step(int num) throws MemoryAccessException
@@ -297,9 +367,32 @@ public class Cpu implements InstructionTable
 
 			/** Single Byte Instructions; Implied and Relative **/
 			case 0x00: // BRK - Force Interrupt - Implied
-				if (!getIrqDisableFlag())
+				if (failOnBreak)
+				{
+					extraStatus = Extra_BRK;
+				}
+				else if (exitOnBreak)
+				{
+					state.pc = 0;
+				}
+				else if (!getIrqDisableFlag())
 				{
 					handleIrq(state.pc + 1);
+				}
+				break;
+			case 0x02: // PAT - Push A for Test
+				if (testStackNeedToPop.peekFirst() == false)
+				{
+					RegisterStackSet set = new RegisterStackSet();
+					set.a = state.a;
+					testStack.addFirst(set);
+					testStackNeedToPop.removeFirst();
+					testStackNeedToPop.addFirst(true);
+				}
+				else
+				{
+					RegisterStackSet set = testStack.peekFirst();
+					set.a = state.a;
 				}
 				break;
 			case 0x08: // PHP - Push Processor Status - Implied
@@ -312,6 +405,21 @@ public class Cpu implements InstructionTable
 					state.pc = relAddress(state.args[0]);
 				}
 				break;
+			case 0x12: // PXT - Push X for Test
+				if (testStackNeedToPop.peekFirst() == false)
+				{
+					RegisterStackSet set = new RegisterStackSet();
+					set.x = state.x;
+					testStack.addFirst(set);
+					testStackNeedToPop.removeFirst();
+					testStackNeedToPop.addFirst(Boolean.TRUE);
+				}
+				else
+				{
+					RegisterStackSet set = testStack.peekFirst();
+					set.x = state.x;
+				}
+				break;
 			case 0x18: // CLC - Clear Carry Flag - Implied
 				clearCarryFlag();
 				break;
@@ -319,6 +427,22 @@ public class Cpu implements InstructionTable
 				stackPush((state.pc - 1 >> 8) & 0xff); // PC high byte
 				stackPush(state.pc - 1 & 0xff);        // PC low byte
 				state.pc = address(state.args[0], state.args[1]);
+				testStackNeedToPop.addFirst(Boolean.FALSE);
+				break;
+			case 0x22: // PYT - Push Y for Test
+				if (testStackNeedToPop.peekFirst() == false)
+				{
+					RegisterStackSet set = new RegisterStackSet();
+					set.y = state.y;
+					testStack.addFirst(set);
+					testStackNeedToPop.removeFirst();
+					testStackNeedToPop.addFirst(Boolean.TRUE);
+				}
+				else
+				{
+					RegisterStackSet set = testStack.peekFirst();
+					set.y = state.y;
+				}
 				break;
 			case 0x28: // PLP - Pull Processor Status - Implied
 				setProcessorStatus(stackPop());
@@ -329,6 +453,15 @@ public class Cpu implements InstructionTable
 					state.pc = relAddress(state.args[0]);
 				}
 				break;
+			case 0x32: //TTA - Test Test A
+			{
+				RegisterStackSet set = testStack.peekFirst();
+				if (set.a != state.a)
+				{
+					extraStatus = Extra_ATest;
+				}
+			}
+			break;
 			case 0x38: // SEC - Set Carry Flag - Implied
 				setCarryFlag();
 				break;
@@ -338,6 +471,15 @@ public class Cpu implements InstructionTable
 				hi = stackPop();
 				setProgramCounter(address(lo, hi));
 				break;
+			case 0x42: //TTX - Test Test X
+			{
+				RegisterStackSet set = testStack.peekFirst();
+				if (set.x != state.x)
+				{
+					extraStatus = Extra_XTest;
+				}
+			}
+			break;
 			case 0x48: // PHA - Push Accumulator - Implied
 				stackPush(state.a);
 				break;
@@ -347,6 +489,15 @@ public class Cpu implements InstructionTable
 					state.pc = relAddress(state.args[0]);
 				}
 				break;
+			case 0x52: //TTY - Test Test Y
+			{
+				RegisterStackSet set = testStack.peekFirst();
+				if (set.y != state.y)
+				{
+					extraStatus = Extra_YTest;
+				}
+			}
+			break;
 			case 0x58: // CLI - Clear Interrupt Disable - Implied
 				clearIrqDisableFlag();
 				break;
@@ -354,6 +505,18 @@ public class Cpu implements InstructionTable
 				lo = stackPop();
 				hi = stackPop();
 				setProgramCounter((address(lo, hi) + 1) & 0xffff);
+				if (testStackNeedToPop.isEmpty() == false && dontPopTestStackNextRTS == false)
+				{
+					if (testStackNeedToPop.peekFirst() == true)
+					{
+						testStack.removeFirst();
+					}
+					testStackNeedToPop.removeFirst();
+				}
+				dontPopTestStackNextRTS = false;
+				break;
+			case 0x62:
+				dontPopTestStackNextRTS = true;
 				break;
 			case 0x68: // PLA - Pull Accumulator - Implied
 				state.a = stackPop();
@@ -1024,19 +1187,19 @@ public class Cpu implements InstructionTable
 	}
 
 	/**
-	 * @return 1 if the carry flag is set, 0 if it is clear.
-	 */
-	public int getCarryBit()
-	{
-		return (state.carryFlag ? 1 : 0);
-	}
-
-	/**
 	 * @param carryFlag the carry flag to set
 	 */
 	public void setCarryFlag(boolean carryFlag)
 	{
 		state.carryFlag = carryFlag;
+	}
+
+	/**
+	 * @return 1 if the carry flag is set, 0 if it is clear.
+	 */
+	public int getCarryBit()
+	{
+		return (state.carryFlag ? 1 : 0);
 	}
 
 	/**
@@ -1104,7 +1267,6 @@ public class Cpu implements InstructionTable
 	{
 		state.irqDisableFlag = false;
 	}
-
 
 	/**
 	 * @return the decimal mode flag
@@ -1257,6 +1419,36 @@ public class Cpu implements InstructionTable
 		return state.ir;
 	}
 
+	public String getAccumulatorStatus()
+	{
+		return "$" + HexUtil.byteToHex(state.a);
+	}
+
+	public String getXRegisterStatus()
+	{
+		return "$" + HexUtil.byteToHex(state.x);
+	}
+
+	public String getYRegisterStatus()
+	{
+		return "$" + HexUtil.byteToHex(state.y);
+	}
+
+	public String getProgramCounterStatus()
+	{
+		return "$" + HexUtil.wordToHex(state.pc);
+	}
+
+	public String getStackPointerStatus()
+	{
+		return "$" + HexUtil.byteToHex(state.sp);
+	}
+
+	public int getProcessorStatus()
+	{
+		return state.getStatusFlag();
+	}
+
 	/**
 	 * @value The value of the Process Status Register bits to be set.
 	 */
@@ -1326,36 +1518,6 @@ public class Cpu implements InstructionTable
 		}
 	}
 
-	public String getAccumulatorStatus()
-	{
-		return "$" + HexUtil.byteToHex(state.a);
-	}
-
-	public String getXRegisterStatus()
-	{
-		return "$" + HexUtil.byteToHex(state.x);
-	}
-
-	public String getYRegisterStatus()
-	{
-		return "$" + HexUtil.byteToHex(state.y);
-	}
-
-	public String getProgramCounterStatus()
-	{
-		return "$" + HexUtil.wordToHex(state.pc);
-	}
-
-	public String getStackPointerStatus()
-	{
-		return "$" + HexUtil.byteToHex(state.sp);
-	}
-
-	public int getProcessorStatus()
-	{
-		return state.getStatusFlag();
-	}
-
 	/**
 	 * Simulate transition from logic-high to logic-low on the INT line.
 	 */
@@ -1406,7 +1568,6 @@ public class Cpu implements InstructionTable
 			--state.sp;
 		}
 	}
-
 
 	/**
 	 * Pre-increment the stack pointer, and return the top of the stack.
@@ -1506,6 +1667,11 @@ public class Cpu implements InstructionTable
 	 */
 	private void delayLoop(int opcode)
 	{
+		if (overclock == true)
+		{
+			return; // don't delay
+		}
+
 		int clockSteps = Cpu.instructionClocks[0xff & opcode];
 		// Just a precaution. This could be better.
 		if (clockSteps == 0)
@@ -1519,7 +1685,6 @@ public class Cpu implements InstructionTable
 			now = System.nanoTime();
 		}
 	}
-
 
 	/**
 	 * A compact, struct-like representation of CPU state.
@@ -1622,7 +1787,7 @@ public class Cpu implements InstructionTable
 			sb.append("Y:" + HexUtil.byteToHex(y) + " ");
 			sb.append("F:" + HexUtil.byteToHex(getStatusFlag()) + " ");
 			sb.append("S:1" + HexUtil.byteToHex(sp) + " ");
-			sb.append(getProcessorStatusString() + "\n");
+			sb.append(getProcessorStatusString());
 			return sb.toString();
 		}
 
@@ -1766,5 +1931,13 @@ public class Cpu implements InstructionTable
 			sb.append("]");
 			return sb.toString();
 		}
+	}
+
+	protected class RegisterStackSet
+	{
+		public static final int kNotSet = 0xFFFF;
+		public int a = kNotSet;
+		public int x = kNotSet;
+		public int y = kNotSet;
 	}
 }
