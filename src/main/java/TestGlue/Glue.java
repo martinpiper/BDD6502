@@ -292,7 +292,62 @@ public class Glue
 			{
 				scenario.write(label + ":");
 			}
-			scenario.write(machine.getCpu().getCpuState().toTraceEvent());
+			String traceLine = machine.getCpu().getCpuState().toTraceEvent();
+
+			String decorated = traceLine.substring(16 , 30);
+			boolean changed = false;
+			for (int i = 0 ; i < decorated.length() ; i++)
+			{
+				int pos = decorated.indexOf("$" , i);
+				if (pos == -1)
+				{
+					break;
+				}
+				try
+				{
+					String hex = decorated.substring(pos+1 , pos + 5);
+
+					int testAddr = Integer.parseInt(hex , 16);
+
+					String foundLabel = reverseLabelMap.get(testAddr);
+					if (!StringUtils.isEmpty(foundLabel))
+					{
+						decorated = decorated.substring(0,pos) + foundLabel + decorated.substring(pos+5);
+						i += foundLabel.length();
+						changed = true;
+						continue;
+					}
+				}
+				catch (Exception e)
+				{
+				}
+
+				try
+				{
+					String hex = decorated.substring(pos+1 , pos + 3);
+
+					int testAddr = Integer.parseInt(hex , 16);
+
+					String foundLabel = reverseLabelMap.get(testAddr);
+					if (!StringUtils.isEmpty(foundLabel))
+					{
+						decorated = decorated.substring(0,pos) + foundLabel + decorated.substring(pos+5);
+						i += foundLabel.length();
+						changed = true;
+						continue;
+					}
+				}
+				catch (Exception e)
+				{
+				}
+			}
+
+			if (changed)
+			{
+				traceLine += "    " + decorated;
+			}
+
+			scenario.write(traceLine);
 		}
 		if (machine.getCpu().getFailOnBreak() == true)
 		{
