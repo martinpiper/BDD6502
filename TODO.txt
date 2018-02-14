@@ -1,0 +1,8 @@
+; TODO items
+
+* Branch instructions followed by a $xx value must take into account the current PC and calculate the correct destination address before encriching the disassembly output
+
+
+
+* Branch instructions must take into account the current ST and indicate of they will be taken, perhaps by highlighting the destination address
+
