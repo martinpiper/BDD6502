@@ -31,6 +31,10 @@ public class Glue
 	static private TreeMap labelMap = new TreeMap();
 	static private TreeMap<Integer, String> reverseLabelMap = new TreeMap<Integer, String>();
 	static private Map<String, Integer> calculationMap = new TreeMap<String, Integer>();
+	static private Map<Integer, Integer> traceMapByte = new TreeMap<Integer, Integer>();
+	static private Map<Integer, Integer> traceMapWord = new TreeMap<Integer, Integer>();
+	static private Map<Integer, Integer> traceMapByteUpdate = new TreeMap<Integer, Integer>();
+	static private Map<Integer, Integer> traceMapWordUpdate = new TreeMap<Integer, Integer>();
 	static private boolean traceOveride = false;
 	Scenario scenario = null;
 	ScriptEngineManager manager = new ScriptEngineManager();
@@ -191,6 +195,8 @@ public class Glue
 	{
 		machine = new SimpleMachine();
 		machine.getCpu().reset();
+		traceMapByte.clear();
+		traceMapWord.clear();
 	}
 
 	@Given("^I have a simple overclocked 6502 system$")
@@ -199,6 +205,8 @@ public class Glue
 		machine = new SimpleMachine();
 		machine.getCpu().reset();
 		machine.getCpu().setOverclock();
+		traceMapByte.clear();
+		traceMapWord.clear();
 	}
 
 	@Given("^I fill memory with (.+)$")
@@ -347,8 +355,60 @@ public class Glue
 				traceLine += "    " + decorated;
 			}
 
+
 			scenario.write(traceLine);
 		}
+		traceMapByteUpdate.clear();
+		traceMapByte.forEach((k,v)->{
+			try
+			{
+				int newValue = machine.getRam().read(k);
+				if (newValue != v)
+				{
+					String foundLabel = reverseLabelMap.get(k);
+					if (StringUtils.isEmpty(foundLabel))
+					{
+						foundLabel = String.format("$%04x",k);
+					}
+
+					scenario.write(foundLabel + " set to " + String.format("%3d @ PC:$%04X", newValue, machine.getCpu().getProgramCounter()));
+					traceMapByteUpdate.put(k,newValue);
+				}
+			}
+			catch (Exception e)
+			{
+			}
+		});
+
+		traceMapByteUpdate.forEach((k,v)->{
+			traceMapByte.put(k,v);
+		});
+
+		traceMapWordUpdate.clear();
+		traceMapWord.forEach((k,v)->{
+			try
+			{
+				int newValue = machine.getRam().read(k) + (256 * machine.getRam().read(k+1));
+				if (newValue != v)
+				{
+					String foundLabel = reverseLabelMap.get(k);
+					if (StringUtils.isEmpty(foundLabel))
+					{
+						foundLabel = String.format("$%04x",k);
+					}
+					scenario.write(foundLabel + " set to " + String.format("$%04X @ PC:$%04X", newValue, machine.getCpu().getProgramCounter()));
+					traceMapWordUpdate.put(k,newValue);
+				}
+			}
+			catch (Exception e)
+			{
+			}
+		});
+
+		traceMapWordUpdate.forEach((k,v)->{
+			traceMapWord.put(k,v);
+		});
+
 		if (machine.getCpu().getFailOnBreak() == true)
 		{
 			if (machine.getCpu().getExtraStatus() == Cpu.Extra_BRK)
@@ -920,5 +980,53 @@ public class Glue
 	public void assert_that_false(String arg1) throws Throwable
 	{
 		assertThat(valueToInt(arg1), is(equalTo(0)));
+	}
+
+	@Given("^I enable trace (byte|word) at (.+)$")
+	public void iEnableTraceByte_Word_atMem(String mode, String location) throws Throwable
+	{
+		int address = valueToInt(location);
+		int currentValue = 0;
+		if(mode.equals("byte"))
+		{
+			currentValue = machine.getRam().read(address);
+			traceMapByte.put(address,currentValue);
+			scenario.write("initial value of trace " + location + " = " + currentValue);
+		}
+		else if (mode.equals("word"))
+		{
+			currentValue = machine.getRam().read(address) + (256 * machine.getRam().read(address+1));
+
+			traceMapWord.put(address,currentValue);
+			scenario.write("initial value of trace " + location + " = " + String.format("$%04X", currentValue));
+		}
+
+	}
+
+	@Given("^I disable trace (byte|word) at (.+)$")
+	public void iDisableTraceByte_Word_atMem(String mode, String location) throws Throwable
+	{
+		int address = valueToInt(location);
+		if(mode.equals("byte"))
+		{
+			traceMapByte.remove(address);
+		}
+		else if (mode.equals("word"))
+		{
+			traceMapWord.remove(address);
+		}
+	}
+
+	@Then("^I compare memory range (.+)-(.+) to (.+)$")
+	public void iCompareMemoryRangeTo(String start, String end, String other) throws Throwable
+	{
+		int startAddr = valueToInt(start);
+		int endAddr = valueToInt(end);
+		int compareAddr = valueToInt(other);
+		Memory ram = machine.getRam();
+		for( int addr = startAddr ; addr <= endAddr ; addr++,compareAddr++)
+		{
+			assertThat(ram.read(addr), is(equalTo(ram.read(compareAddr))));
+		}
 	}
 }
