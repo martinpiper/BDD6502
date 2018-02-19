@@ -36,6 +36,8 @@ public class Glue
 	static private Map<Integer, Integer> traceMapByteUpdate = new TreeMap<Integer, Integer>();
 	static private Map<Integer, Integer> traceMapWordUpdate = new TreeMap<Integer, Integer>();
 	static private boolean traceOveride = false;
+	static private boolean indentTrace = false;
+	static private int lastStackValue = -1;
 	Scenario scenario = null;
 	ScriptEngineManager manager = new ScriptEngineManager();
 	ScriptEngine engine = manager.getEngineByName("JavaScript");
@@ -197,6 +199,7 @@ public class Glue
 		machine.getCpu().reset();
 		traceMapByte.clear();
 		traceMapWord.clear();
+		lastStackValue = -1;
 	}
 
 	@Given("^I have a simple overclocked 6502 system$")
@@ -207,6 +210,7 @@ public class Glue
 		machine.getCpu().setOverclock();
 		traceMapByte.clear();
 		traceMapWord.clear();
+		lastStackValue = -1;
 	}
 
 	@Given("^I fill memory with (.+)$")
@@ -280,12 +284,24 @@ public class Glue
 	public void i_enable_trace() throws Throwable
 	{
 		traceOveride = true;
+		indentTrace = false;
+		lastStackValue = -1;
+	}
+
+	@Given("^I enable trace with indent$")
+	public void i_enable_trace_with_indent() throws Throwable
+	{
+		traceOveride = true;
+		indentTrace = true;
+		lastStackValue = -1;
 	}
 
 	@Given("^I disable trace$")
 	public void i_disable_trace() throws Throwable
 	{
 		traceOveride = false;
+		indentTrace = false;
+		lastStackValue = -1;
 	}
 
 	public void internalCPUStep(boolean displayTrace) throws Throwable
@@ -355,6 +371,19 @@ public class Glue
 				traceLine += "    " + decorated;
 			}
 
+			if (indentTrace)
+			{
+				int indent = 0xff - machine.getCpu().getStackPointer();
+				if(lastStackValue == -1)
+				{
+					lastStackValue = indent;
+				}
+				for(int i = 0 ; i < lastStackValue ; ++i)
+				{
+					traceLine = " " + traceLine;
+				}
+				lastStackValue = indent;
+			}
 
 			scenario.write(traceLine);
 		}
