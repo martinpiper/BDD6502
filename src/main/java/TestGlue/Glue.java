@@ -2,6 +2,7 @@ package TestGlue;
 
 import com.loomcom.symon.Cpu;
 import com.loomcom.symon.devices.Memory;
+import com.loomcom.symon.devices.PrintIODevice;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 import cucumber.api.Scenario;
@@ -1057,5 +1058,12 @@ public class Glue
 		{
 			assertThat(ram.read(addr), is(equalTo(ram.read(compareAddr))));
 		}
+	}
+
+	@Given("^I install PrintIODevice at (.+)$")
+	public void iInstallPrintIODeviceAt(String location) throws Throwable
+	{
+		int startAddr = valueToInt(location);
+		machine.getBus().addDevice(new PrintIODevice(startAddr,startAddr+0xFF,"IOPrint",scenario));
 	}
 }
