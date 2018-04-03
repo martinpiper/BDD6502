@@ -1,8 +1,8 @@
-Feature: Assemble 6502 code test
+Feature: PrintIO Device code test
 
-  This assembles simple code and checks the expected results after executing it
+  This checks the PrintIO device is working
 
-  Scenario: Simple code test
+  Scenario: Simple code test for PrintIO
     Given I have a simple 6502 system
     Given I install PrintIODevice at $d700
     And I create file "test.a" with

@@ -6,3 +6,6 @@
 
 * Branch instructions must take into account the current ST and indicate of they will be taken, perhaps by highlighting the destination address
 
+
+
+* Try to convert the PC to the nearest function label+XXX value by reading the debugger PDB output
