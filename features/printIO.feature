@@ -27,6 +27,13 @@ loop
 	cpx #textEnd-textStart
 	bne loop
 	sta $d705 ; flush
+    ldx #0
+loop2
+	lda textStart,x
+	sta $D700
+	inx
+	cpx #textEnd-textStart-1
+	bne loop2
     rts
 textStart
 !tx "hello world"
@@ -36,4 +43,5 @@ textEnd
     And I run the command line: ../C64/acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
     And I load prg "test.prg"
     And I load labels "test.lbl"
-   When I execute the procedure at 1024 for no more than 1000 instructions
+   When I execute the procedure at 1024 for no more than 5000 instructions
+  And I expect IODevice buffer to equal "hello world" 

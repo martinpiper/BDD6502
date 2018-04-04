@@ -1,6 +1,7 @@
 package TestGlue;
 
 import com.loomcom.symon.Cpu;
+import com.loomcom.symon.devices.Device;
 import com.loomcom.symon.devices.Memory;
 import com.loomcom.symon.devices.PrintIODevice;
 import com.loomcom.symon.machines.Machine;
@@ -1065,5 +1066,31 @@ public class Glue
 	{
 		int startAddr = valueToInt(location);
 		machine.getBus().addDevice(new PrintIODevice(startAddr,startAddr+0xFF,"IOPrint",scenario));
+	}
+
+	@Then("^I expect IODevice buffer to equal \"(.+)\"$")
+	public void iExpectIODeviceBufferToEqual(String value) throws Throwable
+	{
+	 	SortedSet<Device> devices = machine.getBus().getDevices();
+		assertThat(devices.isEmpty(), is(equalTo(false)));
+		Iterator<Device> it = devices.iterator();
+		boolean found = false;
+		while(it.hasNext())
+		{
+			Device d = it.next();
+			if( d.getName() == "IOPrint")
+			{
+				found = true;
+				String buffer = d.toString();
+				assertThat(value, is(equalTo(buffer)));
+				break;
+			}
+		}
+		if(found == false)
+		{
+			scenario.write("Unable to find IOPrint device");
+			assertThat(0,is(not(1))); // force a fail
+		}
+
 	}
 }

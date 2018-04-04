@@ -90,6 +90,7 @@ public class Cpu implements InstructionTable
 	private Deque<RegisterStackSet> testStack;
 	private Deque<Boolean> testStackNeedToPop;
 
+
 	/**
 	 * Construct a new CPU.
 	 */
@@ -249,6 +250,11 @@ public class Cpu implements InstructionTable
 	 */
 	public void step() throws MemoryAccessException
 	{
+		state.readByte = 0;
+		state.readAddress = 0;
+		state.traceShouldShowReadByte = false;
+		state.traceShouldShowReadAddress = false;
+
 		opBeginTime = System.nanoTime();
 		// Store the address from which the IR was read, for debugging
 		state.lastPc = state.pc;
@@ -314,6 +320,7 @@ public class Cpu implements InstructionTable
 						{
 							effectiveAddress = zpxAddress(state.args[0]);
 						}
+						state.traceShouldShowReadAddress = true;
 						break;
 					case 7: // Absolute,X / Absolute,Y
 						if (state.ir == 0xbe)
@@ -324,6 +331,7 @@ public class Cpu implements InstructionTable
 						{
 							effectiveAddress = xAddress(state.args[0], state.args[1]);
 						}
+						state.traceShouldShowReadAddress = true;
 						break;
 				}
 				break;
@@ -333,6 +341,8 @@ public class Cpu implements InstructionTable
 					case 0: // (Zero Page,X)
 						tmp = (state.args[0] + state.x) & 0xff;
 						effectiveAddress = address(bus.read(tmp), bus.read(tmp + 1));
+						state.traceShouldShowReadAddress = true;
+						state.traceShouldShowReadByte = true;
 						break;
 					case 1: // Zero Page
 						effectiveAddress = state.args[0];
@@ -347,18 +357,29 @@ public class Cpu implements InstructionTable
 						tmp = address(bus.read(state.args[0]),
 								bus.read((state.args[0] + 1) & 0xff));
 						effectiveAddress = (tmp + state.y) & 0xffff;
+						state.traceShouldShowReadAddress = true;
+						state.traceShouldShowReadByte = true;
 						break;
 					case 5: // Zero Page,X
 						effectiveAddress = zpxAddress(state.args[0]);
+						state.traceShouldShowReadAddress = true;
 						break;
 					case 6: // Absolute, Y
 						effectiveAddress = yAddress(state.args[0], state.args[1]);
+						state.traceShouldShowReadAddress = true;
 						break;
 					case 7: // Absolute, X
 						effectiveAddress = xAddress(state.args[0], state.args[1]);
+						state.traceShouldShowReadAddress = true;
 						break;
 				}
 				break;
+		}
+
+		state.readAddress = effectiveAddress;
+		if( state.readAddress >= 0 )
+		{
+			state.readByte = bus.read(effectiveAddress);
 		}
 
 		// Execute
@@ -654,6 +675,7 @@ public class Cpu implements InstructionTable
 			case 0x1d: // Absolute,X
 				state.a |= bus.read(effectiveAddress);
 				setArithmeticFlags(state.a);
+				state.traceShouldShowReadByte = true;
 				break;
 
 
@@ -669,6 +691,7 @@ public class Cpu implements InstructionTable
 				tmp = asl(bus.read(effectiveAddress));
 				bus.write(effectiveAddress, tmp);
 				setArithmeticFlags(tmp);
+				state.traceShouldShowReadByte = true;
 				break;
 
 
@@ -679,6 +702,7 @@ public class Cpu implements InstructionTable
 				setZeroFlag((state.a & tmp) == 0);
 				setNegativeFlag((tmp & 0x80) != 0);
 				setOverflowFlag((tmp & 0x40) != 0);
+				state.traceShouldShowReadByte = true;
 				break;
 
 
@@ -696,6 +720,7 @@ public class Cpu implements InstructionTable
 			case 0x3d: // Absolute,X
 				state.a &= bus.read(effectiveAddress);
 				setArithmeticFlags(state.a);
+				state.traceShouldShowReadByte = true;
 				break;
 
 
@@ -711,6 +736,7 @@ public class Cpu implements InstructionTable
 				tmp = rol(bus.read(effectiveAddress));
 				bus.write(effectiveAddress, tmp);
 				setArithmeticFlags(tmp);
+				state.traceShouldShowReadByte = true;
 				break;
 
 
@@ -728,6 +754,7 @@ public class Cpu implements InstructionTable
 			case 0x5d: // Absolute,X
 				state.a ^= bus.read(effectiveAddress);
 				setArithmeticFlags(state.a);
+				state.traceShouldShowReadByte = true;
 				break;
 
 
@@ -743,6 +770,7 @@ public class Cpu implements InstructionTable
 				tmp = lsr(bus.read(effectiveAddress));
 				bus.write(effectiveAddress, tmp);
 				setArithmeticFlags(tmp);
+				state.traceShouldShowReadByte = true;
 				break;
 
 
@@ -772,6 +800,7 @@ public class Cpu implements InstructionTable
 				{
 					state.a = adc(state.a, bus.read(effectiveAddress));
 				}
+				state.traceShouldShowReadByte = true;
 				break;
 
 
@@ -787,6 +816,7 @@ public class Cpu implements InstructionTable
 				tmp = ror(bus.read(effectiveAddress));
 				bus.write(effectiveAddress, tmp);
 				setArithmeticFlags(tmp);
+				state.traceShouldShowReadByte = true;
 				break;
 
 
@@ -870,6 +900,7 @@ public class Cpu implements InstructionTable
 			case 0xc4: // Zero Page
 			case 0xcc: // Absolute
 				cmp(state.y, bus.read(effectiveAddress));
+				state.traceShouldShowReadByte = true;
 				break;
 
 
@@ -885,6 +916,7 @@ public class Cpu implements InstructionTable
 			case 0xd9: // Absolute,Y
 			case 0xdd: // Absolute,X
 				cmp(state.a, bus.read(effectiveAddress));
+				state.traceShouldShowReadByte = true;
 				break;
 
 
@@ -906,6 +938,7 @@ public class Cpu implements InstructionTable
 			case 0xe4: // Zero Page
 			case 0xec: // Absolute
 				cmp(state.x, bus.read(effectiveAddress));
+				state.traceShouldShowReadByte = true;
 				break;
 
 
@@ -935,6 +968,7 @@ public class Cpu implements InstructionTable
 				{
 					state.a = sbc(state.a, bus.read(effectiveAddress));
 				}
+				state.traceShouldShowReadByte = true;
 				break;
 
 
@@ -1732,6 +1766,11 @@ public class Cpu implements InstructionTable
 		public boolean overflowFlag;
 		public long stepCounter = 0L;
 
+		/* Trace status */
+		public int readByte = 0;
+		public int readAddress = 0;
+		public boolean traceShouldShowReadByte = false;
+		public boolean traceShouldShowReadAddress = false;
 		/**
 		 * Create an empty CPU State.
 		 */
@@ -1781,7 +1820,17 @@ public class Cpu implements InstructionTable
 			String opcode = disassembleOp();
 			StringBuilder sb = new StringBuilder(getInstructionByteStatus());
 			sb.append("  ");
-			sb.append(String.format("%-14s", opcode));
+			sb.append(String.format("%-13s", opcode));
+			String lookups = "  ";
+			if (traceShouldShowReadByte)
+			{
+				lookups += ("[$"+HexUtil.byteToHex(readByte)+"]");
+			}
+			if (traceShouldShowReadAddress)
+			{
+				lookups += "@$"+HexUtil.wordToHex(readAddress);
+			}
+			sb.append(String.format("%-14s", lookups));
 			sb.append("A:" + HexUtil.byteToHex(a) + " ");
 			sb.append("X:" + HexUtil.byteToHex(x) + " ");
 			sb.append("Y:" + HexUtil.byteToHex(y) + " ");

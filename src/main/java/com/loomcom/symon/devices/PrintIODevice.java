@@ -40,6 +40,9 @@ public class PrintIODevice extends Device
                 mScenario.write(mBuffer + "\n");
                 mBuffer = "";
                 break;
+            case 6: //clear buffer
+                mBuffer ="";
+                break;
             default:
                 break;
         }
@@ -52,6 +55,6 @@ public class PrintIODevice extends Device
 
     @Override
     public String toString() {
-        return null;
+        return mBuffer;
     }
 }
