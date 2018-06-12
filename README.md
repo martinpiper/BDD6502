@@ -18,7 +18,7 @@ The step "* I fill memory with <value>" will fill memory with a different value.
 
 To run the test code execute the command line:
 
-	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --monochrome --plugin pretty --plugin html:target/cucumber --plugin json:target/cucumber.json --glue TestGlue features
+	java --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.text=ALL-UNNAMED --add-opens java.desktop/java.awt.font=ALL-UNNAMED -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --monochrome --plugin pretty --plugin html:target/cucumber --plugin json:target/cucumber.json --glue TestGlue features
 
 If the Java property "bdd6502.trace" is set to be "true" then the simulator state is dumped for each cycle.
 This can be set on the command java line before the -jar option: jar -Dbdd6502.trace=true
