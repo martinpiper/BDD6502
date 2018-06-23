@@ -871,6 +871,7 @@ public class Glue
 			hexOutput += " : " + section;
 		}
 
+		System.setProperty("test.BDD6502.lastHexDump" , hexOutput);
 		scenario.write(hexOutput);
 //		System.out.print(hexOutput);
 	}
@@ -1092,5 +1093,20 @@ public class Glue
 			assertThat(0,is(not(1))); // force a fail
 		}
 
+	}
+
+	@When("^property \"([^\"]*)\" is set to string \"([^\"]*)\"$")
+	public void property_is_set_to(String arg1, String arg2) throws Throwable {
+		System.setProperty(arg1 , arg2);
+	}
+
+	@Then("^property \"([^\"]*)\" must contain string \"([^\"]*)\"$")
+	public void property_must_contain(String arg1, String arg2) throws Throwable {
+		assertThat(System.getProperty(arg1) , containsString(arg2));
+	}
+
+	@Then("^property \"([^\"]*)\" must contain string ignoring whitespace \"([^\"]*)\"$")
+	public void property_must_contain_ignoring_whitespace(String arg1, String arg2) throws Throwable {
+		assertThat(System.getProperty(arg1).replaceAll("\\s+","") , containsString(arg2.replaceAll("\\s+","")));
 	}
 }

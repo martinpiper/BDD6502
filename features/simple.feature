@@ -49,6 +49,8 @@ Feature: Simple 6502 code test
 
   Scenario: Demonstrate hex dump of specific memory
     When I hex dump memory between $c000 and $c020
+    Then property "test.BDD6502.lastHexDump" must contain string "c000: ff ff ff ff ff ff ff ff  ff 13 ff ff ff ff ff ff"
+    Then property "test.BDD6502.lastHexDump" must contain string ignoring whitespace "c000:ffffffffffffffff ff13ffffffffffff"
     When I hex dump memory between $c080 and $c100
 
 
@@ -80,3 +82,9 @@ Feature: Simple 6502 code test
     Then I expect memory $400+0 to equal memory $400+8+0
     Then I expect memory foo+1 to contain memory foo+8+1
     Then I expect memory $400+0 to exclude memory foo+8+1
+
+
+  Scenario: Check property syntax
+    When property "test.foo" is set to string "bar"
+    Then property "test.foo" must contain string "a"
+    And property "test.foo" must contain string "bar"
