@@ -1,5 +1,20 @@
 ; TODO items
 
+
+* Add cartridge support
+	Read CRT files and store their banks and addresses into a map for easy lookup
+	Add syntax to optionally configure cartridge bank address, whether it is read enabled
+	Add syntax to specify combinatorial logic (use the variable resolution code ) on multiple locations and enable/disable carts banks, kernal/BASIC ROMs etc
+		This can also support bank sizes by mapping cart banks with addresses
+	Obviously more than one rule and multiple ROM binary or CRT files can be specified allowing complex cart bank/ROM arrangements to be created
+	
+	
+	
+* Add support for simulating IRQs and NMIs called via customised entry points and timings.
+	For example FFFE or 0314 entry point can be specified directly
+
+
+
 * Branch instructions followed by a $xx value must take into account the current PC and calculate the correct destination address before encriching the disassembly output
 
 
