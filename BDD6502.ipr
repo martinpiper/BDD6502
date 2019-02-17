@@ -173,7 +173,7 @@
       <module fileurl="file://$PROJECT_DIR$/BDD6502.iml" filepath="$PROJECT_DIR$/BDD6502.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_3" default="false" project-jdk-name="9.0" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_3" default="false" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/target" />
   </component>
   <component name="VcsDirectoryMappings">
