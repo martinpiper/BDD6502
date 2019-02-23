@@ -215,6 +215,12 @@ public class Glue
 		lastStackValue = -1;
 	}
 
+	@Given("^I am using C64 processor port options$")
+	public void i_am_using_C_processor_port_options() throws Throwable {
+		machine.getBus().setProcessorPort();
+	}
+
+
 	@Given("^I fill memory with (.+)$")
 	public void i_fill_memory_with(String arg1) throws Throwable
 	{

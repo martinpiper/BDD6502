@@ -1,2 +1,4 @@
 ; Done items
 
+Added: Given I am using C64 processor port options
+    This stops writes to the IO registers from going to RAM

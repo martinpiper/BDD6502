@@ -45,6 +45,14 @@ public class Bus
 	// The CPU
 	private Cpu cpu;
 
+	private int theProcessorPort;
+
+	private boolean processorPort;
+	public void setProcessorPort()
+	{
+		processorPort = true;
+	}
+
 	// Ordered sets of IO devices, associated with their priority
 	private Map<Integer, SortedSet<Device>> deviceMap;
 
@@ -62,6 +70,8 @@ public class Bus
 		this.deviceMap = new HashMap<Integer, SortedSet<Device>>();
 		this.startAddress = startAddress;
 		this.endAddress = endAddress;
+		processorPort = false;
+		theProcessorPort = 0;
 	}
 
 	public int startAddress()
@@ -194,6 +204,24 @@ public class Bus
 
 	public void write(int address, int value) throws MemoryAccessException
 	{
+		if (processorPort)
+		{
+			if (1 == address)
+			{
+				System.out.println("Processor port Write detected: of " + String.format("$%02X", value));
+				theProcessorPort = value;
+				return;
+			}
+			int pp = theProcessorPort & 0b111;
+			if (0b111 == pp || 0b110 == pp || 0b101 == pp)
+			{
+				if (0xd000 <= address && address <= 0xdfff)
+				{
+					System.out.println("IO Write detected: " + String.format("$%04X", address) + " of " + String.format("$%02X", value));
+					return;
+				}
+			}
+		}
 		Device d = deviceAddressArray[address - this.startAddress];
 		if (d != null)
 		{

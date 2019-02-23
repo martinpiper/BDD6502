@@ -4,24 +4,28 @@ Feature: Does tests to show the extra trace format
 
   Scenario: I have nonsensical trace 
   	Given I have a simple 6502 system
-	    And I create file "test.a" with
-  """
-  *=$400
-  start
-	lda #$00
-	sta $02
-	lda #$50
-	sta $03
-	lda #$80
-	sta $5000
-	lda #$40
-	sta $04
-	ldy #0
-	lda ($02),y
-	and $04
-	sta ($02),y
- 	rts
-  """
+  	Given I am using C64 processor port options
+    And I create file "test.a" with
+      """
+      *=$400
+      start
+        lda #$37
+        sta 1
+        sta $d020
+        lda #$00
+        sta $02
+        lda #$50
+        sta $03
+        lda #$80
+        sta $5000
+        lda #$40
+        sta $04
+        ldy #0
+        lda ($02),y
+        and $04
+        sta ($02),y
+        rts
+      """
 	And I run the command line: ../C64/acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
 	And I load prg "test.prg"
 	And I load labels "test.lbl"
