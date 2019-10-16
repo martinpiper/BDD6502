@@ -1,4 +1,4 @@
-Feature:  Maxchine state test
+Feature:  Machine state test
 
   This tests expected machine state
 
