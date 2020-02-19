@@ -30,6 +30,7 @@ public class Glue
 	static private Glue glue = null;
 	static private Machine machine = null;
 	static private int writingAddress = 0;
+	static private int comparingAddress = 0;
 	static private TreeMap labelMap = new TreeMap();
 	static private TreeMap<Integer, String> reverseLabelMap = new TreeMap<Integer, String>();
 	static private Map<String, Integer> calculationMap = new TreeMap<String, Integer>();
@@ -234,6 +235,12 @@ public class Glue
 		writingAddress = valueToInt(arg1);
 	}
 
+	@When("^I start comparing memory at (.+)$")
+	public void i_start_comparing_memory_at(String arg1) throws Throwable
+	{
+		comparingAddress = valueToInt(arg1);
+	}
+
 	@Given("^I write the following hex bytes$")
 	public void i_write_the_following_hex_bytes(List<String> arg1) throws Throwable
 	{
@@ -251,12 +258,40 @@ public class Glue
 		}
 	}
 
+	@When("^I assert the following hex bytes are the same$")
+	public void i_assert_the_following_hex_bytes_are_the_same(List<String> arg1) throws Throwable
+	{
+		for (String arg : arg1)
+		{
+			String[] values = arg.split(" ");
+			int i;
+			for (i = 0; i < values.length; i++)
+			{
+				if (!values[i].isEmpty())
+				{
+					int readValue = machine.getBus().read(comparingAddress++);
+					int expectedValue = Integer.parseInt(values[i], 16);
+					assertThat(readValue, is(equalTo(expectedValue)));
+				}
+			}
+		}
+	}
+
 	@Given("^I write the following bytes$")
 	public void i_write_the_following_bytes(List<String> arg1) throws Throwable
 	{
 		for (String arg : arg1)
 		{
 			machine.getBus().write(writingAddress++, valueToInt(arg));
+		}
+	}
+
+	@Given("^I assert the following bytes are the same$")
+	public void i_assert_the_following_bytes_are_the_same(List<String> arg1) throws Throwable
+	{
+		for (String arg : arg1)
+		{
+			machine.getBus().write(comparingAddress++, valueToInt(arg));
 		}
 	}
 
