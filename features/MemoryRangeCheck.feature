@@ -1,6 +1,7 @@
 Feature: Memory range checking
 
   Scenario: Memory range check 1
+    Given I have a simple 6502 system
     Given I start writing memory at $e000
     And I write the following hex bytes
       | 00 01 02 03 04 05 06 07 |
