@@ -269,9 +269,10 @@ public class Glue
 			{
 				if (!values[i].isEmpty())
 				{
-					int readValue = machine.getBus().read(comparingAddress++);
+					int readValue = machine.getBus().read(comparingAddress);
 					int expectedValue = Integer.parseInt(values[i], 16);
-					assertThat(readValue, is(equalTo(expectedValue)));
+					assertThat("Address is $" + Integer.toHexString(comparingAddress) , readValue, is(equalTo(expectedValue)));
+					comparingAddress++;
 				}
 			}
 		}
@@ -291,7 +292,10 @@ public class Glue
 	{
 		for (String arg : arg1)
 		{
-			machine.getBus().write(comparingAddress++, valueToInt(arg));
+			int readValue = machine.getBus().read(comparingAddress);
+			int expectedValue = valueToInt(arg);
+			assertThat("Address is $" + Integer.toHexString(comparingAddress) , readValue, is(equalTo(expectedValue)));
+			comparingAddress++;
 		}
 	}
 
