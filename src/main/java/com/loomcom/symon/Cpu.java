@@ -158,7 +158,11 @@ public class Cpu implements InstructionTable
 		state.sp = 0xff;
 
 		// Set the PC to the address stored in the reset vector
-		state.pc = address(bus.read(RST_VECTOR_L), bus.read(RST_VECTOR_H));
+		// In this incarnation we do not want to read RAM due to initialised memory checking
+		// The CPU is "idle" until it is told to execute something
+//		state.pc = address(bus.read(RST_VECTOR_L), bus.read(RST_VECTOR_H));
+		// Instead set it to the bottom of memory
+		state.pc = 0;
 
 		// Clear instruction register.
 		state.ir = 0;
@@ -379,7 +383,7 @@ public class Cpu implements InstructionTable
 		state.readAddress = effectiveAddress;
 		if( state.readAddress >= 0 )
 		{
-			state.readByte = bus.read(effectiveAddress);
+			state.readByte = bus.read(effectiveAddress, false);
 		}
 
 		// Execute

@@ -4,6 +4,8 @@ import com.loomcom.symon.Cpu;
 import com.loomcom.symon.devices.Device;
 import com.loomcom.symon.devices.Memory;
 import com.loomcom.symon.devices.PrintIODevice;
+import com.loomcom.symon.exceptions.MemoryAccessException;
+import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 import cucumber.api.Scenario;
@@ -41,6 +43,7 @@ public class Glue
 	static private boolean traceOveride = false;
 	static private boolean indentTrace = false;
 	static private int lastStackValue = -1;
+	static private boolean enableUnitialisedReadProtection = false;
 	Scenario scenario = null;
 	ScriptEngineManager manager = new ScriptEngineManager();
 	ScriptEngine engine = manager.getEngineByName("JavaScript");
@@ -198,22 +201,25 @@ public class Glue
 	@Given("^I have a simple 6502 system$")
 	public void i_have_a_simple_6502_system() throws Throwable
 	{
-		machine = new SimpleMachine();
-		machine.getCpu().reset();
-		traceMapByte.clear();
-		traceMapWord.clear();
-		lastStackValue = -1;
+		initMachine();
 	}
 
 	@Given("^I have a simple overclocked 6502 system$")
 	public void i_have_a_simple_overclocked_6502_system() throws Throwable
 	{
+		initMachine();
+		machine.getCpu().setOverclock();
+	}
+
+	public void initMachine() throws MemoryRangeException, MemoryAccessException {
 		machine = new SimpleMachine();
 		machine.getCpu().reset();
-		machine.getCpu().setOverclock();
+		// When the "procedure" returns then the 0 address contains an initialised byte of memory
+		machine.getCpu().getBus().write(0, 0);
 		traceMapByte.clear();
 		traceMapWord.clear();
 		lastStackValue = -1;
+		enableUnitialisedReadProtection = false;
 	}
 
 	@Given("^I am using C64 processor port options$")
@@ -227,6 +233,31 @@ public class Glue
 	{
 		Memory mem = machine.getRam();
 		mem.fill(valueToInt(arg1));
+	}
+
+	@When("^I enable unitialised memory read protection$")
+	public void i_enable_unitialised_memory_read_protection() throws Throwable {
+		enableUnitialisedReadProtection = true;
+	}
+
+	@When("^I disable unitialised memory read protection$")
+	public void i_disable_unitialised_memory_read_protection() throws Throwable {
+		enableUnitialisedReadProtection = false;
+	}
+
+	@When("^I reset the unitialised memory read flag$")
+	public void i_reset_unitialised_memory_read_flag() throws Throwable {
+		machine.getRam().resetUnitialisedReadOccured();
+	}
+
+	@Then("^I assert the unitialised memory read flag is set$")
+	public void i_assert_the_unitialised_memory_read_flag_is_set() throws Throwable {
+		assertThat(machine.getRam().isUnitialisedReadOccured() , is(equalTo(true)));
+	}
+
+	@Then("^I assert the unitialised memory read flag is clear$")
+	public void i_assert_the_unitialised_memory_read_flag_is_clear() throws Throwable {
+		assertThat(machine.getRam().isUnitialisedReadOccured() , is(equalTo(false)));
 	}
 
 	@Given("^I start writing memory at (.+)$")
@@ -269,7 +300,7 @@ public class Glue
 			{
 				if (!values[i].isEmpty())
 				{
-					int readValue = machine.getBus().read(comparingAddress);
+					int readValue = machine.getBus().read(comparingAddress,false);
 					int expectedValue = Integer.parseInt(values[i], 16);
 					assertThat("Address is $" + Integer.toHexString(comparingAddress) , readValue, is(equalTo(expectedValue)));
 					comparingAddress++;
@@ -292,7 +323,7 @@ public class Glue
 	{
 		for (String arg : arg1)
 		{
-			int readValue = machine.getBus().read(comparingAddress);
+			int readValue = machine.getBus().read(comparingAddress,false);
 			int expectedValue = valueToInt(arg);
 			assertThat("Address is $" + Integer.toHexString(comparingAddress) , readValue, is(equalTo(expectedValue)));
 			comparingAddress++;
@@ -303,6 +334,12 @@ public class Glue
 	public void i_write_memory_at_with(String arg1, String arg2) throws Throwable
 	{
 		machine.getBus().write(valueToInt(arg1), valueToInt(arg2));
+	}
+
+	@Given("^I push a (.+) byte to the stack$")
+	public void i_push_byte_to_the_stack(String arg1) throws Throwable
+	{
+		machine.getCpu().stackPush(valueToInt(arg1));
 	}
 
 	@Given("^I setup a (.+) byte stack slide$")
@@ -438,7 +475,7 @@ public class Glue
 		traceMapByte.forEach((k,v)->{
 			try
 			{
-				int newValue = machine.getRam().read(k);
+				int newValue = machine.getRam().read(k, false);
 				if (newValue != v)
 				{
 					String foundLabel = reverseLabelMap.get(k);
@@ -464,7 +501,7 @@ public class Glue
 		traceMapWord.forEach((k,v)->{
 			try
 			{
-				int newValue = machine.getRam().read(k) + (256 * machine.getRam().read(k+1));
+				int newValue = machine.getRam().read(k, false) + (256 * machine.getRam().read(k+1, false));
 				if (newValue != v)
 				{
 					String foundLabel = reverseLabelMap.get(k);
@@ -512,7 +549,7 @@ public class Glue
 		int mul = 1;
 		for (int j = 0; j < count; ++j)
 		{
-			ret += machine.getBus().read(addr + j) * mul;
+			ret += machine.getBus().read(addr + j,false) * mul;
 			mul *= 256;
 		}
 		return ret;
@@ -534,6 +571,9 @@ public class Glue
 
 		if (!arg1.isEmpty())
 		{
+			// Set the return address to location 0 if we execute a "procedure"
+			machine.getCpu().stackPush(0xff);
+			machine.getCpu().stackPush(0xff);
 			machine.getCpu().setProgramCounter(valueToInt(arg1));
 		}
 
@@ -553,6 +593,10 @@ public class Glue
 		while (getNBytesValueAt(addrToCheck, numBytes) != valueToCheckFor)
 		{
 			internalCPUStep(displayTrace);
+			if (enableUnitialisedReadProtection && machine.getRam().isUnitialisedReadOccured()) {
+				scenario.write("Unitialised memory read");
+				break;
+			}
 		}
 	}
 
@@ -573,6 +617,9 @@ public class Glue
 
 		if (!arg1.isEmpty())
 		{
+			// Set the return address to location 0 if we execute a "procedure"
+			machine.getCpu().stackPush(0xff);
+			machine.getCpu().stackPush(0xff);
 			machine.getCpu().setProgramCounter(valueToInt(arg1));
 		}
 
@@ -591,6 +638,10 @@ public class Glue
 			}
 			internalCPUStep(displayTrace);
 			assertThat(++numInstructions, is(lessThanOrEqualTo(maxInstructions)));
+			if (enableUnitialisedReadProtection && machine.getRam().isUnitialisedReadOccured()) {
+				scenario.write("Unitialised memory read");
+				break;
+			}
 		}
 
 		output = String.format("Executed procedure (%s) for %d instructions", arg1, numInstructions);
@@ -645,31 +696,31 @@ public class Glue
 	@Then("^I expect to see (.+) equal (.+)$")
 	public void i_expect_to_see_equal(String arg1, String arg2) throws Throwable
 	{
-		assertThat(machine.getBus().read(valueToInt(arg1)), is(equalTo(valueToInt(arg2))));
+		assertThat(machine.getBus().read(valueToInt(arg1),false), is(equalTo(valueToInt(arg2))));
 	}
 
 	@Then("^I expect to see (.+) less than (.+)$")
 	public void i_expect_to_see_less_than(String arg1, String arg2) throws Throwable
 	{
-		assertThat(machine.getBus().read(valueToInt(arg1)), is(lessThan(valueToInt(arg2))));
+		assertThat(machine.getBus().read(valueToInt(arg1),false), is(lessThan(valueToInt(arg2))));
 	}
 
 	@Then("^I expect to see (.+) greater than (.+)$")
 	public void i_expect_to_see_greater_than(String arg1, String arg2) throws Throwable
 	{
-		assertThat(machine.getBus().read(valueToInt(arg1)), is(greaterThan(valueToInt(arg2))));
+		assertThat(machine.getBus().read(valueToInt(arg1),false), is(greaterThan(valueToInt(arg2))));
 	}
 
 	@Then("^I expect to see (.+) contain (.+)$")
 	public void i_expect_to_see_contain(String arg1, String arg2) throws Throwable
 	{
-		assertThat(machine.getBus().read(valueToInt(arg1)) & valueToInt(arg2), is(equalTo(valueToInt(arg2))));
+		assertThat(machine.getBus().read(valueToInt(arg1),false) & valueToInt(arg2), is(equalTo(valueToInt(arg2))));
 	}
 
 	@Then("^I expect to see (.+) exclude (.+)$")
 	public void i_expect_to_see_exclude(String arg1, String arg2) throws Throwable
 	{
-		assertThat(machine.getBus().read(valueToInt(arg1)) & valueToInt(arg2), is(equalTo(0)));
+		assertThat(machine.getBus().read(valueToInt(arg1),false) & valueToInt(arg2), is(equalTo(0)));
 	}
 
 	public int getRegValue(String arg1) throws Exception
@@ -690,6 +741,10 @@ public class Glue
 		else if (arg1.equalsIgnoreCase("st"))
 		{
 			regValue = machine.getCpu().getProcessorStatus() & (128 + 64 + 8 + 4 + 2 + 1);
+		}
+		else if (arg1.equalsIgnoreCase("pc"))
+		{
+			regValue = machine.getCpu().getProgramCounter();
 		}
 		else
 		{
@@ -886,7 +941,7 @@ public class Glue
 				hexOutput += " ";
 			}
 
-			int theByte = machine.getBus().read(addrStart);
+			int theByte = machine.getBus().read(addrStart,false);
 			String hex = String.format("%2s", Integer.toHexString(theByte)).replace(' ', '0');
 
 			if (CharUtils.isAsciiPrintable((char) theByte))
@@ -924,19 +979,19 @@ public class Glue
 	@Then("^I expect memory (.+) to equal memory (.+)$")
 	public void i_expect_to_see_memory_equal_memory(String arg1, String arg2) throws Throwable
 	{
-		assertThat(machine.getBus().read(valueToInt(arg1)), is(equalTo(machine.getBus().read(valueToInt(arg2)))));
+		assertThat(machine.getBus().read(valueToInt(arg1),false), is(equalTo(machine.getBus().read(valueToInt(arg2)))));
 	}
 
 	@Then("^I expect memory (.+) to contain memory (.+)$")
 	public void i_expect_to_see_memory_contain_memory(String arg1, String arg2) throws Throwable
 	{
-		assertThat(machine.getBus().read(valueToInt(arg1)) & machine.getBus().read(valueToInt(arg2)), is(equalTo(machine.getBus().read(valueToInt(arg2)))));
+		assertThat(machine.getBus().read(valueToInt(arg1),false) & machine.getBus().read(valueToInt(arg2),false), is(equalTo(machine.getBus().read(valueToInt(arg2),false))));
 	}
 
 	@Then("^I expect memory (.+) to exclude memory (.+)$")
 	public void i_expect_to_see_memory_exclude_memory(String arg1, String arg2) throws Throwable
 	{
-		assertThat(machine.getBus().read(valueToInt(arg1)) & machine.getBus().read(valueToInt(arg2)), is(equalTo(0)));
+		assertThat(machine.getBus().read(valueToInt(arg1),false) & machine.getBus().read(valueToInt(arg2),false), is(equalTo(0)));
 	}
 
 	@Given("^I set label (.+) equal to (.+)$")
@@ -1066,13 +1121,13 @@ public class Glue
 		int currentValue = 0;
 		if(mode.equals("byte"))
 		{
-			currentValue = machine.getRam().read(address);
+			currentValue = machine.getRam().read(address, false);
 			traceMapByte.put(address,currentValue);
 			scenario.write("initial value of trace " + location + " = " + currentValue);
 		}
 		else if (mode.equals("word"))
 		{
-			currentValue = machine.getRam().read(address) + (256 * machine.getRam().read(address+1));
+			currentValue = machine.getRam().read(address, false) + (256 * machine.getRam().read(address+1, false));
 
 			traceMapWord.put(address,currentValue);
 			scenario.write("initial value of trace " + location + " = " + String.format("$%04X", currentValue));
@@ -1103,7 +1158,7 @@ public class Glue
 		Memory ram = machine.getRam();
 		for( int addr = startAddr ; addr <= endAddr ; addr++,compareAddr++)
 		{
-			assertThat(ram.read(addr), is(equalTo(ram.read(compareAddr))));
+			assertThat(ram.read(addr, false), is(equalTo(ram.read(compareAddr, false))));
 		}
 	}
 

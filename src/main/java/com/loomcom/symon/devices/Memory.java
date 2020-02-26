@@ -36,6 +36,9 @@ public class Memory extends Device
 	private static final int DEFAULT_FILL = 0x00;
 	private boolean readOnly;
 	private int[] mem;
+	private boolean[] memWritten;
+
+	private boolean unitialisedReadOccured;
 
 	public Memory(int startAddress, int endAddress, boolean readOnly)
 			throws MemoryRangeException
@@ -43,7 +46,15 @@ public class Memory extends Device
 		super(startAddress, endAddress, (readOnly ? "RO Memory" : "RW Memory"));
 		this.readOnly = readOnly;
 		this.mem = new int[this.size];
+		this.memWritten = new boolean[this.size];
+		clearAllWrittenFlags();
+		resetUnitialisedReadOccured();
 		this.fill(DEFAULT_FILL);
+	}
+
+	public void clearAllWrittenFlags() {
+		Arrays.fill(this.memWritten, false);
+		unitialisedReadOccured = false;
 	}
 
 	public Memory(int startAddress, int endAddress) throws MemoryRangeException
@@ -73,6 +84,7 @@ public class Memory extends Device
 		else
 		{
 			this.mem[address] = data;
+			this.memWritten[address] = true;
 		}
 	}
 
@@ -101,6 +113,7 @@ public class Memory extends Device
 				DataInputStream dis = new DataInputStream(bis);
 				while (dis.available() != 0)
 				{
+					memWritten[i] = true;
 					mem[i++] = dis.readUnsignedByte();
 				}
 			}
@@ -112,8 +125,11 @@ public class Memory extends Device
 
 	}
 
-	public int read(int address) throws MemoryAccessException
+	public int read(int address, boolean logRead) throws MemoryAccessException
 	{
+		if (logRead && !memWritten[address]) {
+			unitialisedReadOccured = true;
+		}
 		return this.mem[address];
 	}
 
@@ -130,5 +146,13 @@ public class Memory extends Device
 	public int[] getDmaAccess()
 	{
 		return mem;
+	}
+
+	public boolean isUnitialisedReadOccured() {
+		return unitialisedReadOccured;
+	}
+
+	public void resetUnitialisedReadOccured() {
+		this.unitialisedReadOccured = false;
 	}
 }

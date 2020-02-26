@@ -49,7 +49,7 @@ public class PrintIODevice extends Device
     }
 
     @Override
-    public int read(int address) throws MemoryAccessException {
+    public int read(int address, boolean logRead) throws MemoryAccessException {
         return 0;
     }
 
