@@ -44,6 +44,7 @@ public class Glue
 	static private boolean indentTrace = false;
 	static private int lastStackValue = -1;
 	static private boolean enableUnitialisedReadProtection = false;
+	static private boolean enableUnitialisedReadProtectionWithFail = false;
 	Scenario scenario = null;
 	ScriptEngineManager manager = new ScriptEngineManager();
 	ScriptEngine engine = manager.getEngineByName("JavaScript");
@@ -220,6 +221,7 @@ public class Glue
 		traceMapWord.clear();
 		lastStackValue = -1;
 		enableUnitialisedReadProtection = false;
+		enableUnitialisedReadProtectionWithFail = false;
 	}
 
 	@Given("^I am using C64 processor port options$")
@@ -238,6 +240,12 @@ public class Glue
 	@When("^I enable unitialised memory read protection$")
 	public void i_enable_unitialised_memory_read_protection() throws Throwable {
 		enableUnitialisedReadProtection = true;
+	}
+
+	@When("^I enable unitialised memory read protection with immediate fail$")
+	public void i_enable_unitialised_memory_read_protection_with_immediate_fail() throws Throwable {
+		enableUnitialisedReadProtection = true;
+		enableUnitialisedReadProtectionWithFail = true;
 	}
 
 	@When("^I disable unitialised memory read protection$")
@@ -390,84 +398,12 @@ public class Glue
 
 	public void internalCPUStep(boolean displayTrace) throws Throwable
 	{
-		Integer addr = new Integer(machine.getCpu().getCpuState().pc);
+		Integer addr = machine.getCpu().getCpuState().pc;
 
 		machine.getCpu().step();
 		if (displayTrace)
 		{
-			Object label = reverseLabelMap.get(addr);
-			if (label != null)
-			{
-				scenario.write(label + ":");
-			}
-			String traceLine = machine.getCpu().getCpuState().toTraceEvent();
-
-			String decorated = traceLine.substring(16 , 30);
-			boolean changed = false;
-			for (int i = 0 ; i < decorated.length() ; i++)
-			{
-				int pos = decorated.indexOf("$" , i);
-				if (pos == -1)
-				{
-					break;
-				}
-				try
-				{
-					String hex = decorated.substring(pos+1 , pos + 5);
-
-					int testAddr = Integer.parseInt(hex , 16);
-
-					String foundLabel = reverseLabelMap.get(testAddr);
-					if (!StringUtils.isEmpty(foundLabel))
-					{
-						decorated = decorated.substring(0,pos) + foundLabel + decorated.substring(pos+5);
-						i += foundLabel.length();
-						changed = true;
-						continue;
-					}
-				}
-				catch (Exception e)
-				{
-				}
-
-				try
-				{
-					String hex = decorated.substring(pos+1 , pos + 3);
-
-					int testAddr = Integer.parseInt(hex , 16);
-
-					String foundLabel = reverseLabelMap.get(testAddr);
-					if (!StringUtils.isEmpty(foundLabel))
-					{
-						decorated = decorated.substring(0,pos) + foundLabel + decorated.substring(pos+5);
-						i += foundLabel.length();
-						changed = true;
-						continue;
-					}
-				}
-				catch (Exception e)
-				{
-				}
-			}
-
-			if (changed)
-			{
-				traceLine += "    " + decorated;
-			}
-
-			if (indentTrace)
-			{
-				int indent = 0xff - machine.getCpu().getStackPointer();
-				if(lastStackValue == -1)
-				{
-					lastStackValue = indent;
-				}
-				for(int i = 0 ; i < lastStackValue ; ++i)
-				{
-					traceLine = " " + traceLine;
-				}
-				lastStackValue = indent;
-			}
+			String traceLine = getTraceLine(addr);
 
 			scenario.write(traceLine);
 		}
@@ -543,6 +479,83 @@ public class Glue
 		}
 	}
 
+	public String getTraceLine(Integer addr) {
+		Object label = reverseLabelMap.get(addr);
+		if (label != null)
+		{
+			scenario.write(label + ":");
+		}
+		String traceLine = machine.getCpu().getCpuState().toTraceEvent();
+
+		String decorated = traceLine.substring(16 , 30);
+		boolean changed = false;
+		for (int i = 0 ; i < decorated.length() ; i++)
+		{
+			int pos = decorated.indexOf("$" , i);
+			if (pos == -1)
+			{
+				break;
+			}
+			try
+			{
+				String hex = decorated.substring(pos+1 , pos + 5);
+
+				int testAddr = Integer.parseInt(hex , 16);
+
+				String foundLabel = reverseLabelMap.get(testAddr);
+				if (!StringUtils.isEmpty(foundLabel))
+				{
+					decorated = decorated.substring(0,pos) + foundLabel + decorated.substring(pos+5);
+					i += foundLabel.length();
+					changed = true;
+					continue;
+				}
+			}
+			catch (Exception e)
+			{
+			}
+
+			try
+			{
+				String hex = decorated.substring(pos+1 , pos + 3);
+
+				int testAddr = Integer.parseInt(hex , 16);
+
+				String foundLabel = reverseLabelMap.get(testAddr);
+				if (!StringUtils.isEmpty(foundLabel))
+				{
+					decorated = decorated.substring(0,pos) + foundLabel + decorated.substring(pos+5);
+					i += foundLabel.length();
+					changed = true;
+					continue;
+				}
+			}
+			catch (Exception e)
+			{
+			}
+		}
+
+		if (changed)
+		{
+			traceLine += "    " + decorated;
+		}
+
+		if (indentTrace)
+		{
+			int indent = 0xff - machine.getCpu().getStackPointer();
+			if(lastStackValue == -1)
+			{
+				lastStackValue = indent;
+			}
+			for(int i = 0 ; i < lastStackValue ; ++i)
+			{
+				traceLine = " " + traceLine;
+			}
+			lastStackValue = indent;
+		}
+		return traceLine;
+	}
+
 	public int getNBytesValueAt(int addr, int count) throws Throwable
 	{
 		int ret = 0;
@@ -592,9 +605,10 @@ public class Glue
 		machine.getCpu().initRegisterTestStackIfNeeded();
 		while (getNBytesValueAt(addrToCheck, numBytes) != valueToCheckFor)
 		{
+			Integer addr = machine.getCpu().getCpuState().pc;
 			internalCPUStep(displayTrace);
 			if (enableUnitialisedReadProtection && machine.getRam().isUnitialisedReadOccured()) {
-				scenario.write("Unitialised memory read");
+				processUnitialisedMemoryRead(addr);
 				break;
 			}
 		}
@@ -636,10 +650,11 @@ public class Glue
 			{
 				break;
 			}
+			Integer addr = machine.getCpu().getCpuState().pc;
 			internalCPUStep(displayTrace);
 			assertThat(++numInstructions, is(lessThanOrEqualTo(maxInstructions)));
 			if (enableUnitialisedReadProtection && machine.getRam().isUnitialisedReadOccured()) {
-				scenario.write("Unitialised memory read");
+				processUnitialisedMemoryRead(addr);
 				break;
 			}
 		}
@@ -647,6 +662,14 @@ public class Glue
 		output = String.format("Executed procedure (%s) for %d instructions", arg1, numInstructions);
 		scenario.write(output);
 //		System.out.println(output);
+	}
+
+	public void processUnitialisedMemoryRead(Integer addr) throws Exception {
+		String fullDebug = "Unitialised memory read: " + getTraceLine(addr);
+		scenario.write(fullDebug);
+		if (enableUnitialisedReadProtectionWithFail) {
+			throw new MemoryAccessException(fullDebug);
+		}
 	}
 
 	private void checkScenario()

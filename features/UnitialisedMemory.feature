@@ -37,6 +37,8 @@ Feature: Tests unitialised memory syntax
     Then I expect register PC equal 0
 
     When I enable unitialised memory read protection
+    # This will fail the step as soon as it happens
+#    When I enable unitialised memory read protection with immediate fail
     # Needed if there have been previous executions in this 6502 system
     And I reset the unitialised memory read flag
     Then I assert the unitialised memory read flag is clear
