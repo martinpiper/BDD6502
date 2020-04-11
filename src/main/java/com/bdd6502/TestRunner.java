@@ -2,10 +2,80 @@ package com.bdd6502;
 
 import com.replicanet.cukesplus.Main;
 
+import javax.swing.*;
+import javax.swing.plaf.ColorUIResource;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+class QuickDrawPanel extends JPanel {
+	BufferedImage image;
+	Dimension size = new Dimension();
+
+	public QuickDrawPanel() { }
+
+	public QuickDrawPanel(BufferedImage image) {
+		this.image = image;
+		setComponentSize();
+	}
+
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.drawImage(image, 0, 0, this);
+	}
+
+	public Dimension getPreferredSize() {
+		return size;
+	}
+
+	public void setImage(BufferedImage bi) {
+		image = bi;
+		setComponentSize();
+		repaint();
+	}
+
+	private void setComponentSize() {
+		if(image != null) {
+			size.width  = image.getWidth();
+			size.height = image.getHeight();
+			revalidate();  // signal parent/scrollpane
+		}
+	}
+}
+
 public class TestRunner
 {
 	public static void main(String args[]) throws Exception
 	{
+		if (false) {
+			// Testing window drawing in a loop for eventual graphics updates
+			JFrame window = new JFrame();
+			window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			window.setBounds(30, 30, 300, 300);
+			window.setSize(600, 400);
+
+			BufferedImage img = new BufferedImage(384, 276, BufferedImage.TYPE_INT_RGB);
+			JPanel panel = new QuickDrawPanel(img);
+			window.add(panel);
+
+//		window.getGraphics().drawImage(img,0,0, window);
+//		window.repaint();
+
+			int i = 0;
+			window.setVisible(true);
+			while (window.isVisible()) {
+				Graphics2D graphics = img.createGraphics();
+				graphics.setColor(Color.black);
+				graphics.clearRect(0, 0, img.getWidth(), img.getHeight());
+				graphics.setColor(Color.red);
+				graphics.fill(new Rectangle(i, i, 100, 150));
+				i++;
+				graphics.dispose();
+				window.repaint();
+
+				Thread.sleep(10);
+			}
+		}
+
 		if (args.length == 0)
 		{
 			// Use a default command line if it's missing one
