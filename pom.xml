@@ -51,7 +51,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>TestRunner</mainClass>
+                            <mainClass>com.bdd6502.TestRunner</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>
