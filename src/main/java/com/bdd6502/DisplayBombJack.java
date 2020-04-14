@@ -3,11 +3,14 @@ package com.bdd6502;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
 
 public class DisplayBombJack {
 
     JFrame window;
     QuickDrawPanel panel;
+
+    LinkedList<DisplayLayer> layers = new LinkedList<>();
 
     int displayWidth = 384;
     int displayHeight = 276;
@@ -51,5 +54,10 @@ public class DisplayBombJack {
 
     public BufferedImage getImage() {
         return panel.getImage();
+    }
+
+    public void addLayer(DisplayLayer layer) {
+        layer.setDisplay(this);
+        layers.add(layer);
     }
 }
