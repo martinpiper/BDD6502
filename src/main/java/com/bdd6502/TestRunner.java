@@ -16,19 +16,19 @@ public class TestRunner
 			DisplayBombJack displayBombJack = new DisplayBombJack();
 			displayBombJack.InitWindow();
 
-			int i = 0;
+			// Setup a simple palette
+			// White background
+			displayBombJack.writeData(0x9c00,0x01,0xff);
+			displayBombJack.writeData(0x9c01,0x01,0x0f);
+			// Red pixel colour
+			displayBombJack.writeData(0x9c01,0x01,0x0f);
+			displayBombJack.writeData(0x9c02,0x01,0x00);
+
 			while (displayBombJack.isVisible()) {
 
-				BufferedImage img = displayBombJack.getImage();
-				Graphics2D graphics = img.createGraphics();
-				graphics.setColor(Color.black);
-				graphics.clearRect(0, 0, img.getWidth(), img.getHeight());
-				graphics.setColor(Color.red);
-				graphics.fill(new Rectangle(i, i, 100, 150));
-				i++;
-				graphics.dispose();
-				img.setRGB(101,101, Color.green.getRGB());
-
+				for (int i = 0 ; i < 1000; i++) {
+					displayBombJack.calculatePixel();
+				}
 
 				displayBombJack.RepaintWindow();
 

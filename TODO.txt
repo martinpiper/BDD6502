@@ -1,6 +1,7 @@
 ; TODO items
 
 * Add emulated BombJack display
+    https://github.com/martinpiper/BombJack/blob/master/README.md
 
 
 
