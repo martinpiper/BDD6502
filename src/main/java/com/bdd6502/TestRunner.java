@@ -32,10 +32,12 @@ public class TestRunner
 			displayBombJack.writeData(0x9c13,0x01,0x00);
 
 			// Setup a simple character screen
-			displayBombJack.writeData( 0x9040, 0x01, 0x01);
-			displayBombJack.writeData( 0x9440, 0x01, 0x00);
-			displayBombJack.writeData( 0x9041, 0x01, 0x01);
-			displayBombJack.writeData( 0x9441, 0x01, 0x01);
+			for (int i = 0 ; i < 32 ; i+=2) {
+				displayBombJack.writeData(0x9040 + i, 0x01, 0x01);
+				displayBombJack.writeData(0x9440 + i, 0x01, 0x00);
+				displayBombJack.writeData(0x9041 + i, 0x01, 0x01);
+				displayBombJack.writeData(0x9441 + i, 0x01, 0x01);
+			}
 
 			// Add simple character data
 			displayBombJack.writeData(0x2008,0x020,0xff);
