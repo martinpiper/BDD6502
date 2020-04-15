@@ -14,8 +14,12 @@ public class DisplayBombJack {
     LinkedList<DisplayLayer> layers = new LinkedList<>();
 
     int displayWidth = 384;
-    int displayHeight = 276;
-    int busContentionPixels = 0x08;
+    int displayHeight = 264;
+
+    public int getBusContentionPixels() {
+        return 0x08;
+    }
+
     int busContentionPalette = 0;
     int displayX = 0, displayY = 0;
     boolean enablePixels = false;
@@ -71,9 +75,16 @@ public class DisplayBombJack {
         layers.add(layer);
     }
 
+    static boolean addressExActive(int addressEx , int selector) {
+        if ((addressEx & selector) > 0) {
+            return true;
+        }
+        return false;
+    }
+
     public void writeData(int address, int addressEx, int data) {
-        if (addressEx == 0x01 && address >= 0x9c00 && address < 0x9e00) {
-            busContentionPalette = busContentionPixels;
+        if (addressExActive(addressEx , 0x01) && address >= 0x9c00 && address < 0x9e00) {
+            busContentionPalette = getBusContentionPixels();
             int index = (address & 0x1ff) >> 1;
             Color colour = new Color(palette[index]);
             if ((address & 0x01) == 0x01) {
@@ -112,6 +123,9 @@ public class DisplayBombJack {
 
         // Delayed due to pixel latching in the output mixer 8B2 and 7A2
         if (enablePixels) {
+            if (latchedPixel > 0) {
+                latchedPixel = latchedPixel;
+            }
             int realColour = palette[latchedPixel & 0xff];
             if (busContentionPalette > 0) {
                 realColour = getRandomColouredPixel();

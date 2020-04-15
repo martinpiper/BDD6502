@@ -1,10 +1,10 @@
 package com.bdd6502;
 
 public abstract class DisplayLayer {
-    DisplayBombJack theDisplay = null;
+    DisplayBombJack display = null;
 
     public void setDisplay(DisplayBombJack theDisplay) {
-        this.theDisplay = theDisplay;
+        display = theDisplay;
     }
 
     public abstract void writeData(int address, int addressEx, int data);
