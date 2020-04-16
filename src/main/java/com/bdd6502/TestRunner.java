@@ -1,11 +1,15 @@
 package com.bdd6502;
 
 import com.replicanet.cukesplus.Main;
+import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 
 public class TestRunner
@@ -17,32 +21,33 @@ public class TestRunner
 			displayBombJack.addLayer(new Chars());
 			displayBombJack.InitWindow();
 
-			// Setup simple palettes
-			// Palette 0
-			// White (background colour)
-			displayBombJack.writeData(0x9c00,0x01,0xff);
-			displayBombJack.writeData(0x9c01,0x01,0x0f);
-			// Red pixel colour
-			displayBombJack.writeData(0x9c02,0x01,0x0f);
-			displayBombJack.writeData(0x9c03,0x01,0x00);
+			displayBombJack.writeData(0x9e00, 0x01, 0xf0);
+//			displayBombJack.writeData(0x9e00, 0x01, 0x30);
 
-			// Palette 1
-			// Green pixel colour
-			displayBombJack.writeData(0x9c12,0x01,0xf0);
-			displayBombJack.writeData(0x9c13,0x01,0x00);
+			displayBombJack.writeDataFromFile(0x9c00,0x01,"C:\\work\\BombJack\\PaletteData.bin");
+			// White background
+			displayBombJack.writeData(0x9c00, 0x01, 0x33);
+			displayBombJack.writeData(0x9c01, 0x01, 0x08);
 
 			// Setup a simple character screen
-			for (int i = 0 ; i < 32 ; i+=2) {
-				displayBombJack.writeData(0x9040 + i, 0x01, 0x01);
-				displayBombJack.writeData(0x9440 + i, 0x01, 0x00);
-				displayBombJack.writeData(0x9041 + i, 0x01, 0x01);
-				displayBombJack.writeData(0x9441 + i, 0x01, 0x01);
+			for (int i = 0 ; i < 32*32 ; i++) {
+				displayBombJack.writeData(0x9000 + i, 0x01, i + ((i/32)-2));
+				int flips = (i>>8) & 0x3;
+				int exChars = (i>>9) & 0x3;
+				int colour = (i&0x07);
+				if (colour == 0) {
+					colour = 1;
+				}
+				displayBombJack.writeData(0x9400 + i, 0x01, colour | (flips << 6) | (exChars << 4));
 			}
+//			displayBombJack.writeData(0x905e,0x01,0x41);
+			displayBombJack.writeData(0x905f,0x01,0x5f);
 
 			// Add simple character data
-			displayBombJack.writeData(0x2008,0x020,0xff);
-			displayBombJack.writeData(0x6009,0x020,0xff);
-			displayBombJack.writeData(0xe00a,0x020,0xff);
+			displayBombJack.writeDataFromFile(0x2000,0x20,"C:\\work\\BombJack\\05_k08t.bin");
+			displayBombJack.writeDataFromFile(0x4000,0x20,"C:\\work\\BombJack\\04_h08t.bin");
+			displayBombJack.writeDataFromFile(0x8000,0x20,"C:\\work\\BombJack\\03_e08t.bin");
+
 
 			while (displayBombJack.isVisible()) {
 

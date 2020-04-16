@@ -2,13 +2,13 @@ package com.bdd6502;
 
 public class Chars extends DisplayLayer {
     int busContention = 0;
-    int screenData[] = new int[0x400];
-    int colourData[] = new int[0x400];
-    int charsPlane0[] = new int[0x800];
-    int charsPlane1[] = new int[0x800];
-    int charsPlane2[] = new int[0x800];
+    byte screenData[] = new byte[0x400];
+    byte colourData[] = new byte[0x400];
+    byte charsPlane0[] = new byte[0x2000];
+    byte charsPlane1[] = new byte[0x2000];
+    byte charsPlane2[] = new byte[0x2000];
     @Override
-    public void writeData(int address, int addressEx, int data) {
+    public void writeData(int address, int addressEx, byte data) {
         if (DisplayBombJack.addressExActive(addressEx , 0x01) && address >= 0x9000 && address < 0x9400) {
             busContention = display.getBusContentionPixels();
             screenData[address - 0x9000] = data;
@@ -35,15 +35,20 @@ public class Chars extends DisplayLayer {
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
-        int index = ((displayH>>3) & 0x1f) + (((displayV>>3) & 0x1f) * 0x20);
-        int theChar = screenData[index];
-        int theColour = colourData[index];
-        if (theChar > 0 && theColour > 0) {
-            theChar = theChar;
+        // Adjust for the extra timing
+        if (displayH >= 0x180) {
+            displayH -= 0x80;
         }
+        displayH = displayH & 0xff;
+        // -1 to match the real hardware
+        int index = (((displayH>>3)-1) & 0x1f) + (((displayV>>3) & 0x1f) * 0x20);
+        int theChar = (screenData[index]) & 0xff;
+//        System.out.println(displayH + " " + displayV + " Chars index: " + Integer.toHexString(index) + " char " + Integer.toHexString(theChar));
+        byte theColour = colourData[index];
         // Include extra chars from the colour
-        theChar += theColour & 0x30;
+        theChar |= (theColour & 0x30) << 4;
         displayH &= 0x07;
+        displayH = 7 - displayH;
         displayV &= 0x07;
         // Include flips
         if ((theColour & 0x40) > 0) {
@@ -65,7 +70,12 @@ public class Chars extends DisplayLayer {
         if (pixelPlane2 > 0) {
             finalPixel |= 4;
         }
-        finalPixel |= ((theColour & 0x1f)<<3);
+        if (finalPixel != 0) {
+            finalPixel |= ((theColour & 0x0f) << 3);
+        }
+        if (busContention > 0) {
+            finalPixel = display.getRandomColouredPixel();
+        }
         if (busContention > 0) {
             busContention--;
         }

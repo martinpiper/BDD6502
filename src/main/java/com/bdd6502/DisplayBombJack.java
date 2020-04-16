@@ -1,8 +1,12 @@
 package com.bdd6502;
 
+import org.apache.commons.io.FileUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -22,6 +26,7 @@ public class DisplayBombJack {
 
     int busContentionPalette = 0;
     int displayX = 0, displayY = 0;
+    int displayBitmapX = 0, displayBitmapY = 0;
     boolean enablePixels = false;
     boolean borderX = false, borderY = false;
     int latchedPixel = 0;
@@ -82,7 +87,29 @@ public class DisplayBombJack {
         return false;
     }
 
+    public void writeDataFromFile(int address, int addressEx , String filename) throws IOException {
+        byte[] data = FileUtils.readFileToByteArray(new File(filename));
+        for (int i = 0 ; i < data.length; i++) {
+            writeData(address+i,addressEx,data[i]);
+        }
+    }
+
     public void writeData(int address, int addressEx, int data) {
+        writeData(address, addressEx, (byte) data);
+    }
+    public void writeData(int address, int addressEx, byte data) {
+        if (addressExActive(addressEx , 0x01) && address == 0x9e00) {
+            if ((data & 0x80) > 0) {
+                borderY = true;
+            } else {
+                borderY = false;
+            }
+            if ((data & 0x40) > 0) {
+                borderX = true;
+            } else {
+                borderX = false;
+            }
+        }
         if (addressExActive(addressEx , 0x01) && address >= 0x9c00 && address < 0x9e00) {
             busContentionPalette = getBusContentionPixels();
             int index = (address & 0x1ff) >> 1;
@@ -106,12 +133,15 @@ public class DisplayBombJack {
 
         if (displayX >= 0 && displayX < 0x80) {
             displayH = 0x180 + displayX;
-            _hSync = true;
         } else {
             displayH = displayX - 0x80;
         }
         if (displayH >= 0x1b0 && displayH < 0x1d0) {
             _hSync = false;
+            displayBitmapX = 0;
+        }
+        if (displayH == 0x1cf) {
+            displayBitmapY++;
         }
 
         if (displayY >= 0 && displayY < 0x08) {
@@ -121,18 +151,45 @@ public class DisplayBombJack {
             displayV = displayY - 0x08;
         }
 
+        // One pixel delay from U95:A
+        enablePixels = true;
+        if (borderX && (displayH >= 0xfe/*0x181*/)) {
+            enablePixels = false;
+        }
+        if (!borderX && (displayH >= 0x188/*0x189*/)) {
+            enablePixels = false;
+        }
+        if (borderX && (displayH < 0x00d)) {
+            enablePixels = false;
+        }
+        if (!borderX && (displayH < 0x009)) {
+            enablePixels = false;
+        }
+
+        if (borderY && (displayV >= 0xe0)) {
+            enablePixels = false;
+        }
+
+        boolean vBlank = false;
+        if (displayV < 0x10 || displayV >= 0xf0) {
+            vBlank = true;
+        }
+
+        if (vBlank /*|| (displayH & 256) == 256*/) {
+            enablePixels = false;
+        }
+
         // Delayed due to pixel latching in the output mixer 8B2 and 7A2
-        if (enablePixels) {
-            if (latchedPixel > 0) {
-                latchedPixel = latchedPixel;
+        if (displayBitmapX < panel.getImage().getWidth() && displayBitmapY < panel.getImage().getHeight()) {
+            if (enablePixels) {
+                if (busContentionPalette > 0) {
+                    latchedPixel = getRandomColouredPixel();
+                }
+                int realColour = palette[latchedPixel & 0xff];
+                panel.getImage().setRGB(displayBitmapX, displayBitmapY, realColour);
+            } else {
+                panel.getImage().setRGB(displayBitmapX, displayBitmapY, 0);
             }
-            int realColour = palette[latchedPixel & 0xff];
-            if (busContentionPalette > 0) {
-                realColour = getRandomColouredPixel();
-            }
-            panel.getImage().setRGB(displayX, displayY, realColour);
-        } else {
-            panel.getImage().setRGB(displayX, displayY, 0);
         }
 
         latchedPixel = 0;
@@ -147,34 +204,8 @@ public class DisplayBombJack {
             }
         }
 
-        // One pixel delay from U95:A
-        boolean internalBorderX = false;
-        // From U236 and U237:A
-        if (((displayH & (4 + 16 + 32 + 64)) == 0) && ((displayH & (128 + 256)) == 128) && borderX) {
-            internalBorderX = true;
-        }
-        boolean internalBorderY = false;
-        // From U76
-        if (((displayV & (16 + 32 + 64 + 128)) > (32 + 64 + 128)) && borderY) {
-            internalBorderY = true;
-        }
-        if ((displayH & 256) == 256 && borderX) {
-            internalBorderY = true;
-        }
-
-        boolean vBlank = false;
-        if (displayV < 0x10 || displayV >= 0xf0) {
-            vBlank = true;
-        }
-
-        if (vBlank || internalBorderX || internalBorderY || (displayH & 256) == 256) {
-            enablePixels = false;
-        } else {
-            enablePixels = true;
-        }
-
-
         displayX++;
+        displayBitmapX++;
         if (displayX >= displayWidth) {
             displayX = 0;
             displayY++;
@@ -182,6 +213,8 @@ public class DisplayBombJack {
         if (displayY >= displayHeight) {
             displayY = 0;
             enablePixels = false;
+            displayBitmapX = 0;
+            displayBitmapY = 0;
         }
         if (busContentionPalette > 0) {
             busContentionPalette--;
@@ -189,6 +222,6 @@ public class DisplayBombJack {
     }
 
     int getRandomColouredPixel() {
-        return random.nextInt() & 0xffffff;
+        return random.nextInt() & 0xff;
     }
 }

@@ -7,7 +7,7 @@ public abstract class DisplayLayer {
         display = theDisplay;
     }
 
-    public abstract void writeData(int address, int addressEx, int data);
+    public abstract void writeData(int address, int addressEx, byte data);
 
     public abstract int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync);
 }
