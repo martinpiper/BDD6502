@@ -124,7 +124,8 @@ public class Tiles extends DisplayLayer {
             finalPixel |= 4;
         }
         if (finalPixel == 0) {
-            finalPixel = backgroundColour;
+            // Withut this, the lack of connection from the tiles board to the layer4 header is simulated
+//            finalPixel = backgroundColour;
         } else {
             finalPixel |= ((theColour & 0x1f) << 3);
         }

@@ -6,7 +6,11 @@ public class Mode7 extends DisplayLayer {
     byte tiles[] = new byte[0x4000];
     int dx = 0, dxy = 0;
     int dy = 0, dyx = 0;
+    int xorg = 0, yorg = 0;
     int backgroundColour = 0;
+    boolean previousHSync = false , previousVSync = false;
+    int x = 0, y = 0;
+    int xy = 0, yx = 0;
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
@@ -48,6 +52,25 @@ public class Mode7 extends DisplayLayer {
             dyx = (dyx & 0x00ffff) | ((data & 0xff)<<16);
         }
 
+        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0xa00c) {
+            xorg = (xorg & 0xffff00) | (data & 0xff);
+        }
+        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0xa00d) {
+            xorg = (xorg & 0xff00ff) | ((data & 0xff)<<8);
+        }
+        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0xa00e) {
+            xorg = (xorg & 0x00ffff) | ((data & 0xff)<<16);
+        }
+        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0xa00f) {
+            yorg = (yorg & 0xffff00) | (data & 0xff);
+        }
+        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0xa010) {
+            yorg = (yorg & 0xff00ff) | ((data & 0xff)<<8);
+        }
+        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0xa011) {
+            yorg = (yorg & 0x00ffff) | ((data & 0xff)<<16);
+        }
+
         if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0xa014) {
             backgroundColour = data & 0xff;
         }
@@ -69,13 +92,32 @@ public class Mode7 extends DisplayLayer {
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
-        // Adjust for the extra timing
-        if (displayH >= 0x180) {
-            displayH -= 0x80;
+        x+=dx;
+        yx += dyx;
+
+        if (!previousHSync && _hSync) {
+            xy += dxy;
+            y += dy;
         }
-        // Adjust to match real hardware
-        displayH = displayH & 0xff;
-        // Add scrolls and clamp
+        if (_hSync == false) {
+            yx = 0;
+            x = 0;
+        }
+        if (_vSync == false) {
+            y = 0;
+            xy = 0;
+        }
+
+        int xo = x + xy + xorg;
+        int yo = y + yx + yorg;
+
+        previousHSync = _hSync;
+        previousVSync = _vSync;
+
+        displayH = xo >> 8;
+        displayV = yo >> 8;
+
+        // Clamp
         displayH &= 0x3ff;
         displayV &= 0x3ff;
         int index = ((displayH>>4) & 0x7f) + (((displayV>>4) & 0x3f) * 0x80);
