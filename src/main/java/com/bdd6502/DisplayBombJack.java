@@ -25,6 +25,7 @@ public class DisplayBombJack {
     }
 
     int busContentionPalette = 0;
+    int displayH = 0, displayV = 0;
     int displayX = 0, displayY = 0;
     int displayBitmapX = 0, displayBitmapY = 0;
     boolean enablePixels = false;
@@ -140,8 +141,12 @@ public class DisplayBombJack {
         }
     }
 
+    void calculatePixelsUntil(int waitH, int waitV) {
+        while (displayH != waitH || displayV != waitV) {
+            calculatePixel();
+        }
+    }
     void calculatePixel() {
-        int displayH, displayV;
         boolean _hSync = true, _vSync = true;
 
         if (displayX >= 0 && displayX < 0x80) {
