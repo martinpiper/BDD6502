@@ -29,6 +29,7 @@ public class DisplayBombJack {
     int displayBitmapX = 0, displayBitmapY = 0;
     boolean enablePixels = false;
     boolean borderX = false, borderY = false;
+    boolean enableDisplay = false;
     int latchedPixel = 0;
 
     int palette[] = new int[256];
@@ -94,11 +95,23 @@ public class DisplayBombJack {
         }
     }
 
+    public void writeDataFromFile(int address, int addressEx , String filename, int offset, int length) throws IOException {
+        byte[] data = FileUtils.readFileToByteArray(new File(filename));
+        for (int i = 0 ; i < length; i++) {
+            writeData(address+i,addressEx,data[offset + i]);
+        }
+    }
+
     public void writeData(int address, int addressEx, int data) {
         writeData(address, addressEx, (byte) data);
     }
     public void writeData(int address, int addressEx, byte data) {
         if (addressExActive(addressEx , 0x01) && address == 0x9e00) {
+            if ((data & 0x20) > 0) {
+                enableDisplay = true;
+            } else {
+                enableDisplay = false;
+            }
             if ((data & 0x80) > 0) {
                 borderY = true;
             } else {
@@ -131,6 +144,10 @@ public class DisplayBombJack {
         int displayH, displayV;
         boolean _hSync = true, _vSync = true;
 
+        if (displayX == 0) {
+            displayBitmapX = -16;
+            displayBitmapY++;
+        }
         if (displayX >= 0 && displayX < 0x80) {
             displayH = 0x180 + displayX;
         } else {
@@ -138,11 +155,11 @@ public class DisplayBombJack {
         }
         if (displayH >= 0x1b0 && displayH < 0x1d0) {
             _hSync = false;
-            displayBitmapX = 0;
         }
-        if (displayH == 0x1cf) {
-            displayBitmapY++;
-        }
+//        if (displayH == 0x1cf) {
+//            displayBitmapX = 0;
+//            displayBitmapY++;
+//        }
 
         if (displayY >= 0 && displayY < 0x08) {
             displayV = 0xf8 + displayY;
@@ -179,16 +196,18 @@ public class DisplayBombJack {
             enablePixels = false;
         }
 
-        // Delayed due to pixel latching in the output mixer 8B2 and 7A2
-        if (displayBitmapX < panel.getImage().getWidth() && displayBitmapY < panel.getImage().getHeight()) {
-            if (enablePixels) {
-                if (busContentionPalette > 0) {
-                    latchedPixel = getRandomColouredPixel();
+        if (enableDisplay) {
+            if (displayBitmapX >= 0 && displayBitmapY >= 0 && displayBitmapX < panel.getImage().getWidth() && displayBitmapY < panel.getImage().getHeight()) {
+                // Delayed due to pixel latching in the output mixer 8B2 and 7A2
+                if (enablePixels) {
+                    if (busContentionPalette > 0) {
+                        latchedPixel = getRandomColouredPixel();
+                    }
+                    int realColour = palette[latchedPixel & 0xff];
+                    panel.getImage().setRGB(displayBitmapX, displayBitmapY, realColour);
+                } else {
+                    panel.getImage().setRGB(displayBitmapX, displayBitmapY, 0);
                 }
-                int realColour = palette[latchedPixel & 0xff];
-                panel.getImage().setRGB(displayBitmapX, displayBitmapY, realColour);
-            } else {
-                panel.getImage().setRGB(displayBitmapX, displayBitmapY, 0);
             }
         }
 

@@ -4,32 +4,33 @@ public class Chars extends DisplayLayer {
     int busContention = 0;
     byte screenData[] = new byte[0x400];
     byte colourData[] = new byte[0x400];
-    byte charsPlane0[] = new byte[0x2000];
-    byte charsPlane1[] = new byte[0x2000];
-    byte charsPlane2[] = new byte[0x2000];
+    byte plane0[] = new byte[0x2000];
+    byte plane1[] = new byte[0x2000];
+    byte plane2[] = new byte[0x2000];
+
     @Override
     public void writeData(int address, int addressEx, byte data) {
         if (DisplayBombJack.addressExActive(addressEx , 0x01) && address >= 0x9000 && address < 0x9400) {
             busContention = display.getBusContentionPixels();
-            screenData[address - 0x9000] = data;
+            screenData[address & 0x3ff] = data;
         }
         if (DisplayBombJack.addressExActive(addressEx , 0x01) && address >= 0x9400 && address < 0x9800) {
             busContention = display.getBusContentionPixels();
-            colourData[address - 0x9400] = data;
+            colourData[address & 0x3ff] = data;
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
         if (DisplayBombJack.addressExActive(addressEx , 0x20) && (address & 0x2000) > 0) {
             busContention = display.getBusContentionPixels();
-            charsPlane0[address & 0x1fff] = data;
+            plane0[address & 0x1fff] = data;
         }
         if (DisplayBombJack.addressExActive(addressEx , 0x20) && (address & 0x4000) > 0) {
             busContention = display.getBusContentionPixels();
-            charsPlane1[address & 0x1fff] = data;
+            plane1[address & 0x1fff] = data;
         }
         if (DisplayBombJack.addressExActive(addressEx , 0x20) && (address & 0x8000) > 0) {
             busContention = display.getBusContentionPixels();
-            charsPlane2[address & 0x1fff] = data;
+            plane2[address & 0x1fff] = data;
         }
     }
 
@@ -57,9 +58,9 @@ public class Chars extends DisplayLayer {
         if ((theColour & 0x80) > 0) {
             displayV = 7-displayV;
         }
-        int pixelPlane0 = charsPlane0[(theChar<<3) + displayV] & (1<<displayH);
-        int pixelPlane1 = charsPlane1[(theChar<<3) + displayV] & (1<<displayH);
-        int pixelPlane2 = charsPlane2[(theChar<<3) + displayV] & (1<<displayH);
+        int pixelPlane0 = plane0[(theChar<<3) + displayV] & (1<<displayH);
+        int pixelPlane1 = plane1[(theChar<<3) + displayV] & (1<<displayH);
+        int pixelPlane2 = plane2[(theChar<<3) + displayV] & (1<<displayH);
         int finalPixel = 0;
         if (pixelPlane0 > 0) {
             finalPixel |= 1;
@@ -70,9 +71,7 @@ public class Chars extends DisplayLayer {
         if (pixelPlane2 > 0) {
             finalPixel |= 4;
         }
-        if (finalPixel != 0) {
-            finalPixel |= ((theColour & 0x0f) << 3);
-        }
+        finalPixel |= ((theColour & 0x0f) << 3);
         if (busContention > 0) {
             finalPixel = display.getRandomColouredPixel();
         }
