@@ -66,6 +66,30 @@ public class TestRunner
 				displayBombJack.writeDataFromFile(0x3000 + (i*0x40), 0x80, "C:\\work\\BombJack\\02_p04t.bin", 0x500 + (i*0x10), 0x10);
 			}
 
+			// Mode7 tiles
+			displayBombJack.writeDataFromFile(0x2000,0x08,"C:\\work\\BombJack\\map.bin");
+			displayBombJack.writeDataFromFile(0x4000,0x08,"C:\\work\\BombJack\\Mode7.bin");
+			displayBombJack.writeDataFromFile(0x8000,0x08,"C:\\work\\BombJack\\Mode7B.bin");
+			// Mode7 registers
+			displayBombJack.writeData(0xa000, 0x01, 0x00);
+			displayBombJack.writeData(0xa001, 0x01, 0x01);
+			displayBombJack.writeData(0xa002, 0x01, 0x00);
+
+			displayBombJack.writeData(0xa003, 0x01, 0x00);
+			displayBombJack.writeData(0xa004, 0x01, 0x00);
+			displayBombJack.writeData(0xa005, 0x01, 0x00);
+
+			displayBombJack.writeData(0xa006, 0x01, 0x00);
+			displayBombJack.writeData(0xa007, 0x01, 0x01);
+			displayBombJack.writeData(0xa008, 0x01, 0x00);
+
+			displayBombJack.writeData(0xa009, 0x01, 0x00);
+			displayBombJack.writeData(0xa00a, 0x01, 0x00);
+			displayBombJack.writeData(0xa00b, 0x01, 0x00);
+
+			// Background colour
+			displayBombJack.writeData(0xa014, 0x01, 0x14);
+
 			int scrollX = 0, scrollY = 0;
 			int scrollXTimeout = 50,scrollYTimeout = 150;
 			while (displayBombJack.isVisible()) {

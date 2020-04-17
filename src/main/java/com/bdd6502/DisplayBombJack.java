@@ -144,10 +144,6 @@ public class DisplayBombJack {
         int displayH, displayV;
         boolean _hSync = true, _vSync = true;
 
-        if (displayX == 0) {
-            displayBitmapX = -16;
-            displayBitmapY++;
-        }
         if (displayX >= 0 && displayX < 0x80) {
             displayH = 0x180 + displayX;
         } else {
@@ -156,10 +152,11 @@ public class DisplayBombJack {
         if (displayH >= 0x1b0 && displayH < 0x1d0) {
             _hSync = false;
         }
-//        if (displayH == 0x1cf) {
-//            displayBitmapX = 0;
-//            displayBitmapY++;
-//        }
+        // Positive edge, new video scan line
+        if (displayH == 0x1cf) {
+            displayBitmapX = 0;
+            displayBitmapY++;
+        }
 
         if (displayY >= 0 && displayY < 0x08) {
             displayV = 0xf8 + displayY;
@@ -197,16 +194,22 @@ public class DisplayBombJack {
         }
 
         if (enableDisplay) {
-            if (displayBitmapX >= 0 && displayBitmapY >= 0 && displayBitmapX < panel.getImage().getWidth() && displayBitmapY < panel.getImage().getHeight()) {
+            int tempy = displayBitmapY;
+            // This is to correct a very strange problem with the video rendering in the last 8 pixels of the visible area
+            if (displayH >= 0x180 && displayH < 0x188) {
+                tempy++;
+            }
+            // Make sure the rendering position is in the screen
+            if (displayBitmapX >= 0 && tempy >= 0 && displayBitmapX < panel.getImage().getWidth() && tempy < panel.getImage().getHeight()) {
                 // Delayed due to pixel latching in the output mixer 8B2 and 7A2
                 if (enablePixels) {
                     if (busContentionPalette > 0) {
                         latchedPixel = getRandomColouredPixel();
                     }
                     int realColour = palette[latchedPixel & 0xff];
-                    panel.getImage().setRGB(displayBitmapX, displayBitmapY, realColour);
+                    panel.getImage().setRGB(displayBitmapX, tempy, realColour);
                 } else {
-                    panel.getImage().setRGB(displayBitmapX, displayBitmapY, 0);
+                    panel.getImage().setRGB(displayBitmapX, tempy, 0);
                 }
             }
         }
