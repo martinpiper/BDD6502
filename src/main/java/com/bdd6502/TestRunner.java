@@ -18,8 +18,9 @@ public class TestRunner
 	{
 		if (args.length >= 1 && args[0].compareToIgnoreCase("--exec") == 0) {
 			DisplayBombJack displayBombJack = new DisplayBombJack();
-			displayBombJack.addLayer(new Tiles());
-			displayBombJack.addLayer(new Chars());
+            displayBombJack.addLayer(new Mode7());
+//			displayBombJack.addLayer(new Tiles());
+//			displayBombJack.addLayer(new Chars());
 			displayBombJack.InitWindow();
 
 //			displayBombJack.writeData(0x9e00, 0x01, 0xf0);
@@ -120,8 +121,10 @@ public class TestRunner
 						displayBombJack.calculatePixel();
 					}
 					displayBombJack.writeData(0x9e07, 0x01, i);
+                    displayBombJack.writeData(0xa014, 0x01, i);
 				}
 				displayBombJack.writeData(0x9e07, 0x01, scrollX + 0x30);
+                displayBombJack.writeData(0xa014, 0x01, scrollX + 0x30);
 
 				displayBombJack.RepaintWindow();
 

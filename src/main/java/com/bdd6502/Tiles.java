@@ -36,7 +36,6 @@ public class Tiles extends DisplayLayer {
             backgroundColour = data & 0xff;
         }
 
-        // TODO: X/Y scroll registers
         if (DisplayBombJack.addressExActive(addressEx , 0x80) && address >= 0x2000 && address < 0x3000) {
             busContention = display.getBusContentionPixels();
             screenData[address & 0xfff] = data;
