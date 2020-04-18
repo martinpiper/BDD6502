@@ -142,52 +142,57 @@ public class TestRunner
 					displayBombJack.writeData(0x9e00, 0x01, 0xf0);
 				}
 
-				// Test mode7 register updates
-                double scaleValue = 256 + 32 + (Math.sin(mode7Rot * 5.0f) * 256);
-				for (int ypos = 100 ; ypos < 240; ypos++) {
-                    displayBombJack.writeData(0xa014, 0x01, ypos);
+				if (true) {
+					// Test complex perspective mode7 register updates
+					double scaleValue = 256 + 32 + (Math.sin(mode7Rot * 5.0f) * 256);
+					for (int ypos = 100; ypos < 240; ypos++) {
+						displayBombJack.writeData(0xa014, 0x01, ypos);
 
-                    double dx = Math.sin((mode7Rot + (Math.PI/2.0f))) * scaleValue;
-                    int intValue = (int) dx;
-                    displayBombJack.writeData(0xa000, 0x01, intValue);
-                    displayBombJack.writeData(0xa001, 0x01, intValue>>8);
-                    displayBombJack.writeData(0xa002, 0x01, intValue>>16);
+						double dx = Math.sin((mode7Rot + (Math.PI / 2.0f))) * scaleValue;
+						int intValue = (int) dx;
+						displayBombJack.writeData(0xa000, 0x01, intValue);
+						displayBombJack.writeData(0xa001, 0x01, intValue >> 8);
+						displayBombJack.writeData(0xa002, 0x01, intValue >> 16);
 
-                    double dxy = Math.sin(mode7Rot) * scaleValue;
-                    intValue = (int) dxy;
-                    displayBombJack.writeData(0xa003, 0x01, intValue);
-                    displayBombJack.writeData(0xa004, 0x01, intValue>>8);
-                    displayBombJack.writeData(0xa005, 0x01, intValue>>16);
+						double dxy = Math.sin(mode7Rot) * scaleValue;
+						intValue = (int) dxy;
+						displayBombJack.writeData(0xa003, 0x01, intValue);
+						displayBombJack.writeData(0xa004, 0x01, intValue >> 8);
+						displayBombJack.writeData(0xa005, 0x01, intValue >> 16);
 
-                    double dy = -Math.sin(mode7Rot + (Math.PI/2.0f) + (Math.PI/2.0f) + (Math.PI/2.0f)) * scaleValue;
-                    intValue = (int) dy;
-                    displayBombJack.writeData(0xa006, 0x01, intValue);
-                    displayBombJack.writeData(0xa007, 0x01, intValue>>8);
-                    displayBombJack.writeData(0xa008, 0x01, intValue>>16);
-                    double dyx = Math.sin(mode7Rot + (Math.PI/2.0f) + (Math.PI/2.0f)) * scaleValue;
-                    intValue = (int) dyx;
-                    displayBombJack.writeData(0xa009, 0x01, intValue);
-                    displayBombJack.writeData(0xa00a, 0x01, intValue>>8);
-                    displayBombJack.writeData(0xa00b, 0x01, intValue>>16);
+						double dy = -Math.sin(mode7Rot + (Math.PI / 2.0f) + (Math.PI / 2.0f) + (Math.PI / 2.0f)) * scaleValue;
+						intValue = (int) dy;
+						displayBombJack.writeData(0xa006, 0x01, intValue);
+						displayBombJack.writeData(0xa007, 0x01, intValue >> 8);
+						displayBombJack.writeData(0xa008, 0x01, intValue >> 16);
+						double dyx = Math.sin(mode7Rot + (Math.PI / 2.0f) + (Math.PI / 2.0f)) * scaleValue;
+						intValue = (int) dyx;
+						displayBombJack.writeData(0xa009, 0x01, intValue);
+						displayBombJack.writeData(0xa00a, 0x01, intValue >> 8);
+						displayBombJack.writeData(0xa00b, 0x01, intValue >> 16);
 
-                    // xpos/ypos org calculation, note how the coordinates project back along the deltas calculated above
-                    // xorg neg dx + yorg neg dxy
-                    intValue = (int)(((double)frame * 256.0f) + (192.5f * -dx) + (64.5f * -dxy));
-                    displayBombJack.writeData(0xa00c, 0x01, intValue);
-                    displayBombJack.writeData(0xa00d, 0x01, intValue>>8);
-                    displayBombJack.writeData(0xa00e, 0x01, intValue>>16);
-                    // xorg neg dyx + yorg neg dy
-                    intValue = (int)((192.5f * -dyx) + (64.5f * -dy));
-                    displayBombJack.writeData(0xa00f, 0x01, intValue);
-                    displayBombJack.writeData(0xa010, 0x01, intValue>>8);
-                    displayBombJack.writeData(0xa011, 0x01, intValue>>16);
+						// xpos/ypos org calculation, note how the coordinates project back along the deltas calculated above
+						// xorg neg dx + yorg neg dxy
+						intValue = (int) (((double) frame * 256.0f) + (192.5f * -dx) + (64.5f * -dxy));
+						displayBombJack.writeData(0xa00c, 0x01, intValue);
+						displayBombJack.writeData(0xa00d, 0x01, intValue >> 8);
+						displayBombJack.writeData(0xa00e, 0x01, intValue >> 16);
+						// xorg neg dyx + yorg neg dy
+						intValue = (int) ((192.5f * -dyx) + (64.5f * -dy));
+						displayBombJack.writeData(0xa00f, 0x01, intValue);
+						displayBombJack.writeData(0xa010, 0x01, intValue >> 8);
+						displayBombJack.writeData(0xa011, 0x01, intValue >> 16);
 
-                    scaleValue = (256.0f * 400.0f) / ypos;
-                    displayBombJack.calculatePixelsUntil(0x1a0 , ypos);
+						scaleValue = (256.0f * 400.0f) / ypos;
+						displayBombJack.calculatePixelsUntil(0x1a0, ypos);
+					}
+
+					displayBombJack.calculatePixelsUntil(0x190, 0xff);
+					mode7Rot += 0.01f;
+				} else {
+					displayBombJack.calculatePixelsUntil(0x190, 0x1);
+					displayBombJack.calculatePixelsUntil(0x190, 0xff);
 				}
-
-                displayBombJack.calculatePixelsUntil(0x190 , 0xff);
-                mode7Rot += 0.01f;
 
                 displayBombJack.RepaintWindow();
 
