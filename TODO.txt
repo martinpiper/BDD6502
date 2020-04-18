@@ -1,5 +1,10 @@
 ; TODO items
 
+* Emulated hardware display
+    When allocating layers, make the address and addressEx configurable
+
+
+
 * I need some syntax that measures the percentage of code executed and memory accessed so I can have code coverage metrics during tests
   and fails if a test doesn't exercise what I think are important code paths
 

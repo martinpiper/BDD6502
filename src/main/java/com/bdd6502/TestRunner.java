@@ -215,6 +215,7 @@ public class TestRunner
 					displayBombJack.calculatePixelsUntil(0x190, 0xff);
 				}
 
+				// Test sprite animation
 				if (true) {
 					for (int i = 0 ; i < 24 ; i++) {
 						int xpos = (int)(120.0f + Math.sin(   (((double)frame) / 50.0f) + (((double)i)/2.0f)) * 120.0f);

@@ -109,6 +109,9 @@ public class Sprites extends DisplayLayer {
     }
 
     void handleSpriteSchedule(int displayH, int displayV) {
+        if (displayH == 0x180) {
+            skipNextSprite = false;
+        }
         int offScreen = 1-(displayV & 1);
         // Not time yet to update the sprite
         if ((displayH & 0x0f) != 0) {
@@ -226,7 +229,12 @@ public class Sprites extends DisplayLayer {
             }
             int pixelShift = 0x07 - (realPixelIndex & 0x07);
             int tileY = realDeltaY & 0x07;
-            int planeOffset = (spriteFrame[spriteIndex] << 5) + tileY + quadrantOffset;
+            int tweakFrame = spriteFrame[spriteIndex];
+            if (spriteSize == 32) {
+                tweakFrame *= 4;
+                tweakFrame &= 0xff;
+            }
+            int planeOffset = (tweakFrame << 5) + tileY + quadrantOffset;
             planeOffset &= 0x1fff;
             pixelPlane0 = plane0[planeOffset] & (1 << pixelShift);
             pixelPlane1 = plane1[planeOffset] & (1 << pixelShift);
