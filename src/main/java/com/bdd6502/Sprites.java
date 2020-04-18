@@ -82,12 +82,21 @@ public class Sprites extends DisplayLayer {
         int onScreen = displayV & 1;
         // Output calculated data
         // Adjust for the extra timing
+        if (displayH >= 0x188) {
+            displayH -= 0x80;
+            return 0;
+        }
         if (displayH >= 0x180) {
             displayH -= 0x80;
         }
         displayH -= 0x08;
+        if (displayH < 0) {
+            return 0;
+        }
         displayH = displayH & 0xff;
         int finalPixel = calculatedRasters[onScreen][displayH];
+        // And progressively clear the output pixel, like the hardware does
+        calculatedRasters[onScreen][displayH] = 0;
 
         if (busContention > 0) {
             finalPixel = display.getRandomColouredPixel();
@@ -100,12 +109,6 @@ public class Sprites extends DisplayLayer {
 
     void handleSpriteSchedule(int displayH, int displayV) {
         int offScreen = 1-(displayV & 1);
-        if (displayH == 0x180) {
-            // Clear the raster
-            for (int i =0; i < 256; i++) {
-                calculatedRasters[offScreen][i] = 0;
-            }
-        }
         // Not time yet to update the sprite
         if ((displayH & 0x0f) != 0) {
             return;

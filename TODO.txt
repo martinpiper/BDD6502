@@ -8,6 +8,7 @@
             What about the odd numbers sprites?
         Also the sprite frame, does it multiply the sprite frame to ensure it is aligned?
             What is the sprite layout?
+    Do sprites off the far right appear on the left?
     Done - Add full height mode (fullHeightSprite)
 
 
