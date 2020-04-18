@@ -29,6 +29,7 @@ public class Sprites extends DisplayLayer {
         }
 
         if (DisplayBombJack.addressExActive(addressEx , 0x01) && address >= 0x9820 && address < 0x9880) {
+            busContention = display.getBusContentionPixels();
             int spriteIndex = (address - 0x9820) / 4;
             switch (address & 0x03) {
                 case 0:
@@ -134,38 +135,90 @@ public class Sprites extends DisplayLayer {
         }
 
         // Range to max sprite size, to handle fullHeightSprite
-        deltaY = deltaY & 0x1f;
+        deltaY = deltaY & (spriteSize-1);
+        int realPixelIndex , realDeltaY;
+        if ((theColour & 0x80) > 0) {
+            realDeltaY = (spriteSize-1) - deltaY;
+        } else {
+            realDeltaY = deltaY;
+        }
         for (int pixelIndex = 0 ; pixelIndex < spriteSize ; pixelIndex++) {
             // Include flips
             if ((theColour & 0x40) > 0) {
-                displayH = 0x0f - displayH;
-            }
-            if ((theColour & 0x80) > 0) {
-                displayV = 0x0f - displayV;
+                realPixelIndex = (spriteSize-1) - pixelIndex;
+            } else {
+                realPixelIndex = pixelIndex;
             }
             int pixelPlane0;
             int pixelPlane1;
             int pixelPlane2;
-            int quadrantOffset;
-            // TODO: Needs expansion for 32x32 sprites
-            if (deltaY < 8) {
-                if (pixelIndex < 8) {
-                    quadrantOffset = 0;
+            int quadrantOffset = 0;
+            if (spriteSize == 32) {
+                // TODO: Needs expansion for 32x32 sprites
+                if ((realDeltaY & 0x1f) < 8) {
+                    if (realPixelIndex < 8) {
+                        quadrantOffset = 0;
+                    } else if (realPixelIndex < 16) {
+                        quadrantOffset = 8;
+                    } else if (realPixelIndex < 24) {
+                        quadrantOffset = 32;
+                    } else {
+                        quadrantOffset = 40;
+                    }
+                } else if ((realDeltaY & 0x1f) < 16) {
+                    if (realPixelIndex < 8) {
+                        quadrantOffset = 16;
+                    } else if (realPixelIndex < 16) {
+                        quadrantOffset = 24;
+                    } else if (realPixelIndex < 24) {
+                        quadrantOffset = 48;
+                    } else {
+                        quadrantOffset = 56;
+                    }
+                } else if ((realDeltaY & 0x1f) < 24) {
+                    if (realPixelIndex < 8) {
+                        quadrantOffset = 64;
+                    } else if (realPixelIndex < 16) {
+                        quadrantOffset = 72;
+                    } else if (realPixelIndex < 24) {
+                        quadrantOffset = 96;
+                    } else {
+                        quadrantOffset = 104;
+                    }
                 } else {
-                    quadrantOffset = 8;
+                    if (realPixelIndex < 8) {
+                        quadrantOffset = 80;
+                    } else if (realPixelIndex < 16) {
+                        quadrantOffset = 88;
+                    } else if (realPixelIndex < 24) {
+                        quadrantOffset = 112;
+                    } else {
+                        quadrantOffset = 120;
+                    }
                 }
+
             } else {
-                if (pixelIndex < 8) {
-                    quadrantOffset = 16;
+                if ((realDeltaY & 0x0f) < 8) {
+                    if (realPixelIndex < 8) {
+                        quadrantOffset = 0;
+                    } else {
+                        quadrantOffset = 8;
+                    }
                 } else {
-                    quadrantOffset = 24;
+                    if (realPixelIndex < 8) {
+                        quadrantOffset = 16;
+                    } else {
+                        quadrantOffset = 24;
+                    }
                 }
             }
-            int pixelShift = 0x07 - (pixelIndex & 0x07);
-            int tileY = deltaY & 0x07;
-            pixelPlane0 = plane0[(spriteFrame[spriteIndex] << 5) + tileY + quadrantOffset] & (1 << pixelShift);
-            pixelPlane1 = plane1[(spriteFrame[spriteIndex] << 5) + tileY + quadrantOffset] & (1 << pixelShift);
-            pixelPlane2 = plane2[(spriteFrame[spriteIndex] << 5) + tileY + quadrantOffset] & (1 << pixelShift);
+            int pixelShift = 0x07 - (realPixelIndex & 0x07);
+            int tileY = realDeltaY & 0x07;
+            int planeOffset = (spriteFrame[spriteIndex] << 5) + tileY + quadrantOffset;
+            planeOffset &= 0x1fff;
+            pixelPlane0 = plane0[planeOffset] & (1 << pixelShift);
+            pixelPlane1 = plane1[planeOffset] & (1 << pixelShift);
+            pixelPlane2 = plane2[planeOffset] & (1 << pixelShift);
             int finalPixel = 0;
             if (pixelPlane0 > 0) {
                 finalPixel |= 1;
@@ -177,7 +230,11 @@ public class Sprites extends DisplayLayer {
                 finalPixel |= 4;
             }
             finalPixel |= ((theColour & 0x1f) << 3);
-            calculatedRasters[offScreen][(spriteX[spriteIndex]+pixelIndex) & 0xff] = finalPixel;
+            int finalXPos = (spriteX[spriteIndex]+pixelIndex) & 0xff;
+            // Only output the pixel if there is nothing else there
+            if ((calculatedRasters[offScreen][finalXPos] & 0x07) == 0){
+                calculatedRasters[offScreen][finalXPos] = finalPixel;
+            }
         }
     }
 }
