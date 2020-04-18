@@ -18,9 +18,10 @@ public class TestRunner
 	{
 		if (args.length >= 1 && args[0].compareToIgnoreCase("--exec") == 0) {
 			DisplayBombJack displayBombJack = new DisplayBombJack();
-            displayBombJack.addLayer(new Mode7());
-			displayBombJack.addLayer(new Tiles());
-			displayBombJack.addLayer(new Chars());
+//            displayBombJack.addLayer(new Mode7());
+//			displayBombJack.addLayer(new Tiles());
+//			displayBombJack.addLayer(new Chars());
+			displayBombJack.addLayer(new Sprites());
 			displayBombJack.InitWindow();
 
 //			displayBombJack.writeData(0x9e00, 0x01, 0xf0);
@@ -91,11 +92,26 @@ public class TestRunner
 			// Background colour
 			displayBombJack.writeData(0xa014, 0x01, 0x14);
 
+			// Sprite data
+			displayBombJack.writeDataFromFile(0x2000,0x10,"C:\\work\\BombJack\\14_j07b.bin");
+			displayBombJack.writeDataFromFile(0x4000,0x10,"C:\\work\\BombJack\\15_l07b.bin");
+			displayBombJack.writeDataFromFile(0x8000,0x10,"C:\\work\\BombJack\\16_m07b.bin");
+			// Sprite registers
+			// Start/end 32x32 sprites
+			displayBombJack.writeData(0x9a00, 0x01, 0x10);	// Plus sprite enable
+			displayBombJack.writeData(0x9a01, 0x01, 0x00);
+			// Sprite 0
+			displayBombJack.writeData(0x9820, 0x01, 0x28);
+			displayBombJack.writeData(0x9821, 0x01, 0x01);
+			displayBombJack.writeData(0x9822, 0x01, 0x40);
+			displayBombJack.writeData(0x9823, 0x01, 0x30);
+
 			int scrollX = 0, scrollY = 0;
 			int scrollXTimeout = 50,scrollYTimeout = 150;
 			double mode7Rot = 0.0f;
 			int frame = 0;
 			while (displayBombJack.isVisible()) {
+                displayBombJack.writeData(0x9820, 0x01, frame);
                 if (false) {
                     for (int i = 0; i < 384 * 64; i++) {
                         displayBombJack.calculatePixel();
@@ -142,7 +158,7 @@ public class TestRunner
 					displayBombJack.writeData(0x9e00, 0x01, 0xf0);
 				}
 
-				if (true) {
+				if (false) {
 					// Test complex perspective mode7 register updates
 					double scaleValue = 256 + 32 + (Math.sin(mode7Rot * 5.0f) * 256);
 					for (int ypos = 100; ypos < 240; ypos++) {
@@ -190,7 +206,6 @@ public class TestRunner
 					displayBombJack.calculatePixelsUntil(0x190, 0xff);
 					mode7Rot += 0.01f;
 				} else {
-					displayBombJack.calculatePixelsUntil(0x190, 0x1);
 					displayBombJack.calculatePixelsUntil(0x190, 0xff);
 				}
 

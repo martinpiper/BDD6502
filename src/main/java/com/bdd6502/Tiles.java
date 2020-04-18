@@ -93,7 +93,7 @@ public class Tiles extends DisplayLayer {
         int pixelPlane0;
         int pixelPlane1;
         int pixelPlane2;
-        int quadrantOffset = 0;
+        int quadrantOffset;
         if (displayV < 8) {
             if (displayH < 8) {
                 quadrantOffset = 0;

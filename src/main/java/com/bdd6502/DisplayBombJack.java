@@ -142,9 +142,9 @@ public class DisplayBombJack {
     }
 
     void calculatePixelsUntil(int waitH, int waitV) {
-        while (displayH != waitH || displayV != waitV) {
+        do {
             calculatePixel();
-        }
+        } while (!(displayH == waitH && displayV == waitV));
     }
     void calculatePixel() {
         boolean _hSync = true, _vSync = true;

@@ -2,6 +2,8 @@
 
 * Add emulated BombJack display
     https://github.com/martinpiper/BombJack/blob/master/README.md
+    Add 32x32 sprites 9a00-9a01 (largeSprite)
+    Add full height mode (fullHeightSprite)
 
 
 
