@@ -2,13 +2,44 @@
 
 * Add emulated BombJack display
     https://github.com/martinpiper/BombJack/blob/master/README.md
+    Sprites notes
+        0x = far left visible screen pixel
+        Done 0y = 16x16 Top of the sprite just below the bottom edge of the visible screen
+        Done 0y = 32x32 Middle horizontal part of the sprite just below the bottom edge of the visible screen
     Add 32x32 sprites 9a00-9a01 (largeSprite)
         Check the hardware for how the inclusive register really works with regards to using sprite update slots
+            0-3     No 32x32
+            0-4     Sprite 0 is 32x32, sprite 1 is not drawn, sprites 2 onwards are drawn
+            0-5     Sprite 0,2 is 32x32, sprite 1,3 is not drawn, sprites 4 onwards are drawn
+            0-6     Sprite 0,2,4 is 32x32, sprite 1,3,5 is not drawn, sprites 6 onwards are drawn
+            0-7     Sprite 0,2,4,6 is 32x32, sprite 1,3,5,7 is not drawn, sprites 8 onwards are drawn
+
+            1-4     Sprite 0 is 32x32, sprite 1 is not drawn, sprites 2 onwards are drawn
+            2-4     same
+            3-4     same
+            4-4     No 32x32
+
+            5-4     Sprites 0-1 are normal, Sprite 2 is 32x32, Sprite 3 is not drawn, sprites 4 onwards are drawn
+            5-5     No 32x32
+            6-5     Sprites 0-3 are normal, Sprite 4 is 32x32, Sprite 5 is not drawn, sprites 6 onwards are drawn
+            7-5     Sprites 0-3 are normal, Sprite 4,6 is 32x32, Sprite 5,7 is not drawn, sprites 8 onwards are drawn
+
+            1-5     Sprite 0,2 is 32x32, sprite 1,3 is not drawn, sprites 4 onwards are drawn
+            2-5     Same
+
+
             Does it skip the next sprite?
-            What about the odd numbers sprites?
+                Yes
+            What about the odd numbers sprites for the ranges?
         Also the sprite frame, does it multiply the sprite frame to ensure it is aligned?
+            Yes, it multiplies by 4
             What is the sprite layout?
+                01
+                23
     Do sprites off the far right appear on the left?
+        Yes
+    Do sprites off the bottom appear on the top?
+        No.
     Done - Add full height mode (fullHeightSprite)
 
 

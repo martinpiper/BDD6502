@@ -99,12 +99,12 @@ public class TestRunner
 			// Sprite registers
 			// Start/end 32x32 sprites
 			displayBombJack.writeData(0x9a00, 0x01, 0x10);	// Plus sprite enable
-			displayBombJack.writeData(0x9a01, 0x01, 0x01);
+			displayBombJack.writeData(0x9a01, 0x01, 0x04);
 			// Sprite 0
-			displayBombJack.writeData(0x9820, 0x01, 0x28);
+			displayBombJack.writeData(0x9820, 0x01, 0x04);
 			displayBombJack.writeData(0x9821, 0x01, 0x01);
-			displayBombJack.writeData(0x9822, 0x01, 0x40);
-			displayBombJack.writeData(0x9823, 0x01, 0x30);
+			displayBombJack.writeData(0x9822, 0x01, 0x00);
+			displayBombJack.writeData(0x9823, 0x01, 0x00);
 
 			int scrollX = 0, scrollY = 0;
 			int scrollXTimeout = 50,scrollYTimeout = 150;
@@ -211,7 +211,7 @@ public class TestRunner
 					displayBombJack.calculatePixelsUntil(0x190, 0xff);
 				}
 
-				if (true) {
+				if (false) {
 					for (int i = 0 ; i < 24 ; i++) {
 						int xpos = (int)(128.0f + Math.sin(   (((double)frame) / 50.0f) + (((double)i)/2.0f)) * 128.0f);
 						int ypos = (int)(140.0f + Math.cos(   (((double)frame) / 75.0f) + (((double)i)/5.0f)) * 90.0f);

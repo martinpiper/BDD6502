@@ -132,7 +132,8 @@ public class Sprites extends DisplayLayer {
         }
 
         // Sprite Y position range check
-        int deltaY = (displayV + spriteY[spriteIndex] & 0xff);
+        // +32 to adjust for expected behaviour where 0y = Bottom of the sprite on the bottom edge of the visible screen
+        int deltaY = (displayV + spriteSize + spriteY[spriteIndex]) & 0xff;
         if (!fullHeightSprite && (deltaY >= spriteSize)) {
             return;
         }
