@@ -7,6 +7,7 @@ public class Sprites extends DisplayLayer {
     byte plane2[] = new byte[0x2000];
     int lo32 = 0 , hi32 = 0;
     boolean spriteEnable = false;
+    boolean skipNextSprite = false;
     int spriteX[] = new int[24];
     int spriteY[] = new int[24];
     int spriteFrame[] = new int[24];
@@ -113,6 +114,10 @@ public class Sprites extends DisplayLayer {
         if ((displayH & 0x0f) != 0) {
             return;
         }
+        if (skipNextSprite) {
+            skipNextSprite = false;
+            return;
+        }
         int spriteIndex = 0;
         if (displayH >= 0x180) {
             spriteIndex = (displayH - 0x180) / 16;
@@ -123,8 +128,11 @@ public class Sprites extends DisplayLayer {
         // Handle timings of sprite register reads at the appropriate time in the raster
         int theColour = spritePalette[spriteIndex];
         int spriteSize = 16;
-        if (spriteIndex >= lo32 && spriteIndex < hi32) {
+        // Same logic as hardware 6R, 6S, 5R, 5S, 5T, 6T
+        int tweakIndex = (spriteIndex >> 1) + 3;
+        if ((tweakIndex < lo32 && !(tweakIndex < hi32)) || (tweakIndex < hi32 && !(tweakIndex < lo32))) {
             spriteSize = 32;
+            skipNextSprite = true;
         }
         boolean fullHeightSprite = false;
         if ((theColour & 0x20) > 0) {

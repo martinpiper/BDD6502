@@ -18,11 +18,11 @@ public class TestRunner
 	{
 		if (args.length >= 1 && args[0].compareToIgnoreCase("--exec") == 0) {
 			DisplayBombJack displayBombJack = new DisplayBombJack();
-//            displayBombJack.addLayer(new Mode7());
-//			displayBombJack.addLayer(new Tiles());
-//			displayBombJack.addLayer(new Chars());
-			displayBombJack.addLayer(new Sprites());
-			displayBombJack.InitWindow();
+            displayBombJack.addLayer(new Mode7());
+            displayBombJack.addLayer(new Tiles());
+            displayBombJack.addLayer(new Chars());
+            displayBombJack.addLayer(new Sprites());
+            displayBombJack.InitWindow();
 
 //			displayBombJack.writeData(0x9e00, 0x01, 0xf0);
 			displayBombJack.writeData(0x9e00, 0x01, 0x30);
@@ -98,13 +98,17 @@ public class TestRunner
 			displayBombJack.writeDataFromFile(0x8000,0x10,"C:\\work\\BombJack\\16_m07b.bin");
 			// Sprite registers
 			// Start/end 32x32 sprites
-			displayBombJack.writeData(0x9a00, 0x01, 0x10);	// Plus sprite enable
-			displayBombJack.writeData(0x9a01, 0x01, 0x04);
+			displayBombJack.writeData(0x9a00, 0x01, 0x14);	// Plus sprite enable
+			displayBombJack.writeData(0x9a01, 0x01, 0x08);
 			// Sprite 0
-			displayBombJack.writeData(0x9820, 0x01, 0x04);
-			displayBombJack.writeData(0x9821, 0x01, 0x01);
-			displayBombJack.writeData(0x9822, 0x01, 0x00);
-			displayBombJack.writeData(0x9823, 0x01, 0x00);
+            for (int i = 0 ; i < 24*4 ; i += 6*4) {
+                for (int j = 0 ; j < 6*4 ; j+=4) {
+                    displayBombJack.writeData(0x9820 + i + j, 0x01, 0x04);
+                    displayBombJack.writeData(0x9821 + i + j, 0x01, 0x01);
+                    displayBombJack.writeData(0x9822 + i + j, 0x01, 16 + (int)(i * 2.5f));
+                    displayBombJack.writeData(0x9823 + i + j, 0x01, j * 9);
+                }
+            }
 
 			int scrollX = 0, scrollY = 0;
 			int scrollXTimeout = 50,scrollYTimeout = 150;
@@ -145,7 +149,7 @@ public class TestRunner
 //                displayBombJack.writeData(0xa014, 0x01, scrollX + 0x30);
                 }
 
-                if (false) {
+                if (true) {
 					if (scrollXTimeout-- < 0) {
 						scrollX++;
 						displayBombJack.writeData(0x9e01, 0x01, scrollX);
@@ -160,7 +164,7 @@ public class TestRunner
 					}
 				}
 
-				if (false) {
+				if (true) {
 					// Test complex perspective mode7 register updates
 					double scaleValue = 256 + 32 + (Math.sin(mode7Rot * 5.0f) * 256);
 					for (int ypos = 100; ypos < 240; ypos++) {
@@ -211,13 +215,13 @@ public class TestRunner
 					displayBombJack.calculatePixelsUntil(0x190, 0xff);
 				}
 
-				if (false) {
+				if (true) {
 					for (int i = 0 ; i < 24 ; i++) {
-						int xpos = (int)(128.0f + Math.sin(   (((double)frame) / 50.0f) + (((double)i)/2.0f)) * 128.0f);
-						int ypos = (int)(140.0f + Math.cos(   (((double)frame) / 75.0f) + (((double)i)/5.0f)) * 90.0f);
+						int xpos = (int)(120.0f + Math.sin(   (((double)frame) / 50.0f) + (((double)i)/2.0f)) * 120.0f);
+						int ypos = (int)(120.0f + Math.cos(   (((double)frame) / 75.0f) + (((double)i)/5.0f)) * 120.0f);
 						displayBombJack.writeData(0x9820 + (i*4), 0x01, i + (frame/10));
 						int fullHeight = 0;
-						if (i >= 22) {
+						if (i <= 3) {
 						    fullHeight = 0x20;
                         }
 						displayBombJack.writeData(0x9821 + (i*4), 0x01, i | (((frame/50)&0x03)<<6) | fullHeight);
