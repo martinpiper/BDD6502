@@ -1,5 +1,8 @@
 package com.bdd6502;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 public class Mode7 extends DisplayLayer {
     int busContention = 0;
     int addressRegisters = 0xa000, addressExRegisters = 0x01;
@@ -19,18 +22,14 @@ public class Mode7 extends DisplayLayer {
     public Mode7() {
     }
 
-    public Mode7(int addressRegisters, int addressExRegisters, int addressMap, int addressExMap, int addressTiles0, int addressExTiles0, int addressTiles1, int addressExTiles1) {
-        assert (addressExRegisters == 0x01);
-        assert (addressExMap == addressExTiles0);
-        assert (addressExTiles0 == addressExTiles1);
+    public Mode7(int addressRegisters, int addressExMap) {
+        assertThat(addressRegisters, is(greaterThanOrEqualTo(0x8000)));
+        assertThat(addressRegisters, is(lessThan(0xc000)));
+        assertThat(addressRegisters & 0x7ff, is(equalTo(0x00)));
         this.addressRegisters = addressRegisters;
-        this.addressExRegisters = addressExRegisters;
-        this.addressMap = addressMap;
         this.addressExMap = addressExMap;
-        this.addressTiles0 = addressTiles0;
-        this.addressExTiles0 = addressExTiles0;
-        this.addressTiles1 = addressTiles1;
-        this.addressExTiles1 = addressExTiles1;
+        this.addressExTiles0 = addressExMap;
+        this.addressExTiles1 = addressExMap;
     }
 
     @Override

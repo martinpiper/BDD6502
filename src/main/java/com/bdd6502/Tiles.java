@@ -1,4 +1,6 @@
 package com.bdd6502;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class Tiles extends DisplayLayer {
     int busContention = 0;
@@ -19,21 +21,16 @@ public class Tiles extends DisplayLayer {
     public Tiles() {
     }
 
-    public Tiles(int addressRegisters, int addressExRegisters, int addressScreen, int addressExScreen, int addressPlane0, int addressExPlane0, int addressPlane1, int addressExPlane1, int addressPlane2, int addressExPlane2) {
-        assert (addressExRegisters == 0x01);
-        assert (addressExScreen != addressExPlane0);
-        assert (addressExPlane0 == addressExPlane1);
-        assert (addressExPlane0 == addressExPlane2);
+    public Tiles(int addressRegisters, int addressExScreen, int addressExPlane0) {
+        assertThat(addressRegisters, is(greaterThanOrEqualTo(0x8000)));
+        assertThat(addressRegisters, is(lessThan(0xc000)));
+        assertThat(addressRegisters & 0x7ff ,is(equalTo(0x600)));
+        assertThat(addressExScreen , is (not(equalTo(addressExPlane0))));
         this.addressRegisters = addressRegisters;
-        this.addressExRegisters = addressExRegisters;
-        this.addressScreen = addressScreen;
         this.addressExScreen = addressExScreen;
-        this.addressPlane0 = addressPlane0;
         this.addressExPlane0 = addressExPlane0;
-        this.addressPlane1 = addressPlane1;
-        this.addressExPlane1 = addressExPlane1;
-        this.addressPlane2 = addressPlane2;
-        this.addressExPlane2 = addressExPlane2;
+        this.addressExPlane1 = addressExPlane0;
+        this.addressExPlane2 = addressExPlane0;
     }
 
     @Override

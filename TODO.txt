@@ -1,12 +1,5 @@
 ; TODO items
 
-* Emulated hardware display
-	When allocating layers, make the address and addressEx configurable
-	TODO: Address configs for addressEx=0x01 need to respect the INRAMSEL1 groups 0x8000 0x8800 0x9000 0x9800 ... 0xb800 as these used for selection on each board
-		Video board uses fixed address, not configurable.
-
-
-
 * I need some syntax that measures the percentage of code executed and memory accessed so I can have code coverage metrics during tests
   and fails if a test doesn't exercise what I think are important code paths
 

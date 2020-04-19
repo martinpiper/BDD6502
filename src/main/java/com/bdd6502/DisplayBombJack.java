@@ -1,6 +1,7 @@
 package com.bdd6502;
-
 import org.apache.commons.io.FileUtils;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,13 +33,6 @@ public class DisplayBombJack {
     Random random = new Random();
 
     public DisplayBombJack() {
-    }
-
-    public DisplayBombJack(int addressPalette, int addressExPalette) {
-        assert (addressExPalette == 0x01);
-        assert (addressPalette == 0x9c00);
-        this.addressPalette = addressPalette;
-        this.addressExPalette = addressExPalette;
     }
 
     static boolean addressActive(int addressEx, int selector) {
