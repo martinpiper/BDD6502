@@ -34,68 +34,57 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
  * consists solely of RAM and a CPU. This machine is primarily useful
  * for running 6502 functional tests or debugging by hand.
  */
-public class SimpleMachine implements Machine
-{
+public class SimpleMachine implements Machine {
 
-	private static final int BUS_BOTTOM = 0x0000;
-	private static final int BUS_TOP = 0xffff;
+    private static final int BUS_BOTTOM = 0x0000;
+    private static final int BUS_TOP = 0xffff;
 
-	private final Bus bus;
-	private final Memory ram;
-	private final Cpu cpu;
+    private final Bus bus;
+    private final Memory ram;
+    private final Cpu cpu;
 
-	public SimpleMachine() throws MemoryRangeException
-	{
-		this.bus = new Bus(BUS_BOTTOM, BUS_TOP);
-		this.ram = new Memory(BUS_BOTTOM, BUS_TOP, false);
-		this.cpu = new Cpu();
+    public SimpleMachine() throws MemoryRangeException {
+        this.bus = new Bus(BUS_BOTTOM, BUS_TOP);
+        this.ram = new Memory(BUS_BOTTOM, BUS_TOP, false);
+        this.cpu = new Cpu();
 
-		bus.addCpu(cpu);
-		bus.addDevice(ram);
-	}
+        bus.addCpu(cpu);
+        bus.addDevice(ram);
+    }
 
-	public Bus getBus()
-	{
-		return bus;
-	}
+    public Bus getBus() {
+        return bus;
+    }
 
-	public Cpu getCpu()
-	{
-		return cpu;
-	}
+    public Cpu getCpu() {
+        return cpu;
+    }
 
-	public Memory getRam()
-	{
-		return ram;
-	}
+    public Memory getRam() {
+        return ram;
+    }
 
-	public Memory getRom()
-	{
-		return null;
-	}
+    public Memory getRom() {
+        return null;
+    }
 
-	public void setRom(Memory rom) throws MemoryRangeException
-	{
-		// No-op
-	}
+    public void setRom(Memory rom) throws MemoryRangeException {
+        // No-op
+    }
 
-	public int getRomBase()
-	{
-		return 0;
-	}
+    public int getRomBase() {
+        return 0;
+    }
 
-	public int getRomSize()
-	{
-		return 0;
-	}
+    public int getRomSize() {
+        return 0;
+    }
 
-	public int getMemorySize()
-	{
-		return BUS_TOP + 1;
-	}
+    public int getMemorySize() {
+        return BUS_TOP + 1;
+    }
 
-	public String getName()
-	{
-		return "Simple";
-	}
+    public String getName() {
+        return "Simple";
+    }
 }

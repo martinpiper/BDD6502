@@ -19,11 +19,6 @@ public class DisplayBombJack {
 
     int displayWidth = 384;
     int displayHeight = 264;
-
-    public int getBusContentionPixels() {
-        return 0x08;
-    }
-
     int busContentionPalette = 0;
     int displayH = 0, displayV = 0;
     int displayX = 0, displayY = 0;
@@ -32,11 +27,20 @@ public class DisplayBombJack {
     boolean borderX = false, borderY = false;
     boolean enableDisplay = false;
     int latchedPixel = 0;
-
     int palette[] = new int[256];
     Random random = new Random();
-
     public DisplayBombJack() {
+    }
+
+    static boolean addressExActive(int addressEx, int selector) {
+        if ((addressEx & selector) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public int getBusContentionPixels() {
+        return 0x08;
     }
 
     public void InitWindow() {
@@ -82,32 +86,26 @@ public class DisplayBombJack {
         layers.add(layer);
     }
 
-    static boolean addressExActive(int addressEx , int selector) {
-        if ((addressEx & selector) > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    public void writeDataFromFile(int address, int addressEx , String filename) throws IOException {
+    public void writeDataFromFile(int address, int addressEx, String filename) throws IOException {
         byte[] data = FileUtils.readFileToByteArray(new File(filename));
-        for (int i = 0 ; i < data.length; i++) {
-            writeData(address+i,addressEx,data[i]);
+        for (int i = 0; i < data.length; i++) {
+            writeData(address + i, addressEx, data[i]);
         }
     }
 
-    public void writeDataFromFile(int address, int addressEx , String filename, int offset, int length) throws IOException {
+    public void writeDataFromFile(int address, int addressEx, String filename, int offset, int length) throws IOException {
         byte[] data = FileUtils.readFileToByteArray(new File(filename));
-        for (int i = 0 ; i < length; i++) {
-            writeData(address+i,addressEx,data[offset + i]);
+        for (int i = 0; i < length; i++) {
+            writeData(address + i, addressEx, data[offset + i]);
         }
     }
 
     public void writeData(int address, int addressEx, int data) {
         writeData(address, addressEx, (byte) data);
     }
+
     public void writeData(int address, int addressEx, byte data) {
-        if (addressExActive(addressEx , 0x01) && address == 0x9e00) {
+        if (addressExActive(addressEx, 0x01) && address == 0x9e00) {
             if ((data & 0x20) > 0) {
                 enableDisplay = true;
             } else {
@@ -124,7 +122,7 @@ public class DisplayBombJack {
                 borderX = false;
             }
         }
-        if (addressExActive(addressEx , 0x01) && address >= 0x9c00 && address < 0x9e00) {
+        if (addressExActive(addressEx, 0x01) && address >= 0x9c00 && address < 0x9e00) {
             busContentionPalette = getBusContentionPixels();
             int index = (address & 0x1ff) >> 1;
             Color colour = new Color(palette[index]);
@@ -146,6 +144,7 @@ public class DisplayBombJack {
             calculatePixel();
         } while (!(displayH == waitH && displayV == waitV));
     }
+
     void calculatePixel() {
         boolean _hSync = true, _vSync = true;
 

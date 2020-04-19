@@ -29,130 +29,109 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
 import java.io.*;
 import java.util.Arrays;
 
-public class Memory extends Device
-{
+public class Memory extends Device {
 
-	/* Initialize all locations to 0x00 (BRK) */
-	private static final int DEFAULT_FILL = 0x00;
-	private boolean readOnly;
-	private int[] mem;
-	private boolean[] memWritten;
+    /* Initialize all locations to 0x00 (BRK) */
+    private static final int DEFAULT_FILL = 0x00;
+    private boolean readOnly;
+    private int[] mem;
+    private boolean[] memWritten;
 
-	private boolean unitialisedReadOccured;
+    private boolean unitialisedReadOccured;
 
-	public Memory(int startAddress, int endAddress, boolean readOnly)
-			throws MemoryRangeException
-	{
-		super(startAddress, endAddress, (readOnly ? "RO Memory" : "RW Memory"));
-		this.readOnly = readOnly;
-		this.mem = new int[this.size];
-		this.memWritten = new boolean[this.size];
-		clearAllWrittenFlags();
-		resetUnitialisedReadOccured();
-		this.fill(DEFAULT_FILL);
-	}
+    public Memory(int startAddress, int endAddress, boolean readOnly)
+            throws MemoryRangeException {
+        super(startAddress, endAddress, (readOnly ? "RO Memory" : "RW Memory"));
+        this.readOnly = readOnly;
+        this.mem = new int[this.size];
+        this.memWritten = new boolean[this.size];
+        clearAllWrittenFlags();
+        resetUnitialisedReadOccured();
+        this.fill(DEFAULT_FILL);
+    }
 
-	public void clearAllWrittenFlags() {
-		Arrays.fill(this.memWritten, false);
-		unitialisedReadOccured = false;
-	}
+    public Memory(int startAddress, int endAddress) throws MemoryRangeException {
+        this(startAddress, endAddress, false);
+    }
 
-	public Memory(int startAddress, int endAddress) throws MemoryRangeException
-	{
-		this(startAddress, endAddress, false);
-	}
+    public static Memory makeROM(int startAddress, int endAddress, File f) throws MemoryRangeException, IOException {
+        Memory memory = new Memory(startAddress, endAddress, true);
+        memory.loadFromFile(f);
+        return memory;
+    }
 
-	public static Memory makeROM(int startAddress, int endAddress, File f) throws MemoryRangeException, IOException
-	{
-		Memory memory = new Memory(startAddress, endAddress, true);
-		memory.loadFromFile(f);
-		return memory;
-	}
+    public static Memory makeRAM(int startAddress, int endAddress) throws MemoryRangeException {
+        Memory memory = new Memory(startAddress, endAddress, false);
+        return memory;
+    }
 
-	public static Memory makeRAM(int startAddress, int endAddress) throws MemoryRangeException
-	{
-		Memory memory = new Memory(startAddress, endAddress, false);
-		return memory;
-	}
+    public void clearAllWrittenFlags() {
+        Arrays.fill(this.memWritten, false);
+        unitialisedReadOccured = false;
+    }
 
-	public void write(int address, int data) throws MemoryAccessException
-	{
-		if (readOnly)
-		{
-			throw new MemoryAccessException("Cannot write to read-only memory at address " + address);
-		}
-		else
-		{
-			this.mem[address] = data;
-			this.memWritten[address] = true;
-		}
-	}
+    public void write(int address, int data) throws MemoryAccessException {
+        if (readOnly) {
+            throw new MemoryAccessException("Cannot write to read-only memory at address " + address);
+        } else {
+            this.mem[address] = data;
+            this.memWritten[address] = true;
+        }
+    }
 
-	/**
-	 * Load the memory from a file.
-	 *
-	 * @param file The file to read an array of bytes from.
-	 * @throws MemoryRangeException if the file and memory size do not match.
-	 * @throws java.io.IOException  if the file read fails.
-	 */
-	public void loadFromFile(File file) throws MemoryRangeException, IOException
-	{
-		if (file.canRead())
-		{
-			long fileSize = file.length();
+    /**
+     * Load the memory from a file.
+     *
+     * @param file The file to read an array of bytes from.
+     * @throws MemoryRangeException if the file and memory size do not match.
+     * @throws java.io.IOException  if the file read fails.
+     */
+    public void loadFromFile(File file) throws MemoryRangeException, IOException {
+        if (file.canRead()) {
+            long fileSize = file.length();
 
-			if (fileSize > mem.length)
-			{
-				throw new MemoryRangeException("File will not fit in available memory.");
-			}
-			else
-			{
-				int i = 0;
-				FileInputStream fis = new FileInputStream(file);
-				BufferedInputStream bis = new BufferedInputStream(fis);
-				DataInputStream dis = new DataInputStream(bis);
-				while (dis.available() != 0)
-				{
-					memWritten[i] = true;
-					mem[i++] = dis.readUnsignedByte();
-				}
-			}
-		}
-		else
-		{
-			throw new IOException("Cannot open file " + file);
-		}
+            if (fileSize > mem.length) {
+                throw new MemoryRangeException("File will not fit in available memory.");
+            } else {
+                int i = 0;
+                FileInputStream fis = new FileInputStream(file);
+                BufferedInputStream bis = new BufferedInputStream(fis);
+                DataInputStream dis = new DataInputStream(bis);
+                while (dis.available() != 0) {
+                    memWritten[i] = true;
+                    mem[i++] = dis.readUnsignedByte();
+                }
+            }
+        } else {
+            throw new IOException("Cannot open file " + file);
+        }
 
-	}
+    }
 
-	public int read(int address, boolean logRead) throws MemoryAccessException
-	{
-		if (logRead && !memWritten[address]) {
-			unitialisedReadOccured = true;
-		}
-		return this.mem[address];
-	}
+    public int read(int address, boolean logRead) throws MemoryAccessException {
+        if (logRead && !memWritten[address]) {
+            unitialisedReadOccured = true;
+        }
+        return this.mem[address];
+    }
 
-	public void fill(int val)
-	{
-		Arrays.fill(this.mem, val);
-	}
+    public void fill(int val) {
+        Arrays.fill(this.mem, val);
+    }
 
-	public String toString()
-	{
-		return "Memory: " + getMemoryRange().toString();
-	}
+    public String toString() {
+        return "Memory: " + getMemoryRange().toString();
+    }
 
-	public int[] getDmaAccess()
-	{
-		return mem;
-	}
+    public int[] getDmaAccess() {
+        return mem;
+    }
 
-	public boolean isUnitialisedReadOccured() {
-		return unitialisedReadOccured;
-	}
+    public boolean isUnitialisedReadOccured() {
+        return unitialisedReadOccured;
+    }
 
-	public void resetUnitialisedReadOccured() {
-		this.unitialisedReadOccured = false;
-	}
+    public void resetUnitialisedReadOccured() {
+        this.unitialisedReadOccured = false;
+    }
 }

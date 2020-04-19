@@ -13,48 +13,48 @@ public class Tiles extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0x9e00) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9e00) {
             if ((data & 0x10) > 0) {
                 enableDisplay = true;
             } else {
                 enableDisplay = false;
             }
         }
-        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0x9e01) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9e01) {
             scrollX = (scrollX & 0x0f00) | (data & 0xff);
         }
-        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0x9e02) {
-            scrollX = (scrollX & 0x00ff) | ((data & 0x0f)<<8);
+        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9e02) {
+            scrollX = (scrollX & 0x00ff) | ((data & 0x0f) << 8);
         }
-        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0x9e03) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9e03) {
             scrollY = (scrollY & 0x0f00) | (data & 0xff);
         }
-        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0x9e04) {
-            scrollY = (scrollY & 0x00ff) | ((data & 0x0f)<<8);
+        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9e04) {
+            scrollY = (scrollY & 0x00ff) | ((data & 0x0f) << 8);
         }
-        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0x9e07) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9e07) {
             backgroundColour = data & 0xff;
         }
 
-        if (DisplayBombJack.addressExActive(addressEx , 0x80) && address >= 0x2000 && address < 0x3000) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x80) && address >= 0x2000 && address < 0x3000) {
             busContention = display.getBusContentionPixels();
             screenData[address & 0xfff] = data;
         }
-        if (DisplayBombJack.addressExActive(addressEx , 0x80) && address >= 0x3000 && address < 0x4000) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x80) && address >= 0x3000 && address < 0x4000) {
             busContention = display.getBusContentionPixels();
             colourData[address & 0xfff] = data;
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (DisplayBombJack.addressExActive(addressEx , 0x40) && (address & 0x2000) > 0) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x40) && (address & 0x2000) > 0) {
             busContention = display.getBusContentionPixels();
             plane0[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressExActive(addressEx , 0x40) && (address & 0x4000) > 0) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x40) && (address & 0x4000) > 0) {
             busContention = display.getBusContentionPixels();
             plane1[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressExActive(addressEx , 0x40) && (address & 0x8000) > 0) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x40) && (address & 0x8000) > 0) {
             busContention = display.getBusContentionPixels();
             plane2[address & 0x1fff] = data;
         }
@@ -77,7 +77,7 @@ public class Tiles extends DisplayLayer {
         displayV += scrollY;
         displayH &= 0x3ff;
         displayV &= 0x3ff;
-        int index = ((displayH>>4) & 0x3f) + (((displayV>>4) & 0x3f) * 0x40);
+        int index = ((displayH >> 4) & 0x3f) + (((displayV >> 4) & 0x3f) * 0x40);
         int theChar = (screenData[index]) & 0xff;
 //        System.out.println(displayH + " " + displayV + " Chars index: " + Integer.toHexString(index) + " char " + Integer.toHexString(theChar));
         byte theColour = colourData[index];
@@ -85,10 +85,10 @@ public class Tiles extends DisplayLayer {
         displayV &= 0x0f;
         // Include flips
         if ((theColour & 0x40) > 0) {
-            displayH = 0x0f-displayH;
+            displayH = 0x0f - displayH;
         }
         if ((theColour & 0x80) > 0) {
-            displayV = 0x0f-displayV;
+            displayV = 0x0f - displayV;
         }
         int pixelPlane0;
         int pixelPlane1;

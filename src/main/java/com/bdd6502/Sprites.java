@@ -5,7 +5,7 @@ public class Sprites extends DisplayLayer {
     byte plane0[] = new byte[0x2000];
     byte plane1[] = new byte[0x2000];
     byte plane2[] = new byte[0x2000];
-    int lo32 = 0 , hi32 = 0;
+    int lo32 = 0, hi32 = 0;
     boolean spriteEnable = false;
     boolean skipNextSprite = false;
     int spriteX[] = new int[24];
@@ -17,7 +17,7 @@ public class Sprites extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0x9a00) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9a00) {
             lo32 = data & 0x0f;
             if ((data & 0x10) > 0) {
                 spriteEnable = true;
@@ -25,32 +25,28 @@ public class Sprites extends DisplayLayer {
                 spriteEnable = false;
             }
         }
-        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address == 0x9a01) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9a01) {
             hi32 = data & 0x0f;
         }
 
-        if (DisplayBombJack.addressExActive(addressEx , 0x01) && address >= 0x9820 && address < 0x9880) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address >= 0x9820 && address < 0x9880) {
             busContention = display.getBusContentionPixels();
             int spriteIndex = (address - 0x9820) / 4;
             switch (address & 0x03) {
                 case 0:
-                default:
-                {
+                default: {
                     spriteFrame[spriteIndex] = data & 0xff;
                     break;
                 }
-                case 1:
-                {
+                case 1: {
                     spritePalette[spriteIndex] = data & 0xff;
                     break;
                 }
-                case 2:
-                {
+                case 2: {
                     spriteY[spriteIndex] = data & 0xff;
                     break;
                 }
-                case 3:
-                {
+                case 3: {
                     spriteX[spriteIndex] = data & 0xff;
                     break;
                 }
@@ -58,15 +54,15 @@ public class Sprites extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (DisplayBombJack.addressExActive(addressEx , 0x10) && (address & 0x2000) > 0) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x10) && (address & 0x2000) > 0) {
             busContention = display.getBusContentionPixels();
             plane0[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressExActive(addressEx , 0x10) && (address & 0x4000) > 0) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x10) && (address & 0x4000) > 0) {
             busContention = display.getBusContentionPixels();
             plane1[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressExActive(addressEx , 0x10) && (address & 0x8000) > 0) {
+        if (DisplayBombJack.addressExActive(addressEx, 0x10) && (address & 0x8000) > 0) {
             busContention = display.getBusContentionPixels();
             plane2[address & 0x1fff] = data;
         }
@@ -78,7 +74,7 @@ public class Sprites extends DisplayLayer {
             return 0;
         }
 
-        handleSpriteSchedule(displayH,displayV);
+        handleSpriteSchedule(displayH, displayV);
 
         int onScreen = displayV & 1;
         // Output calculated data
@@ -112,7 +108,7 @@ public class Sprites extends DisplayLayer {
         if (displayH == 0x180) {
             skipNextSprite = false;
         }
-        int offScreen = 1-(displayV & 1);
+        int offScreen = 1 - (displayV & 1);
         // Not time yet to update the sprite
         if ((displayH & 0x0f) != 0) {
             return;
@@ -150,17 +146,17 @@ public class Sprites extends DisplayLayer {
         }
 
         // Range to max sprite size, to handle fullHeightSprite
-        deltaY = deltaY & (spriteSize-1);
-        int realPixelIndex , realDeltaY;
+        deltaY = deltaY & (spriteSize - 1);
+        int realPixelIndex, realDeltaY;
         if ((theColour & 0x80) > 0) {
-            realDeltaY = (spriteSize-1) - deltaY;
+            realDeltaY = (spriteSize - 1) - deltaY;
         } else {
             realDeltaY = deltaY;
         }
-        for (int pixelIndex = 0 ; pixelIndex < spriteSize ; pixelIndex++) {
+        for (int pixelIndex = 0; pixelIndex < spriteSize; pixelIndex++) {
             // Include flips
             if ((theColour & 0x40) > 0) {
-                realPixelIndex = (spriteSize-1) - pixelIndex;
+                realPixelIndex = (spriteSize - 1) - pixelIndex;
             } else {
                 realPixelIndex = pixelIndex;
             }
@@ -250,9 +246,9 @@ public class Sprites extends DisplayLayer {
                 finalPixel |= 4;
             }
             finalPixel |= ((theColour & 0x1f) << 3);
-            int finalXPos = (spriteX[spriteIndex]+pixelIndex) & 0xff;
+            int finalXPos = (spriteX[spriteIndex] + pixelIndex) & 0xff;
             // Only output the pixel if there is nothing else there
-            if ((calculatedRasters[offScreen][finalXPos] & 0x07) == 0){
+            if ((calculatedRasters[offScreen][finalXPos] & 0x07) == 0) {
                 calculatedRasters[offScreen][finalXPos] = finalPixel;
             }
         }

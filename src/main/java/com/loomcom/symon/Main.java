@@ -29,48 +29,44 @@ import com.loomcom.symon.devices.Memory;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 
-public class Main
-{
+public class Main {
 
-	static private Machine machine;
+    static private Machine machine;
 
-	/**
-	 * Main entry point to the simulator.
-	 *
-	 * @param args
-	 */
-	public static void main(String args[]) throws Exception
-	{
+    /**
+     * Main entry point to the simulator.
+     *
+     * @param args
+     */
+    public static void main(String args[]) throws Exception {
 
-		machine = new SimpleMachine();
-		Memory mem = machine.getRam();
-		mem.fill(0x00);
-		machine.getBus().write(Cpu.RST_VECTOR_L, 0x00);
-		machine.getBus().write(Cpu.RST_VECTOR_H, 0x04);
+        machine = new SimpleMachine();
+        Memory mem = machine.getRam();
+        mem.fill(0x00);
+        machine.getBus().write(Cpu.RST_VECTOR_L, 0x00);
+        machine.getBus().write(Cpu.RST_VECTOR_H, 0x04);
 
-		// Some simple code for sei, inc $d020, jmp $401
-		int addr = 0x400;
-		machine.getBus().write(addr++, 0x78);
-		machine.getBus().write(addr++, 0xee);
-		machine.getBus().write(addr++, 0x20);
-		machine.getBus().write(addr++, 0xd0);
-		machine.getBus().write(addr++, 0x4c);
-		machine.getBus().write(addr++, 0x01);
-		machine.getBus().write(addr++, 0x04);
+        // Some simple code for sei, inc $d020, jmp $401
+        int addr = 0x400;
+        machine.getBus().write(addr++, 0x78);
+        machine.getBus().write(addr++, 0xee);
+        machine.getBus().write(addr++, 0x20);
+        machine.getBus().write(addr++, 0xd0);
+        machine.getBus().write(addr++, 0x4c);
+        machine.getBus().write(addr++, 0x01);
+        machine.getBus().write(addr++, 0x04);
 
-		machine.getCpu().reset();
+        machine.getCpu().reset();
 
-		// Add some blank stack slide data so any RTI or RTS will eventually get to $0000 and get detected
-		int i;
-		for (i = 0; i < 16; i++)
-		{
-			machine.getCpu().stackPush(0);
-		}
+        // Add some blank stack slide data so any RTI or RTS will eventually get to $0000 and get detected
+        int i;
+        for (i = 0; i < 16; i++) {
+            machine.getCpu().stackPush(0);
+        }
 
-		for (i = 0; i < 10; i++)
-		{
-			machine.getCpu().step();
-			System.out.println(machine.getCpu().getCpuState().toTraceEvent());
-		}
-	}
+        for (i = 0; i < 10; i++) {
+            machine.getCpu().step();
+            System.out.println(machine.getCpu().getCpuState().toTraceEvent());
+        }
+    }
 }

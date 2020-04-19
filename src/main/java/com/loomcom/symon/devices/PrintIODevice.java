@@ -5,8 +5,7 @@ import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import cucumber.api.Scenario;
 
-public class PrintIODevice extends Device
-{
+public class PrintIODevice extends Device {
     private String mBuffer = new String();
     private Scenario mScenario = null;
     private int upperStore = 0;
@@ -19,8 +18,7 @@ public class PrintIODevice extends Device
     @Override
     public void write(int address, int data) throws MemoryAccessException {
         int register = address & 7;
-        switch(register)
-        {
+        switch (register) {
             case 0: //ouput ascii
                 mBuffer += Character.toString((char) data);
                 break;
@@ -34,14 +32,14 @@ public class PrintIODevice extends Device
                 upperStore = data;
                 break;
             case 4: //output word hex
-                mBuffer += Integer.toHexString((upperStore*256+data)) + " ";
+                mBuffer += Integer.toHexString((upperStore * 256 + data)) + " ";
                 break;
             case 5: //flush line
                 mScenario.write(mBuffer + "\n");
                 mBuffer = "";
                 break;
             case 6: //clear buffer
-                mBuffer ="";
+                mBuffer = "";
                 break;
             default:
                 break;
