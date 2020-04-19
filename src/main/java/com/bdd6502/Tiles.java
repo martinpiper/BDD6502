@@ -77,9 +77,9 @@ public class Tiles extends DisplayLayer {
             backgroundColour = data & 0xff;
         }
 
-        if (DisplayBombJack.addressActive(addressEx, addressExScreen) && (address & addressScreen) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExScreen) && DisplayBombJack.addressActive(address, addressScreen)) {
             busContention = display.getBusContentionPixels();
-            if ((address & 0x1000) > 0) {
+            if (DisplayBombJack.addressActive(address , 0x1000)) {
                 colourData[address & 0xfff] = data;
             } else {
                 screenData[address & 0xfff] = data;
@@ -87,15 +87,15 @@ public class Tiles extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (DisplayBombJack.addressActive(addressEx, addressExPlane0) && (address & addressPlane0) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExPlane0) && DisplayBombJack.addressActive(address, addressPlane0)) {
             busContention = display.getBusContentionPixels();
             plane0[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExPlane1) && (address & addressPlane1) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExPlane1) && DisplayBombJack.addressActive(address, addressPlane1)) {
             busContention = display.getBusContentionPixels();
             plane1[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExPlane2) && (address & addressPlane2) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExPlane2) && DisplayBombJack.addressActive(address, addressPlane2)) {
             busContention = display.getBusContentionPixels();
             plane2[address & 0x1fff] = data;
         }

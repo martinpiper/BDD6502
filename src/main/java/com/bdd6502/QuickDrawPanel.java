@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 class QuickDrawPanel extends JPanel {
     BufferedImage image;
     Dimension size = new Dimension();
+
     public QuickDrawPanel(int width, int height) {
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         AttachImage(img);

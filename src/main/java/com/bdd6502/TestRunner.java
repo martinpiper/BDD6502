@@ -6,7 +6,7 @@ import com.replicanet.cukesplus.Main;
 public class TestRunner {
     public static void main(String args[]) throws Exception {
         if (args.length >= 1 && args[0].compareToIgnoreCase("--exec") == 0) {
-            DisplayBombJack displayBombJack = new DisplayBombJack();
+            DisplayBombJack displayBombJack = new DisplayBombJack(0x9c00, 0x01);
             displayBombJack.addLayer(new Mode7(
                     0xa000, 0x01,
                     0x2000, 0x08,
@@ -24,7 +24,11 @@ public class TestRunner {
                     0x2000, 0x20,
                     0x4000, 0x20,
                     0x8000, 0x20));
-            displayBombJack.addLayer(new Sprites());
+            displayBombJack.addLayer(new Sprites(
+                    0x9800, 0x01,
+                    0x2000, 0x10,
+                    0x4000, 0x10,
+                    0x8000, 0x10));
             displayBombJack.InitWindow();
 
 //			displayBombJack.writeData(0x9e00, 0x01, 0xf0);

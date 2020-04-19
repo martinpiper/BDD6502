@@ -2,6 +2,10 @@ package com.bdd6502;
 
 public class Sprites extends DisplayLayer {
     int busContention = 0;
+    int addressRegisters = 0x9800, addressExRegisters = 0x01;
+    int addressPlane0 = 0x2000, addressExPlane0 = 0x10;
+    int addressPlane1 = 0x4000, addressExPlane1 = 0x10;
+    int addressPlane2 = 0x8000, addressExPlane2 = 0x10;
     byte plane0[] = new byte[0x2000];
     byte plane1[] = new byte[0x2000];
     byte plane2[] = new byte[0x2000];
@@ -15,9 +19,26 @@ public class Sprites extends DisplayLayer {
 
     int calculatedRasters[][] = new int[2][256];
 
+    public Sprites() {
+    }
+
+    public Sprites(int addressRegisters, int addressExRegisters, int addressPlane0, int addressExPlane0, int addressPlane1, int addressExPlane1, int addressPlane2, int addressExPlane2) {
+        assert (addressExRegisters == 0x01);
+        assert (addressExPlane0 == addressExPlane1);
+        assert (addressExPlane0 == addressExPlane2);
+        this.addressRegisters = addressRegisters;
+        this.addressExRegisters = addressExRegisters;
+        this.addressPlane0 = addressPlane0;
+        this.addressExPlane0 = addressExPlane0;
+        this.addressPlane1 = addressPlane1;
+        this.addressExPlane1 = addressExPlane1;
+        this.addressPlane2 = addressPlane2;
+        this.addressExPlane2 = addressExPlane2;
+    }
+
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == 0x9a00) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == (addressRegisters + 0x200)) {
             lo32 = data & 0x0f;
             if ((data & 0x10) > 0) {
                 spriteEnable = true;
@@ -25,13 +46,13 @@ public class Sprites extends DisplayLayer {
                 spriteEnable = false;
             }
         }
-        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == 0x9a01) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == (addressRegisters + 0x201)) {
             hi32 = data & 0x0f;
         }
 
-        if (DisplayBombJack.addressActive(addressEx, 0x01) && address >= 0x9820 && address < 0x9880) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address >= (addressRegisters + 0x20) && address < (addressRegisters + 0x80)) {
             busContention = display.getBusContentionPixels();
-            int spriteIndex = (address - 0x9820) / 4;
+            int spriteIndex = (address - (addressRegisters + 0x20)) / 4;
             switch (address & 0x03) {
                 case 0:
                 default: {
@@ -54,15 +75,15 @@ public class Sprites extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (DisplayBombJack.addressActive(addressEx, 0x10) && (address & 0x2000) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExPlane0) && DisplayBombJack.addressActive(address, addressPlane0)) {
             busContention = display.getBusContentionPixels();
             plane0[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressActive(addressEx, 0x10) && (address & 0x4000) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExPlane1) && DisplayBombJack.addressActive(address, addressPlane1)) {
             busContention = display.getBusContentionPixels();
             plane1[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressActive(addressEx, 0x10) && (address & 0x8000) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExPlane2) && DisplayBombJack.addressActive(address, addressPlane2)) {
             busContention = display.getBusContentionPixels();
             plane2[address & 0x1fff] = data;
         }

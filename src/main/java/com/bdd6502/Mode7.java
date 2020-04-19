@@ -97,15 +97,15 @@ public class Mode7 extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (DisplayBombJack.addressActive(addressEx, addressExMap) && (address & addressMap) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExMap) && DisplayBombJack.addressActive(address, addressMap)) {
             busContention = display.getBusContentionPixels();
             screenData[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExTiles0) && (address & addressTiles0) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExTiles0) && DisplayBombJack.addressActive(address, addressTiles0)) {
             busContention = display.getBusContentionPixels();
             tiles[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExTiles1) && (address & addressTiles1) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExTiles1) && DisplayBombJack.addressActive(address, addressTiles1)) {
             busContention = display.getBusContentionPixels();
             tiles[(address & 0x1fff) + 0x2000] = data;
         }

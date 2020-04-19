@@ -20,6 +20,7 @@ public class DisplayBombJack {
     int displayWidth = 384;
     int displayHeight = 264;
     int busContentionPalette = 0;
+    int addressPalette = 0x9c00, addressExPalette = 0x01;
     int displayH = 0, displayV = 0;
     int displayX = 0, displayY = 0;
     int displayBitmapX = 0, displayBitmapY = 0;
@@ -29,7 +30,15 @@ public class DisplayBombJack {
     int latchedPixel = 0;
     int palette[] = new int[256];
     Random random = new Random();
+
     public DisplayBombJack() {
+    }
+
+    public DisplayBombJack(int addressPalette, int addressExPalette) {
+        assert (addressExPalette == 0x01);
+        assert (addressPalette == 0x9c00);
+        this.addressPalette = addressPalette;
+        this.addressExPalette = addressExPalette;
     }
 
     static boolean addressActive(int addressEx, int selector) {
@@ -105,7 +114,7 @@ public class DisplayBombJack {
     }
 
     public void writeData(int address, int addressEx, byte data) {
-        if (addressActive(addressEx, 0x01) && address >= 0x9c00 && address < 0x9e00) {
+        if (addressActive(addressEx, addressExPalette) && address >= addressPalette && address < (addressPalette + 0x200)) {
             busContentionPalette = getBusContentionPixels();
             int index = (address & 0x1ff) >> 1;
             Color colour = new Color(palette[index]);

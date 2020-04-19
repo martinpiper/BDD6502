@@ -19,7 +19,6 @@ public class Chars extends DisplayLayer {
     public Chars(int addressScreen, int addressExScreen, int addressColour, int addressExColour, int addressPlane0, int addressExPlane0, int addressPlane1, int addressExPlane1, int addressPlane2, int addressExPlane2) {
         assert (addressExScreen == 0x01);
         assert (addressExScreen == 0x01);
-        assert (addressExScreen != addressExPlane0);
         assert (addressExPlane0 == addressExPlane1);
         assert (addressExPlane0 == addressExPlane2);
         this.addressScreen = addressScreen;
@@ -46,15 +45,15 @@ public class Chars extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (DisplayBombJack.addressActive(addressEx, addressExPlane0) && (address & addressPlane0) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExPlane0) && DisplayBombJack.addressActive(address, addressPlane0)) {
             busContention = display.getBusContentionPixels();
             plane0[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExPlane0) && (address & addressPlane1) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExPlane0) && DisplayBombJack.addressActive(address, addressPlane1)) {
             busContention = display.getBusContentionPixels();
             plane1[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExPlane0) && (address & addressPlane2) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExPlane0) && DisplayBombJack.addressActive(address, addressPlane2)) {
             busContention = display.getBusContentionPixels();
             plane2[address & 0x1fff] = data;
         }
