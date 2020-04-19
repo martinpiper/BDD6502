@@ -18,6 +18,9 @@ public class Mode7 extends DisplayLayer {
 
 
     public Mode7(int addressRegisters, int addressExRegisters, int addressMap, int addressExMap, int addressTiles0, int addressExTiles0, int addressTiles1, int addressExTiles1) {
+        assert (addressExRegisters == 0x01);
+        assert (addressExMap == addressExTiles0);
+        assert (addressExTiles0 == addressExTiles1);
         this.addressRegisters = addressRegisters;
         this.addressExRegisters = addressExRegisters;
         this.addressMap = addressMap;

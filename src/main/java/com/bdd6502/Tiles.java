@@ -2,6 +2,11 @@ package com.bdd6502;
 
 public class Tiles extends DisplayLayer {
     int busContention = 0;
+    int addressRegisters = 0x9e00, addressExRegisters = 0x01;
+    int addressScreen = 0x2000, addressExScreen = 0x80;
+    int addressPlane0 = 0x2000, addressExPlane0 = 0x40;
+    int addressPlane1 = 0x4000, addressExPlane1 = 0x40;
+    int addressPlane2 = 0x8000, addressExPlane2 = 0x40;
     byte screenData[] = new byte[0x1000];
     byte colourData[] = new byte[0x1000];
     byte plane0[] = new byte[0x2000];
@@ -11,50 +16,67 @@ public class Tiles extends DisplayLayer {
     int scrollX = 0, scrollY = 0;
     int backgroundColour = 0;
 
+    public Tiles(int addressRegisters, int addressExRegisters, int addressScreen, int addressExScreen, int addressPlane0, int addressExPlane0, int addressPlane1, int addressExPlane1, int addressPlane2, int addressExPlane2) {
+        assert (addressExRegisters == 0x01);
+        assert (addressExScreen != addressExPlane0);
+        assert (addressExPlane0 == addressExPlane1);
+        assert (addressExPlane0 == addressExPlane2);
+        this.addressRegisters = addressRegisters;
+        this.addressExRegisters = addressExRegisters;
+        this.addressScreen = addressScreen;
+        this.addressExScreen = addressExScreen;
+        this.addressPlane0 = addressPlane0;
+        this.addressExPlane0 = addressExPlane0;
+        this.addressPlane1 = addressPlane1;
+        this.addressExPlane1 = addressExPlane1;
+        this.addressPlane2 = addressPlane2;
+        this.addressExPlane2 = addressExPlane2;
+    }
+
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9e00) {
+        if (DisplayBombJack.addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x00) {
             if ((data & 0x10) > 0) {
                 enableDisplay = true;
             } else {
                 enableDisplay = false;
             }
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9e01) {
+        if (DisplayBombJack.addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x01) {
             scrollX = (scrollX & 0x0f00) | (data & 0xff);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9e02) {
+        if (DisplayBombJack.addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x02) {
             scrollX = (scrollX & 0x00ff) | ((data & 0x0f) << 8);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9e03) {
+        if (DisplayBombJack.addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x03) {
             scrollY = (scrollY & 0x0f00) | (data & 0xff);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9e04) {
+        if (DisplayBombJack.addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x04) {
             scrollY = (scrollY & 0x00ff) | ((data & 0x0f) << 8);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9e07) {
+        if (DisplayBombJack.addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x07) {
             backgroundColour = data & 0xff;
         }
 
-        if (DisplayBombJack.addressExActive(addressEx, 0x80) && address >= 0x2000 && address < 0x3000) {
+        if (DisplayBombJack.addressExActive(addressEx, addressExScreen) && (address & addressScreen) > 0) {
             busContention = display.getBusContentionPixels();
-            screenData[address & 0xfff] = data;
-        }
-        if (DisplayBombJack.addressExActive(addressEx, 0x80) && address >= 0x3000 && address < 0x4000) {
-            busContention = display.getBusContentionPixels();
-            colourData[address & 0xfff] = data;
+            if ((address & 0x1000) > 0) {
+                colourData[address & 0xfff] = data;
+            } else {
+                screenData[address & 0xfff] = data;
+            }
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (DisplayBombJack.addressExActive(addressEx, 0x40) && (address & 0x2000) > 0) {
+        if (DisplayBombJack.addressExActive(addressEx, addressExPlane0) && (address & addressPlane0) > 0) {
             busContention = display.getBusContentionPixels();
             plane0[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x40) && (address & 0x4000) > 0) {
+        if (DisplayBombJack.addressExActive(addressEx, addressExPlane1) && (address & addressPlane1) > 0) {
             busContention = display.getBusContentionPixels();
             plane1[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x40) && (address & 0x8000) > 0) {
+        if (DisplayBombJack.addressExActive(addressEx, addressExPlane2) && (address & addressPlane2) > 0) {
             busContention = display.getBusContentionPixels();
             plane2[address & 0x1fff] = data;
         }

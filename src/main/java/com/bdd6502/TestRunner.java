@@ -12,7 +12,12 @@ public class TestRunner {
                     0x2000, 0x08,
                     0x4000, 0x08,
                     0x8000, 0x08));
-            displayBombJack.addLayer(new Tiles());
+            displayBombJack.addLayer(new Tiles(
+                    0x9e00, 0x01,
+                    0x2000, 0x80,
+                    0x2000, 0x40,
+                    0x4000, 0x40,
+                    0x8000, 0x40));
             displayBombJack.addLayer(new Chars());
             displayBombJack.addLayer(new Sprites());
             displayBombJack.InitWindow();
