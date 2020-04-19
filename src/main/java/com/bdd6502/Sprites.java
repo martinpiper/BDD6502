@@ -115,9 +115,6 @@ public class Sprites extends DisplayLayer {
         calculatedRasters[onScreen][displayH] = 0;
 
         if (busContention > 0) {
-            finalPixel = display.getRandomColouredPixel();
-        }
-        if (busContention > 0) {
             busContention--;
         }
         return finalPixel;
@@ -265,6 +262,9 @@ public class Sprites extends DisplayLayer {
                 finalPixel |= 4;
             }
             finalPixel |= ((theColour & 0x1f) << 3);
+            if (busContention > 0) {
+                finalPixel = display.getRandomColouredPixel();
+            }
             int finalXPos = (spriteX[spriteIndex] + pixelIndex) & 0xff;
             // Only output the pixel if there is nothing else there
             if ((calculatedRasters[offScreen][finalXPos] & 0x07) == 0) {
