@@ -24,15 +24,15 @@ public class DisplayBombJack {
     int displayX = 0, displayY = 0;
     int displayBitmapX = 0, displayBitmapY = 0;
     boolean enablePixels = false;
-    boolean borderX = false, borderY = false;
-    boolean enableDisplay = false;
+    boolean borderX = false, borderY = false;   // Set by the Tiles layer (if added)
+    boolean enableDisplay = true;               // Set by the Tiles layer (if added)
     int latchedPixel = 0;
     int palette[] = new int[256];
     Random random = new Random();
     public DisplayBombJack() {
     }
 
-    static boolean addressExActive(int addressEx, int selector) {
+    static boolean addressActive(int addressEx, int selector) {
         if ((addressEx & selector) > 0) {
             return true;
         }
@@ -105,24 +105,7 @@ public class DisplayBombJack {
     }
 
     public void writeData(int address, int addressEx, byte data) {
-        if (addressExActive(addressEx, 0x01) && address == 0x9e00) {
-            if ((data & 0x20) > 0) {
-                enableDisplay = true;
-            } else {
-                enableDisplay = false;
-            }
-            if ((data & 0x80) > 0) {
-                borderY = true;
-            } else {
-                borderY = false;
-            }
-            if ((data & 0x40) > 0) {
-                borderX = true;
-            } else {
-                borderX = false;
-            }
-        }
-        if (addressExActive(addressEx, 0x01) && address >= 0x9c00 && address < 0x9e00) {
+        if (addressActive(addressEx, 0x01) && address >= 0x9c00 && address < 0x9e00) {
             busContentionPalette = getBusContentionPixels();
             int index = (address & 0x1ff) >> 1;
             Color colour = new Color(palette[index]);

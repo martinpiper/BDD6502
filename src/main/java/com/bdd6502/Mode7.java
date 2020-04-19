@@ -16,6 +16,8 @@ public class Mode7 extends DisplayLayer {
     int x = 0, y = 0;
     int xy = 0, yx = 0;
 
+    public Mode7() {
+    }
 
     public Mode7(int addressRegisters, int addressExRegisters, int addressMap, int addressExMap, int addressTiles0, int addressExTiles0, int addressTiles1, int addressExTiles1) {
         assert (addressExRegisters == 0x01);
@@ -33,77 +35,77 @@ public class Mode7 extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters) {
             dx = (dx & 0xffff00) | (data & 0xff);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x01) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x01) {
             dx = (dx & 0xff00ff) | ((data & 0xff) << 8);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x02) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x02) {
             dx = (dx & 0x00ffff) | ((data & 0xff) << 16);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x03) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x03) {
             dxy = (dxy & 0xffff00) | (data & 0xff);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x04) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x04) {
             dxy = (dxy & 0xff00ff) | ((data & 0xff) << 8);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x05) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x05) {
             dxy = (dxy & 0x00ffff) | ((data & 0xff) << 16);
         }
 
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x06) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x06) {
             dy = (dy & 0xffff00) | (data & 0xff);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x07) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x07) {
             dy = (dy & 0xff00ff) | ((data & 0xff) << 8);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x08) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x08) {
             dy = (dy & 0x00ffff) | ((data & 0xff) << 16);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x09) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x09) {
             dyx = (dyx & 0xffff00) | (data & 0xff);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x0a) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x0a) {
             dyx = (dyx & 0xff00ff) | ((data & 0xff) << 8);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x0b) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x0b) {
             dyx = (dyx & 0x00ffff) | ((data & 0xff) << 16);
         }
 
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x0c) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x0c) {
             xorg = (xorg & 0xffff00) | (data & 0xff);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x0d) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x0d) {
             xorg = (xorg & 0xff00ff) | ((data & 0xff) << 8);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x0e) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x0e) {
             xorg = (xorg & 0x00ffff) | ((data & 0xff) << 16);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x0f) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x0f) {
             yorg = (yorg & 0xffff00) | (data & 0xff);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x10) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x10) {
             yorg = (yorg & 0xff00ff) | ((data & 0xff) << 8);
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x11) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x11) {
             yorg = (yorg & 0x00ffff) | ((data & 0xff) << 16);
         }
 
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == addressRegisters + 0x14) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == addressRegisters + 0x14) {
             backgroundColour = data & 0xff;
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (DisplayBombJack.addressExActive(addressEx, addressExMap) && (address & addressMap) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExMap) && (address & addressMap) > 0) {
             busContention = display.getBusContentionPixels();
             screenData[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressExActive(addressEx, addressExTiles0) && (address & addressTiles0) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExTiles0) && (address & addressTiles0) > 0) {
             busContention = display.getBusContentionPixels();
             tiles[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressExActive(addressEx, addressExTiles1) && (address & addressTiles1) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, addressExTiles1) && (address & addressTiles1) > 0) {
             busContention = display.getBusContentionPixels();
             tiles[(address & 0x1fff) + 0x2000] = data;
         }

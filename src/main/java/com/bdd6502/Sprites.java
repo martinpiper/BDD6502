@@ -17,7 +17,7 @@ public class Sprites extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9a00) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == 0x9a00) {
             lo32 = data & 0x0f;
             if ((data & 0x10) > 0) {
                 spriteEnable = true;
@@ -25,11 +25,11 @@ public class Sprites extends DisplayLayer {
                 spriteEnable = false;
             }
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address == 0x9a01) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address == 0x9a01) {
             hi32 = data & 0x0f;
         }
 
-        if (DisplayBombJack.addressExActive(addressEx, 0x01) && address >= 0x9820 && address < 0x9880) {
+        if (DisplayBombJack.addressActive(addressEx, 0x01) && address >= 0x9820 && address < 0x9880) {
             busContention = display.getBusContentionPixels();
             int spriteIndex = (address - 0x9820) / 4;
             switch (address & 0x03) {
@@ -54,15 +54,15 @@ public class Sprites extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (DisplayBombJack.addressExActive(addressEx, 0x10) && (address & 0x2000) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, 0x10) && (address & 0x2000) > 0) {
             busContention = display.getBusContentionPixels();
             plane0[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x10) && (address & 0x4000) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, 0x10) && (address & 0x4000) > 0) {
             busContention = display.getBusContentionPixels();
             plane1[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressExActive(addressEx, 0x10) && (address & 0x8000) > 0) {
+        if (DisplayBombJack.addressActive(addressEx, 0x10) && (address & 0x8000) > 0) {
             busContention = display.getBusContentionPixels();
             plane2[address & 0x1fff] = data;
         }
