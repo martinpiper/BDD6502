@@ -1,7 +1,6 @@
 package com.bdd6502;
+
 import org.apache.commons.io.FileUtils;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 import javax.swing.*;
 import java.awt.*;

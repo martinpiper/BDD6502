@@ -1,4 +1,5 @@
 package com.bdd6502;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -24,8 +25,8 @@ public class Tiles extends DisplayLayer {
     public Tiles(int addressRegisters, int addressExScreen, int addressExPlane0) {
         assertThat(addressRegisters, is(greaterThanOrEqualTo(0x8000)));
         assertThat(addressRegisters, is(lessThan(0xc000)));
-        assertThat(addressRegisters & 0x7ff ,is(equalTo(0x600)));
-        assertThat(addressExScreen , is (not(equalTo(addressExPlane0))));
+        assertThat(addressRegisters & 0x7ff, is(equalTo(0x600)));
+        assertThat(addressExScreen, is(not(equalTo(addressExPlane0))));
         this.addressRegisters = addressRegisters;
         this.addressExScreen = addressExScreen;
         this.addressExPlane0 = addressExPlane0;
@@ -76,7 +77,7 @@ public class Tiles extends DisplayLayer {
 
         if (DisplayBombJack.addressActive(addressEx, addressExScreen) && DisplayBombJack.addressActive(address, addressScreen)) {
             busContention = display.getBusContentionPixels();
-            if (DisplayBombJack.addressActive(address , 0x1000)) {
+            if (DisplayBombJack.addressActive(address, 0x1000)) {
                 colourData[address & 0xfff] = data;
             } else {
                 screenData[address & 0xfff] = data;

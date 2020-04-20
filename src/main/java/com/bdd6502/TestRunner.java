@@ -8,7 +8,7 @@ public class TestRunner {
         if (args.length >= 1 && args[0].compareToIgnoreCase("--execVideoTest") == 0) {
             DisplayBombJack displayBombJack = new DisplayBombJack();
             displayBombJack.addLayer(new Mode7(0xa000, 0x08));
-            displayBombJack.addLayer(new Tiles(0x9e00, 0x80,0x40));
+            displayBombJack.addLayer(new Tiles(0x9e00, 0x80, 0x40));
             displayBombJack.addLayer(new Chars(0x9000, 0x20));
             displayBombJack.addLayer(new Sprites(0x9800, 0x10));
             displayBombJack.InitWindow();

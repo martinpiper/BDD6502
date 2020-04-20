@@ -1,4 +1,5 @@
 package com.bdd6502;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -21,7 +22,7 @@ public class Chars extends DisplayLayer {
     public Chars(int addressScreen, int addressExPlane0) {
         assertThat(addressScreen, is(greaterThanOrEqualTo(0x8000)));
         assertThat(addressScreen, is(lessThan(0xc000)));
-        assertThat (addressScreen & 0x7ff , is(equalTo(0x00)));
+        assertThat(addressScreen & 0x7ff, is(equalTo(0x00)));
         this.addressScreen = addressScreen;
         this.addressColour = addressScreen + 0x400;
         this.addressExPlane0 = addressExPlane0;
