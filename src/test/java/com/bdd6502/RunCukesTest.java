@@ -1,3 +1,5 @@
+package com.bdd6502;
+
 import com.replicanet.cukesplus.junit.CucumberPlus;
 import cucumber.api.CucumberOptions;
 import org.junit.runner.RunWith;

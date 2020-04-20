@@ -21,7 +21,7 @@ Feature: Assemble 6502 code test
     And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
     And I load prg "test.prg"
     And I load labels "test.lbl"
-    Then I expect to see $400 equal $a9
+    Then I expect to see $400 equal 0xa9
     Then I expect to see $400 contain $81
     Then I expect to see $400 exclude $40
     # The above code is actually 100 instructions long when executing

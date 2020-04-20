@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/assemble.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/assemble.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/RunCukesTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/bdd6502/RunCukesTest.java" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <ignored path="BDD6502.iws" />
@@ -22,62 +23,16 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="-1779518983">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="42" />
-          <entry key="project.open.time.1" value="5" />
-          <entry key="project.open.time.10" value="3" />
-          <entry key="project.open.time.11" value="1" />
-          <entry key="project.open.time.13" value="1" />
-          <entry key="project.open.time.24" value="1" />
-          <entry key="project.open.time.5" value="4" />
-          <entry key="project.open.time.6" value="10" />
-          <entry key="project.open.time.7" value="7" />
-          <entry key="project.open.time.8" value="7" />
-          <entry key="project.open.time.9" value="3" />
-          <entry key="project.opened" value="42" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="CLASS" value="9" />
-          <entry key="JAVA" value="87" />
-          <entry key="PLAIN_TEXT" value="19" />
-          <entry key="Substeps" value="30" />
-          <entry key="XML" value="6" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="JAVA" value="18512" />
-          <entry key="PLAIN_TEXT" value="1692" />
-          <entry key="Substeps" value="1593" />
-          <entry key="XML" value="4" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
   <component name="FavoritesManager">
     <favorites_list name="BDD6502" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="28" selection-start-line="28" selection-end-line="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="352">
-              <caret line="184" column="46" lean-forward="true" selection-start-line="184" selection-start-column="46" selection-end-line="184" selection-end-column="46" />
+            <state relative-caret-position="182">
+              <caret line="174" column="63" selection-start-line="174" selection-start-column="63" selection-end-line="174" selection-end-column="63" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -86,19 +41,52 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/TODO.txt">
+        <entry file="file://$PROJECT_DIR$/src/test/java/com/bdd6502/RunCukesTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" column="49" selection-start-line="2" selection-start-column="49" selection-end-line="2" selection-end-column="49" />
+            <state relative-caret-position="136">
+              <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Done.txt">
+        <entry file="file://$PROJECT_DIR$/src/test/java/TestGlue/GlueTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-6">
-              <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+            <state relative-caret-position="573">
+              <caret line="64" lean-forward="true" selection-start-line="64" selection-end-line="64" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/features/assemble.feature">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="221">
+              <caret line="13" column="12" lean-forward="true" selection-start-line="13" selection-start-column="12" selection-end-line="13" selection-end-column="12" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="78" column="43" lean-forward="true" selection-start-line="78" selection-start-column="43" selection-end-line="78" selection-end-column="43" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/resources/test.lbl">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
             </state>
           </provider>
         </entry>
@@ -225,12 +213,10 @@
         <option value="$PROJECT_DIR$/features/tracevaluelookup.feature" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/features/MemoryRangeCheck.feature" />
-        <option value="$PROJECT_DIR$/features/assemble.feature" />
         <option value="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Bus.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/Device.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/Memory.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java" />
-        <option value="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" />
         <option value="$PROJECT_DIR$/features/UnitialisedMemory.feature" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/main/java/com/bdd6502/QuickDrawPanel.java" />
@@ -243,6 +229,9 @@
         <option value="$PROJECT_DIR$/TODO.txt" />
         <option value="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java" />
+        <option value="$PROJECT_DIR$/src/test/java/com/bdd6502/RunCukesTest.java" />
+        <option value="$PROJECT_DIR$/features/assemble.feature" />
+        <option value="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" />
       </list>
     </option>
   </component>
@@ -474,6 +463,14 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="bdd6502" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BDD6502" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BDD6502" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="TestGlue" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -487,12 +484,12 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1587308245161" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1587375460569" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
     <property name="dynamic.classpath" value="false" />
     <property name="extract.method.default.visibility" value="public" />
@@ -507,18 +504,18 @@
     <key name="CreateTestDialog.RecentsKey">
       <recent name="TestGlue" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Work\BDD6502\src\test\resources" />
-    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.bdd6502" />
       <recent name="bdd6502" />
     </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Work\BDD6502\features" />
+    </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Work\BDD6502\features" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Work\BDD6502\src\test\resources" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -533,20 +530,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner --execVideoTest">
-    <configuration default="true" type="executeSpecs" factoryName="Gauge Execution">
-      <setting name="environment" value="" />
-      <setting name="specsToExecute" value="" />
-      <setting name="tags" value="" />
-      <setting name="parallelNodes" value="" />
-      <setting name="execInParallel" value="false" />
-      <setting name="programParameters" value="" />
-      <setting name="workingDirectory" value="" />
-      <setting name="moduleName" value="" />
-      <envMap />
-      <setting name="rowsRange" value="" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="Application.TestRunner no parameters">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -583,7 +567,9 @@
       </method>
     </configuration>
     <configuration name="All features" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java">
-      <option name="MAIN_CLASS_NAME" value="cucumber.api.cli.Main" />
+      <option name="FILE_PATH" value="C:\Work\BDD6502\features" />
+      <option name="GLUE" value="TestGlue" />
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <extension name="coverage">
         <pattern>
@@ -597,10 +583,11 @@
     </configuration>
     <configuration name="Compare Test" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java">
       <output_file path="$USER_HOME$/Documents/charshifter/log.log" is_save="true" />
+      <option name="FILE_PATH" value="C:\Work\BDD6502\features" />
+      <option name="GLUE" value="TestGlue" />
       <option name="MAIN_CLASS_NAME" value="cucumber.api.cli.Main" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value=" --format &quot;pretty&quot; --monochrome" />
-      <option name="WORKING_DIRECTORY" value="file://$USER_HOME$/Documents/charshifter" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="cucumber.api.cli.*" />
@@ -612,7 +599,9 @@
       </method>
     </configuration>
     <configuration name="Scenario: Simple binary test code" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="cucumber.api.cli.Main" />
+      <option name="FILE_PATH" value="C:\Work\BDD6502\features" />
+      <option name="GLUE" value="TestGlue" />
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value=" --format org.jetbrains.plugins.cucumber.java.run.CucumberJvmSMFormatter --monochrome --name &quot;^Simple binary test code$&quot;" />
       <extension name="coverage">
@@ -626,7 +615,9 @@
       </method>
     </configuration>
     <configuration name="Scenario: Simple memory test code" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="cucumber.api.cli.Main" />
+      <option name="FILE_PATH" value="C:\Work\BDD6502\features" />
+      <option name="GLUE" value="TestGlue" />
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value=" --format org.jetbrains.plugins.cucumber.java.run.CucumberJvmSMFormatter --monochrome --name &quot;^Simple memory test code$&quot;" />
       <extension name="coverage">
@@ -640,6 +631,8 @@
       </method>
     </configuration>
     <configuration name="Simple ALL" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java">
+      <option name="FILE_PATH" value="C:\Work\BDD6502\features" />
+      <option name="GLUE" value="TestGlue" />
       <option name="MAIN_CLASS_NAME" value="cucumber.api.cli.Main" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value=" --format org.jetbrains.plugins.cucumber.java.run.CucumberJvmSMFormatter --monochrome" />
@@ -655,10 +648,11 @@
     </configuration>
     <configuration name="Trace Test" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java">
       <output_file path="$USER_HOME$/Documents/charshifter/log.log" is_save="true" />
+      <option name="FILE_PATH" value="C:\Work\BDD6502\features" />
+      <option name="GLUE" value="TestGlue" />
       <option name="MAIN_CLASS_NAME" value="cucumber.api.cli.Main" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value=" --format &quot;pretty&quot; --monochrome" />
-      <option name="WORKING_DIRECTORY" value="file://$USER_HOME$/Documents/charshifter" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="cucumber.api.cli.*" />
@@ -688,8 +682,8 @@
     </configuration>
     <configuration name="JUnit all" type="JUnit" factoryName="JUnit">
       <module name="BDD6502" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="RunCukesTest" />
+      <option name="PACKAGE_NAME" value="com.bdd6502" />
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.RunCukesTest" />
       <option name="METHOD_NAME" value="" />
       <option name="VM_PARAMETERS" value="-ea -Dbdd6502.trace=true" />
       <option name="PARAMETERS" value="" />
@@ -845,9 +839,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="JUnit_all - 2019.02.23 at 21h 54m 56s.xml">
-      <configuration name="JUnit all" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="JUnit_all - 2019.02.23 at 22h 19m 22s.xml">
       <configuration name="JUnit all" configurationId="JUnit" />
     </history-entry>
@@ -875,6 +866,9 @@
     <history-entry file="JUnit_all - 2020.04.11 at 18h 17m 11s.xml">
       <configuration name="JUnit all" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="JUnit_all - 2020.04.20 at 17h 33m 10s.xml">
+      <configuration name="JUnit all" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -889,7 +883,7 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15778251" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15938166" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
       <window_info id="Palette&#9;" order="3" />
@@ -1072,13 +1066,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$MAVEN_REPOSITORY$/com/replicanet/cukesplus-core/0.0.2-SNAPSHOT/cukesplus-core-0.0.2-SNAPSHOT.jar!/com/replicanet/cukesplus/Main.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="29" column="43" lean-forward="true" selection-start-line="29" selection-start-column="43" selection-end-line="29" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/features/simple.feature">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -1142,13 +1129,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="6" column="10" selection-start-line="6" selection-start-column="10" selection-end-line="6" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/features/assemble.feature">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="32" column="37" selection-start-line="32" selection-start-column="37" selection-end-line="32" selection-end-column="37" />
         </state>
       </provider>
     </entry>
@@ -1243,16 +1223,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="38" column="88" selection-start-line="38" selection-start-column="88" selection-end-line="38" selection-end-column="88" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk-11.0.1/lib/src.zip!/java.desktop/java/awt/Window.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="12682">
@@ -1264,13 +1234,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="94">
           <caret line="140" lean-forward="true" selection-start-line="140" selection-end-line="140" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/RunCukesTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
         </state>
       </provider>
     </entry>
@@ -1351,13 +1314,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="27" column="49" lean-forward="true" selection-start-line="27" selection-start-column="49" selection-end-line="27" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar!/org/hamcrest/MatcherAssert.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -1365,10 +1321,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/TestGlue/GlueTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" selection-start-line="7" selection-end-line="9" selection-end-column="39" />
+        <state relative-caret-position="476">
+          <caret line="28" selection-start-line="28" selection-end-line="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TODO.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="49" selection-start-line="2" selection-start-column="49" selection-end-line="2" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Done.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
         </state>
       </provider>
     </entry>
@@ -1412,34 +1382,61 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Done.txt">
+    <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6">
-          <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TODO.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="49" selection-start-line="2" selection-start-column="49" selection-end-line="2" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="28" selection-start-line="28" selection-end-line="28" />
+        <state relative-caret-position="241">
+          <caret line="27" column="49" lean-forward="true" selection-start-line="27" selection-start-column="49" selection-end-line="27" selection-end-column="49" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="184" column="46" lean-forward="true" selection-start-line="184" selection-start-column="46" selection-end-line="184" selection-end-column="46" />
+        <state relative-caret-position="182">
+          <caret line="174" column="63" selection-start-line="174" selection-start-column="63" selection-end-line="174" selection-end-column="63" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/com/bdd6502/RunCukesTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/resources/test.lbl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/TestGlue/GlueTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="573">
+          <caret line="64" lean-forward="true" selection-start-line="64" selection-end-line="64" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="78" column="43" lean-forward="true" selection-start-line="78" selection-start-column="43" selection-end-line="78" selection-end-column="43" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/features/assemble.feature">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="12" lean-forward="true" selection-start-line="13" selection-start-column="12" selection-end-line="13" selection-end-column="12" />
         </state>
       </provider>
     </entry>

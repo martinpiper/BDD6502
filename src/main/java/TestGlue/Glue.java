@@ -72,6 +72,10 @@ public class Glue {
             Integer ivalue = Integer.parseInt(origValueIn.substring(1), 16);
             return ivalue.intValue();
         }
+        if (origValueIn.length() > 2 && origValueIn.charAt(0) == '0' && origValueIn.charAt(1) == 'x') {
+            Integer ivalue = Integer.parseInt(origValueIn.substring(2), 16);
+            return ivalue.intValue();
+        }
         if (origValueIn.charAt(0) == '%') {
             Integer ivalue = Integer.parseInt(origValueIn.substring(1), 2);
             return ivalue.intValue();
@@ -118,6 +122,10 @@ public class Glue {
             }
             if (value.charAt(0) == '$') {
                 Integer ivalue = Integer.parseInt(value.substring(1), 16);
+                value = ivalue.toString();
+            }
+            if (value.length() > 2 && value.charAt(0) == '0' && value.charAt(1) == 'x') {
+                Integer ivalue = Integer.parseInt(value.substring(2), 16);
                 value = ivalue.toString();
             }
             if (value.charAt(0) == '%') {
