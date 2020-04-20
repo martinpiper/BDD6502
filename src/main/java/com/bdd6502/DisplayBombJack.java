@@ -31,6 +31,16 @@ public class DisplayBombJack {
     int palette[] = new int[256];
     Random random = new Random();
 
+    public boolean isVsyncTriggered() {
+        return vsyncTriggered;
+    }
+
+    public void resetVsyncTriggered() {
+        vsyncTriggered =false;
+    }
+
+    boolean vsyncTriggered = false;
+
     public DisplayBombJack() {
     }
 
@@ -52,7 +62,7 @@ public class DisplayBombJack {
     public void InitWindow(int width, int height) {
         // Testing window drawing in a loop for eventual graphics updates
         window = new JFrame();
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.getContentPane().setPreferredSize(new Dimension(width, height));
         window.pack();
 
@@ -124,13 +134,13 @@ public class DisplayBombJack {
         }
     }
 
-    void calculatePixelsUntil(int waitH, int waitV) {
+    public void calculatePixelsUntil(int waitH, int waitV) {
         do {
             calculatePixel();
         } while (!(displayH == waitH && displayV == waitV));
     }
 
-    void calculatePixel() {
+    public void calculatePixel() {
         boolean _hSync = true, _vSync = true;
 
         if (displayX >= 0 && displayX < 0x80) {
@@ -149,6 +159,9 @@ public class DisplayBombJack {
 
         if (displayY >= 0 && displayY < 0x08) {
             displayV = 0xf8 + displayY;
+            if (_vSync) {
+                vsyncTriggered = true;
+            }
             _vSync = false;
         } else {
             displayV = displayY - 0x08;

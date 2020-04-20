@@ -1,13 +1,18 @@
 package TestGlue;
 
+import com.bdd6502.DisplayBombJack;
+import com.bdd6502.Mode7;
+import com.bdd6502.Sprites;
 import com.loomcom.symon.Cpu;
 import com.loomcom.symon.devices.Device;
 import com.loomcom.symon.devices.Memory;
 import com.loomcom.symon.devices.PrintIODevice;
+import com.loomcom.symon.devices.UserPortTo24BitAddress;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
+import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
@@ -44,6 +49,8 @@ public class Glue {
     static private int lastStackValue = -1;
     static private boolean enableUnitialisedReadProtection = false;
     static private boolean enableUnitialisedReadProtectionWithFail = false;
+    static private DisplayBombJack displayBombJack = null;
+
     Scenario scenario = null;
     ScriptEngineManager manager = new ScriptEngineManager();
     ScriptEngine engine = manager.getEngineByName("JavaScript");
@@ -556,6 +563,15 @@ public class Glue {
 
         // Pushing lots of 0 onto the stack will eventually return to address 1
         while (machine.getCpu().getProgramCounter() > 1) {
+
+            // Execute video clocks while running the CPU
+            if (displayBombJack != null) {
+                for (int i = 0 ; i < 8 ; i++) {
+                    displayBombJack.calculatePixel();
+                }
+                displayBombJack.RepaintWindow();
+            }
+
             if (untilPC == machine.getCpu().getProgramCounter()) {
                 break;
             }
@@ -1018,5 +1034,52 @@ public class Glue {
     @Then("^property \"([^\"]*)\" must contain string ignoring whitespace \"([^\"]*)\"$")
     public void property_must_contain_ignoring_whitespace(String arg1, String arg2) throws Throwable {
         assertThat(System.getProperty(arg1).replaceAll("\\s+", ""), containsString(arg2.replaceAll("\\s+", "")));
+    }
+
+    @Given("^a new video display$")
+    public void aNewVideoDisplay() {
+        displayBombJack = new DisplayBombJack();
+    }
+
+    @Given("^show video window$")
+    public void showVideoWindow() {
+        displayBombJack.InitWindow();
+    }
+
+    @Given("^render a video display frame$")
+    public void renderAVideoDisplayFrame() {
+        displayBombJack.calculatePixelsUntil(0x190, 0x00);
+    }
+
+    @Given("^a user port to 24 bit bus is installed$")
+    public void aUserportToBitBusIsInstalled() throws MemoryRangeException {
+        assertThat(displayBombJack,is(notNullValue()));
+        machine.getBus().addDevice(new UserPortTo24BitAddress(scenario, displayBombJack));
+    }
+
+    @Given("^add a Mode7 layer with registers at '(.*)' and addressEx '(.*)'$")
+    public void addAModeDisplayWithRegistersAtXaAndAddressExX(String addressRegisters, String addressExMap) throws ScriptException {
+        displayBombJack.addLayer(new Mode7(valueToInt(addressRegisters), valueToInt(addressExMap)));
+    }
+
+    @Given("^add a Sprites layer with registers at '(.*)' and addressEx '(.*)'$")
+    public void addASpritesLayerWithRegistersAtXAndAddressExX(String addressRegisters, String addressEx) throws ScriptException {
+        displayBombJack.addLayer(new Sprites(valueToInt(addressRegisters), valueToInt(addressEx)));
+    }
+
+    @Given("^write data from file \"([^\"]*)\" to 24bit bus at '(.*)' and addressEx '(.*)'$")
+    public void writeDataFromFileToBitBusAtXCAndAddressExX(String filename, String address, String addressEx) throws Throwable {
+        displayBombJack.writeDataFromFile(valueToInt(address), valueToInt(addressEx), filename);
+    }
+
+    @When("^rendering the video until window closed$")
+    public void renderingTheVideoUntilWindowClosed() throws InterruptedException {
+        while (displayBombJack.isVisible()) {
+            renderAVideoDisplayFrame();
+            displayBombJack.RepaintWindow();
+
+            Thread.sleep(10);
+
+        }
     }
 }

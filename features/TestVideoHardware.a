@@ -1,0 +1,119 @@
+	!sal
+	!pdb "t.pdb"
+	!source "stdlib/stdlib.a"
+	*=$200
+	start
+		sei
+		ldx #$ff
+		txs
+
+		jsr init24BitBus
+
+		jsr videoDisableDisplay
+		jsr videoEnableDisplay
+		jsr waitVSYnc
+
+		jsr reset24BitBus
+		jsr setAddressSpritesControl
+		lda #$10
+		sta $dd01
+		lda #$00
+		sta $dd01
+
+		jsr setAddressSprites
+		; Write a test sprite frame 4 palette 1 at $80,$80
+		lda #$04
+		sta $dd01
+		lda #$01
+		sta $dd01
+		lda #$80
+		sta $dd01
+		sta $dd01
+		jsr reset24BitBus
+
+		jsr waitVSYnc
+		jsr waitVSYnc
+
+		rts
+
+	init24BitBus
+		; Setup PA2 for writing
+		lda #%100
+		sta $dd02
+
+		; Setup output of 8 bits
+		lda #$ff
+		sta $dd03
+		rts
+
+	; Waits for vsync to be triggered from the video
+	waitVSYnc
+		lda #%10000
+	.l2
+		bit $dd0d
+		beq .l2
+		rts
+
+	; Resets the 24 bit bus
+	reset24BitBus
+		; Reset the state input again
+		lda #%000
+		sta $dd00
+		lda #%100
+		sta $dd00
+		; Send zero bytes for the bus and data
+		lda #0
+		sta $dd01
+		sta $dd01
+		sta $dd01
+		sta $dd01
+		; And reset the state input again
+		lda #%000
+		sta $dd00
+		lda #%100
+		sta $dd00
+		rts
+
+	videoDisableDisplay
+		jsr setAddressVideoControlRegisters
+		lda #$00
+		sta $dd01
+		jsr reset24BitBus
+		rts
+
+	videoEnableDisplay
+		jsr setAddressVideoControlRegisters
+		lda #$30
+		sta $dd01
+		jsr reset24BitBus
+		rts
+
+	setAddressVideoControlRegisters
+		jsr reset24BitBus
+		lda #$01; EBBS
+		sta $dd01
+		lda #$00
+		sta $dd01
+		lda #$9e
+		sta $dd01
+		rts
+
+	setAddressSprites
+		jsr reset24BitBus
+		lda #$01; EBBS
+		sta $dd01
+		lda #$20
+		sta $dd01
+		lda #$98
+		sta $dd01
+		rts
+
+	setAddressSpritesControl
+		jsr reset24BitBus
+		lda #$01; EBBS
+		sta $dd01
+		lda #$00
+		sta $dd01
+		lda #$9a
+		sta $dd01
+		rts
