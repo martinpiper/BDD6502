@@ -105,6 +105,7 @@ public class TestRunner {
             int frame = 0;
             while (displayBombJack.isVisible()) {
 
+                // Contention timing test
                 if (false) {
                     for (int i = 0; i < 384 * 64; i++) {
                         displayBombJack.calculatePixel();
@@ -217,6 +218,11 @@ public class TestRunner {
                         displayBombJack.writeData(0x9821 + (i * 4), 0x01, i | (((frame / 50) & 0x03) << 6) | fullHeight);
                         displayBombJack.writeData(0x9822 + (i * 4), 0x01, ypos);
                         displayBombJack.writeData(0x9823 + (i * 4), 0x01, xpos);
+
+                        // Exercise sprite contention timings
+                        for (int j = 0; j < 8; j++) {
+//                            displayBombJack.calculatePixel();
+                        }
                     }
                 }
 
@@ -225,6 +231,7 @@ public class TestRunner {
                 frame++;
                 Thread.sleep(10);
             }
+            System.exit(0);
         }
 
         if (args.length == 0) {

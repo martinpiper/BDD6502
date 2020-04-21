@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class Mode7 extends DisplayLayer {
-    int busContention = 0;
     int addressRegisters = 0xa000, addressExRegisters = 0x01;
     int addressMap = 0x2000, addressExMap = 0x08;
     int addressTiles0 = 0x4000, addressExTiles0 = 0x08;
@@ -157,12 +156,6 @@ public class Mode7 extends DisplayLayer {
         if (finalPixel == 0) {
             finalPixel = backgroundColour;
         }
-        if (busContention > 0) {
-            finalPixel = display.getRandomColouredPixel();
-        }
-        if (busContention > 0) {
-            busContention--;
-        }
-        return finalPixel;
+        return getByteOrContention(finalPixel);
     }
 }

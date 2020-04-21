@@ -1,119 +1,214 @@
-	!sal
-	!pdb "t.pdb"
-	!source "stdlib/stdlib.a"
-	*=$200
-	start
-		sei
-		ldx #$ff
-		txs
+!sal
+!pdb "t.pdb"
+!source "stdlib/stdlib.a"
+*=$200
+start
+	sei
+	ldx #$ff
+	txs
 
-		jsr init24BitBus
+	jsr init24BitBus
 
-		jsr videoDisableDisplay
-		jsr videoEnableDisplay
-		jsr waitVSYnc
+	jsr videoDisableDisplay
+	lda #$30
+	jsr videoEnableDisplay
+	jsr waitVSYnc
 
-		jsr reset24BitBus
-		jsr setAddressSpritesControl
-		lda #$10
-		sta $dd01
-		lda #$00
-		sta $dd01
+	; Setup a background colour that is visible
+	jsr setAddressPalette
+	lda #$21
+	sta $dd01
+	sta $dd01
+	jsr reset24BitBus
+	jsr waitVSYnc
 
-		jsr setAddressSprites
-		; Write a test sprite frame 4 palette 1 at $80,$80
-		lda #$04
-		sta $dd01
-		lda #$01
-		sta $dd01
-		lda #$80
-		sta $dd01
-		sta $dd01
-		jsr reset24BitBus
+	jsr reset24BitBus
+	jsr setAddressSpritesControl
+	lda #$10
+	sta $dd01
+	lda #$00
+	sta $dd01
 
-		jsr waitVSYnc
-		jsr waitVSYnc
+	; Write a test sprite frame 4 palette 1 at $80,$80
+	; This also visually demonstrates how the 24 bit memory bus auto-increments the address after each write
+	+MWordValueTo_AX SpriteFrame0
+	ldy #SpriteFrame0Size
+	jsr SpriteDataCopy
 
-		rts
+	jsr waitVSYnc
 
-	init24BitBus
-		; Setup PA2 for writing
-		lda #%100
-		sta $dd02
+	; Move sprites into corners
+	+MWordValueTo_AX SpriteFrame1
+	ldy #SpriteFrame1Size
+	jsr SpriteDataCopy
 
-		; Setup output of 8 bits
-		lda #$ff
-		sta $dd03
-		rts
+	jsr waitVSYnc
+	
+	; Shrink x&y borders
+	lda #$f0
+	jsr videoEnableDisplay
 
-	; Waits for vsync to be triggered from the video
-	waitVSYnc
-		lda #%10000
-	.l2
-		bit $dd0d
-		beq .l2
-		rts
+	jsr waitVSYnc
 
-	; Resets the 24 bit bus
-	reset24BitBus
-		; Reset the state input again
-		lda #%000
-		sta $dd00
-		lda #%100
-		sta $dd00
-		; Send zero bytes for the bus and data
-		lda #0
-		sta $dd01
-		sta $dd01
-		sta $dd01
-		sta $dd01
-		; And reset the state input again
-		lda #%000
-		sta $dd00
-		lda #%100
-		sta $dd00
-		rts
+	; Full borders again
+	lda #$30
+	jsr videoEnableDisplay
+	
+	; Demonstrate video bus contention handling by updating sprite registers during the visible portion of the screen
+	; Basically, this writes more data in the vblank than there is CPU time for
+	; The writes are timed to complete before the bottom sprites are displayed
+.do1
+	+MWordValueTo_AX SpriteFrame1
+	ldy #SpriteFrame1Size
+	jsr SpriteDataCopy
+	dec .counter1
+	bne .do1
 
-	videoDisableDisplay
-		jsr setAddressVideoControlRegisters
-		lda #$00
-		sta $dd01
-		jsr reset24BitBus
-		rts
+	jsr reset24BitBus
+	
+	; Write to the mode7 background colour register at $01a014
+	lda #$01; EBBS
+	sta $dd01
+	lda #$14
+	sta $dd01
+	lda #$a0
+	sta $dd01
+	lda #14
+	sta $dd01
+	jsr reset24BitBus
 
-	videoEnableDisplay
-		jsr setAddressVideoControlRegisters
-		lda #$30
-		sta $dd01
-		jsr reset24BitBus
-		rts
+	
+	jsr waitVSYnc
 
-	setAddressVideoControlRegisters
-		jsr reset24BitBus
-		lda #$01; EBBS
-		sta $dd01
-		lda #$00
-		sta $dd01
-		lda #$9e
-		sta $dd01
-		rts
+	rts
+.counter1 !by 32
 
-	setAddressSprites
-		jsr reset24BitBus
-		lda #$01; EBBS
-		sta $dd01
-		lda #$20
-		sta $dd01
-		lda #$98
-		sta $dd01
-		rts
+; Sprite positions
+SpriteFrame0
+	!by $04,$01,$80,$00
+	!by $04,$81,$80,$28
+	!by $04,$41,$80,$50
+	!by $04,$c1,$80,$78
+SpriteFrame0Size = * - SpriteFrame0
 
-	setAddressSpritesControl
-		jsr reset24BitBus
-		lda #$01; EBBS
-		sta $dd01
-		lda #$00
-		sta $dd01
-		lda #$9a
-		sta $dd01
-		rts
+SpriteFrame1
+	!by $04,$01,$10,$00
+	!by $04,$81,$10,$f0
+	!by $04,$41,$e0,$00
+	!by $04,$c1,$e0,$f0
+SpriteFrame1Size = * - SpriteFrame1
+
+SpriteDataCopy
+	pha
+	jsr setAddressSprites
+	pla
+	jsr copySmallDataTo24BitBus
+	jmp reset24BitBus
+
+
+	
+init24BitBus
+	; Setup PA2 for writing
+	lda #%100
+	sta $dd02
+
+	; Setup output of 8 bits
+	lda #$ff
+	sta $dd03
+	rts
+
+; Waits for vsync to be triggered from the video
+waitVSYnc
+	lda #%10000
+.l2
+	bit $dd0d
+	beq .l2
+	rts
+	
+copySmallDataTo24BitBus
+	sta .sm1+1
+	stx .sm1+2
+	sty .sm2+1
+	ldy #0
+.l1
+.sm1	lda $1234,y
+	sta $dd01
+	iny
+.sm2	cpy #0
+	bne .sm1
+	rts
+
+; Resets the 24 bit bus
+reset24BitBus
+	; Reset the state input again
+	lda #%000
+	sta $dd00
+	lda #%100
+	sta $dd00
+	; Send zero bytes for the bus and data
+	lda #0
+	sta $dd01
+	sta $dd01
+	sta $dd01
+	sta $dd01
+	; And reset the state input again
+	lda #%000
+	sta $dd00
+	lda #%100
+	sta $dd00
+	rts
+
+videoDisableDisplay
+	jsr setAddressVideoControlRegisters
+	lda #$00
+	sta $dd01
+	jsr reset24BitBus
+	rts
+
+videoEnableDisplay
+	pha
+	jsr setAddressVideoControlRegisters
+	pla
+	sta $dd01
+	jsr reset24BitBus
+	rts
+
+setAddressVideoControlRegisters
+	jsr reset24BitBus
+	lda #$01; EBBS
+	sta $dd01
+	lda #$00
+	sta $dd01
+	lda #$9e
+	sta $dd01
+	rts
+
+setAddressPalette
+	jsr reset24BitBus
+	lda #$01; EBBS
+	sta $dd01
+	lda #$00
+	sta $dd01
+	lda #$9c
+	sta $dd01
+	rts
+
+setAddressSprites
+	jsr reset24BitBus
+	lda #$01; EBBS
+	sta $dd01
+	lda #$20
+	sta $dd01
+	lda #$98
+	sta $dd01
+	rts
+
+setAddressSpritesControl
+	jsr reset24BitBus
+	lda #$01; EBBS
+	sta $dd01
+	lda #$00
+	sta $dd01
+	lda #$9a
+	sta $dd01
+	rts

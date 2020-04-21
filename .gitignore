@@ -68,3 +68,4 @@ BDD6502.iml
 test.a
 test.prg
 test.lbl
+*.pdb

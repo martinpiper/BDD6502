@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class Tiles extends DisplayLayer {
-    int busContention = 0;
     int addressRegisters = 0x9e00, addressExRegisters = 0x01;
     int addressScreen = 0x2000, addressExScreen = 0x80;
     int addressPlane0 = 0x2000, addressExPlane0 = 0x40;
@@ -32,6 +31,12 @@ public class Tiles extends DisplayLayer {
         this.addressExPlane0 = addressExPlane0;
         this.addressExPlane1 = addressExPlane0;
         this.addressExPlane2 = addressExPlane0;
+    }
+
+    @Override
+    public void setDisplay(DisplayBombJack theDisplay) {
+        theDisplay.enableDisplay = false;
+        super.setDisplay(theDisplay);
     }
 
     @Override
@@ -163,17 +168,12 @@ public class Tiles extends DisplayLayer {
             finalPixel |= 4;
         }
         if (finalPixel == 0) {
-            // Withut this, the lack of connection from the tiles board to the layer4 header is simulated
+            // Without this, the lack of connection from the tiles board to the layer4 header is simulated
 //            finalPixel = backgroundColour;
         } else {
             finalPixel |= ((theColour & 0x1f) << 3);
         }
-        if (busContention > 0) {
-            finalPixel = display.getRandomColouredPixel();
-        }
-        if (busContention > 0) {
-            busContention--;
-        }
-        return finalPixel;
+
+        return getByteOrContention(finalPixel);
     }
 }

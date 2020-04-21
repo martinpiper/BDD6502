@@ -1,8 +1,6 @@
 package TestGlue;
 
-import com.bdd6502.DisplayBombJack;
-import com.bdd6502.Mode7;
-import com.bdd6502.Sprites;
+import com.bdd6502.*;
 import com.loomcom.symon.Cpu;
 import com.loomcom.symon.devices.Device;
 import com.loomcom.symon.devices.Memory;
@@ -21,9 +19,11 @@ import cucumber.api.java.en.When;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.imageio.ImageIO;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -566,7 +566,7 @@ public class Glue {
 
             // Execute video clocks while running the CPU
             if (displayBombJack != null) {
-                for (int i = 0 ; i < 8 ; i++) {
+                for (int i = 0; i < 8; i++) {
                     displayBombJack.calculatePixel();
                 }
                 displayBombJack.RepaintWindow();
@@ -1048,18 +1048,29 @@ public class Glue {
 
     @Given("^render a video display frame$")
     public void renderAVideoDisplayFrame() {
-        displayBombJack.calculatePixelsUntil(0x190, 0x00);
+        displayBombJack.calculatePixelsUntil(0x180, 0x00);
+        displayBombJack.RepaintWindow();
     }
 
     @Given("^a user port to 24 bit bus is installed$")
     public void aUserportToBitBusIsInstalled() throws MemoryRangeException {
-        assertThat(displayBombJack,is(notNullValue()));
+        assertThat(displayBombJack, is(notNullValue()));
         machine.getBus().addDevice(new UserPortTo24BitAddress(scenario, displayBombJack));
     }
 
     @Given("^add a Mode7 layer with registers at '(.*)' and addressEx '(.*)'$")
     public void addAModeDisplayWithRegistersAtXaAndAddressExX(String addressRegisters, String addressExMap) throws ScriptException {
         displayBombJack.addLayer(new Mode7(valueToInt(addressRegisters), valueToInt(addressExMap)));
+    }
+
+    @Given("^add a Tiles layer with registers at '(.*)' and screen addressEx '(.*)' and planes addressEx '(.*)'$")
+    public void addATilesDisplayWithRegistersAtXaAndAddressExX(String addressRegisters, String addressExScreen, String addressExPlanes) throws ScriptException {
+        displayBombJack.addLayer(new Tiles(valueToInt(addressRegisters), valueToInt(addressExScreen), valueToInt(addressExPlanes)));
+    }
+
+    @Given("^add a Chars layer with registers at '(.*)' and addressEx '(.*)'$")
+    public void addACharsDisplayWithRegistersAtXaAndAddressExX(String addressRegisters, String addressEx) throws ScriptException {
+        displayBombJack.addLayer(new Chars(valueToInt(addressRegisters), valueToInt(addressEx)));
     }
 
     @Given("^add a Sprites layer with registers at '(.*)' and addressEx '(.*)'$")
@@ -1072,8 +1083,14 @@ public class Glue {
         displayBombJack.writeDataFromFile(valueToInt(address), valueToInt(addressEx), filename);
     }
 
+    @Given("^write data byte '(.*)' to 24bit bus at '(.*)' and addressEx '(.*)'$")
+    public void writeDataByteToBitBusAtXCAndAddressExX(String value, String address, String addressEx) throws Throwable {
+        displayBombJack.writeData(valueToInt(address), valueToInt(addressEx), valueToInt(value));
+    }
+
     @When("^rendering the video until window closed$")
     public void renderingTheVideoUntilWindowClosed() throws InterruptedException {
+        displayBombJack.writeDebugBMPsToLeafFilename(null);
         while (displayBombJack.isVisible()) {
             renderAVideoDisplayFrame();
             displayBombJack.RepaintWindow();
@@ -1081,5 +1098,32 @@ public class Glue {
             Thread.sleep(10);
 
         }
+    }
+
+    @Given("^video display saves debug BMP images to leaf filename \"([^\"]*)\"$")
+    public void videoDisplaySavesDebugBMPImagesToLeafFilename(String leafFilename) throws Throwable {
+        displayBombJack.writeDebugBMPsToLeafFilename(leafFilename);
+    }
+
+    static boolean bufferedImagesEqual(BufferedImage img1, BufferedImage img2) {
+        if (img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight()) {
+            for (int x = 0; x < img1.getWidth(); x++) {
+                for (int y = 0; y < img1.getHeight(); y++) {
+                    if (img1.getRGB(x, y) != img2.getRGB(x, y))
+                        return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    @Then("^expect image \"([^\"]*)\" to be identical to \"([^\"]*)\"$")
+    public void expectImageToBeIdenticalTo(String expectedFilename, String testFilename) throws Throwable {
+        BufferedImage expected = ImageIO.read(new File(expectedFilename));
+        BufferedImage test = ImageIO.read(new File(testFilename));
+
+        assertThat("Images differ",bufferedImagesEqual(expected,test),is(true));
     }
 }

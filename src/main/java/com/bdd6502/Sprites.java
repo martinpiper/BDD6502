@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class Sprites extends DisplayLayer {
-    int busContention = 0;
+
     int addressRegisters = 0x9800, addressExRegisters = 0x01;
     int addressPlane0 = 0x2000, addressExPlane0 = 0x10;
     int addressPlane1 = 0x4000, addressExPlane1 = 0x10;
@@ -115,9 +115,6 @@ public class Sprites extends DisplayLayer {
         // And progressively clear the output pixel, like the hardware does
         calculatedRasters[onScreen][displayH] = 0;
 
-        if (busContention > 0) {
-            busContention--;
-        }
         return finalPixel;
     }
 
@@ -142,7 +139,7 @@ public class Sprites extends DisplayLayer {
         }
 
         // Handle timings of sprite register reads at the appropriate time in the raster
-        int theColour = spritePalette[spriteIndex];
+        int theColour = getByteOrContention(spritePalette[spriteIndex]);
         int spriteSize = 16;
         // Same logic as hardware 6R, 6S, 5R, 5S, 5T, 6T
         int tweakIndex = (spriteIndex >> 1) + 3;
@@ -157,7 +154,7 @@ public class Sprites extends DisplayLayer {
 
         // Sprite Y position range check
         // +32 to adjust for expected behaviour where 0y = Bottom of the sprite on the bottom edge of the visible screen
-        int deltaY = (displayV + spriteSize + spriteY[spriteIndex]) & 0xff;
+        int deltaY = (displayV + spriteSize + getByteOrContention(spriteY[spriteIndex])) & 0xff;
         if (!fullHeightSprite && (deltaY >= spriteSize)) {
             return;
         }
@@ -242,7 +239,7 @@ public class Sprites extends DisplayLayer {
             }
             int pixelShift = 0x07 - (realPixelIndex & 0x07);
             int tileY = realDeltaY & 0x07;
-            int tweakFrame = spriteFrame[spriteIndex];
+            int tweakFrame = getByteOrContention(spriteFrame[spriteIndex]);
             if (spriteSize == 32) {
                 tweakFrame *= 4;
                 tweakFrame &= 0xff;
@@ -263,13 +260,10 @@ public class Sprites extends DisplayLayer {
                 finalPixel |= 4;
             }
             finalPixel |= ((theColour & 0x1f) << 3);
-            if (busContention > 0) {
-                finalPixel = display.getRandomColouredPixel();
-            }
-            int finalXPos = (spriteX[spriteIndex] + pixelIndex) & 0xff;
+            int finalXPos = (getByteOrContention(spriteX[spriteIndex]) + pixelIndex) & 0xff;
             // Only output the pixel if there is nothing else there
             if ((calculatedRasters[offScreen][finalXPos] & 0x07) == 0) {
-                calculatedRasters[offScreen][finalXPos] = finalPixel;
+                calculatedRasters[offScreen][finalXPos] = getByteOrContention(finalPixel);
             }
         }
     }

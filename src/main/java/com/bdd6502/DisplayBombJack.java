@@ -2,6 +2,7 @@ package com.bdd6502;
 
 import org.apache.commons.io.FileUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -17,6 +18,7 @@ public class DisplayBombJack {
 
     LinkedList<DisplayLayer> layers = new LinkedList<>();
 
+    int frameNumber = 0;
     int displayWidth = 384;
     int displayHeight = 264;
     int busContentionPalette = 0;
@@ -30,13 +32,15 @@ public class DisplayBombJack {
     int latchedPixel = 0;
     int palette[] = new int[256];
     Random random = new Random();
+    String leafFilename = null;
+    int lastDataWritten = 0;
 
     public boolean isVsyncTriggered() {
         return vsyncTriggered;
     }
 
     public void resetVsyncTriggered() {
-        vsyncTriggered =false;
+        vsyncTriggered = false;
     }
 
     boolean vsyncTriggered = false;
@@ -117,6 +121,7 @@ public class DisplayBombJack {
     }
 
     public void writeData(int address, int addressEx, byte data) {
+        lastDataWritten = data;
         if (addressActive(addressEx, addressExPalette) && address >= addressPalette && address < (addressPalette + 0x200)) {
             busContentionPalette = getBusContentionPixels();
             int index = (address & 0x1ff) >> 1;
@@ -157,11 +162,19 @@ public class DisplayBombJack {
             displayBitmapY++;
         }
 
+        // Trigger vsync once only per frame
+        if (displayY == 0 && displayH == 0x180) {
+            vsyncTriggered = true;
+            if (leafFilename != null) {
+                try {
+                    File file = new File(leafFilename + String.format("%06d", frameNumber++) + ".bmp");
+                    file.mkdirs();
+                    ImageIO.write(getImage(), "bmp", file);
+                } catch (IOException e) {}
+            }
+        }
         if (displayY >= 0 && displayY < 0x08) {
             displayV = 0xf8 + displayY;
-            if (_vSync) {
-                vsyncTriggered = true;
-            }
             _vSync = false;
         } else {
             displayV = displayY - 0x08;
@@ -206,7 +219,7 @@ public class DisplayBombJack {
                 // Delayed due to pixel latching in the output mixer 8B2 and 7A2
                 if (enablePixels) {
                     if (busContentionPalette > 0) {
-                        latchedPixel = getRandomColouredPixel();
+                        latchedPixel = getContentionColouredPixel();
                     }
                     int realColour = palette[latchedPixel & 0xff];
                     panel.getImage().setRGB(displayBitmapX, tempy, realColour);
@@ -220,6 +233,7 @@ public class DisplayBombJack {
         boolean firstLayer = true;
         for (DisplayLayer layer : layers) {
             int pixel = layer.calculatePixel(displayH, displayV, _hSync, _vSync);
+            layer.ageContention();
             // If there is pixel data in the layer then use it
             // Always use the first colour, which is the furthest layer colour
             if ((pixel & 0x07) != 0 || firstLayer) {
@@ -245,7 +259,17 @@ public class DisplayBombJack {
         }
     }
 
-    int getRandomColouredPixel() {
-        return random.nextInt() & 0xff;
+    int sequentialValue = 0;
+    int getContentionColouredPixel() {
+        // Introduce some colour and pattern using the part of last byte written to simulate a bus with contention
+        sequentialValue++;
+        if ((sequentialValue & 1) > 0) {
+            return (sequentialValue & 0x0f) | (lastDataWritten & 0xf0);
+        }
+        return lastDataWritten;
+    }
+
+    public void writeDebugBMPsToLeafFilename(String leafFilename) {
+        this.leafFilename = leafFilename;
     }
 }

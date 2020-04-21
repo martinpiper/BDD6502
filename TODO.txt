@@ -4,6 +4,13 @@
 	features\TestVideoHardware.feature
 
 
+* Have a separate section that animates for a few frames for "// Contention timing test"
+
+
+
+* Detect when the 24 bit bus is held with an address for an extended number of cycles without data being written
+
+
 
 * Read config for video display from command line
 
