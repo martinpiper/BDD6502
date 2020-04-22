@@ -2,6 +2,11 @@
 
 * Continue adding syntax to support the other video layers
 	features\TestVideoHardware.feature
+	
+	
+
+* The contention time might need to be a bit longer considering the ageing speed with the 6502 speed
+
 
 
 * Have a separate section that animates for a few frames for "// Contention timing test"

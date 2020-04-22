@@ -19,10 +19,8 @@ start
 	lda #$21
 	sta $dd01
 	sta $dd01
-	jsr reset24BitBus
 	jsr waitVSYnc
 
-	jsr reset24BitBus
 	jsr setAddressSpritesControl
 	lda #$10
 	sta $dd01
@@ -54,28 +52,36 @@ start
 	lda #$30
 	jsr videoEnableDisplay
 	
-	; Demonstrate video bus contention handling by updating sprite registers during the visible portion of the screen
+	; Demonstrate video bus and palette bus contention handling by updating sprite registers during the visible portion of the screen
 	; Basically, this writes more data in the vblank than there is CPU time for
 	; The writes are timed to complete before the bottom sprites are displayed
 .do1
 	+MWordValueTo_AX SpriteFrame1
 	ldy #SpriteFrame1Size
 	jsr SpriteDataCopy
+	jsr setAddressPalette
+	ldx #$10
+	lda #$11
+	clc
+.do2
+	sta $dd01
+	adc #1
+	dex
+	bne .do2
 	dec .counter1
 	bne .do1
 
-	jsr reset24BitBus
-	
 	; Write to the mode7 background colour register at $01a014
+	jsr reset24BitBus
 	lda #$01; EBBS
 	sta $dd01
 	lda #$14
 	sta $dd01
 	lda #$a0
 	sta $dd01
+	; Colour index
 	lda #14
 	sta $dd01
-	jsr reset24BitBus
 
 	
 	jsr waitVSYnc
@@ -102,8 +108,8 @@ SpriteDataCopy
 	pha
 	jsr setAddressSprites
 	pla
-	jsr copySmallDataTo24BitBus
-	jmp reset24BitBus
+	jmp copySmallDataTo24BitBus
+
 
 
 	
@@ -115,6 +121,15 @@ init24BitBus
 	; Setup output of 8 bits
 	lda #$ff
 	sta $dd03
+	
+	jsr reset24BitBus
+	; Send zero bytes for the bus and data
+	lda #0
+	sta $dd01
+	sta $dd01
+	sta $dd01
+	sta $dd01
+	jsr reset24BitBus
 	rts
 
 ; Waits for vsync to be triggered from the video
@@ -145,24 +160,12 @@ reset24BitBus
 	sta $dd00
 	lda #%100
 	sta $dd00
-	; Send zero bytes for the bus and data
-	lda #0
-	sta $dd01
-	sta $dd01
-	sta $dd01
-	sta $dd01
-	; And reset the state input again
-	lda #%000
-	sta $dd00
-	lda #%100
-	sta $dd00
 	rts
 
 videoDisableDisplay
 	jsr setAddressVideoControlRegisters
 	lda #$00
 	sta $dd01
-	jsr reset24BitBus
 	rts
 
 videoEnableDisplay
@@ -170,7 +173,6 @@ videoEnableDisplay
 	jsr setAddressVideoControlRegisters
 	pla
 	sta $dd01
-	jsr reset24BitBus
 	rts
 
 setAddressVideoControlRegisters

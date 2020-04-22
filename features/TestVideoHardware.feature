@@ -1,8 +1,9 @@
 Feature: Tests the video hardware expansion
 
-  Scenario: Open the display
+  @TC-1
+  Scenario: Display test with sprites, borders and contention
     Given a new video display
-    Given video display saves debug BMP images to leaf filename "target/frames/t"
+    Given video display saves debug BMP images to leaf filename "target/frames/TC-1-"
     Given I have a simple overclocked 6502 system
     Given a user port to 24 bit bus is installed
     Given add a Mode7 layer with registers at '0xa000' and addressEx '0x08'
@@ -29,13 +30,13 @@ Feature: Tests the video hardware expansion
     And I load prg "test.prg"
     And I load labels "test.lbl"
 #    And I enable trace with indent
-    When I execute the procedure at start for no more than 1000000 instructions
+    When I execute the procedure at start for no more than 62980 instructions
 
-    Then expect image "target/frames/t000001.bmp" to be identical to "testdata/Open the display/t000001.bmp"
-    Then expect image "target/frames/t000002.bmp" to be identical to "testdata/Open the display/t000002.bmp"
-    Then expect image "target/frames/t000003.bmp" to be identical to "testdata/Open the display/t000003.bmp"
-    Then expect image "target/frames/t000004.bmp" to be identical to "testdata/Open the display/t000004.bmp"
-    Then expect image "target/frames/t000005.bmp" to be identical to "testdata/Open the display/t000005.bmp"
-    Then expect image "target/frames/t000006.bmp" to be identical to "testdata/Open the display/t000006.bmp"
+    Then expect image "testdata/TC-1-000001.bmp" to be identical to "target/frames/TC-1-000001.bmp"
+    Then expect image "testdata/TC-1-000002.bmp" to be identical to "target/frames/TC-1-000002.bmp"
+    Then expect image "testdata/TC-1-000003.bmp" to be identical to "target/frames/TC-1-000003.bmp"
+    Then expect image "testdata/TC-1-000004.bmp" to be identical to "target/frames/TC-1-000004.bmp"
+    Then expect image "testdata/TC-1-000005.bmp" to be identical to "target/frames/TC-1-000005.bmp"
+    Then expect image "testdata/TC-1-000006.bmp" to be identical to "target/frames/TC-1-000006.bmp"
 
 #    When rendering the video until window closed
