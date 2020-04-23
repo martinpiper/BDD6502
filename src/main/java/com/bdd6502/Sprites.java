@@ -19,6 +19,8 @@ public class Sprites extends DisplayLayer {
     int spriteY[] = new int[24];
     int spriteFrame[] = new int[24];
     int spritePalette[] = new int[24];
+    int fetchingPixel = 0;
+    int onScreen = 0;
 
     int calculatedRasters[][] = new int[2][256];
 
@@ -96,24 +98,20 @@ public class Sprites extends DisplayLayer {
 
         handleSpriteSchedule(displayH, displayV);
 
-        int onScreen = displayV & 1;
+
         // Output calculated data
         // Adjust for the extra timing
-        if (displayH >= 0x188) {
-            displayH -= 0x80;
+        // Emulate the sprite scan read counters 6A/6B/6C/6D
+        if (displayH == 0x08) {
+            fetchingPixel = 0;
+            onScreen = displayV & 1;
+        }
+        if (fetchingPixel >= 0x100 ) {
             return 0;
         }
-        if (displayH >= 0x180) {
-            displayH -= 0x80;
-        }
-        displayH -= 0x08;
-        if (displayH < 0) {
-            return 0;
-        }
-        displayH = displayH & 0xff;
-        int finalPixel = calculatedRasters[onScreen][displayH];
+        int finalPixel = calculatedRasters[onScreen][fetchingPixel];
         // And progressively clear the output pixel, like the hardware does
-        calculatedRasters[onScreen][displayH] = 0;
+        calculatedRasters[onScreen][fetchingPixel++] = 0;
 
         return finalPixel;
     }
@@ -123,20 +121,24 @@ public class Sprites extends DisplayLayer {
             skipNextSprite = false;
         }
         int offScreen = 1 - (displayV & 1);
+        if (displayH >= 0x180) {
+        }
+        if (displayH >= 0x180) {
+            displayH -= 0x80;
+        }
+        // Although the sprite registers are initially loaded at 0x180, there is a second read at 0x188
+        // This accounts for the low ENABLEPIXELS at 0x189
+        // So shift the entire schedule back by 8 to make the maths easier
+        displayH -= 0x08;
         // Not time yet to update the sprite
-        if ((displayH & 0x0f) != 0) {
+        if ((displayH < 0) || (displayH & 0x0f) != 0) {
             return;
         }
         if (skipNextSprite) {
             skipNextSprite = false;
             return;
         }
-        int spriteIndex = 0;
-        if (displayH >= 0x180) {
-            spriteIndex = (displayH - 0x180) / 16;
-        } else {
-            spriteIndex = 8 + (displayH / 16);
-        }
+        int spriteIndex = (displayH / 16);
 
         // Handle timings of sprite register reads at the appropriate time in the raster
         int theColour = getByteOrContention(spritePalette[spriteIndex]);

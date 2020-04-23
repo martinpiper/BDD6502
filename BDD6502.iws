@@ -4,14 +4,15 @@
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/Open the display/t000001.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/Open the display/t000002.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/Open the display/t000003.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/Open the display/t000004.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/Open the display/t000005.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/Open the display/t000006.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Chars.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Chars.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Tiles.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Tiles.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000002.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000002.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000003.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000003.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000004.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000004.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000006.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000006.bmp" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -429,10 +430,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="160" key="#Plugins/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587376300926" />
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587394036261">
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587649338904">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587394036261" />
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587649338904" />
     <state x="689" y="321" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1587393658085">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -441,38 +442,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="765" y="220" key="#com.intellij.ide.util.MemberChooser/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587479765936" />
-    <state width="1877" height="223" key="GridCell.Tab.0.bottom" timestamp="1587561474737">
+    <state width="1877" height="287" key="GridCell.Tab.0.bottom" timestamp="1587657945799">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587561474737" />
-    <state width="1877" height="223" key="GridCell.Tab.0.center" timestamp="1587561474736">
+    <state width="1877" height="287" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587657945799" />
+    <state width="1877" height="287" key="GridCell.Tab.0.center" timestamp="1587657945799">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587561474736" />
-    <state width="1877" height="223" key="GridCell.Tab.0.left" timestamp="1587561474736">
+    <state width="1877" height="287" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587657945799" />
+    <state width="1877" height="287" key="GridCell.Tab.0.left" timestamp="1587657945799">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587561474736" />
-    <state width="1877" height="223" key="GridCell.Tab.0.right" timestamp="1587561474737">
+    <state width="1877" height="287" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587657945799" />
+    <state width="1877" height="287" key="GridCell.Tab.0.right" timestamp="1587657945799">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587561474737" />
-    <state width="1877" height="344" key="GridCell.Tab.1.bottom" timestamp="1587485685048">
+    <state width="1877" height="287" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587657945799" />
+    <state width="1877" height="287" key="GridCell.Tab.1.bottom" timestamp="1587657945800">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="344" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587485685048" />
-    <state width="1877" height="344" key="GridCell.Tab.1.center" timestamp="1587485685048">
+    <state width="1877" height="287" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587657945800" />
+    <state width="1877" height="287" key="GridCell.Tab.1.center" timestamp="1587657945799">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="344" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587485685048" />
-    <state width="1877" height="344" key="GridCell.Tab.1.left" timestamp="1587485685047">
+    <state width="1877" height="287" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587657945799" />
+    <state width="1877" height="287" key="GridCell.Tab.1.left" timestamp="1587657945799">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="344" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587485685047" />
-    <state width="1877" height="344" key="GridCell.Tab.1.right" timestamp="1587485685048">
+    <state width="1877" height="287" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587657945799" />
+    <state width="1877" height="287" key="GridCell.Tab.1.right" timestamp="1587657945799">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="344" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587485685048" />
+    <state width="1877" height="287" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587657945799" />
     <state x="540" y="262" key="IDE.errors.dialog" timestamp="1587399023292">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -485,38 +486,53 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="666" y="255" width="587" height="530" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587485181834" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1587390020705">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1587657365136">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587390020705" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587657365136" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Tiles.java</url>
-          <line>67</line>
+          <line>68</line>
           <option name="timeStamp" value="109" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Tiles.java</url>
-          <line>70</line>
+          <line>71</line>
           <option name="timeStamp" value="110" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Tiles.java</url>
-          <line>73</line>
+          <line>74</line>
           <option name="timeStamp" value="111" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Tiles.java</url>
-          <line>76</line>
+          <line>77</line>
           <option name="timeStamp" value="112" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
-          <line>171</line>
-          <option name="timeStamp" value="143" />
+          <line>208</line>
+          <option name="timeStamp" value="144" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java</url>
+          <line>111</line>
+          <option name="timeStamp" value="155" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java</url>
+          <line>161</line>
+          <option name="timeStamp" value="156" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java</url>
+          <line>167</line>
+          <option name="timeStamp" value="157" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -526,70 +542,17 @@
         <watch expression="reverseLabelMap" language="JAVA" />
       </configuration>
       <configuration name="Application">
+        <watch expression="displayX" language="JAVA" />
+        <watch expression="displayY" language="JAVA" />
         <watch expression="displayH" />
         <watch expression="displayV" />
+        <watch expression="displayBitmapX" language="JAVA" />
+        <watch expression="displayBitmapY" language="JAVA" />
         <watch expression="borderX" />
         <watch expression="borderY" />
         <watch expression="enablePixels" />
-        <watch expression="theChar" />
-        <watch expression="theColour" />
-        <watch expression="pixelPlane0" />
-        <watch expression="pixelPlane1" />
-        <watch expression="pixelPlane2" />
-        <watch expression="finalPixel" />
       </configuration>
     </watches-manager>
-  </component>
-  <component name="debuggerHistoryManager">
-    <expressions id="breakpointCondition">
-      <expression>
-        <expression-string>theChar &gt; 1</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>theChar &gt; 0</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-    </expressions>
-    <expressions id="watch">
-      <expression>
-        <expression-string>(((displayV&gt;&gt;3) &amp; 0x1f) * 0x20)</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>(displayH&gt;&gt;3) &amp; 0x1f + (((displayV&gt;&gt;3) &amp; 0x1f) * 0x20)</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>(displayV&gt;&gt;3)</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>displayV&gt;&gt;3</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>c</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>machine.getRam()</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>reverseLabelMap</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-    </expressions>
   </component>
   <component name="masterDetails">
     <states>

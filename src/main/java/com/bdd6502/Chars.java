@@ -14,6 +14,7 @@ public class Chars extends DisplayLayer {
     byte plane0[] = new byte[0x2000];
     byte plane1[] = new byte[0x2000];
     byte plane2[] = new byte[0x2000];
+    int latchedDisplayV = 0;
 
     public Chars() {
     }
@@ -57,31 +58,35 @@ public class Chars extends DisplayLayer {
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
+        if ((displayH & 0x188) == 0) {
+            latchedDisplayV = displayV;
+        }
         // Adjust for the extra timing
         if (displayH >= 0x180) {
             displayH -= 0x80;
         }
         displayH = displayH & 0xff;
         // -1 to match the real hardware
-        int index = (((displayH >> 3) - 1) & 0x1f) + (((displayV >> 3) & 0x1f) * 0x20);
+        int index = (((displayH >> 3) - 1) & 0x1f) + (((latchedDisplayV >> 3) & 0x1f) * 0x20);
         int theChar = (screenData[index]) & 0xff;
-//        System.out.println(displayH + " " + displayV + " Chars index: " + Integer.toHexString(index) + " char " + Integer.toHexString(theChar));
+//        System.out.println(displayH + " " + latchedDisplayV + " Chars index: " + Integer.toHexString(index) + " char " + Integer.toHexString(theChar));
         byte theColour = colourData[index];
         // Include extra chars from the colour
         theChar |= (theColour & 0x30) << 4;
         displayH &= 0x07;
         displayH = 7 - displayH;
-        displayV &= 0x07;
+        int latchedDisplayV2 = latchedDisplayV;
+        latchedDisplayV2 &= 0x07;
         // Include flips
         if ((theColour & 0x40) > 0) {
             displayH = 7 - displayH;
         }
         if ((theColour & 0x80) > 0) {
-            displayV = 7 - displayV;
+            latchedDisplayV2 = 7 - latchedDisplayV2;
         }
-        int pixelPlane0 = plane0[(theChar << 3) + displayV] & (1 << displayH);
-        int pixelPlane1 = plane1[(theChar << 3) + displayV] & (1 << displayH);
-        int pixelPlane2 = plane2[(theChar << 3) + displayV] & (1 << displayH);
+        int pixelPlane0 = plane0[(theChar << 3) + latchedDisplayV2] & (1 << displayH);
+        int pixelPlane1 = plane1[(theChar << 3) + latchedDisplayV2] & (1 << displayH);
+        int pixelPlane2 = plane2[(theChar << 3) + latchedDisplayV2] & (1 << displayH);
         int finalPixel = 0;
         if (pixelPlane0 > 0) {
             finalPixel |= 1;

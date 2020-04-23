@@ -210,10 +210,6 @@ public class DisplayBombJack {
 
         if (enableDisplay) {
             int tempy = displayBitmapY;
-            // This is to correct a very strange problem with the video rendering in the last 8 pixels of the visible area
-            if (displayH >= 0x180 && displayH < 0x188) {
-                tempy++;
-            }
             // Make sure the rendering position is in the screen
             if (displayBitmapX >= 0 && tempy >= 0 && displayBitmapX < panel.getImage().getWidth() && tempy < panel.getImage().getHeight()) {
                 // Delayed due to pixel latching in the output mixer 8B2 and 7A2

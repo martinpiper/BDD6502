@@ -17,6 +17,7 @@ public class Tiles extends DisplayLayer {
     boolean enableTiles = false;
     int scrollX = 0, scrollY = 0;
     int backgroundColour = 0;
+    int latchedDisplayV = 0;
 
     public Tiles() {
     }
@@ -109,6 +110,11 @@ public class Tiles extends DisplayLayer {
         if (!enableTiles) {
             return 0;
         }
+        if ((displayH & 0x188) == 0) {
+            latchedDisplayV = displayV;
+        }
+        int latchedDisplayV2 = latchedDisplayV;
+
         // Adjust for the extra timing
         if (displayH >= 0x180) {
             displayH -= 0x80;
@@ -118,27 +124,27 @@ public class Tiles extends DisplayLayer {
         displayH = displayH & 0xff;
         // Add scrolls and clamp
         displayH += scrollX;
-        displayV += scrollY;
+        latchedDisplayV2 += scrollY;
         displayH &= 0x3ff;
-        displayV &= 0x3ff;
-        int index = ((displayH >> 4) & 0x3f) + (((displayV >> 4) & 0x3f) * 0x40);
+        latchedDisplayV2 &= 0x3ff;
+        int index = ((displayH >> 4) & 0x3f) + (((latchedDisplayV2 >> 4) & 0x3f) * 0x40);
         int theChar = (screenData[index]) & 0xff;
 //        System.out.println(displayH + " " + displayV + " Chars index: " + Integer.toHexString(index) + " char " + Integer.toHexString(theChar));
         byte theColour = colourData[index];
         displayH &= 0x0f;
-        displayV &= 0x0f;
+        latchedDisplayV2 &= 0x0f;
         // Include flips
         if ((theColour & 0x40) > 0) {
             displayH = 0x0f - displayH;
         }
         if ((theColour & 0x80) > 0) {
-            displayV = 0x0f - displayV;
+            latchedDisplayV2 = 0x0f - latchedDisplayV2;
         }
         int pixelPlane0;
         int pixelPlane1;
         int pixelPlane2;
         int quadrantOffset;
-        if (displayV < 8) {
+        if (latchedDisplayV2 < 8) {
             if (displayH < 8) {
                 quadrantOffset = 0;
             } else {
@@ -152,11 +158,11 @@ public class Tiles extends DisplayLayer {
             }
         }
         displayH &= 0x7;
-        displayV &= 0x7;
+        latchedDisplayV2 &= 0x7;
         displayH = 0x07 - displayH;
-        pixelPlane0 = plane0[(theChar << 5) + displayV + quadrantOffset] & (1 << displayH);
-        pixelPlane1 = plane1[(theChar << 5) + displayV + quadrantOffset] & (1 << displayH);
-        pixelPlane2 = plane2[(theChar << 5) + displayV + quadrantOffset] & (1 << displayH);
+        pixelPlane0 = plane0[(theChar << 5) + latchedDisplayV2 + quadrantOffset] & (1 << displayH);
+        pixelPlane1 = plane1[(theChar << 5) + latchedDisplayV2 + quadrantOffset] & (1 << displayH);
+        pixelPlane2 = plane2[(theChar << 5) + latchedDisplayV2 + quadrantOffset] & (1 << displayH);
         int finalPixel = 0;
         if (pixelPlane0 > 0) {
             finalPixel |= 1;

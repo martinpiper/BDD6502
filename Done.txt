@@ -55,3 +55,12 @@ Added: Given I am using C64 processor port options
 	When allocating layers, make the address and addressEx configurable
 	TODO: Address configs for addressEx=0x01 need to respect the INRAMSEL1 groups 0x8000 0x8800 0x9000 0x9800 ... 0xb800 as these used for selection on each board
 		Video board uses fixed address, not configurable.
+
+		
+		
+* To correctly handle the "lo ENABLEPIXELS (with no border flags)" at 0x189H
+	And to handle the hardware plane shifting, which introduces an 8 pixel delay
+	The tiles and chars need to latch the Y position at the start of their reads for each tile/char 8 pixel span
+	* Sprites also needed this fix, actually it was the sprite span pixel read and clear that gave the hint about the latch
+	* See: latchedDisplayV
+	* The mode7 layer does not have this problem because it maintains its own pixel clocks from hsync and vsync

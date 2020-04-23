@@ -26,13 +26,20 @@ public class TestRunner {
 
             // Setup a simple character screen
             for (int i = 0; i < 32 * 32; i += 7) {
+//            for (int i = 0; i < 32 * 32; i++) {
                 displayBombJack.writeData(0x9000 + i, 0x01, i + ((i / 32) - 2));
+//                displayBombJack.writeData(0x9000 + i, 0x01, i/8);
+//                displayBombJack.writeData(0x9000 + i, 0x01, i);
                 int flips = (i >> 8) & 0x3;
                 int exChars = (i >> 9) & 0x3;
                 int colour = (i & 0x07);
+//                flips = 0;
+//                exChars = 0;
+//                colour = 1;
                 displayBombJack.writeData(0x9400 + i, 0x01, colour | (flips << 6) | (exChars << 4));
             }
-//            displayBombJack.writeData(0x905e,0x01,0x41);
+            // Debug top right char screen, A then graphics vertical line on right (not visible due to border), horizontal line on bottom
+            displayBombJack.writeData(0x905e,0x01,0x41);
             displayBombJack.writeData(0x905f, 0x01, 0x5f);
 
             // Add character data
@@ -95,9 +102,15 @@ public class TestRunner {
                     displayBombJack.writeData(0x9820 + i + j, 0x01, 0x04);
                     displayBombJack.writeData(0x9821 + i + j, 0x01, 0x01);
                     displayBombJack.writeData(0x9822 + i + j, 0x01, 16 + (int) (i * 2.5f));
-                    displayBombJack.writeData(0x9823 + i + j, 0x01, j * 9);
+                    displayBombJack.writeData(0x9823 + i + j, 0x01, (int)(j * 12.0f));
                 }
             }
+
+            // Setup debug tiles scroll
+//            displayBombJack.writeData(0x9e01, 0x01, 0xe7);
+//            displayBombJack.writeData(0x9e02, 0x01, 0xf);
+//            displayBombJack.writeData(0x9e03, 0x01, 0x00);
+//            displayBombJack.writeData(0x9e04, 0x01, 0x0);
 
             int scrollX = 0, scrollY = 0;
             int scrollXTimeout = 50, scrollYTimeout = 150;
@@ -135,8 +148,10 @@ public class TestRunner {
                         displayBombJack.writeData(0x9e07, 0x01, i);
                         displayBombJack.writeData(0xa014, 0x01, i);
                     }
-//                displayBombJack.writeData(0x9e07, 0x01, scrollX + 0x30);
-//                displayBombJack.writeData(0xa014, 0x01, scrollX + 0x30);
+
+                    // Flash background colour
+//                    displayBombJack.writeData(0x9e07, 0x01, scrollX + 0x30);  // Tiles
+//                    displayBombJack.writeData(0xa014, 0x01, scrollX + 0x30);  // Mode7
                 }
 
                 if (true) {
@@ -196,7 +211,8 @@ public class TestRunner {
                         displayBombJack.writeData(0xa011, 0x01, intValue >> 16);
 
                         scaleValue = (256.0f * 400.0f) / ypos;
-                        displayBombJack.calculatePixelsUntil(0x1a0, ypos);
+                        // This is just off screen
+                        displayBombJack.calculatePixelsUntil(0x188, ypos);
                     }
 
                     displayBombJack.calculatePixelsUntil(0x190, 0xff);
