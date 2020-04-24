@@ -2,6 +2,7 @@
 !pdb "t.pdb"
 !source "stdlib/stdlib.a"
 *=$200
+!zn
 start
 	sei
 	ldx #$ff
@@ -89,6 +90,329 @@ start
 	rts
 .counter1 !by 32
 
+!zn
+start2
+	sei
+	ldx #$ff
+	txs
+	
+	jsr waitVSYnc
+	; Full borders again
+	lda #$30
+	jsr videoEnableDisplay
+
+	; Setup some characters at known positions
+	lda #$01
+	+MWordValueTo_XY $9040
+	jsr setAddressBus
+	lda #$41
+	sta $dd01
+	lda #$42
+	sta $dd01
+
+	lda #$01
+	+MWordValueTo_XY $905e
+	jsr setAddressBus
+	lda #$42
+	sta $dd01
+	lda #$43
+	sta $dd01
+
+	lda #$01
+	+MWordValueTo_XY $93a0
+	jsr setAddressBus
+	lda #$43
+	sta $dd01
+	lda #$44
+	sta $dd01
+
+	lda #$01
+	+MWordValueTo_XY $93be
+	jsr setAddressBus
+	lda #$43
+	sta $dd01
+	lda #$45
+	sta $dd01
+	
+	jsr waitVSYnc
+
+	; Move sprites slightly in to reveal more of the characters
+	+MWordValueTo_AX SpriteFrame2
+	ldy #SpriteFrame2Size
+	jsr SpriteDataCopy
+
+	jsr waitVSYnc
+
+	; Setup some characters with known flips, colours, and extended chars
+	lda #$01
+	+MWordValueTo_XY $9440
+	jsr setAddressBus
+	lda #$01
+	sta $dd01
+	lda #$11
+	sta $dd01
+
+	lda #$01
+	+MWordValueTo_XY $945e
+	jsr setAddressBus
+	lda #$62
+	sta $dd01
+	lda #$42
+	sta $dd01
+
+	lda #$01
+	+MWordValueTo_XY $97a0
+	jsr setAddressBus
+	lda #$83
+	sta $dd01
+	lda #$93
+	sta $dd01
+
+	lda #$01
+	+MWordValueTo_XY $97be
+	jsr setAddressBus
+	lda #$e3
+	sta $dd01
+	lda #$c3
+	sta $dd01
+	
+	jsr waitVSYnc
+
+	rts
+
+!zn
+start3
+	sei
+	ldx #$ff
+	txs
+	
+	jsr waitVSYnc
+	; Shrink borderX
+	lda #$70
+	jsr videoEnableDisplay
+	jsr waitVSYnc
+
+	; Shrink borderY
+	lda #$b0
+	jsr videoEnableDisplay
+	jsr waitVSYnc
+
+	; Shrink borderX+Y
+	lda #$f0
+	jsr videoEnableDisplay
+	jsr waitVSYnc
+
+	rts
+
+!zn
+start4
+	sei
+	ldx #$ff
+	txs
+
+	jsr waitVSYnc
+
+	lda #$01
+	+MWordValueTo_XY $a000
+	jsr setAddressBus
+	
+	+MWordValueTo_AX Mode7Regs1
+	ldy #Mode7Regs1Size
+	jsr copySmallDataTo24BitBus
+	
+	jsr waitVSYnc
+
+
+	lda #$01
+	+MWordValueTo_XY $a000
+	jsr setAddressBus
+	
+	+MWordValueTo_AX Mode7Regs3
+	ldy #Mode7Regs3Size
+	jsr copySmallDataTo24BitBus
+	
+	jsr waitVSYnc
+
+
+	lda #$01
+	+MWordValueTo_XY $a000
+	jsr setAddressBus
+	
+	+MWordValueTo_AX Mode7Regs2
+	ldy #Mode7Regs2Size
+	jsr copySmallDataTo24BitBus
+	
+	jsr waitVSYnc
+	rts
+
+
+!zn
+start5
+	sei
+	ldx #$ff
+	txs
+
+	jsr waitVSYnc
+
+.l1
+	; This is very fast movement
+	lda Mode7Regs3Translation
+	clc
+	adc #$31
+	sta Mode7Regs3Translation
+	adc #1
+	sta Mode7Regs3Translation+1
+
+	lda Mode7Regs3Translation+3
+	clc
+	adc #$71
+	sta Mode7Regs3Translation+3
+	adc #1
+	sta Mode7Regs3Translation+4
+
+	; Translation regs only
+	lda #$01
+	+MWordValueTo_XY $a00c
+	jsr setAddressBus
+
+	+MWordValueTo_AX Mode7Regs3Translation
+	ldy #Mode7Regs3TranslationSize
+	jsr copySmallDataTo24BitBus
+
+	jsr waitVSYnc
+	
+	dec Mode7Regs3TranslationCount
+	bne .l1
+	rts
+	
+	
+	
+!zn
+start6
+	sei
+	ldx #$ff
+	txs
+	
+	jsr waitVSYnc
+	; Shrink borderX+Y
+	lda #$f0
+	jsr videoEnableDisplay
+
+	; Setup some tiles at known positions
+	lda #$80
+	+MWordValueTo_XY $2040
+	jsr setAddressBus
+	lda #$41
+	sta $dd01
+	lda #$42
+	sta $dd01
+
+	lda #$80
+	+MWordValueTo_XY $204f
+	jsr setAddressBus
+	lda #$42
+	sta $dd01
+	lda #$43
+	sta $dd01
+
+	lda #$80
+	+MWordValueTo_XY $2380
+	jsr setAddressBus
+	lda #$43
+	sta $dd01
+	lda #$44
+	sta $dd01
+
+	lda #$80
+	+MWordValueTo_XY $238f
+	jsr setAddressBus
+	lda #$43
+	sta $dd01
+	lda #$45
+	sta $dd01
+	
+	jsr waitVSYnc
+	; Full borders again
+	lda #$30
+	jsr videoEnableDisplay
+
+	jsr waitVSYnc
+
+	; Setup some tiles with known flips and colours
+	lda #$80
+	+MWordValueTo_XY $3040
+	jsr setAddressBus
+	lda #$01
+	sta $dd01
+	lda #$11
+	sta $dd01
+
+	lda #$80
+	+MWordValueTo_XY $304f
+	jsr setAddressBus
+	lda #$62
+	sta $dd01
+	lda #$42
+	sta $dd01
+
+	lda #$80
+	+MWordValueTo_XY $3380
+	jsr setAddressBus
+	lda #$83
+	sta $dd01
+	lda #$93
+	sta $dd01
+
+	lda #$80
+	+MWordValueTo_XY $338f
+	jsr setAddressBus
+	lda #$e3
+	sta $dd01
+	lda #$c3
+	sta $dd01
+	
+	jsr waitVSYnc
+
+	rts
+	
+!macro number24Bits .a {
+	!by .a & $ff , (.a >> 8)  & $ff , (.a >> 16)  & $ff
+	}
+
+!zn	
+Mode7Regs1
+	+number24Bits $100
+	+number24Bits 0
+	+number24Bits $100
+	+number24Bits 0
+
+	+number24Bits 0
+	+number24Bits 0
+Mode7Regs1Size = * - Mode7Regs1
+
+Mode7Regs2
+	+number24Bits $400
+	+number24Bits 0
+	+number24Bits $400
+	+number24Bits 0
+
+	+number24Bits 0
+	+number24Bits 0
+Mode7Regs2Size = * - Mode7Regs1
+
+Mode7Regs3
+	+number24Bits $80
+	+number24Bits 0
+	+number24Bits $80
+	+number24Bits 0
+
+Mode7Regs3Translation
+	+number24Bits 0
+	+number24Bits 0
+Mode7Regs3Size = * - Mode7Regs1
+Mode7Regs3TranslationSize = * - Mode7Regs3Translation
+Mode7Regs3TranslationCount !by 8
+	
 ; Sprite positions
 SpriteFrame0
 	!by $04,$01,$80,$00
@@ -103,6 +427,13 @@ SpriteFrame1
 	!by $04,$41,$e0,$00
 	!by $04,$c1,$e0,$f0
 SpriteFrame1Size = * - SpriteFrame1
+
+SpriteFrame2
+	!by $04,$01,$14,$04
+	!by $04,$81,$14,$ec
+	!by $04,$41,$e0,$04
+	!by $04,$c1,$e0,$ec
+SpriteFrame2Size = * - SpriteFrame2
 
 SpriteDataCopy
 	pha
@@ -213,4 +544,15 @@ setAddressSpritesControl
 	sta $dd01
 	lda #$9a
 	sta $dd01
+	rts
+
+; A = EBBS
+; X/Y = lo/hi address
+setAddressBus
+	pha
+	jsr reset24BitBus
+	pla
+	sta $dd01
+	stx $dd01
+	sty $dd01
 	rts
