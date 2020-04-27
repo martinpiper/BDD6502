@@ -41,7 +41,7 @@ Feature: Tests the video hardware expansion
     Given render a video display frame
     Given render a video display frame
 
-    And I run the command line: ..\C64\acme.exe -v3 --lib ../C64/ -o test.prg --labeldump test.lbl -f cbm features/TestVideoHardware.a
+    And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm features/TestVideoHardware.a
     And I load prg "test.prg"
     And I load labels "test.lbl"
 #    And I enable trace with indent

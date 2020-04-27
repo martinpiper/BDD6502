@@ -1,6 +1,6 @@
 !sal
 !pdb "t.pdb"
-!source "stdlib/stdlib.a"
+!source "C64/stdlib/stdlib.a"
 *=$200
 !zn
 start
@@ -8,50 +8,50 @@ start
 	ldx #$ff
 	txs
 
-	jsr init24BitBus
+	jsr Bus24Bit_Init
 
-	jsr videoDisableDisplay
+	jsr Bus24Bit_DisableDisplay
 	lda #$30
-	jsr videoEnableDisplay
-	jsr waitVSYnc
+	jsr Bus24Bit_EnableDisplay
+	jsr Bus24Bit_WaitVSync
 
 	; Setup a background colour that is visible
-	jsr setAddressPalette
+	jsr Bus24Bit_SetAddressPalette
 	lda #$21
-	sta $dd01
-	sta $dd01
-	jsr waitVSYnc
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+	jsr Bus24Bit_WaitVSync
 
-	jsr setAddressSpritesControl
+	jsr Bus24Bit_SetAddressSpritesControl
 	lda #$10
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$00
-	sta $dd01
+	sta CIA2PortBRS232
 
 	; Write a test sprite frame 4 palette 1 at $80,$80
 	; This also visually demonstrates how the 24 bit memory bus auto-increments the address after each write
 	+MWordValueTo_AX SpriteFrame0
 	ldy #SpriteFrame0Size
-	jsr SpriteDataCopy
+	jsr Bus24Bit_SpriteDataCopy
 
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 
 	; Move sprites into corners
 	+MWordValueTo_AX SpriteFrame1
 	ldy #SpriteFrame1Size
-	jsr SpriteDataCopy
+	jsr Bus24Bit_SpriteDataCopy
 
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 	
 	; Shrink x&y borders
 	lda #$f0
-	jsr videoEnableDisplay
+	jsr Bus24Bit_EnableDisplay
 
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 
 	; Full borders again
 	lda #$30
-	jsr videoEnableDisplay
+	jsr Bus24Bit_EnableDisplay
 	
 	; Demonstrate video bus and palette bus contention handling by updating sprite registers during the visible portion of the screen
 	; Basically, this writes more data in the vblank than there is CPU time for
@@ -59,13 +59,13 @@ start
 .do1
 	+MWordValueTo_AX SpriteFrame1
 	ldy #SpriteFrame1Size
-	jsr SpriteDataCopy
-	jsr setAddressPalette
+	jsr Bus24Bit_SpriteDataCopy
+	jsr Bus24Bit_SetAddressPalette
 	ldx #$10
 	lda #$11
 	clc
 .do2
-	sta $dd01
+	sta CIA2PortBRS232
 	adc #1
 	dex
 	bne .do2
@@ -73,19 +73,19 @@ start
 	bne .do1
 
 	; Write to the mode7 background colour register at $01a014
-	jsr reset24BitBus
+	jsr Bus24Bit_Reset
 	lda #$01; EBBS
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$14
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$a0
-	sta $dd01
+	sta CIA2PortBRS232
 	; Colour index
 	lda #14
-	sta $dd01
+	sta CIA2PortBRS232
 
 	
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 
 	rts
 .counter1 !by 32
@@ -96,87 +96,87 @@ start2
 	ldx #$ff
 	txs
 	
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 	; Full borders again
 	lda #$30
-	jsr videoEnableDisplay
+	jsr Bus24Bit_EnableDisplay
 
 	; Setup some characters at known positions
 	lda #$01
 	+MWordValueTo_XY $9040
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$41
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$42
-	sta $dd01
+	sta CIA2PortBRS232
 
 	lda #$01
 	+MWordValueTo_XY $905e
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$42
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$43
-	sta $dd01
+	sta CIA2PortBRS232
 
 	lda #$01
 	+MWordValueTo_XY $93a0
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$43
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$44
-	sta $dd01
+	sta CIA2PortBRS232
 
 	lda #$01
 	+MWordValueTo_XY $93be
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$43
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$45
-	sta $dd01
+	sta CIA2PortBRS232
 	
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 
 	; Move sprites slightly in to reveal more of the characters
 	+MWordValueTo_AX SpriteFrame2
 	ldy #SpriteFrame2Size
-	jsr SpriteDataCopy
+	jsr Bus24Bit_SpriteDataCopy
 
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 
 	; Setup some characters with known flips, colours, and extended chars
 	lda #$01
 	+MWordValueTo_XY $9440
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$01
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$11
-	sta $dd01
+	sta CIA2PortBRS232
 
 	lda #$01
 	+MWordValueTo_XY $945e
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$62
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$42
-	sta $dd01
+	sta CIA2PortBRS232
 
 	lda #$01
 	+MWordValueTo_XY $97a0
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$83
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$93
-	sta $dd01
+	sta CIA2PortBRS232
 
 	lda #$01
 	+MWordValueTo_XY $97be
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$e3
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$c3
-	sta $dd01
+	sta CIA2PortBRS232
 	
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 
 	rts
 
@@ -186,21 +186,21 @@ start3
 	ldx #$ff
 	txs
 	
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 	; Shrink borderX
 	lda #$70
-	jsr videoEnableDisplay
-	jsr waitVSYnc
+	jsr Bus24Bit_EnableDisplay
+	jsr Bus24Bit_WaitVSync
 
 	; Shrink borderY
 	lda #$b0
-	jsr videoEnableDisplay
-	jsr waitVSYnc
+	jsr Bus24Bit_EnableDisplay
+	jsr Bus24Bit_WaitVSync
 
 	; Shrink borderX+Y
 	lda #$f0
-	jsr videoEnableDisplay
-	jsr waitVSYnc
+	jsr Bus24Bit_EnableDisplay
+	jsr Bus24Bit_WaitVSync
 
 	rts
 
@@ -210,39 +210,39 @@ start4
 	ldx #$ff
 	txs
 
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 
 	lda #$01
 	+MWordValueTo_XY $a000
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	
 	+MWordValueTo_AX Mode7Regs1
 	ldy #Mode7Regs1Size
-	jsr copySmallDataTo24BitBus
+	jsr Bus24Bit_CopySmallData
 	
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 
 
 	lda #$01
 	+MWordValueTo_XY $a000
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	
 	+MWordValueTo_AX Mode7Regs3
 	ldy #Mode7Regs3Size
-	jsr copySmallDataTo24BitBus
+	jsr Bus24Bit_CopySmallData
 	
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 
 
 	lda #$01
 	+MWordValueTo_XY $a000
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	
 	+MWordValueTo_AX Mode7Regs2
 	ldy #Mode7Regs2Size
-	jsr copySmallDataTo24BitBus
+	jsr Bus24Bit_CopySmallData
 	
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 	rts
 
 
@@ -252,7 +252,7 @@ start5
 	ldx #$ff
 	txs
 
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 
 .l1
 	; This is very fast movement
@@ -273,13 +273,13 @@ start5
 	; Translation regs only
 	lda #$01
 	+MWordValueTo_XY $a00c
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 
 	+MWordValueTo_AX Mode7Regs3Translation
 	ldy #Mode7Regs3TranslationSize
-	jsr copySmallDataTo24BitBus
+	jsr Bus24Bit_CopySmallData
 
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 	
 	dec Mode7Regs3TranslationCount
 	bne .l1
@@ -293,85 +293,85 @@ start6
 	ldx #$ff
 	txs
 	
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 	; Shrink borderX+Y
 	lda #$f0
-	jsr videoEnableDisplay
+	jsr Bus24Bit_EnableDisplay
 
 	; Setup some tiles at known positions
 	lda #$80
 	+MWordValueTo_XY $2040
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$41
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$42
-	sta $dd01
+	sta CIA2PortBRS232
 
 	lda #$80
 	+MWordValueTo_XY $204f
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$42
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$43
-	sta $dd01
+	sta CIA2PortBRS232
 
 	lda #$80
 	+MWordValueTo_XY $2380
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$43
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$44
-	sta $dd01
+	sta CIA2PortBRS232
 
 	lda #$80
 	+MWordValueTo_XY $238f
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$43
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$45
-	sta $dd01
+	sta CIA2PortBRS232
 	
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 	; Full borders again
 	lda #$30
-	jsr videoEnableDisplay
+	jsr Bus24Bit_EnableDisplay
 
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 
 	; Setup some tiles with known flips and colours
 	lda #$80
 	+MWordValueTo_XY $3040
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$01
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$11
-	sta $dd01
+	sta CIA2PortBRS232
 
 	lda #$80
 	+MWordValueTo_XY $304f
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$62
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$42
-	sta $dd01
+	sta CIA2PortBRS232
 
 	lda #$80
 	+MWordValueTo_XY $3380
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$83
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$93
-	sta $dd01
+	sta CIA2PortBRS232
 
 	lda #$80
 	+MWordValueTo_XY $338f
-	jsr setAddressBus
+	jsr Bus24Bit_SetAddressBus
 	lda #$e3
-	sta $dd01
+	sta CIA2PortBRS232
 	lda #$c3
-	sta $dd01
+	sta CIA2PortBRS232
 	
-	jsr waitVSYnc
+	jsr Bus24Bit_WaitVSync
 
 	rts
 	
@@ -435,124 +435,5 @@ SpriteFrame2
 	!by $04,$c1,$e0,$ec
 SpriteFrame2Size = * - SpriteFrame2
 
-SpriteDataCopy
-	pha
-	jsr setAddressSprites
-	pla
-	jmp copySmallDataTo24BitBus
-
-
-
-	
-init24BitBus
-	; Setup PA2 for writing
-	lda #%100
-	sta $dd02
-
-	; Setup output of 8 bits
-	lda #$ff
-	sta $dd03
-	
-	jsr reset24BitBus
-	; Send zero bytes for the bus and data
-	lda #0
-	sta $dd01
-	sta $dd01
-	sta $dd01
-	sta $dd01
-	jsr reset24BitBus
-	rts
-
-; Waits for vsync to be triggered from the video
-waitVSYnc
-	lda #%10000
-.l2
-	bit $dd0d
-	beq .l2
-	rts
-	
-copySmallDataTo24BitBus
-	sta .sm1+1
-	stx .sm1+2
-	sty .sm2+1
-	ldy #0
-.l1
-.sm1	lda $1234,y
-	sta $dd01
-	iny
-.sm2	cpy #0
-	bne .sm1
-	rts
-
-; Resets the 24 bit bus
-reset24BitBus
-	; Reset the state input again
-	lda #%000
-	sta $dd00
-	lda #%100
-	sta $dd00
-	rts
-
-videoDisableDisplay
-	jsr setAddressVideoControlRegisters
-	lda #$00
-	sta $dd01
-	rts
-
-videoEnableDisplay
-	pha
-	jsr setAddressVideoControlRegisters
-	pla
-	sta $dd01
-	rts
-
-setAddressVideoControlRegisters
-	jsr reset24BitBus
-	lda #$01; EBBS
-	sta $dd01
-	lda #$00
-	sta $dd01
-	lda #$9e
-	sta $dd01
-	rts
-
-setAddressPalette
-	jsr reset24BitBus
-	lda #$01; EBBS
-	sta $dd01
-	lda #$00
-	sta $dd01
-	lda #$9c
-	sta $dd01
-	rts
-
-setAddressSprites
-	jsr reset24BitBus
-	lda #$01; EBBS
-	sta $dd01
-	lda #$20
-	sta $dd01
-	lda #$98
-	sta $dd01
-	rts
-
-setAddressSpritesControl
-	jsr reset24BitBus
-	lda #$01; EBBS
-	sta $dd01
-	lda #$00
-	sta $dd01
-	lda #$9a
-	sta $dd01
-	rts
-
-; A = EBBS
-; X/Y = lo/hi address
-setAddressBus
-	pha
-	jsr reset24BitBus
-	pla
-	sta $dd01
-	stx $dd01
-	sty $dd01
-	rts
+!source "BombJack/stdlib/Bus24Bit.a"
+!source "BombJack/stdlib/Video.a"

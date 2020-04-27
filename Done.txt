@@ -64,3 +64,13 @@ Added: Given I am using C64 processor port options
 	* Sprites also needed this fix, actually it was the sprite span pixel read and clear that gave the hint about the latch
 	* See: latchedDisplayV
 	* The mode7 layer does not have this problem because it maintains its own pixel clocks from hsync and vsync
+
+
+
+* Continue adding syntax to support the other video layers
+	features\TestVideoHardware.feature
+
+
+
+* Detect when the 24 bit bus is held with an address for an extended number of cycles without data being written
+	No need now, the hardware automatically resets the bus a while after the byte is written if another write has not been started

@@ -1,19 +1,14 @@
 ; TODO items
 
-* Continue adding syntax to support the other video layers
-	features\TestVideoHardware.feature
-	
-	
+* Image comparison needs to output a highlight of where the pixel differences are
+
 
 * The contention time might need to be a bit longer considering the ageing speed with the 6502 speed
+	Make the ageing and video clocks per instruction configurable, to allow a fast or slow 6502 to be emulated
 
 
 
 * Have a separate section that animates for a few frames for "// Contention timing test"
-
-
-
-* Detect when the 24 bit bus is held with an address for an extended number of cycles without data being written
 
 
 
