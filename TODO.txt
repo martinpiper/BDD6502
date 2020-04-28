@@ -1,5 +1,8 @@
 ; TODO items
 
+* Detect and fail if Bus24Bit_WaitVSync (the rad from the register) is used without Bus24Bit_EnableDisplay (the register write)
+
+
 * Image comparison needs to output a highlight of where the pixel differences are
 
 

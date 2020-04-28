@@ -74,3 +74,9 @@ Added: Given I am using C64 processor port options
 
 * Detect when the 24 bit bus is held with an address for an extended number of cycles without data being written
 	No need now, the hardware automatically resets the bus a while after the byte is written if another write has not been started
+
+
+
+* displayBombJack.isVsyncTriggered
+	The $dd0d value is reading the logic level of vsync in the display, it technically doesn't need the reset logic
+	However the vsync wait will need a wait for "not vync" if a wait for vsync is issued too quickly after the first wait

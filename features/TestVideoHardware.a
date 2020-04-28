@@ -375,40 +375,36 @@ start6
 
 	rts
 	
-!macro number24Bits .a {
-	!by .a & $ff , (.a >> 8)  & $ff , (.a >> 16)  & $ff
-	}
-
 !zn	
 Mode7Regs1
-	+number24Bits $100
-	+number24Bits 0
-	+number24Bits $100
-	+number24Bits 0
+	+MLittleEndian24Bit $100
+	+MLittleEndian24Bit 0
+	+MLittleEndian24Bit $100
+	+MLittleEndian24Bit 0
 
-	+number24Bits 0
-	+number24Bits 0
+	+MLittleEndian24Bit 0
+	+MLittleEndian24Bit 0
 Mode7Regs1Size = * - Mode7Regs1
 
 Mode7Regs2
-	+number24Bits $400
-	+number24Bits 0
-	+number24Bits $400
-	+number24Bits 0
+	+MLittleEndian24Bit $400
+	+MLittleEndian24Bit 0
+	+MLittleEndian24Bit $400
+	+MLittleEndian24Bit 0
 
-	+number24Bits 0
-	+number24Bits 0
+	+MLittleEndian24Bit 0
+	+MLittleEndian24Bit 0
 Mode7Regs2Size = * - Mode7Regs1
 
 Mode7Regs3
-	+number24Bits $80
-	+number24Bits 0
-	+number24Bits $80
-	+number24Bits 0
+	+MLittleEndian24Bit $80
+	+MLittleEndian24Bit 0
+	+MLittleEndian24Bit $80
+	+MLittleEndian24Bit 0
 
 Mode7Regs3Translation
-	+number24Bits 0
-	+number24Bits 0
+	+MLittleEndian24Bit 0
+	+MLittleEndian24Bit 0
 Mode7Regs3Size = * - Mode7Regs1
 Mode7Regs3TranslationSize = * - Mode7Regs3Translation
 Mode7Regs3TranslationCount !by 8

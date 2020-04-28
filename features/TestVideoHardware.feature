@@ -39,14 +39,13 @@ Feature: Tests the video hardware expansion
     Given write data byte '0xf0' to 24bit bus at '0x9e00' and addressEx '0x01'
 
     Given render a video display frame
-    Given render a video display frame
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm features/TestVideoHardware.a
     And I load prg "test.prg"
     And I load labels "test.lbl"
 #    And I enable trace with indent
 
-    When I execute the procedure at start for no more than 62980 instructions
+    When I execute the procedure at start for no more than 75652 instructions
     Then expect image "testdata/TC-1-000001.bmp" to be identical to "target/frames/TC-1-000001.bmp"
     Then expect image "testdata/TC-1-000002.bmp" to be identical to "target/frames/TC-1-000002.bmp"
     Then expect image "testdata/TC-1-000003.bmp" to be identical to "target/frames/TC-1-000003.bmp"
@@ -66,13 +65,13 @@ Feature: Tests the video hardware expansion
     Then expect image "testdata/TC-1-000013.bmp" to be identical to "target/frames/TC-1-000013.bmp"
     Then expect image "testdata/TC-1-000014.bmp" to be identical to "target/frames/TC-1-000014.bmp"
 
-    When I execute the procedure at start4 for no more than 88704 instructions
+    When I execute the procedure at start4 for no more than 50687 instructions
     Then expect image "testdata/TC-1-000015.bmp" to be identical to "target/frames/TC-1-000015.bmp"
     Then expect image "testdata/TC-1-000016.bmp" to be identical to "target/frames/TC-1-000016.bmp"
     Then expect image "testdata/TC-1-000017.bmp" to be identical to "target/frames/TC-1-000017.bmp"
     Then expect image "testdata/TC-1-000018.bmp" to be identical to "target/frames/TC-1-000018.bmp"
 
-    When I execute the procedure at start5 for no more than 114051 instructions
+    When I execute the procedure at start5 for no more than 114050 instructions
     Then expect image "testdata/TC-1-000019.bmp" to be identical to "target/frames/TC-1-000019.bmp"
     Then expect image "testdata/TC-1-000020.bmp" to be identical to "target/frames/TC-1-000020.bmp"
     Then expect image "testdata/TC-1-000021.bmp" to be identical to "target/frames/TC-1-000021.bmp"

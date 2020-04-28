@@ -74,12 +74,11 @@ public class UserPortTo24BitAddress extends Device {
                 return 0;
 
             case 0x0d:
-                int ret = 0;
-                if (displayBombJack.isVsyncTriggered()) {
+                int ret;
+                if (displayBombJack.getVSync()) {
                     ret = 0x10;
-                }
-                if (logRead) {
-                    displayBombJack.resetVsyncTriggered();
+                } else {
+                    ret = 0x00;
                 }
                 return ret;
         }

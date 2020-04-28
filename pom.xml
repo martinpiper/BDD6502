@@ -8,6 +8,10 @@
     <artifactId>BDD6502</artifactId>
     <version>1.0.9-SNAPSHOT</version>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <dependencies>
         <!-- To install cukesplus-core dependency: -->
         <!-- git clone https://github.com/martinpiper/CukesPlus.git -->

@@ -34,16 +34,11 @@ public class DisplayBombJack {
     Random random = new Random();
     String leafFilename = null;
     int lastDataWritten = 0;
+    boolean _hSync = true, _vSync = true;
 
-    public boolean isVsyncTriggered() {
-        return vsyncTriggered;
+    public boolean getVSync() {
+        return _vSync;
     }
-
-    public void resetVsyncTriggered() {
-        vsyncTriggered = false;
-    }
-
-    boolean vsyncTriggered = false;
 
     public DisplayBombJack() {
     }
@@ -146,7 +141,8 @@ public class DisplayBombJack {
     }
 
     public void calculatePixel() {
-        boolean _hSync = true, _vSync = true;
+        _hSync = true;
+        _vSync = true;
 
         if (displayX >= 0 && displayX < 0x80) {
             displayH = 0x180 + displayX;
@@ -164,7 +160,6 @@ public class DisplayBombJack {
 
         // Trigger vsync once only per frame
         if (displayY == 0 && displayH == 0x180) {
-            vsyncTriggered = true;
             if (leafFilename != null) {
                 try {
                     File file = new File(leafFilename + String.format("%06d", frameNumber++) + ".bmp");
