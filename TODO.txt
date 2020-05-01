@@ -1,6 +1,12 @@
 ; TODO items
 
-* Detect and fail if Bus24Bit_WaitVSync (the rad from the register) is used without Bus24Bit_EnableDisplay (the register write)
+* Detect and fail if Bus24Bit_WaitVSync (the read from the register) is used without Bus24Bit_EnableDisplay (the register write)
+	Or, allow the display enable/disable to just act on the output pixel stage and allow the counters to operate
+	
+	
+
+* Output the software bus writes so that the Proteus simulator can use. Will need to detect waits for vsync or log x/y pos for writes
+
 
 
 * Image comparison needs to output a highlight of where the pixel differences are
