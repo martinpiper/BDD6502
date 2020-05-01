@@ -50,6 +50,9 @@ public class Glue {
     static private boolean enableUnitialisedReadProtection = false;
     static private boolean enableUnitialisedReadProtectionWithFail = false;
     static private DisplayBombJack displayBombJack = null;
+    private int pixelsPerInstruction = 8;
+    private int instructionsPerDisplayRefresh = 32;
+    private int instructionsPerDisplayRefreshCount = 0;
 
     Scenario scenario = null;
     ScriptEngineManager manager = new ScriptEngineManager();
@@ -566,10 +569,14 @@ public class Glue {
 
             // Execute video clocks while running the CPU
             if (displayBombJack != null) {
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < pixelsPerInstruction; i++) {
                     displayBombJack.calculatePixel();
                 }
-                displayBombJack.RepaintWindow();
+                instructionsPerDisplayRefreshCount--;
+                if (instructionsPerDisplayRefreshCount <= 0) {
+                    displayBombJack.RepaintWindow();
+                    instructionsPerDisplayRefreshCount = instructionsPerDisplayRefresh;
+                }
             }
 
             if (untilPC == machine.getCpu().getProgramCounter()) {
@@ -1096,7 +1103,6 @@ public class Glue {
             displayBombJack.RepaintWindow();
 
             Thread.sleep(10);
-
         }
     }
 
@@ -1125,5 +1131,15 @@ public class Glue {
         BufferedImage test = ImageIO.read(new File(testFilename));
 
         assertThat("Images differ",bufferedImagesEqual(expected,test),is(true));
+    }
+
+    @Given("^video display processes (.*) pixels per instruction$")
+    public void videoDisplayProcessesPixelsPerInstruction(String numPixels) throws ScriptException {
+        pixelsPerInstruction = valueToInt(numPixels);
+    }
+
+    @Given("^video display refresh window every (.*) instructions$")
+    public void videoDisplayRefreshWindowEveryInstructions(String refreshEvery) throws ScriptException {
+        instructionsPerDisplayRefresh = valueToInt(refreshEvery);
     }
 }

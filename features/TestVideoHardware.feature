@@ -3,6 +3,8 @@ Feature: Tests the video hardware expansion
   @TC-1
   Scenario: Full display test with sprites, borders, contention, chars, tiles, and mode7
     Given a new video display
+    Given video display processes 8 pixels per instruction
+    Given video display refresh window every 32 instructions
     Given video display saves debug BMP images to leaf filename "target/frames/TC-1-"
     Given I have a simple overclocked 6502 system
     Given a user port to 24 bit bus is installed
