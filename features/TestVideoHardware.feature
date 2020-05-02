@@ -6,6 +6,7 @@ Feature: Tests the video hardware expansion
     Given video display processes 8 pixels per instruction
     Given video display refresh window every 32 instructions
     Given video display does not save debug BMP images
+    Given video display add joystick to port 1
     Given video display saves debug BMP images to leaf filename "target/frames/TC-1-"
     Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system

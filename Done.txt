@@ -84,3 +84,6 @@ Added: Given I am using C64 processor port options
 
 
 * Optional syntax to limit the speed to XX FPS for video display
+
+
+* Add arrows+ctrl as joystick1 ($dc00) for the video display window

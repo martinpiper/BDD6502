@@ -574,6 +574,25 @@ public class Glue {
         while (machine.getCpu().getProgramCounter() > 1) {
 
             if (displayBombJack != null) {
+                if (enableJoystick1) {
+                    int joystickBits = 0;
+                    if (!displayBombJack.getWindow().isPressedUp()) {
+                        joystickBits |= 0x1;
+                    }
+                    if (!displayBombJack.getWindow().isPressedDown()) {
+                        joystickBits |= 0x2;
+                    }
+                    if (!displayBombJack.getWindow().isPressedLeft()) {
+                        joystickBits |= 0x4;
+                    }
+                    if (!displayBombJack.getWindow().isPressedRight()) {
+                        joystickBits |= 0x8;
+                    }
+                    if (!displayBombJack.getWindow().isPressedFire()) {
+                        joystickBits |= 0x10;
+                    }
+                    machine.getBus().write(0xdc00, joystickBits);
+                }
                 // Execute video clocks while running the CPU
                 long targetNumberFrames = System.currentTimeMillis() - startTime;
                 targetNumberFrames *= displayLimitFPS;
@@ -1224,5 +1243,11 @@ public class Glue {
     @Given("^unlimit video display fps$")
     public void unlimitVideoDisplayToFps() {
         displayLimitFPS = 0;
+    }
+
+    boolean enableJoystick1 = false;
+    @Given("^video display add joystick to port 1$")
+    public void addJoystickPort1() {
+        enableJoystick1 = true;
     }
 }

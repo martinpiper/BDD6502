@@ -137,7 +137,7 @@ public class Mode7 extends DisplayLayer {
         displayV = yo >> 8;
 
         // Clamp
-        displayH &= 0x3ff;
+        displayH &= 0x7ff;
         displayV &= 0x3ff;
         int index = ((displayH >> 4) & 0x7f) + (((displayV >> 4) & 0x3f) * 0x80);
         int theChar = (screenData[index]) & 0xff;

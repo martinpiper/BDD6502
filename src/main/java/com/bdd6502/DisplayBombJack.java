@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class DisplayBombJack {
 
-    JFrame window;
+    DisplayMainFrame window;
     QuickDrawPanel panel;
 
     LinkedList<DisplayLayer> layers = new LinkedList<>();
@@ -83,7 +83,8 @@ public class DisplayBombJack {
 
     public void InitWindow(int width, int height) {
         // Testing window drawing in a loop for eventual graphics updates
-        window = new JFrame();
+        window = new DisplayMainFrame();
+        window.addKeyListener(window);
         //window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.getContentPane().setPreferredSize(new Dimension(width, height));
         window.pack();
@@ -295,5 +296,9 @@ public class DisplayBombJack {
 
     public void writeDebugBMPsToLeafFilename(String leafFilename) {
         this.leafFilename = leafFilename;
+    }
+
+    public DisplayMainFrame getWindow() {
+        return window;
     }
 }
