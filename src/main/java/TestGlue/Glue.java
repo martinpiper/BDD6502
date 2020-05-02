@@ -25,6 +25,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.sql.Time;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -572,15 +573,37 @@ public class Glue {
         // Pushing lots of 0 onto the stack will eventually return to address 1
         while (machine.getCpu().getProgramCounter() > 1) {
 
-            // Execute video clocks while running the CPU
             if (displayBombJack != null) {
-                for (int i = 0; i < pixelsPerInstruction; i++) {
-                    displayBombJack.calculatePixel();
+                // Execute video clocks while running the CPU
+                long targetNumberFrames = System.currentTimeMillis() - startTime;
+                targetNumberFrames *= displayLimitFPS;
+                targetNumberFrames /= 1000;
+                int displayFrame = displayBombJack.getFrameNumberForSync() - displaySyncFrame;
+
+                long frameDelta = targetNumberFrames - displayFrame;
+                if (displayLimitFPS > 0 && System.currentTimeMillis() > timeSinceLastDebugDisplayTimes) {
+                    timeSinceLastDebugDisplayTimes = System.currentTimeMillis() + 1000;
+                    System.out.println("Rendered FPS = " + (displayBombJack.getFrameNumberForSync()- lastFramesCount) + " frameDelta = " + frameDelta);
+                    lastFramesCount = displayBombJack.getFrameNumberForSync();
                 }
-                instructionsPerDisplayRefreshCount--;
-                if (instructionsPerDisplayRefreshCount <= 0) {
-                    displayBombJack.RepaintWindow();
-                    instructionsPerDisplayRefreshCount = instructionsPerDisplayRefresh;
+
+                if (displayLimitFPS == 0 || frameDelta > 0) {
+                    for (int i = 0; i < pixelsPerInstruction; i++) {
+                        displayBombJack.calculatePixel();
+                    }
+                    // If we are limiting FPS then the frame update logic changes
+                    if (displayLimitFPS > 0) {
+                        if (displayBombJack.getFrameNumberForSync() != lastRepaintedFrame) {
+                            displayBombJack.RepaintWindow();
+                            lastRepaintedFrame = displayBombJack.getFrameNumberForSync();
+                        }
+                    } else {
+                        instructionsPerDisplayRefreshCount--;
+                        if (instructionsPerDisplayRefreshCount <= 0) {
+                            displayBombJack.RepaintWindow();
+                            instructionsPerDisplayRefreshCount = instructionsPerDisplayRefresh;
+                        }
+                    }
                 }
 
                 if (!displayBombJack.isVisible())
@@ -1182,5 +1205,24 @@ public class Glue {
     @Given("^video display refresh window every (.*) instructions$")
     public void videoDisplayRefreshWindowEveryInstructions(String refreshEvery) throws ScriptException {
         instructionsPerDisplayRefresh = valueToInt(refreshEvery);
+    }
+
+    long startTime  = 0;
+    double displayLimitFPS = 0;
+    int displaySyncFrame = 0;
+    long timeSinceLastDebugDisplayTimes = 0;
+    long lastFramesCount = 0;
+    long lastRepaintedFrame = 0;
+    @Given("^limit video display to (.*) fps$")
+    public void limitVideoDisplayToFps(double arg0) {
+        displaySyncFrame = displayBombJack.getFrameNumberForSync();
+        lastFramesCount = displaySyncFrame;
+        startTime = System.currentTimeMillis();
+        displayLimitFPS = arg0;
+    }
+
+    @Given("^unlimit video display fps$")
+    public void unlimitVideoDisplayToFps() {
+        displayLimitFPS = 0;
     }
 }

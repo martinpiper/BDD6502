@@ -23,6 +23,12 @@ public class UserPortTo24BitAddress extends Device {
 
     @Override
     public void write(int address, int data) throws MemoryAccessException {
+        boolean busTrace = false;
+        String trace = System.getProperty("bdd6502.bus24.trace");
+        if (null != trace && trace.indexOf("true") != -1) {
+            busTrace = true;
+        }
+
         int register = address & 0x0f;
         switch (register) {
             case 0:
@@ -30,10 +36,14 @@ public class UserPortTo24BitAddress extends Device {
                     if ((data & 0x04) == 0) {
                         bus24State = 0;
                         bus24CountEnabled = false;
-                        System.out.println("Bus24 reset");
+                        if (busTrace) {
+                            System.out.println("Bus24 reset");
+                        }
                     } else {
                         bus24CountEnabled = true;
-                        System.out.println("Bus24 ready");
+                        if (busTrace) {
+                            System.out.println("Bus24 ready");
+                        }
                     }
                 }
                 break;
@@ -49,7 +59,9 @@ public class UserPortTo24BitAddress extends Device {
                             }
                         } else {
                             bus24Bytes[bus24State] = data;
-                            System.out.println("Bus24 received " + bus24State + " : " + data);
+                            if (busTrace) {
+                                System.out.println("Bus24 received " + bus24State + " : " + data);
+                            }
                             bus24State++;
                         }
                     }

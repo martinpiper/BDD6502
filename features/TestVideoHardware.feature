@@ -7,6 +7,7 @@ Feature: Tests the video hardware expansion
     Given video display refresh window every 32 instructions
     Given video display does not save debug BMP images
     Given video display saves debug BMP images to leaf filename "target/frames/TC-1-"
+    Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     Given a user port to 24 bit bus is installed
     Given add a Mode7 layer with registers at '0xa000' and addressEx '0x08'
@@ -95,3 +96,9 @@ Feature: Tests the video hardware expansion
     Then expect image "testdata/TC-1-000032.bmp" to be identical to "target/frames/TC-1-000032.bmp"
 
 #    When rendering the video until window closed
+
+    # This goes on for longer, due to the counter going through 0 to 255
+    Given property "bdd6502.bus24.trace" is set to string "false"
+    Given video display does not save debug BMP images
+    Given limit video display to 60 fps
+    When I execute the procedure at start5 until return

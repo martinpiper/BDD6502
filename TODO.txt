@@ -1,9 +1,5 @@
 ; TODO items
 
-* Optional syntax to limit the speed to XX FPS for video display
-
-
-
 * Detect and fail if Bus24Bit_WaitVSync (the read from the register) is used without Bus24Bit_EnableDisplay (the register write)
 	Or, allow the display enable/disable to just act on the output pixel stage and allow the counters to operate
 	

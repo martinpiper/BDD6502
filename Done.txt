@@ -80,3 +80,7 @@ Added: Given I am using C64 processor port options
 * displayBombJack.isVsyncTriggered
 	The $dd0d value is reading the logic level of vsync in the display, it technically doesn't need the reset logic
 	However the vsync wait will need a wait for "not vync" if a wait for vsync is issued too quickly after the first wait
+
+
+
+* Optional syntax to limit the speed to XX FPS for video display

@@ -3,14 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/ExecuteUntilPC.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/ExecuteUntilPC.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/assemble.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/assemble.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000006.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000006.bmp" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -442,50 +442,50 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="440" y="94" key="#Project_Structure/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588337079541" />
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588417757354">
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588422192710">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588417757354" />
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588422192710" />
     <state x="689" y="321" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1587393658085">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="689" y="321" key="#com.intellij.fileTypes.FileTypeChooser/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587393658085" />
-    <state x="765" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1588345857747">
+    <state x="765" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1588421346805">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="220" key="#com.intellij.ide.util.MemberChooser/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588345857747" />
-    <state width="1877" height="223" key="GridCell.Tab.0.bottom" timestamp="1588419087890">
+    <state x="765" y="220" key="#com.intellij.ide.util.MemberChooser/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588421346805" />
+    <state width="1877" height="223" key="GridCell.Tab.0.bottom" timestamp="1588425900972">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588419087890" />
-    <state width="1877" height="223" key="GridCell.Tab.0.center" timestamp="1588419087890">
+    <state width="1877" height="223" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588425900972" />
+    <state width="1877" height="223" key="GridCell.Tab.0.center" timestamp="1588425900972">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588419087890" />
-    <state width="1877" height="223" key="GridCell.Tab.0.left" timestamp="1588419087889">
+    <state width="1877" height="223" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588425900972" />
+    <state width="1877" height="223" key="GridCell.Tab.0.left" timestamp="1588425900972">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588419087889" />
-    <state width="1877" height="223" key="GridCell.Tab.0.right" timestamp="1588419087890">
+    <state width="1877" height="223" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588425900972" />
+    <state width="1877" height="223" key="GridCell.Tab.0.right" timestamp="1588425900972">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588419087890" />
-    <state width="1877" height="287" key="GridCell.Tab.1.bottom" timestamp="1588419087883">
+    <state width="1877" height="223" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588425900972" />
+    <state width="1877" height="287" key="GridCell.Tab.1.bottom" timestamp="1588423626359">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="287" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588419087883" />
-    <state width="1877" height="287" key="GridCell.Tab.1.center" timestamp="1588419087883">
+    <state width="1877" height="287" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588423626359" />
+    <state width="1877" height="287" key="GridCell.Tab.1.center" timestamp="1588423626359">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="287" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588419087883" />
-    <state width="1877" height="287" key="GridCell.Tab.1.left" timestamp="1588419087883">
+    <state width="1877" height="287" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588423626359" />
+    <state width="1877" height="287" key="GridCell.Tab.1.left" timestamp="1588423626359">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="287" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588419087883" />
-    <state width="1877" height="287" key="GridCell.Tab.1.right" timestamp="1588419087883">
+    <state width="1877" height="287" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588423626359" />
+    <state width="1877" height="287" key="GridCell.Tab.1.right" timestamp="1588423626359">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="287" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588419087883" />
+    <state width="1877" height="287" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588423626359" />
     <state x="540" y="262" key="IDE.errors.dialog" timestamp="1587399023292">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -498,10 +498,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="269" key="extract.method.dialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588345918001" />
-    <state x="666" y="255" width="587" height="552" key="find.popup" timestamp="1588418885762">
+    <state x="666" y="255" width="587" height="552" key="find.popup" timestamp="1588422458618">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="666" y="255" width="587" height="552" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588418885762" />
+    <state x="666" y="255" width="587" height="552" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588422458618" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1588337548697">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -536,7 +536,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
-          <line>227</line>
+          <line>236</line>
           <option name="timeStamp" value="144" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -558,6 +558,11 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java</url>
           <line>245</line>
           <option name="timeStamp" value="160" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
+          <line>26</line>
+          <option name="timeStamp" value="161" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

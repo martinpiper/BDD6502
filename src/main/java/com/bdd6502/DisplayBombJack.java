@@ -24,6 +24,12 @@ public class DisplayBombJack {
     int busContentionPalette = 0;
     int addressPalette = 0x9c00, addressExPalette = 0x01;
 
+    public int getFrameNumberForSync() {
+        return frameNumberForSync;
+    }
+
+    int frameNumberForSync = 0;
+
     public int getDisplayH() {
         return displayH;
     }
@@ -189,6 +195,9 @@ public class DisplayBombJack {
         }
 
         // Save the frame
+        if (displayX == 0 && displayY == 0) {
+            frameNumberForSync++;
+        }
         if (displayX == 0 && displayY == (displayHeight-1)) {
             if (leafFilename != null && !leafFilename.isEmpty()) {
                 try {
