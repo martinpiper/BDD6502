@@ -551,6 +551,8 @@ public class Glue {
             displayTrace = true;
         }
 
+        displayStateToScenario();
+
         if (!arg1.isEmpty()) {
             // Set the return address to location 0 if we execute a "procedure"
             machine.getCpu().stackPush(0xff);
@@ -558,7 +560,10 @@ public class Glue {
             machine.getCpu().setProgramCounter(valueToInt(arg1));
         }
 
-        int maxInstructions = valueToInt(arg2);
+        int maxInstructions = 0;
+        if (arg2.isEmpty()) {
+            maxInstructions = valueToInt(arg2);
+        }
         int numInstructions = 0;
         int untilPC = valueToInt(arg3);
 
@@ -577,6 +582,11 @@ public class Glue {
                     displayBombJack.RepaintWindow();
                     instructionsPerDisplayRefreshCount = instructionsPerDisplayRefresh;
                 }
+
+                if (!displayBombJack.isVisible())
+                {
+                    break;
+                }
             }
 
             if (untilPC == machine.getCpu().getProgramCounter()) {
@@ -584,16 +594,26 @@ public class Glue {
             }
             Integer addr = machine.getCpu().getCpuState().pc;
             internalCPUStep(displayTrace);
-            assertThat(++numInstructions, is(lessThanOrEqualTo(maxInstructions)));
+            if (maxInstructions > 0) {
+                assertThat(++numInstructions, is(lessThanOrEqualTo(maxInstructions)));
+            }
             if (enableUnitialisedReadProtection && machine.getRam().isUnitialisedReadOccured()) {
                 processUnitialisedMemoryRead(addr);
                 break;
             }
         }
 
+        displayStateToScenario();
+
         output = String.format("Executed procedure (%s) for %d instructions", arg1, numInstructions);
         scenario.write(output);
 //		System.out.println(output);
+    }
+
+    public void displayStateToScenario() {
+        if (displayBombJack != null) {
+            scenario.write("display timing=" + displayBombJack.getDisplayH() + " , " +  displayBombJack.getDisplayV() + " hsync=" + !displayBombJack.is_hSync() + " vsync=" + !displayBombJack.is_vSync());
+        }
     }
 
     public void processUnitialisedMemoryRead(Integer addr) throws Exception {
@@ -628,6 +648,22 @@ public class Glue {
     @When("^I continue executing the procedure for no more than (.+) instructions until PC = (.+)$")
     public void i_continue_executing_the_procedure_at_for_no_more_than_instructions_until_pc(String arg1, String arg2) throws Throwable {
         executeProcedureAtForNoMoreThanInstructionsUntilPC("", arg1, arg2);
+    }
+
+    @When("^I execute the procedure at (.+) until return$")
+    public void i_execute_the_procedure_at(String arg1) throws Throwable {
+        machine.getCpu().setStackPointer(0xff);
+        executeProcedureAtForNoMoreThanInstructionsUntilPC(arg1, "", "");
+    }
+
+    @When("^I continue executing the procedure until return$")
+    public void i_continue_executing_the_procedure_at_until_return() throws Throwable {
+        executeProcedureAtForNoMoreThanInstructionsUntilPC("", "", "");
+    }
+
+    @When("^I continue executing the procedure until return or until PC = (.+)$")
+    public void i_continue_executing_the_procedure_at_until_return_instructions_until_pc(String arg2) throws Throwable {
+        executeProcedureAtForNoMoreThanInstructionsUntilPC("", "", arg2);
     }
 
     @When("^Until (.+) = (.+) execute from (.+)$")
@@ -1055,7 +1091,7 @@ public class Glue {
 
     @Given("^render a video display frame$")
     public void renderAVideoDisplayFrame() {
-        displayBombJack.calculatePixelsUntil(0x180, 0x00);
+        displayBombJack.calculateAFrame();
         displayBombJack.RepaintWindow();
     }
 
@@ -1098,8 +1134,8 @@ public class Glue {
     @When("^rendering the video until window closed$")
     public void renderingTheVideoUntilWindowClosed() throws InterruptedException {
         displayBombJack.writeDebugBMPsToLeafFilename(null);
+        renderAVideoDisplayFrame();
         while (displayBombJack.isVisible()) {
-            renderAVideoDisplayFrame();
             displayBombJack.RepaintWindow();
 
             Thread.sleep(10);
@@ -1109,6 +1145,11 @@ public class Glue {
     @Given("^video display saves debug BMP images to leaf filename \"([^\"]*)\"$")
     public void videoDisplaySavesDebugBMPImagesToLeafFilename(String leafFilename) throws Throwable {
         displayBombJack.writeDebugBMPsToLeafFilename(leafFilename);
+    }
+
+    @Given("^video display does not save debug BMP images$")
+    public void videoDisplayDoesNotSaveDebugBMPImages() throws Throwable {
+        displayBombJack.writeDebugBMPsToLeafFilename(null);
     }
 
     static boolean bufferedImagesEqual(BufferedImage img1, BufferedImage img2) {

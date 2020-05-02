@@ -23,6 +23,23 @@ public class DisplayBombJack {
     int displayHeight = 264;
     int busContentionPalette = 0;
     int addressPalette = 0x9c00, addressExPalette = 0x01;
+
+    public int getDisplayH() {
+        return displayH;
+    }
+
+    public int getDisplayV() {
+        return displayV;
+    }
+
+    public boolean is_hSync() {
+        return _hSync;
+    }
+
+    public boolean is_vSync() {
+        return _vSync;
+    }
+
     int displayH = 0, displayV = 0;
     int displayX = 0, displayY = 0;
     int displayBitmapX = 0, displayBitmapY = 0;
@@ -140,6 +157,12 @@ public class DisplayBombJack {
         } while (!(displayH == waitH && displayV == waitV));
     }
 
+    public void calculateAFrame() {
+        for (int i = 0 ; i < displayWidth*displayHeight ; i++) {
+            calculatePixel();
+        }
+    }
+
     public void calculatePixel() {
         _hSync = true;
         _vSync = true;
@@ -158,21 +181,22 @@ public class DisplayBombJack {
             displayBitmapY++;
         }
 
-        // Trigger vsync once only per frame
-        if (displayY == 0 && displayH == 0x180) {
-            if (leafFilename != null) {
+        if (displayY >= 0 && displayY < 0x08) {
+            displayV = 0xf8 + displayY;
+            _vSync = false;
+        } else {
+            displayV = displayY - 0x08;
+        }
+
+        // Save the frame
+        if (displayX == 0 && displayY == (displayHeight-1)) {
+            if (leafFilename != null && !leafFilename.isEmpty()) {
                 try {
                     File file = new File(leafFilename + String.format("%06d", frameNumber++) + ".bmp");
                     file.mkdirs();
                     ImageIO.write(getImage(), "bmp", file);
                 } catch (IOException e) {}
             }
-        }
-        if (displayY >= 0 && displayY < 0x08) {
-            displayV = 0xf8 + displayY;
-            _vSync = false;
-        } else {
-            displayV = displayY - 0x08;
         }
 
         // One pixel delay from U95:A

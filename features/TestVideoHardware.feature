@@ -5,6 +5,7 @@ Feature: Tests the video hardware expansion
     Given a new video display
     Given video display processes 8 pixels per instruction
     Given video display refresh window every 32 instructions
+    Given video display does not save debug BMP images
     Given video display saves debug BMP images to leaf filename "target/frames/TC-1-"
     Given I have a simple overclocked 6502 system
     Given a user port to 24 bit bus is installed
@@ -47,7 +48,8 @@ Feature: Tests the video hardware expansion
     And I load labels "test.lbl"
 #    And I enable trace with indent
 
-    When I execute the procedure at start for no more than 75652 instructions
+    When I execute the procedure at start for no more than 76036 instructions
+    Then expect image "testdata/TC-1-000000.bmp" to be identical to "target/frames/TC-1-000000.bmp"
     Then expect image "testdata/TC-1-000001.bmp" to be identical to "target/frames/TC-1-000001.bmp"
     Then expect image "testdata/TC-1-000002.bmp" to be identical to "target/frames/TC-1-000002.bmp"
     Then expect image "testdata/TC-1-000003.bmp" to be identical to "target/frames/TC-1-000003.bmp"
@@ -67,7 +69,7 @@ Feature: Tests the video hardware expansion
     Then expect image "testdata/TC-1-000013.bmp" to be identical to "target/frames/TC-1-000013.bmp"
     Then expect image "testdata/TC-1-000014.bmp" to be identical to "target/frames/TC-1-000014.bmp"
 
-    When I execute the procedure at start4 for no more than 50687 instructions
+    When I execute the procedure at start4 for no more than 50689 instructions
     Then expect image "testdata/TC-1-000015.bmp" to be identical to "target/frames/TC-1-000015.bmp"
     Then expect image "testdata/TC-1-000016.bmp" to be identical to "target/frames/TC-1-000016.bmp"
     Then expect image "testdata/TC-1-000017.bmp" to be identical to "target/frames/TC-1-000017.bmp"
@@ -85,9 +87,11 @@ Feature: Tests the video hardware expansion
     Then expect image "testdata/TC-1-000027.bmp" to be identical to "target/frames/TC-1-000027.bmp"
 
     When I execute the procedure at start6 for no more than 50686 instructions
+    Given render a video display frame
     Then expect image "testdata/TC-1-000028.bmp" to be identical to "target/frames/TC-1-000028.bmp"
     Then expect image "testdata/TC-1-000029.bmp" to be identical to "target/frames/TC-1-000029.bmp"
     Then expect image "testdata/TC-1-000030.bmp" to be identical to "target/frames/TC-1-000030.bmp"
     Then expect image "testdata/TC-1-000031.bmp" to be identical to "target/frames/TC-1-000031.bmp"
+    Then expect image "testdata/TC-1-000032.bmp" to be identical to "target/frames/TC-1-000032.bmp"
 
 #    When rendering the video until window closed
