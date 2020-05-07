@@ -12,6 +12,7 @@
 	
 * To use the VideoHardware debug output, the hardware last two layers need to be swapped.
 	Perhaps add a switch selector for different layer priorities into the layer select to allow runtime configuration?
+	Extra (but disabled and not placed) logic has been added to the video layer
 
 
 
