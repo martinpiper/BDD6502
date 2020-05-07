@@ -1,6 +1,12 @@
 ; TODO items
 
 * Add _vsync to the proteus debug file write
+	The $f8 displayV can then be waited for in the _vsync
+
+	
+* To use the VideoHardware debug output, the hardware last two layers need to be swapped.
+	Perhaps add a switch selector for different layer priorities into the layer select to allow runtime configuration?
+
 
 
 * Match the simulated hardware to the emulated video output, especially the right border, the emulation seems to be a little too far "in"
