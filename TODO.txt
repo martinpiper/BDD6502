@@ -1,13 +1,10 @@
 ; TODO items
 
-* The java video hardware test mode output debug file does not quite render correctly on the hardware
-	The raster bars and perspective mode7 part is alternating every frame. Probably something to do with the output displayV not quite catching up properly
-	Investigate if the "w$ff01ff00,$ff019000" is not being caught correctly
+* Add _VBLANK to the proteus debug file write
+	The $f8 displayV can then be waited for in the _VBLANK
+	This would negate the writes during VBLANK optimisation though?
+		See: // This check removes waits for display H/V positions during the VBLANK, the non-visible part of the frame
 
-
-
-* Add _vsync to the proteus debug file write
-	The $f8 displayV can then be waited for in the _vsync
 
 	
 * To use the VideoHardware debug output, the hardware last two layers need to be swapped.

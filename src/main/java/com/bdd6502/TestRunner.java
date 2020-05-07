@@ -118,6 +118,29 @@ public class TestRunner {
             int frame = 0;
             while (displayBombJack.isVisible()) {
 
+                displayBombJack.calculatePixelsUntilVSync();
+
+                // Test sprite animation
+                if (true) {
+                    for (int i = 0; i < 24; i++) {
+                        int xpos = (int) (120.0f + Math.sin((((double) frame) / 50.0f) + (((double) i) / 2.0f)) * 120.0f);
+                        int ypos = (int) (120.0f + Math.cos((((double) frame) / 75.0f) + (((double) i) / 5.0f)) * 120.0f);
+                        displayBombJack.writeData(0x9820 + (i * 4), 0x01, i + (frame / 10));
+                        int fullHeight = 0;
+                        if (i <= 3) {
+                            fullHeight = 0x20;
+                        }
+                        displayBombJack.writeData(0x9821 + (i * 4), 0x01, i | (((frame / 50) & 0x03) << 6) | fullHeight);
+                        displayBombJack.writeData(0x9822 + (i * 4), 0x01, ypos);
+                        displayBombJack.writeData(0x9823 + (i * 4), 0x01, xpos);
+
+                        // Exercise sprite contention timings
+                        for (int j = 0; j < 8; j++) {
+//                            displayBombJack.calculatePixel();
+                        }
+                    }
+                }
+
                 // Contention timing test
                 if (false) {
                     for (int i = 0; i < 384 * 64; i++) {
@@ -215,31 +238,7 @@ public class TestRunner {
                         displayBombJack.calculatePixelsUntil(0x188, ypos);
                     }
 
-                    displayBombJack.calculatePixelsUntil(0x190, 0xff);
                     mode7Rot += 0.01f;
-                } else {
-                    displayBombJack.calculatePixelsUntil(0x190, 0xff);
-                }
-
-                // Test sprite animation
-                if (true) {
-                    for (int i = 0; i < 24; i++) {
-                        int xpos = (int) (120.0f + Math.sin((((double) frame) / 50.0f) + (((double) i) / 2.0f)) * 120.0f);
-                        int ypos = (int) (120.0f + Math.cos((((double) frame) / 75.0f) + (((double) i) / 5.0f)) * 120.0f);
-                        displayBombJack.writeData(0x9820 + (i * 4), 0x01, i + (frame / 10));
-                        int fullHeight = 0;
-                        if (i <= 3) {
-                            fullHeight = 0x20;
-                        }
-                        displayBombJack.writeData(0x9821 + (i * 4), 0x01, i | (((frame / 50) & 0x03) << 6) | fullHeight);
-                        displayBombJack.writeData(0x9822 + (i * 4), 0x01, ypos);
-                        displayBombJack.writeData(0x9823 + (i * 4), 0x01, xpos);
-
-                        // Exercise sprite contention timings
-                        for (int j = 0; j < 8; j++) {
-//                            displayBombJack.calculatePixel();
-                        }
-                    }
                 }
 
                 displayBombJack.RepaintWindow();

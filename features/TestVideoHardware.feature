@@ -51,6 +51,7 @@ Feature: Tests the video hardware expansion
 #    And I enable trace with indent
 
     When I execute the procedure at start for no more than 76036 instructions
+    Given render a video display frame
     Then expect image "testdata/TC-1-000000.bmp" to be identical to "target/frames/TC-1-000000.bmp"
     Then expect image "testdata/TC-1-000001.bmp" to be identical to "target/frames/TC-1-000001.bmp"
     Then expect image "testdata/TC-1-000002.bmp" to be identical to "target/frames/TC-1-000002.bmp"

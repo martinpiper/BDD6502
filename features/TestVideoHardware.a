@@ -13,14 +13,14 @@ start
 	jsr Bus24Bit_DisableDisplay
 	lda #$30
 	jsr Bus24Bit_EnableDisplay
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	; Setup a background colour that is visible
 	jsr Bus24Bit_SetAddressPalette
 	lda #$21
 	sta CIA2PortBRS232
 	sta CIA2PortBRS232
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	jsr Bus24Bit_SetAddressSpritesControl
 	lda #$10
@@ -34,20 +34,20 @@ start
 	ldy #SpriteFrame0Size
 	jsr Bus24Bit_SpriteDataCopy
 
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	; Move sprites into corners
 	+MWordValueTo_AX SpriteFrame1
 	ldy #SpriteFrame1Size
 	jsr Bus24Bit_SpriteDataCopy
 
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 	
 	; Shrink x&y borders
 	lda #$f0
 	jsr Bus24Bit_EnableDisplay
 
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	; Full borders again
 	lda #$30
@@ -87,7 +87,7 @@ start
 	sta CIA2PortBRS232
 
 	
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	rts
 .counter1 !by 32
@@ -98,7 +98,7 @@ start2
 	ldx #$ff
 	txs
 	
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 	; Full borders again
 	lda #$30
 	jsr Bus24Bit_EnableDisplay
@@ -136,14 +136,14 @@ start2
 	lda #$45
 	sta CIA2PortBRS232
 	
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	; Move sprites slightly in to reveal more of the characters
 	+MWordValueTo_AX SpriteFrame2
 	ldy #SpriteFrame2Size
 	jsr Bus24Bit_SpriteDataCopy
 
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	; Setup some characters with known flips, colours, and extended chars
 	lda #$01
@@ -178,7 +178,7 @@ start2
 	lda #$c3
 	sta CIA2PortBRS232
 	
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	rts
 
@@ -188,21 +188,21 @@ start3
 	ldx #$ff
 	txs
 	
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 	; Shrink borderX
 	lda #$70
 	jsr Bus24Bit_EnableDisplay
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	; Shrink borderY
 	lda #$b0
 	jsr Bus24Bit_EnableDisplay
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	; Shrink borderX+Y
 	lda #$f0
 	jsr Bus24Bit_EnableDisplay
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	rts
 
@@ -212,7 +212,7 @@ start4
 	ldx #$ff
 	txs
 
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	lda #$01
 	+MWordValueTo_XY $a000
@@ -222,7 +222,7 @@ start4
 	ldy #Mode7Regs1Size
 	jsr Bus24Bit_CopySmallData
 	
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 
 	lda #$01
@@ -233,7 +233,7 @@ start4
 	ldy #Mode7Regs3Size
 	jsr Bus24Bit_CopySmallData
 	
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 
 	lda #$01
@@ -244,7 +244,7 @@ start4
 	ldy #Mode7Regs2Size
 	jsr Bus24Bit_CopySmallData
 	
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 	rts
 
 
@@ -254,7 +254,7 @@ start5
 	ldx #$ff
 	txs
 
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 .l1
 	; This is very fast movement
@@ -281,7 +281,7 @@ start5
 	ldy #Mode7Regs3TranslationSize
 	jsr Bus24Bit_CopySmallData
 
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 	
 	dec Mode7Regs3TranslationCount
 	bne .l1
@@ -295,7 +295,7 @@ start6
 	ldx #$ff
 	txs
 	
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 	; Shrink borderX+Y
 	lda #$f0
 	jsr Bus24Bit_EnableDisplay
@@ -333,12 +333,12 @@ start6
 	lda #$45
 	sta CIA2PortBRS232
 	
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 	; Full borders again
 	lda #$30
 	jsr Bus24Bit_EnableDisplay
 
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	; Setup some tiles with known flips and colours
 	lda #$80
@@ -373,7 +373,7 @@ start6
 	lda #$c3
 	sta CIA2PortBRS232
 	
-	jsr Bus24Bit_WaitVSync
+	jsr Bus24Bit_WaitVBlank
 
 	rts
 	

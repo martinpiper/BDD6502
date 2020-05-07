@@ -654,7 +654,7 @@ public class Glue {
 
     public void displayStateToScenario() {
         if (displayBombJack != null) {
-            scenario.write("display timing=" + displayBombJack.getDisplayH() + " , " +  displayBombJack.getDisplayV() + " hsync=" + !displayBombJack.is_hSync() + " vsync=" + !displayBombJack.is_vSync());
+            scenario.write("display timing=" + displayBombJack.getDisplayH() + " , " +  displayBombJack.getDisplayV() + " vblank=" + displayBombJack.getVBlank() + " hsync=" + !displayBombJack.is_hSync() + " vsync=" + !displayBombJack.is_vSync());
         }
     }
 

@@ -56,6 +56,7 @@ public class DisplayBombJack {
     Random random = new Random();
     String leafFilename = null;
     int lastDataWritten = 0;
+    boolean vBlank = false;
     boolean _hSync = true, _vSync = true;
     PrintWriter debugData = null;
     int pixelsSinceLastDebugWrite = 0;
@@ -63,6 +64,9 @@ public class DisplayBombJack {
 
     public boolean getVSync() {
         return _vSync;
+    }
+    public boolean getVBlank() {
+        return vBlank;
     }
 
     public DisplayBombJack() throws IOException {
@@ -150,7 +154,10 @@ public class DisplayBombJack {
     public void writeData(int address, int addressEx, byte data) {
         if (pixelsSinceLastDebugWrite >= pixelsSinceLastDebugWriteMax) {
             pixelsSinceLastDebugWrite = 0;
-            if (enableDisplay && _vSync) {
+            // This check removes waits for display H/V positions during the VBLANK, the non-visible part of the frame
+            // The waits during the VBLANK would not really be that important from a simulation point of view
+            // This is true, as long as mode7 writes (due to resetting the internal values on _VSYNC) are completed before the end of the _VSYNC which starts later and shorter than the VBLANK
+            if (enableDisplay && !vBlank) {
                 debugData.println("d$0");
                 debugData.printf("w$ff01ff00,$%02x%02x%02x00\n", displayV & 0xff , (displayH >> 8) & 0x01 , displayH & 0xff );
                 debugData.println("d$0");
@@ -174,6 +181,12 @@ public class DisplayBombJack {
         for (DisplayLayer layer : layers) {
             layer.writeData(address, addressEx, data);
         }
+    }
+
+    public void calculatePixelsUntilVSync() {
+        do {
+            calculatePixel();
+        } while (_vSync);
     }
 
     public void calculatePixelsUntil(int waitH, int waitV) {
@@ -218,12 +231,6 @@ public class DisplayBombJack {
         if (displayX == 0 && displayY == 0) {
             frameNumberForSync++;
             pixelsSinceLastDebugWrite = 0;
-            if (enableDisplay) {
-                debugData.println("d$0");
-                debugData.println("^-$01");
-                debugData.println("d$0");
-                debugData.flush();
-            }
         }
         if (displayX == 0 && displayY == (displayHeight-1)) {
             if (leafFilename != null && !leafFilename.isEmpty()) {
@@ -254,7 +261,7 @@ public class DisplayBombJack {
             enablePixels = false;
         }
 
-        boolean vBlank = false;
+        vBlank = false;
         if (displayV < 0x10 || displayV >= 0xf0) {
             vBlank = true;
         }
@@ -262,6 +269,16 @@ public class DisplayBombJack {
         if (vBlank /*|| (displayH & 256) == 256*/) {
             enablePixels = false;
         }
+        // The hardware syncs on -ve _VBLANK
+        if (displayX == 0 && displayV == 0xf0) {
+            if (enableDisplay) {
+                debugData.println("d$0");
+                debugData.println("^-$01");
+                debugData.println("d$0");
+                debugData.flush();
+            }
+        }
+
 
         if (enableDisplay) {
             int tempy = displayBitmapY;

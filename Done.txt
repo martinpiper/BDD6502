@@ -103,3 +103,16 @@ Added: Given I am using C64 processor port options
 	
 	
 * Twiddle the mode7 HV flips to align them with tiles
+
+
+
+* The java video hardware test mode output debug file does not quite render correctly on the hardware
+	The raster bars and perspective mode7 part is alternating every frame. Probably something to do with the output displayV not quite catching up properly
+	Investigate if the "w$ff01ff00,$ff019000" is not being caught correctly
+	It seems waiting for the last line and trying to do all the updates it not working out timing wise
+		Removing the wait for line $ff and moving the sprite update to just after the vsync wait worked
+	* TODO: Investigate, do we want to want for -ve _VSYNC or -ve VBLANK as it is currently going into the digital data simulator?
+		Look at when the better, earlier, timing is just off the bottom of the screen
+			VBLANK is better
+		* The BDD6502 emulation will need to align the wait to vsync or vblank of course, to match with what the simulator does
+	* _VBLANK checking aligned with simulation and emulation
