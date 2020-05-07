@@ -6,8 +6,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -58,12 +57,21 @@ public class DisplayBombJack {
     String leafFilename = null;
     int lastDataWritten = 0;
     boolean _hSync = true, _vSync = true;
+    PrintWriter debugData = null;
+    int pixelsSinceLastDebugWrite = 0;
+    int pixelsSinceLastDebugWriteMax = 32;
 
     public boolean getVSync() {
         return _vSync;
     }
 
-    public DisplayBombJack() {
+    public DisplayBombJack() throws IOException {
+        debugData = new PrintWriter(new FileWriter("target/debugData.txt"));
+        debugData.println("; Automatically created by DisplayBombJack");
+        // The address is handled by the writeData
+//        debugData.println("+16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,+");
+//        debugData.println("<0,1,2,3,4,5,6,7,<");
+        debugData.println("d0");
     }
 
     static boolean addressActive(int addressEx, int selector) {
@@ -140,6 +148,16 @@ public class DisplayBombJack {
     }
 
     public void writeData(int address, int addressEx, byte data) {
+        if (pixelsSinceLastDebugWrite >= pixelsSinceLastDebugWriteMax) {
+            pixelsSinceLastDebugWrite = 0;
+            if (enableDisplay && _vSync) {
+                debugData.println("d$0");
+                debugData.printf("w$ff01ff00,$%02x%02x%02x00\n", displayV & 0xff , (displayH >> 8) & 0x01 , displayH & 0xff );
+                debugData.println("d$0");
+            }
+        }
+        debugData.printf("d$%04x%02x%02x\n" , address , addressEx , data);
+
         lastDataWritten = data;
         if (addressActive(addressEx, addressExPalette) && address >= addressPalette && address < (addressPalette + 0x200)) {
             busContentionPalette = getBusContentionPixels();
@@ -171,6 +189,7 @@ public class DisplayBombJack {
     }
 
     public void calculatePixel() {
+        pixelsSinceLastDebugWrite++;
         _hSync = true;
         _vSync = true;
 
@@ -198,6 +217,13 @@ public class DisplayBombJack {
         // Save the frame
         if (displayX == 0 && displayY == 0) {
             frameNumberForSync++;
+            pixelsSinceLastDebugWrite = 0;
+            if (enableDisplay) {
+                debugData.println("d$0");
+                debugData.println("^-$01");
+                debugData.println("d$0");
+                debugData.flush();
+            }
         }
         if (displayX == 0 && displayY == (displayHeight-1)) {
             if (leafFilename != null && !leafFilename.isEmpty()) {

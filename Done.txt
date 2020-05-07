@@ -87,3 +87,15 @@ Added: Given I am using C64 processor port options
 
 
 * Add arrows+ctrl as joystick1 ($dc00) for the video display window
+
+
+
+* Output the software bus writes so that the Proteus simulator can use. Will need to detect waits for vsync or log x/y pos for writes
+
+
+
+* Using target/debugData.txt the real hardware isn't displaying the high mode7 characters?
+	* Mode7Regs2Size and Mode7Regs3Size are wrong, causing strange memory overwrites
+	* Verified, by filling map.bin, that tile $02 and $22 are actually rendered
+	* The palette used in the tile was the same as the background colour, so it was "invisible".
+	* However the palette was being written strangely by the contention test code

@@ -4,12 +4,15 @@
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.a" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Mode7.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Mode7.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000016.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000016.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000017.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000017.bmp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/testdata/TC-1-000018.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000018.bmp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/testdata/TC-1-000019.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000019.bmp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/testdata/TC-1-000020.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000020.bmp" afterDir="false" />
@@ -88,7 +91,7 @@
       <recent name="C:\Work\BDD6502\features" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner no parameters">
+  <component name="RunManager" selected="Application.TestRunner VideoHardware">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -115,6 +118,15 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/UnitialisedMemory.feature" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner VideoHardware AnimationEngine.feature" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/AnimationEngine.feature" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/VideoHardware" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -383,6 +395,7 @@
       <item itemvalue="Application.TestRunner --execVideoTest" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature " />
       <item itemvalue="Application.TestRunner UnitialisedMemory.feature" />
+      <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
       <item itemvalue="Application.TestRunner VideoHardware" />
       <item itemvalue="Application.TestRunner no parameters" />
       <item itemvalue="Cucumber Java.All features" />
@@ -456,10 +469,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="440" y="94" key="#Project_Structure/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588337079541" />
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588422192710">
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588831248733">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588422192710" />
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588831248733" />
     <state x="689" y="321" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1587393658085">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -468,38 +481,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="765" y="220" key="#com.intellij.ide.util.MemberChooser/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588428696155" />
-    <state width="1877" height="223" key="GridCell.Tab.0.bottom" timestamp="1588430394896">
+    <state width="1877" height="223" key="GridCell.Tab.0.bottom" timestamp="1588834493250">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588430394896" />
-    <state width="1877" height="223" key="GridCell.Tab.0.center" timestamp="1588430394896">
+    <state width="1877" height="223" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588834493250" />
+    <state width="1877" height="223" key="GridCell.Tab.0.center" timestamp="1588834493249">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588430394896" />
-    <state width="1877" height="223" key="GridCell.Tab.0.left" timestamp="1588430394896">
+    <state width="1877" height="223" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588834493249" />
+    <state width="1877" height="223" key="GridCell.Tab.0.left" timestamp="1588834493249">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588430394896" />
-    <state width="1877" height="223" key="GridCell.Tab.0.right" timestamp="1588430394896">
+    <state width="1877" height="223" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588834493249" />
+    <state width="1877" height="223" key="GridCell.Tab.0.right" timestamp="1588834493249">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588430394896" />
-    <state width="1877" height="287" key="GridCell.Tab.1.bottom" timestamp="1588429256503">
+    <state width="1877" height="223" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588834493249" />
+    <state width="1877" height="287" key="GridCell.Tab.1.bottom" timestamp="1588833507058">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="287" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588429256503" />
-    <state width="1877" height="287" key="GridCell.Tab.1.center" timestamp="1588429256502">
+    <state width="1877" height="287" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588833507058" />
+    <state width="1877" height="287" key="GridCell.Tab.1.center" timestamp="1588833507058">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="287" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588429256502" />
-    <state width="1877" height="287" key="GridCell.Tab.1.left" timestamp="1588429256502">
+    <state width="1877" height="287" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588833507058" />
+    <state width="1877" height="287" key="GridCell.Tab.1.left" timestamp="1588833507058">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="287" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588429256502" />
-    <state width="1877" height="287" key="GridCell.Tab.1.right" timestamp="1588429256503">
+    <state width="1877" height="287" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588833507058" />
+    <state width="1877" height="287" key="GridCell.Tab.1.right" timestamp="1588833507058">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="287" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588429256503" />
+    <state width="1877" height="287" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588833507058" />
     <state x="540" y="262" key="IDE.errors.dialog" timestamp="1587399023292">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -520,19 +533,14 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="616" y="240" key="run.anything.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588429902563" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1588345275005">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1588834351515">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588345275005" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588834351515" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
-          <line>237</line>
-          <option name="timeStamp" value="144" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java</url>
           <line>161</line>
@@ -552,6 +560,16 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java</url>
           <line>245</line>
           <option name="timeStamp" value="160" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
+          <line>661</line>
+          <option name="timeStamp" value="161" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Mode7.java</url>
+          <line>158</line>
+          <option name="timeStamp" value="169" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

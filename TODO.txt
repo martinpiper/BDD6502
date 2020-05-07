@@ -1,13 +1,23 @@
 ; TODO items
 
+* Add _vsync to the proteus debug file write
+
+
+* Match the simulated hardware to the emulated video output, especially the right border, the emulation seems to be a little too far "in"
+	Also match the mode7 tiles with the hardware, the left/top of the screen might need syncing slightly with _vynsc/_hsync timing and the dx/dy adds
+		Probably 8 pixels
+
+
+
+* Real hardware found a bug where mode7 registers way beyond a011 were being written to (see target/DebugData.txt and find d$a02001)
+	This needs to throw an exception in this emulation, for all the register sets in all layers
+
+
+
 * Detect and fail if Bus24Bit_WaitVSync (the read from the register) is used without Bus24Bit_EnableDisplay (the register write)
 	Or, allow the display enable/disable to just act on the output pixel stage and allow the counters to operate
 	
 	
-
-* Output the software bus writes so that the Proteus simulator can use. Will need to detect waits for vsync or log x/y pos for writes
-
-
 
 * Image comparison needs to output a highlight of where the pixel differences are
 

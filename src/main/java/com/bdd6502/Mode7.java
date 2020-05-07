@@ -145,10 +145,10 @@ public class Mode7 extends DisplayLayer {
         displayH &= 0x0f;
         displayV &= 0x0f;
         // Include flips
-        if ((theChar & 0x40) > 0) {
+        if ((theChar & 0x80) > 0) {
             displayH = 0x0f - displayH;
         }
-        if ((theChar & 0x80) > 0) {
+        if ((theChar & 0x40) > 0) {
             displayV = 0x0f - displayV;
         }
         theChar &= 0x3f;

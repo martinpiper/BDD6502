@@ -52,7 +52,8 @@ start
 	; Full borders again
 	lda #$30
 	jsr Bus24Bit_EnableDisplay
-	
+
+!if 1 {
 	; Demonstrate video bus and palette bus contention handling by updating sprite registers during the visible portion of the screen
 	; Basically, this writes more data in the vblank than there is CPU time for
 	; The writes are timed to complete before the bottom sprites are displayed
@@ -71,6 +72,7 @@ start
 	bne .do2
 	dec .counter1
 	bne .do1
+}
 
 	; Write to the mode7 background colour register at $01a014
 	jsr Bus24Bit_Reset
@@ -394,7 +396,7 @@ Mode7Regs2
 
 	+MLittleEndian24Bit 0
 	+MLittleEndian24Bit 0
-Mode7Regs2Size = * - Mode7Regs1
+Mode7Regs2Size = * - Mode7Regs2
 
 Mode7Regs3
 	+MLittleEndian24Bit $80
@@ -405,7 +407,7 @@ Mode7Regs3
 Mode7Regs3Translation
 	+MLittleEndian24Bit 0
 	+MLittleEndian24Bit 0
-Mode7Regs3Size = * - Mode7Regs1
+Mode7Regs3Size = * - Mode7Regs3
 Mode7Regs3TranslationSize = * - Mode7Regs3Translation
 Mode7Regs3TranslationCount !by 8
 	

@@ -1122,7 +1122,7 @@ public class Glue {
     }
 
     @Given("^a new video display$")
-    public void aNewVideoDisplay() {
+    public void aNewVideoDisplay() throws IOException {
         displayBombJack = new DisplayBombJack();
     }
 
