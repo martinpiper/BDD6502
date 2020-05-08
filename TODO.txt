@@ -1,5 +1,9 @@
 ; TODO items
 
+* Add audio expansion prototype
+
+
+
 * Add _VBLANK to the proteus debug file write
 	The $f8 displayV can then be waited for in the _VBLANK
 	This would negate the writes during VBLANK optimisation though?

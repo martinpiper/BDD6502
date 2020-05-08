@@ -116,3 +116,7 @@ Added: Given I am using C64 processor port options
 			VBLANK is better
 		* The BDD6502 emulation will need to align the wait to vsync or vblank of course, to match with what the simulator does
 	* _VBLANK checking aligned with simulation and emulation
+
+	
+	
+* Extract memory bus interface for future expansion

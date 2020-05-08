@@ -32,25 +32,25 @@ public class Chars extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if (DisplayBombJack.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x400)) {
+        if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x400)) {
             busContention = display.getBusContentionPixels();
             screenData[address & 0x3ff] = data;
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExColour) && address >= addressColour && address < (addressColour + 0x400)) {
+        if (MemoryBus.addressActive(addressEx, addressExColour) && address >= addressColour && address < (addressColour + 0x400)) {
             busContention = display.getBusContentionPixels();
             colourData[address & 0x3ff] = data;
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (DisplayBombJack.addressActive(addressEx, addressExPlane0) && DisplayBombJack.addressActive(address, addressPlane0)) {
+        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
             busContention = display.getBusContentionPixels();
             plane0[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExPlane0) && DisplayBombJack.addressActive(address, addressPlane1)) {
+        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane1)) {
             busContention = display.getBusContentionPixels();
             plane1[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExPlane0) && DisplayBombJack.addressActive(address, addressPlane2)) {
+        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane2)) {
             busContention = display.getBusContentionPixels();
             plane2[address & 0x1fff] = data;
         }

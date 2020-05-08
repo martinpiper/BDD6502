@@ -42,7 +42,7 @@ public class Tiles extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if (DisplayBombJack.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x00) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x00) {
             if ((data & 0x20) > 0) {
                 display.enableDisplay = true;
             } else {
@@ -65,25 +65,25 @@ public class Tiles extends DisplayLayer {
                 enableTiles = false;
             }
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x01) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x01) {
             scrollX = (scrollX & 0x0f00) | (data & 0xff);
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x02) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x02) {
             scrollX = (scrollX & 0x00ff) | ((data & 0x0f) << 8);
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x03) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x03) {
             scrollY = (scrollY & 0x0f00) | (data & 0xff);
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x04) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x04) {
             scrollY = (scrollY & 0x00ff) | ((data & 0x0f) << 8);
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x07) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x07) {
             backgroundColour = data & 0xff;
         }
 
-        if (DisplayBombJack.addressActive(addressEx, addressExScreen) && DisplayBombJack.addressActive(address, addressScreen)) {
+        if (MemoryBus.addressActive(addressEx, addressExScreen) && MemoryBus.addressActive(address, addressScreen)) {
             busContention = display.getBusContentionPixels();
-            if (DisplayBombJack.addressActive(address, 0x1000)) {
+            if (MemoryBus.addressActive(address, 0x1000)) {
                 colourData[address & 0xfff] = data;
             } else {
                 screenData[address & 0xfff] = data;
@@ -91,15 +91,15 @@ public class Tiles extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (DisplayBombJack.addressActive(addressEx, addressExPlane0) && DisplayBombJack.addressActive(address, addressPlane0)) {
+        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
             busContention = display.getBusContentionPixels();
             plane0[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExPlane1) && DisplayBombJack.addressActive(address, addressPlane1)) {
+        if (MemoryBus.addressActive(addressEx, addressExPlane1) && MemoryBus.addressActive(address, addressPlane1)) {
             busContention = display.getBusContentionPixels();
             plane1[address & 0x1fff] = data;
         }
-        if (DisplayBombJack.addressActive(addressEx, addressExPlane2) && DisplayBombJack.addressActive(address, addressPlane2)) {
+        if (MemoryBus.addressActive(addressEx, addressExPlane2) && MemoryBus.addressActive(address, addressPlane2)) {
             busContention = display.getBusContentionPixels();
             plane2[address & 0x1fff] = data;
         }

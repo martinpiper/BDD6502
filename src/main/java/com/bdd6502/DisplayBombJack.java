@@ -1,16 +1,13 @@
 package com.bdd6502;
 
-import org.apache.commons.io.FileUtils;
-
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class DisplayBombJack {
+public class DisplayBombJack extends MemoryBus {
 
     DisplayMainFrame window;
     QuickDrawPanel panel;
@@ -78,13 +75,6 @@ public class DisplayBombJack {
         debugData.println("d0");
     }
 
-    static boolean addressActive(int addressEx, int selector) {
-        if ((addressEx & selector) > 0) {
-            return true;
-        }
-        return false;
-    }
-
     public int getBusContentionPixels() {
         return 0x08;
     }
@@ -133,24 +123,7 @@ public class DisplayBombJack {
         layers.add(layer);
     }
 
-    public void writeDataFromFile(int address, int addressEx, String filename) throws IOException {
-        byte[] data = FileUtils.readFileToByteArray(new File(filename));
-        for (int i = 0; i < data.length; i++) {
-            writeData(address + i, addressEx, data[i]);
-        }
-    }
-
-    public void writeDataFromFile(int address, int addressEx, String filename, int offset, int length) throws IOException {
-        byte[] data = FileUtils.readFileToByteArray(new File(filename));
-        for (int i = 0; i < length; i++) {
-            writeData(address + i, addressEx, data[offset + i]);
-        }
-    }
-
-    public void writeData(int address, int addressEx, int data) {
-        writeData(address, addressEx, (byte) data);
-    }
-
+    @Override
     public void writeData(int address, int addressEx, byte data) {
         if (pixelsSinceLastDebugWrite >= pixelsSinceLastDebugWriteMax) {
             pixelsSinceLastDebugWrite = 0;

@@ -2,6 +2,8 @@ package com.bdd6502;
 
 import com.replicanet.cukesplus.Main;
 
+import javax.sound.sampled.*;
+
 
 public class TestRunner {
     public static void main(String args[]) throws Exception {
@@ -246,6 +248,28 @@ public class TestRunner {
                 frame++;
                 Thread.sleep(10);
             }
+            System.exit(0);
+        }
+
+        if (args.length >= 1 && args[0].compareToIgnoreCase("--execAudioTest") == 0) {
+            AudioExpansion audioExpansion = new AudioExpansion();
+            audioExpansion.start();
+            System.out.println(audioExpansion.availableSamples());
+            byte[] buffer = new byte[256];
+            for (int i = 0 ; i < 256 ; i++) {
+                buffer[i] = (byte) (i & 0x3f);
+            }
+            for (int i = 0 ; i < 100 ; i++) {
+                System.out.println("before filling " + audioExpansion.availableSamples());
+                audioExpansion.writeSamples(buffer);
+                System.out.println("after  filling " + audioExpansion.availableSamples());
+            }
+            for (int i = 0 ; i < 100 ; i++) {
+                Thread.sleep(10);
+                System.out.println("emptying " + audioExpansion.availableSamples());
+            }
+            audioExpansion.line.close();
+
             System.exit(0);
         }
 
