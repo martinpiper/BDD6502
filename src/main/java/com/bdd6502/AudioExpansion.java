@@ -142,7 +142,7 @@ public class AudioExpansion extends MemoryBus {
                     sample = (sample * voiceVolume[voice]) / 255;
 
                     // HW: Note selective comparison is just address line selection
-                    if (voiceLength[voice] == ((voiceInternalCounter[voice] >> 8) & 0xffff)) {
+                    if (((voiceInternalCounter[voice] >> 8) & 0xffff) >= voiceLength[voice]) {
                         if ((voicesLoopMask & (1 << voice)) > 0) {
                             // HW: Note selective reset of only some adders when length is reached
                             voiceInternalCounter[voice] = voiceInternalCounter[voice] & 0xff;

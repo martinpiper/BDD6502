@@ -257,6 +257,8 @@ public class TestRunner {
             // Converted using: C:\Downloads\ImageMagick-7.0.7-4-portable-Q16-x64\ffmpeg.exe -i <input> -y -acodec pcm_u8 -ar 22050 -ac 1 t.wav
             // Then the wav header was removed and file set to 0x10000 bytes
             audioExpansion.writeDataFromFile(0, 0x04, "testdata/sample.pcmu8");
+
+            // Voice 0
             audioExpansion.writeData(0x8000, 0x01, 0xff);
             // Length
             audioExpansion.writeData(0x8003, 0x01, 0xff);
@@ -268,13 +270,34 @@ public class TestRunner {
             // Set voice loop
             audioExpansion.writeData(0x8040, 0x01, 0x01);
 
-            // Set voice active
-            audioExpansion.writeData(0x8041, 0x01, 0x01);
+            // Voice 1
+            audioExpansion.writeData(0x8008, 0x01, 0xff);
+            // Length. Note: The length is reduced because of the faster frequency
+            audioExpansion.writeData(0x800b, 0x01, 0xf0);
+            audioExpansion.writeData(0x800c, 0x01, 0xff);
+            // Different frequency
+            audioExpansion.writeData(0x800d, 0x01, 0);
+            audioExpansion.writeData(0x800e, 0x01, 0x02);
+
+            // Voice 2
+            audioExpansion.writeData(0x8010, 0x01, 0xff);
+            // Length
+            audioExpansion.writeData(0x8013, 0x01, 0xff);
+            audioExpansion.writeData(0x8014, 0x01, 0xff);
+            // Different frequency
+            audioExpansion.writeData(0x8015, 0x01, 64);
+            audioExpansion.writeData(0x8016, 0x01, 0x00);
+
+            // Set voice 0 loop
+            audioExpansion.writeData(0x8040, 0x01, 0x01);
+
+            // Set voices active
+            audioExpansion.writeData(0x8041, 0x01, 0x07);
 
             audioExpansion.start();
             for (int i = 0 ; i < 100 ; i++) {
                 Thread.sleep(16);
-                for (int j = 0 ; j < 1000 ; i++) {
+                for (int j = 0 ; j < 100 ; i++) {
                     audioExpansion.calculateSamples();
                 }
             }
