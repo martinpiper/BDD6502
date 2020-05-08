@@ -1,6 +1,7 @@
 ; TODO items
 
 * Add audio expansion prototype
+	First single channel sound is working at the correct sample rate
 
 
 

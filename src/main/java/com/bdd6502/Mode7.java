@@ -33,64 +33,64 @@ public class Mode7 extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters) {
             dx = (dx & 0xffff00) | (data & 0xff);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x01) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x01) {
             dx = (dx & 0xff00ff) | ((data & 0xff) << 8);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x02) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x02) {
             dx = (dx & 0x00ffff) | ((data & 0xff) << 16);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x03) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x03) {
             dxy = (dxy & 0xffff00) | (data & 0xff);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x04) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x04) {
             dxy = (dxy & 0xff00ff) | ((data & 0xff) << 8);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x05) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x05) {
             dxy = (dxy & 0x00ffff) | ((data & 0xff) << 16);
         }
 
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x06) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x06) {
             dy = (dy & 0xffff00) | (data & 0xff);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x07) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x07) {
             dy = (dy & 0xff00ff) | ((data & 0xff) << 8);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x08) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x08) {
             dy = (dy & 0x00ffff) | ((data & 0xff) << 16);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x09) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x09) {
             dyx = (dyx & 0xffff00) | (data & 0xff);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x0a) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0a) {
             dyx = (dyx & 0xff00ff) | ((data & 0xff) << 8);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x0b) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0b) {
             dyx = (dyx & 0x00ffff) | ((data & 0xff) << 16);
         }
 
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x0c) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0c) {
             xorg = (xorg & 0xffff00) | (data & 0xff);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x0d) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0d) {
             xorg = (xorg & 0xff00ff) | ((data & 0xff) << 8);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x0e) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0e) {
             xorg = (xorg & 0x00ffff) | ((data & 0xff) << 16);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x0f) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0f) {
             yorg = (yorg & 0xffff00) | (data & 0xff);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x10) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x10) {
             yorg = (yorg & 0xff00ff) | ((data & 0xff) << 8);
         }
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x11) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x11) {
             yorg = (yorg & 0x00ffff) | ((data & 0xff) << 16);
         }
 
-        if (MemoryBus.addressActive(addressEx, 0x01) && address == addressRegisters + 0x14) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x14) {
             backgroundColour = data & 0xff;
         }
 

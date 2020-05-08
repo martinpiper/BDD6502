@@ -253,20 +253,30 @@ public class TestRunner {
 
         if (args.length >= 1 && args[0].compareToIgnoreCase("--execAudioTest") == 0) {
             AudioExpansion audioExpansion = new AudioExpansion();
+
+            // Converted using: C:\Downloads\ImageMagick-7.0.7-4-portable-Q16-x64\ffmpeg.exe -i <input> -y -acodec pcm_u8 -ar 22050 -ac 1 t.wav
+            // Then the wav header was removed and file set to 0x10000 bytes
+            audioExpansion.writeDataFromFile(0, 0x04, "testdata/sample.pcmu8");
+            audioExpansion.writeData(0x8000, 0x01, 0xff);
+            // Length
+            audioExpansion.writeData(0x8003, 0x01, 0xff);
+            audioExpansion.writeData(0x8004, 0x01, 0xff);
+            // Rate 256 * 22050 / 31250 = 180
+            audioExpansion.writeData(0x8005, 0x01, 180);
+            audioExpansion.writeData(0x8006, 0x01, 0);
+
+            // Set voice loop
+            audioExpansion.writeData(0x8040, 0x01, 0x01);
+
+            // Set voice active
+            audioExpansion.writeData(0x8041, 0x01, 0x01);
+
             audioExpansion.start();
-            System.out.println(audioExpansion.availableSamples());
-            byte[] buffer = new byte[256];
-            for (int i = 0 ; i < 256 ; i++) {
-                buffer[i] = (byte) (i & 0x3f);
-            }
             for (int i = 0 ; i < 100 ; i++) {
-                System.out.println("before filling " + audioExpansion.availableSamples());
-                audioExpansion.writeSamples(buffer);
-                System.out.println("after  filling " + audioExpansion.availableSamples());
-            }
-            for (int i = 0 ; i < 100 ; i++) {
-                Thread.sleep(10);
-                System.out.println("emptying " + audioExpansion.availableSamples());
+                Thread.sleep(16);
+                for (int j = 0 ; j < 1000 ; i++) {
+                    audioExpansion.calculateSamples();
+                }
             }
             audioExpansion.line.close();
 
