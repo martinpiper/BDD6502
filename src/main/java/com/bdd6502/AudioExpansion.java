@@ -85,8 +85,6 @@ public class AudioExpansion extends MemoryBus {
                     break;
                 case 4:
                     voiceLength[voice] = (voiceLength[voice] & 0x00ff) | ((data & 0xff) << 8);
-                    // HW: When the length hi is written, it resets the internal counter in preparation to play
-                    voiceInternalCounter[voice] = 0;
                     break;
                 case 5:
                     voiceRate[voice] = (voiceRate[voice] & 0xff00) | (data & 0xff);
@@ -108,9 +106,8 @@ public class AudioExpansion extends MemoryBus {
             voicesActiveMask = data;
             for (int i = 0 ; i < numVoices ; i++) {
                 if ((voicesActiveMask & (1 << i)) == 0) {
-                    // HW: Reset the lower bits, will need a reset of the latch on low
-                    // HW: voiceInternalCounter is 24 bits
-                    voiceInternalCounter[i] = voiceInternalCounter[i] & 0xffff00;
+                    // HW: Reset the latch on low. voiceInternalCounter is 24 bits
+                    voiceInternalCounter[i] = 0;
                 }
             }
         }

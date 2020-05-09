@@ -273,6 +273,9 @@ public class TestRunner {
             // Then the wav header was removed and file set to 0x10000 bytes
             audioExpansion.writeDataFromFile(0, 0x04, "testdata/sample.pcmu8");
 
+            // Set no voices active
+            audioExpansion.writeData(0x8041, 0x01, 0);
+
             // Voice 0
             audioExpansion.writeData(0x8000, 0x01, 0xff);
             // Start
