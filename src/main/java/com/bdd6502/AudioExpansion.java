@@ -133,10 +133,9 @@ public class AudioExpansion extends MemoryBus {
             int accumulatedSample = 0;
             for (int voice = 0 ; voice < numVoices ; voice++) {
                 if ((voicesActiveMask & (1 << voice)) > 0) {
-                    int address = voiceAddress[voice] + voiceInternalCounter[voice];
-
                     // HW: Note accuracy shifting is just address line selection
-                    address = address >> 8;
+                    int address = voiceAddress[voice] + (voiceInternalCounter[voice] >> 8);
+
                     int sample = sampleRAM[address & 0xffff] & 0xff;
                     // HW: This will be implemented with a 0x10000 byte ROM containing a multiply/divide lookup table
                     sample = (sample * voiceVolume[voice]) / 255;
