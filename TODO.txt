@@ -36,6 +36,12 @@
 					doTickEvents()
 						Potentially more interesting for extracting note events
 							Yes definitely a lot more interesting, might even be possible to just call this in a loop to quickly get all the info
+				C:\Users\Martin Piper\Downloads\javamod-source\source\de\quippy\javamod\multimedia\mod\mixer\ProTrackerMixer.java
+						doRowEffects()
+			Some options for export here:
+				mixIntoBuffer
+					Can export all relevant changes in ChannelMemory
+					By modifying mixChannelIntoBuffers()
 							
 					
 		
