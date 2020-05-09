@@ -1783,4 +1783,7 @@ public class Helpers
 		if (!t1.hasMoreTokens() && t2.hasMoreTokens()) return -1;
 		return 0;
 	}
+
+	public static final byte kMusicCommandWaitFrames	= 0;
+	public static final byte kMusicCommandPlayNote		= 1;
 }

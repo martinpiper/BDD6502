@@ -21,6 +21,9 @@
  */
 package de.quippy.javamod.multimedia.mod.mixer;
 
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -215,8 +218,17 @@ public abstract class BasicModMixer
 	public void setDebugData(PrintWriter debugData) {
 		this.debugData = debugData;
 	}
+	public void setDebugSampleData(DataOutputStream debugSampleData) {
+		this.debugSampleData = debugSampleData;
+	}
+
+	public void setDebugMusicData(DataOutputStream debugMusicData) {
+		this.debugMusicData = debugMusicData;
+	}
 
 	PrintWriter debugData = null;
+	DataOutputStream debugSampleData = null;
+	DataOutputStream debugMusicData = null;
 
 	/**
 	 * Constructor for BasicModMixer
@@ -466,17 +478,15 @@ public abstract class BasicModMixer
 	 */
 	protected void setNewPlayerTuningFor(final ChannelMemory aktMemo, final int newPeriod)
 	{
-		if (newPeriod<=0) 
+		if (newPeriod<=0) {
 			aktMemo.currentTuning = 0;
-		else
-		if (frequencyTableType==Helpers.XM_LINEAR_TABLE)
-		{
+		} else if (frequencyTableType==Helpers.XM_LINEAR_TABLE) {
 			final int xm_period_value = newPeriod>>2;
 			int newFrequency = Helpers.lintab[xm_period_value % 768] >> (xm_period_value / 768);
 			aktMemo.currentTuning = (int)(((long)newFrequency<<Helpers.SHIFT) / sampleRate);
+		} else {
+			aktMemo.currentTuning = globalTuning / newPeriod; // in globalTuning, all constant values are already calculated. (see above)
 		}
-		else
-			aktMemo.currentTuning = globalTuning/newPeriod; // in globalTuning, all constant values are already calculated. (see above)
 	}
 	/**
 	 * Set the current tuning for the player
@@ -1058,7 +1068,8 @@ public abstract class BasicModMixer
 			channelMemory[c].jumpLoopPositionSet = false;
 		}
 	}
-	static int currentFrame = 0;
+	public static int currentFrame = 0;
+	public static int lastFrameOutput = 0;
 	/**
 	 * Do the events during a Tick.
 	 * @return true, if finished! 
@@ -1243,6 +1254,11 @@ public abstract class BasicModMixer
 		}
 	}
 	ChannelMemory previousChannelMemory[] = new ChannelMemory[128];
+
+	// Using the Sample.index
+	boolean sampleExported[] = new boolean[256];
+	int sampleStarts[] = new int[256];
+	int sampleLengths[] = new int[256];
 	/**
 	 * Fill the buffers with channel data
 	 * @since 18.06.2006
@@ -1282,9 +1298,35 @@ public abstract class BasicModMixer
 
 			// A trigger
 			if (actMemo.newInstrumentSet == true) {
+				int sampleIndex = actMemo.currentSample.index;
+				exportSample(actMemo);
 				outputChannelHeader(channel);
-				debugData.println("newInstrumentSet: " + actMemo.currentSample.index);
+				debugData.println("newInstrumentSet: " + sampleIndex);
 				debugData.flush();
+
+				outputWaitFrames();
+				try {
+					debugMusicData.write(Helpers.kMusicCommandPlayNote);
+					debugMusicData.write(channel);
+					int volume = actMemo.currentVolume * 4;
+					if (volume > 255) {
+						volume = 255;
+					}
+					debugMusicData.write(volume);
+					debugMusicData.write(sampleStarts[sampleIndex]);
+					debugMusicData.write(sampleStarts[sampleIndex]>>8);
+					debugMusicData.write(sampleLengths[sampleIndex]);
+					debugMusicData.write(sampleLengths[sampleIndex]>>8);
+					// Convert internal frequency to hardware values
+					double frequency = (actMemo.currentTuning * sampleRate) / (1<<Helpers.SHIFT);
+					int realFrequency = (256 * (int)frequency) / 31250;
+					debugMusicData.write(realFrequency);
+					debugMusicData.write(realFrequency>>8);
+					debugMusicData.flush();
+				} catch (IOException e) {
+				}
+
+
 				actMemo.newInstrumentSet = false;
 			}
 			previousChannelMemory[channel].deepCopy(actMemo);
@@ -1332,8 +1374,60 @@ public abstract class BasicModMixer
 		}
 	}
 
+	private void exportSample(ChannelMemory actMemo) {
+		int sampleIndex = actMemo.currentSample.index;
+		if (sampleExported[sampleIndex]) {
+			return;
+		}
+		sampleStarts[sampleIndex] = debugSampleData.size();
+
+		int realLength = actMemo.currentSample.length;
+		sampleLengths[sampleIndex] = realLength;
+
+		byte[] buffer = new byte[realLength];
+		for (int i = 0; i < realLength ; i++) {
+			int sample = 0x80 + (actMemo.currentSample.sample[i+5] >> 16);
+			if (sample < 0) {
+				sample = 0;
+			}
+			if (sample > 255) {
+				sample = 255;
+			}
+			buffer[i] = (byte) sample;
+		}
+		try {
+			debugSampleData.write(buffer);
+			debugSampleData.flush();
+		} catch (IOException e) {
+		}
+
+		sampleExported[sampleIndex] = true;
+	}
+
 	private void outputChannelHeader(int channel) {
 		debugData.println("Channel: " + channel);
+	}
+
+	private void outputWaitFrames() {
+		int delta = currentFrame - lastFrameOutput;
+		while (delta >= 256) {
+			int buffer = Helpers.kMusicCommandWaitFrames;
+			try {
+				debugMusicData.write(buffer);
+				debugMusicData.write(255);
+			} catch (IOException e) {
+			}
+			delta -= 255;
+		}
+		if (delta > 0) {
+			int buffer = Helpers.kMusicCommandWaitFrames;
+			try {
+				debugMusicData.write(buffer);
+				debugMusicData.write(delta);
+			} catch (IOException e) {
+			}
+		}
+		lastFrameOutput = currentFrame;
 	}
 
 	/**

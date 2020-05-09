@@ -4,8 +4,10 @@
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/ModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/ModMixer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/system/Helpers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/system/Helpers.java" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -75,7 +77,7 @@
       <recent name="C:\Work\BDD6502\src\test\resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner --execAudioTest">
+  <component name="RunManager" selected="Application.TestRunner --exportmod (1)">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -94,6 +96,22 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--execVideoTest" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner --exportmod (1)" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\tiny music\mods\artists\mortimer twang\Mortimer Twang - No Sellout.mod&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner --exportmod (2)" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod&quot;" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -395,6 +413,8 @@
       <item itemvalue="Application.TestRunner --execVideoTest" />
       <item itemvalue="Application.TestRunner --execAudioTest" />
       <item itemvalue="Application.TestRunner --exportmod" />
+      <item itemvalue="Application.TestRunner --exportmod (1)" />
+      <item itemvalue="Application.TestRunner --exportmod (2)" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature " />
       <item itemvalue="Application.TestRunner UnitialisedMemory.feature" />
       <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
@@ -471,10 +491,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="440" y="94" key="#Project_Structure/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588337079541" />
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589014132919">
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589040941019">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589014132919" />
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589040941019" />
     <state x="689" y="321" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1587393658085">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -495,38 +515,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="848" y="272" key="#xdebugger.XInspectDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589006205721" />
-    <state width="1877" height="223" key="GridCell.Tab.0.bottom" timestamp="1589014478158">
+    <state width="1877" height="223" key="GridCell.Tab.0.bottom" timestamp="1589041849621">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589014478158" />
-    <state width="1877" height="223" key="GridCell.Tab.0.center" timestamp="1589014478157">
+    <state width="1877" height="223" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589041849621" />
+    <state width="1877" height="223" key="GridCell.Tab.0.center" timestamp="1589041849621">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589014478157" />
-    <state width="1877" height="223" key="GridCell.Tab.0.left" timestamp="1589014478157">
+    <state width="1877" height="223" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589041849621" />
+    <state width="1877" height="223" key="GridCell.Tab.0.left" timestamp="1589041849621">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589014478157" />
-    <state width="1877" height="223" key="GridCell.Tab.0.right" timestamp="1589014478157">
+    <state width="1877" height="223" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589041849621" />
+    <state width="1877" height="223" key="GridCell.Tab.0.right" timestamp="1589041849621">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="223" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589014478157" />
-    <state width="1877" height="287" key="GridCell.Tab.1.bottom" timestamp="1589011711843">
+    <state width="1877" height="223" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589041849621" />
+    <state width="1877" height="287" key="GridCell.Tab.1.bottom" timestamp="1589041849616">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="287" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589011711843" />
-    <state width="1877" height="287" key="GridCell.Tab.1.center" timestamp="1589011711842">
+    <state width="1877" height="287" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589041849616" />
+    <state width="1877" height="287" key="GridCell.Tab.1.center" timestamp="1589041849616">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="287" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589011711842" />
-    <state width="1877" height="287" key="GridCell.Tab.1.left" timestamp="1589011711842">
+    <state width="1877" height="287" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589041849616" />
+    <state width="1877" height="287" key="GridCell.Tab.1.left" timestamp="1589041849616">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="287" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589011711842" />
-    <state width="1877" height="287" key="GridCell.Tab.1.right" timestamp="1589011711843">
+    <state width="1877" height="287" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589041849616" />
+    <state width="1877" height="287" key="GridCell.Tab.1.right" timestamp="1589041849616">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="287" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589011711843" />
+    <state width="1877" height="287" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589041849616" />
     <state x="540" y="262" key="IDE.errors.dialog" timestamp="1587399023292">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -535,34 +555,34 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="164" key="SettingsEditor/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1587398564470" />
-    <state x="1255" y="89" key="extract.method.dialog" timestamp="1589007748459">
+    <state x="1255" y="89" key="extract.method.dialog" timestamp="1589033952045">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="1255" y="89" key="extract.method.dialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589007748459" />
-    <state x="666" y="255" width="587" height="552" key="find.popup" timestamp="1589010166946">
+    <state x="1255" y="89" key="extract.method.dialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589033952045" />
+    <state x="541" y="275" width="1239" height="608" key="find.popup" timestamp="1589041490790">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="666" y="255" width="587" height="552" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589010166946" />
+    <state x="541" y="275" width="1239" height="608" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589041490790" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1588429902563">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="616" y="240" key="run.anything.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1588429902563" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1589010985267">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1589033704189">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589010985267" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589033704189" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java</url>
-          <line>192</line>
+          <line>194</line>
           <option name="timeStamp" value="156" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java</url>
-          <line>198</line>
+          <line>200</line>
           <option name="timeStamp" value="157" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -582,13 +602,33 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java</url>
-          <line>324</line>
+          <line>392</line>
           <option name="timeStamp" value="163" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java</url>
+          <line>336</line>
+          <option name="timeStamp" value="194" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java</url>
-          <line>1017</line>
-          <option name="timeStamp" value="184" />
+          <line>1413</line>
+          <option name="timeStamp" value="211" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java</url>
+          <line>286</line>
+          <option name="timeStamp" value="213" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java</url>
+          <line>487</line>
+          <option name="timeStamp" value="214" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java</url>
+          <line>1321</line>
+          <option name="timeStamp" value="215" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -598,8 +638,13 @@
         <watch expression="reverseLabelMap" language="JAVA" />
       </configuration>
       <configuration name="Application">
-        <watch expression="previousChannelMemory[channel]" language="JAVA" />
-        <watch expression="actMemo" language="JAVA" />
+        <watch expression="channel" />
+        <watch expression="volume" />
+        <watch expression="sampleStart" />
+        <watch expression="sampleLength" />
+        <watch expression="sampleFrequency" />
+        <watch expression="aktMemo.currentTuning * globalTuning / sampleRate" language="JAVA" />
+        <watch expression="globalTuning" />
       </configuration>
     </watches-manager>
   </component>

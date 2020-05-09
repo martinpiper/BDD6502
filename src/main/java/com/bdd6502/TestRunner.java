@@ -9,6 +9,8 @@ import de.quippy.javamod.multimedia.mod.loader.tracker.ProTrackerMod;
 import de.quippy.javamod.system.Helpers;
 
 import javax.sound.sampled.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 
 public class TestRunner {
@@ -265,6 +267,73 @@ public class TestRunner {
 //            loaded.createNewMixer().startPlayback();
             loaded.createNewMixer().fastExport("target/exportedMusic");
 
+
+            AudioExpansion audioExpansion = new AudioExpansion();
+            audioExpansion.writeDataFromFile(0, 0x04, "target/exportedMusicSamples.bin");
+
+            audioExpansion.writeData(0x8041, 0x01, 0);
+
+            audioExpansion.writeData(0x8000, 0x01, 0xff);
+            audioExpansion.writeData(0x8003, 0x01, 0xff);
+            audioExpansion.writeData(0x8004, 0x01, 0xff);
+            audioExpansion.writeData(0x8005, 0x01, 67);
+            audioExpansion.writeData(0x8006, 0x01, 0);
+
+            audioExpansion.writeData(0x8041, 0x01, 0x01);
+
+            byte[] bytes = Files.readAllBytes(Paths.get("target/exportedMusicMusic.bin"));
+            int pos = 0;
+
+            audioExpansion.start();
+            long startTime = System.currentTimeMillis();
+            int waitUntil = 0;
+            int channelPlayingMask = 0;
+            while (pos < bytes.length) {
+                if (System.currentTimeMillis() < (startTime+waitUntil)) {
+                    for (int i = 0; i < 10; i++) {
+                        audioExpansion.calculateSamples();
+                    }
+                    Thread.sleep(1);
+                    continue;
+                }
+                byte command = bytes[pos++];
+                switch (command) {
+                    case Helpers.kMusicCommandWaitFrames: {
+                        waitUntil += (Byte.toUnsignedInt(bytes[pos++])  * (1000 / 50));
+                        continue;
+                    }
+                    case Helpers.kMusicCommandPlayNote: {
+                        byte channel = bytes[pos++];
+                        int volume = Byte.toUnsignedInt(bytes[pos++]);
+                        int sampleStart = Byte.toUnsignedInt(bytes[pos++]);
+                        sampleStart |= Byte.toUnsignedInt(bytes[pos++]) << 8;
+                        int sampleLength = Byte.toUnsignedInt(bytes[pos++]);
+                        sampleLength |= Byte.toUnsignedInt(bytes[pos++]) << 8;
+                        int sampleFrequency = Byte.toUnsignedInt(bytes[pos++]);
+                        sampleFrequency |= Byte.toUnsignedInt(bytes[pos++]) << 8;
+
+                        channelPlayingMask = channelPlayingMask & ~(1<<channel);
+                        audioExpansion.writeData(0x8041, 0x01, channelPlayingMask);
+
+                        int voiceAddress = 0x8000 + (channel * 8);
+                        audioExpansion.writeData(voiceAddress, 0x01, volume);
+                        audioExpansion.writeData(voiceAddress+1, 0x01, sampleStart);
+                        audioExpansion.writeData(voiceAddress+2, 0x01, sampleStart>>8);
+                        audioExpansion.writeData(voiceAddress+3, 0x01, sampleLength);
+                        audioExpansion.writeData(voiceAddress+4, 0x01, sampleLength>>8);
+                        audioExpansion.writeData(voiceAddress+5, 0x01, sampleFrequency);
+                        audioExpansion.writeData(voiceAddress+6, 0x01, sampleFrequency>>8);
+                        channelPlayingMask = channelPlayingMask | (1<<channel);
+                        audioExpansion.writeData(0x8041, 0x01, channelPlayingMask);
+                        break;
+                    }
+                    default: {
+                        throw new Exception("eek");
+                    }
+                }
+            }
+            audioExpansion.line.close();
+
             System.exit(0);
         }
         if (args.length >= 1 && args[0].compareToIgnoreCase("--execAudioTest") == 0) {
@@ -311,7 +380,6 @@ public class TestRunner {
 
             // Set voices active
             audioExpansion.writeData(0x8041, 0x01, 0x07);
-//            audioExpansion.writeData(0x8041, 0x01, 0x01);
 
             audioExpansion.start();
             for (int i = 0 ; i < 100 ; i++) {

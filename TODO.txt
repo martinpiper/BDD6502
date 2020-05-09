@@ -47,7 +47,8 @@
 				mixIntoBuffer
 					Can export all relevant changes in ChannelMemory
 					By modifying mixChannelIntoBuffers()
-							
+			* First pass of importing music works, repeating samples are needed, many volume and pitch updates etc are missing.
+				The sample frequency conversion (// Convert internal frequency to hardware values) seems to be correct
 
 
 

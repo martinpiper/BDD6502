@@ -29,9 +29,7 @@ import de.quippy.javamod.multimedia.mod.mixer.BasicModMixer;
 import de.quippy.javamod.system.Helpers;
 import de.quippy.javamod.system.Log;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 
 /**
  * @author Daniel Becker
@@ -576,6 +574,8 @@ public class ModMixer extends BasicMixer
 	public void fastExport(String filename) {
 		try {
 			modMixer.setDebugData(new PrintWriter(new FileWriter(filename + "ChannelEvents.txt")));
+			modMixer.setDebugSampleData(new DataOutputStream(new FileOutputStream(filename + "Samples.bin")));
+			modMixer.setDebugMusicData(new DataOutputStream(new FileOutputStream(filename + "Music.bin")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
