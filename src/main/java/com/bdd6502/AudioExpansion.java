@@ -13,6 +13,7 @@ public class AudioExpansion extends MemoryBus {
     // 2MHz /8 /8 gives ample time to latch, add, select, apply volume for 8 voices, accumlate and output in a cyclic pattern
     public static final int sampleRate = 31250;
     static final int numVoices = 8;
+    public static final int voiceSize = 11;
     static final int samplesToMix = 8;
     public static final int counterShift = 12;
     public static final int counterShiftValue = 1<<counterShift;
@@ -24,6 +25,7 @@ public class AudioExpansion extends MemoryBus {
     byte sampleRAM[] = new byte[0x10000];
 
     int voiceInternalCounter[] = new int[numVoices];    // Not addressable
+    boolean voiceInternalChooseLoop[] = new boolean[numVoices];    // Not addressable
 
     byte voicesActiveMask = 0;
     byte voicesLoopMask = 0;
@@ -37,6 +39,8 @@ public class AudioExpansion extends MemoryBus {
     int voiceAddress[] = new int[numVoices];
     int voiceLength[] = new int[numVoices];
     int voiceRate[] = new int[numVoices];
+    int voiceLoopAddress[] = new int[numVoices];
+    int voiceLoopLength[] = new int[numVoices];
 
     public static int calculateRateFromFrequency(int frequency) {
         return (AudioExpansion.counterShiftValue * frequency) / AudioExpansion.sampleRate;
@@ -74,9 +78,9 @@ public class AudioExpansion extends MemoryBus {
     @Override
     void writeData(int address, int addressEx, byte data) {
         // No contention, this will use latches, many of them
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= addressRegisters && address < addressRegisters + 0x40) {
-            int voice = (address - addressRegisters) / 0x08;
-            int voiceSection = (address - addressRegisters) & 0x07;
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && (address >= addressRegisters) && (address < (addressRegisters + (numVoices * voiceSize)))) {
+            int voice = (address - addressRegisters) / voiceSize;
+            int voiceSection = (address - addressRegisters) % voiceSize;
             switch (voiceSection) {
                 case 0:
                     voiceVolume[voice] = (data & 0xff);
@@ -100,21 +104,33 @@ public class AudioExpansion extends MemoryBus {
                     voiceRate[voice] = (voiceRate[voice] & 0x00ff) | ((data & 0xff) << 8);
                     break;
                 case 7:
+                    voiceLoopAddress[voice] = (voiceLoopAddress[voice] & 0xff00) | (data & 0xff);
+                    break;
+                case 8:
+                    voiceLoopAddress[voice] = (voiceLoopAddress[voice] & 0x00ff) | ((data & 0xff) << 8);
+                    break;
+                case 9:
+                    voiceLoopLength[voice] = (voiceLoopLength[voice] & 0xff00) | (data & 0xff);
+                    break;
+                case 10:
+                    voiceLoopLength[voice] = (voiceLoopLength[voice] & 0x00ff) | ((data & 0xff) << 8);
+                    break;
                 default:
                     // Do nothing
                     break;
             }
         }
 
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x40) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + (numVoices * voiceSize)) {
             voicesLoopMask = data;
         }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x41) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + (numVoices * voiceSize) + 1) {
             voicesActiveMask = data;
             for (int i = 0 ; i < numVoices ; i++) {
                 if ((voicesActiveMask & (1 << i)) == 0) {
                     // HW: Reset the latch on low. voiceInternalCounter is 24 bits
                     voiceInternalCounter[i] = 0;
+                    voiceInternalChooseLoop[i] = false;
                 }
             }
         }
@@ -137,30 +153,45 @@ public class AudioExpansion extends MemoryBus {
             int accumulatedSample = 0;
             for (int voice = 0 ; voice < numVoices ; voice++) {
                 if ((voicesActiveMask & (1 << voice)) > 0) {
-                    // HW: Note accuracy shifting is just address line selection
-                    int address = voiceAddress[voice] + (voiceInternalCounter[voice] >> counterShift);
+                    int address;
+                    if (voiceInternalChooseLoop[voice]) {
+                        // HW: Note accuracy shifting is just address line selection
+                        address = voiceLoopAddress[voice] + (voiceInternalCounter[voice] >> counterShift);
+                    } else {
+                        // HW: Note accuracy shifting is just address line selection
+                        address = voiceAddress[voice] + (voiceInternalCounter[voice] >> counterShift);
+                    }
 
                     int sample = sampleRAM[address & 0xffff] & 0xff;
                     // HW: This will be implemented with a 0x10000 byte ROM containing a multiply/divide lookup table
                     sample = (sample * voiceVolume[voice]) / 255;
 
+                    accumulatedSample += sample;
+
+                    // HW: Note add is clocked after the sample read
+                    voiceInternalCounter[voice] += voiceRate[voice];
+
                     // HW: Note selective comparison is just address line selection
-                    if (((voiceInternalCounter[voice] >> counterShift) & 0xffff) >= voiceLength[voice]) {
-                        if ((voicesLoopMask & (1 << voice)) > 0) {
+                    if (voiceInternalChooseLoop[voice]) {
+                        if (((voiceInternalCounter[voice] >> counterShift) & 0xffff) >= voiceLoopLength[voice]) {
                             // HW: Note selective reset of only some adders when length is reached
                             voiceInternalCounter[voice] = voiceInternalCounter[voice] & counterShiftMask;
-                        } else {
-                            // HW: Note this will override whatever is calculated with the volume lookup
-                            sample = 0x80;
                         }
                     } else {
-                        // HW: Note add is clocked after the sample read and only if the length is not reached
-                        voiceInternalCounter[voice] += voiceRate[voice];
+                        if (((voiceInternalCounter[voice] >> counterShift) & 0xffff) >= voiceLength[voice]) {
+                            if ((voicesLoopMask & (1 << voice)) > 0) {
+                                voiceInternalChooseLoop[voice] = true;
+                                // HW: Note selective reset of only some adders when length is reached
+                                voiceInternalCounter[voice] = voiceInternalCounter[voice] & counterShiftMask;
+                            } else {
+                                // HW: Reset the latch for this specific voice
+                                voicesActiveMask = (byte) (voicesActiveMask & ~(1 << voice));
+                            }
+                        }
                     }
 
-                    accumulatedSample += sample;
                 } else {
-                    // HW: Add 0x80 as the middle part of 8 bit unsigned samples for "quiet" channels
+                    // HW: Add 0x80 as the middle part of 8 bit unsigned samples for inactive channels
                     accumulatedSample += 0x80;
                 }
             }

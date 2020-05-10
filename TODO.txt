@@ -4,11 +4,6 @@
 
 
 
-* AudioExpansion could probably do with a loop address and loop length to be used after the first values
-	Could use a flip-flop to hold the state, which is reset when high length is written. This obviously adds complexity though.
-
-
-
 * Add audio expansion prototype
 	First single channel sound is working at the correct sample rate
 	Multiple channel is also working

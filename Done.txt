@@ -120,3 +120,8 @@ Added: Given I am using C64 processor port options
 	
 	
 * Extract memory bus interface for future expansion
+
+
+
+* AudioExpansion could probably do with a loop address and loop length to be used after the first values
+	Could use a flip-flop to hold the state, which is reset when high length is written. This obviously adds complexity though.

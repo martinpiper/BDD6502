@@ -313,9 +313,9 @@ public class TestRunner {
                         sampleFrequency |= Byte.toUnsignedInt(bytes[pos++]) << 8;
 
                         channelPlayingMask = channelPlayingMask & ~(1<<channel);
-                        audioExpansion.writeData(0x8041, 0x01, channelPlayingMask);
+                        audioExpansion.writeData(0x8000 + (AudioExpansion.numVoices * AudioExpansion.voiceSize) + 1, 0x01, channelPlayingMask);
 
-                        int voiceAddress = 0x8000 + (channel * 8);
+                        int voiceAddress = 0x8000 + (channel * AudioExpansion.voiceSize);
                         audioExpansion.writeData(voiceAddress, 0x01, volume);
                         audioExpansion.writeData(voiceAddress+1, 0x01, sampleStart);
                         audioExpansion.writeData(voiceAddress+2, 0x01, sampleStart>>8);
@@ -324,7 +324,7 @@ public class TestRunner {
                         audioExpansion.writeData(voiceAddress+5, 0x01, sampleFrequency);
                         audioExpansion.writeData(voiceAddress+6, 0x01, sampleFrequency>>8);
                         channelPlayingMask = channelPlayingMask | (1<<channel);
-                        audioExpansion.writeData(0x8041, 0x01, channelPlayingMask);
+                        audioExpansion.writeData(0x8000 + (AudioExpansion.numVoices * AudioExpansion.voiceSize) + 1, 0x01, channelPlayingMask);
                         break;
                     }
                     default: {
@@ -343,7 +343,7 @@ public class TestRunner {
             audioExpansion.writeDataFromFile(0, 0x04, "testdata/sample.pcmu8");
 
             // Set no voices active
-            audioExpansion.writeData(0x8041, 0x01, 0);
+            audioExpansion.writeData(0x8000 + (AudioExpansion.numVoices * AudioExpansion.voiceSize) + 1, 0x01, 0);
 
             // Voice 0
             audioExpansion.writeData(0x8000, 0x01, 0xff);
@@ -356,30 +356,17 @@ public class TestRunner {
             int rate = AudioExpansion.calculateRateFromFrequency(22050);
             audioExpansion.writeData(0x8005, 0x01, rate);
             audioExpansion.writeData(0x8006, 0x01, rate >> 8);
-
-            // Voice 1
-            audioExpansion.writeData(0x8008, 0x01, 0xff);
-            // Length. Note: The length is reduced because of the faster frequency
-            audioExpansion.writeData(0x800b, 0x01, 0xf0);
-            audioExpansion.writeData(0x800c, 0x01, 0xff);
-            // Different frequency
-            audioExpansion.writeData(0x800d, 0x01, (rate * 2));
-            audioExpansion.writeData(0x800e, 0x01, (rate * 2) >> 8);
-
-            // Voice 2
-            audioExpansion.writeData(0x8010, 0x01, 0xff);
-            // Length
-            audioExpansion.writeData(0x8013, 0x01, 0xff);
-            audioExpansion.writeData(0x8014, 0x01, 0xff);
-            // Different frequency
-            audioExpansion.writeData(0x8015, 0x01, (rate / 2));
-            audioExpansion.writeData(0x8016, 0x01, (rate / 2) >> 8);
-
+            // Loop start
+            audioExpansion.writeData(0x8007, 0x01, 0x07);
+            audioExpansion.writeData(0x8008, 0x01, 0x10);
+            // Loop size
+            audioExpansion.writeData(0x8009, 0x01, 0x80);
+            audioExpansion.writeData(0x800a, 0x01, 0x18);
             // Set voice 0 loop
-            audioExpansion.writeData(0x8040, 0x01, 0x01);
+            audioExpansion.writeData(0x8000 + (AudioExpansion.numVoices * AudioExpansion.voiceSize), 0x01, 0x01);
 
             // Set voices active
-            audioExpansion.writeData(0x8041, 0x01, 0x07);
+            audioExpansion.writeData(0x8000 + (AudioExpansion.numVoices * AudioExpansion.voiceSize) + 1, 0x01, 0x01);
 
             audioExpansion.start();
             for (int i = 0 ; i < 100 ; i++) {
