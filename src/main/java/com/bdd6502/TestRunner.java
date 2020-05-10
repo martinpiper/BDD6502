@@ -282,6 +282,33 @@ public class TestRunner {
             audioExpansion.writeData(0x8041, 0x01, 0x01);
 
             byte[] bytes = Files.readAllBytes(Paths.get("target/exportedMusicMusic.bin"));
+
+            int saving = 0;
+            for (int i = 1 ; i < bytes.length ; ) {
+
+                int bestLen = 0;
+                int bestPos = 0;
+                for (int j = 0 ; j < i && bestLen < 255; j++) {
+                    int len = 0;
+                    while (len < 255 && (i+len) < bytes.length && (j+len) < i && bytes[j+len] == bytes[i+len]) {
+                        len++;
+                    }
+                    if (len > bestLen) {
+                        bestLen = len;
+                        bestPos = j;
+                    }
+                }
+                // If a "gosub" will save data, then...
+                if (bestLen > 6) {
+                    System.out.println("for " + i + " found bestLen=" + bestLen + " bestPos=" + bestPos);
+                    i += bestLen;
+                    saving += bestLen - 5;
+                    continue;
+                }
+                i++;
+            }
+            System.out.println("saving="+saving);
+
             int pos = 0;
 
             int sampleStarts[] = new int[256];
