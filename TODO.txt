@@ -1,50 +1,6 @@
 ; TODO items
 
-* Add audio expansion prototype
-	First single channel sound is working at the correct sample rate
-	Multiple channel is also working
-	* Attempt to convert a small mod/xm
-		http://www.retrospekt.com.au/2020/05/tiny-music-a-massive-curated-collection-of-music-in-mod-xm-s3m-other-formats/
-		https://www.dropbox.com/sh/yyxyrkin9uj76ie/AABYa381WWs8KXwsIIYo4_q7a?dl=0
-		Need to find an up to 8 channel file that will fit within 64K for samples (without down sampling)
-		Without too many complex voice controls would also help
-		Potential music:
-			**4 channels: C:\Users\Martin Piper\Downloads\tiny music\mods\artists\h0ffman\H0ffman - Freerunner.mod
-			4 channels: C:\Users\Martin Piper\Downloads\tiny music\mods\artists\mortimer twang\Mortimer Twang - No Sellout.mod
-			4 channels: C:\Users\Martin Piper\Downloads\tiny music\mods\artists\mygg\Mygg - Techno Focus.mod
-			8 channels: C:\Users\Martin Piper\Downloads\tiny music\mods\artists\zabutom\Zabutom - Godsends.xm
-			*4 channels: C:\Users\Martin Piper\Downloads\tiny music\mods\various\4Mat - One Bullet Symphony.xm
-
-		Potential java libs for parsing and converting to semi-optimised 6502 suitable format:
-			* http://www.javamod.de/
-				http://www.javamod.de/javamod.html
-
-			java -cp ./javamod.jar de.quippy.javamod.main.CommandLine "C:\Users\Martin Piper\Downloads\tiny music\mods\artists\h0ffman\H0ffman - Freerunner.mod"
-			ProTracker mod with 31 samples and 4 channels using Protracker frequency table
-			Loader code:
-				C:\Users\Martin Piper\Downloads\javamod-source\source\de\quippy\javamod\multimedia\mod\loader\tracker\ProTrackerMod.java
-			Player code:
-				C:\Users\Martin Piper\Downloads\javamod-source\source\de\quippy\javamod\multimedia\mod\ModMixer.java
-					startPlayback()
-					Might be able to stub out openAudioDevice() and writeSampleDataToLine() and let it parse the file to get info from modMixer.mixIntoBuffer(LBuffer, RBuffer, bufferSize);
-				C:\Users\Martin Piper\Downloads\javamod-source\source\de\quippy\javamod\multimedia\mod\mixer\BasicModMixer.java
-					mixIntoBuffer(final int[] leftBuffer, final int[] rightBuffer, final int count)
-						mixChannelIntoBuffers(final int[] leftBuffer, final int[] rightBuffer, final int startIndex, final int endIndex, final ChannelMemory actMemo)
-						Uses:	C:\Users\Martin Piper\Downloads\javamod-source\source\de\quippy\javamod\multimedia\mod\mixer\ProTrackerMixer.java
-								C:\Users\Martin Piper\Downloads\javamod-source\source\de\quippy\javamod\multimedia\mod\mixer\BasicModMixer.java
-									ChannelMemory
-					doTickEvents()
-						Potentially more interesting for extracting note events
-							Yes definitely a lot more interesting, might even be possible to just call this in a loop to quickly get all the info
-				C:\Users\Martin Piper\Downloads\javamod-source\source\de\quippy\javamod\multimedia\mod\mixer\ProTrackerMixer.java
-						doRowEffects()
-			Some options for export here:
-				mixIntoBuffer
-					Can export all relevant changes in ChannelMemory
-					By modifying mixChannelIntoBuffers()
-			* First pass of importing music works, repeating samples are needed, many volume and pitch updates etc are missing.
-				The sample frequency conversion (// Convert internal frequency to hardware values) seems to be correct
-					java -cp ./javamod.jar de.quippy.javamod.main.CommandLine "C:\Users\Martin Piper\Downloads\_nice_outfit_.mod"
+* Spot common section in the output music events file and add a new command to "gosub" to a start/end offset section
 
 
 

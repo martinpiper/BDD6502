@@ -5,9 +5,6 @@
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/system/Helpers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/system/Helpers.java" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -420,10 +417,10 @@
     <list>
       <item itemvalue="Application.TestRunner --execAudioTest" />
       <item itemvalue="Application.TestRunner --execVideoTest" />
-      <item itemvalue="Application.TestRunner --exportmod" />
       <item itemvalue="Application.TestRunner --exportmod (1)" />
       <item itemvalue="Application.TestRunner --exportmod (2)" />
       <item itemvalue="Application.TestRunner --exportmod (3)" />
+      <item itemvalue="Application.TestRunner --exportmod" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature " />
       <item itemvalue="Application.TestRunner UnitialisedMemory.feature" />
       <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
@@ -431,12 +428,12 @@
       <item itemvalue="Application.TestRunner no parameters" />
       <item itemvalue="Cucumber Java.All features" />
       <item itemvalue="Cucumber Java.Compare Test" />
-      <item itemvalue="Cucumber Java.Simple ALL" />
-      <item itemvalue="Cucumber Java.Trace Test" />
       <item itemvalue="Cucumber Java.Scenario: Simple binary test code" />
       <item itemvalue="Cucumber Java.Scenario: Simple memory test code" />
-      <item itemvalue="JUnit.JUnit all" />
+      <item itemvalue="Cucumber Java.Simple ALL" />
+      <item itemvalue="Cucumber Java.Trace Test" />
       <item itemvalue="JUnit.GlueTest.testValueToInt" />
+      <item itemvalue="JUnit.JUnit all" />
       <item itemvalue="Maven.BDD6502 [install] (1)" />
       <item itemvalue="Maven.BDD6502 [install]" />
     </list>
