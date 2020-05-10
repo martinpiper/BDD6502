@@ -1078,7 +1078,7 @@ public abstract class BasicModMixer
 	protected boolean doTickEvents()
 	{
 		if (debugData != null) {
-			debugData.println("Frame: " + currentFrame++);
+			debugData.println("Frame: " + currentFrame);
 			debugData.flush();
 			if (currentFrame > (50 * 60 * 10)) {
 				debugData.println("Aborted file export due to time limit");
@@ -1260,6 +1260,8 @@ public abstract class BasicModMixer
 	boolean sampleExported[] = new boolean[256];
 	int sampleStarts[] = new int[256];
 	int sampleLengths[] = new int[256];
+	int sampleLoopStarts[] = new int[256];
+	int sampleLoopLengths[] = new int[256];
 	/**
 	 * Fill the buffers with channel data
 	 * @since 18.06.2006
@@ -1309,20 +1311,29 @@ public abstract class BasicModMixer
 				try {
 					debugMusicData.write(Helpers.kMusicCommandPlayNote);
 					debugMusicData.write(channel);
+
 					int volume = actMemo.currentVolume * 4;
 					if (volume > 255) {
 						volume = 255;
 					}
 					debugMusicData.write(volume);
+
 					debugMusicData.write(sampleStarts[sampleIndex]);
 					debugMusicData.write(sampleStarts[sampleIndex]>>8);
 					debugMusicData.write(sampleLengths[sampleIndex]);
 					debugMusicData.write(sampleLengths[sampleIndex]>>8);
+
 					// Convert internal frequency to hardware values
 					int frequency = (actMemo.currentTuning * sampleRate) / (1<<Helpers.SHIFT);
 					int realFrequency = AudioExpansion.calculateRateFromFrequency(frequency);
 					debugMusicData.write(realFrequency);
 					debugMusicData.write(realFrequency>>8);
+
+					debugMusicData.write(sampleLoopStarts[sampleIndex]);
+					debugMusicData.write(sampleLoopStarts[sampleIndex]>>8);
+					debugMusicData.write(sampleLoopLengths[sampleIndex]);
+					debugMusicData.write(sampleLoopLengths[sampleIndex]>>8);
+
 					debugMusicData.flush();
 				} catch (IOException e) {
 				}
@@ -1384,6 +1395,15 @@ public abstract class BasicModMixer
 
 		int realLength = actMemo.currentSample.length;
 		sampleLengths[sampleIndex] = realLength;
+
+		int loopLength = actMemo.currentSample.repeatLength;
+		if (loopLength == 0) {
+			sampleLoopStarts[sampleIndex] = 0;
+			sampleLoopLengths[sampleIndex] = 0;
+		} else {
+			sampleLoopStarts[sampleIndex] = sampleStarts[sampleIndex] + actMemo.currentSample.repeatStart;
+			sampleLoopLengths[sampleIndex] = loopLength;
+		}
 
 		byte[] buffer = new byte[realLength];
 		for (int i = 0; i < realLength ; i++) {
@@ -1467,6 +1487,7 @@ public abstract class BasicModMixer
 	 * @param count
 	 * @return #of samples mixed, -1 if mixing finished
 	 */
+	long songTotalSamplePos = 0;
 	public int mixIntoBuffer(final int[] leftBuffer, final int[] rightBuffer, final int count)
 	{
 //		try
@@ -1509,7 +1530,11 @@ public abstract class BasicModMixer
 					vRampL[n] = nvRampL[n]; vRampR[n] = nvRampR[n];
 					nvRampL[n] = nvRampR[n] = 0;
 				}
-	
+
+				// Convert into 60 fps time signature for the C64
+				currentFrame = (int) ((60 * songTotalSamplePos) / sampleRate);
+				songTotalSamplePos += samplePerTicks;
+
 				bufferIdx += samplePerTicks;
 				modFinished = doTickEvents();
 				endIndex += samplePerTicks; // tickevents can change samplePerTicks

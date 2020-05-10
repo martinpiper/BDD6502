@@ -1,6 +1,8 @@
 ; TODO items
 
 * Add kMusicCommandDefineSample with index, then remove duplicate sample data from kMusicCommandPlayNote
+	Currently: "C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod"
+		3 m 20s in 127,487 bytes
 
 
 
@@ -48,7 +50,7 @@
 					By modifying mixChannelIntoBuffers()
 			* First pass of importing music works, repeating samples are needed, many volume and pitch updates etc are missing.
 				The sample frequency conversion (// Convert internal frequency to hardware values) seems to be correct
-
+					java -cp ./javamod.jar de.quippy.javamod.main.CommandLine "C:\Users\Martin Piper\Downloads\_nice_outfit_.mod"
 
 
 

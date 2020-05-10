@@ -10,9 +10,9 @@ public class AudioExpansion extends MemoryBus {
     int addressRegisters = 0x8000, addressExRegisters = 0x01;
     int addressExSampleBank = 0x04;
 
-    // 2MHz /8 /8 gives ample time to latch, add, select, apply volume for 8 voices, accumlate and output in a cyclic pattern
+    // 2MHz /8 /8 gives ample time to latch, add, select, apply volume for 8 voices, accumulate and output in a cyclic pattern
     public static final int sampleRate = 31250;
-    static final int numVoices = 8;
+    static final int numVoices = 4;
     public static final int voiceSize = 11;
     static final int samplesToMix = 8;
     public static final int counterShift = 12;
