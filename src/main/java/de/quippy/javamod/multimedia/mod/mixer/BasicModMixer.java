@@ -1317,22 +1317,13 @@ public abstract class BasicModMixer
 						volume = 255;
 					}
 					debugMusicData.write(volume);
-
-					debugMusicData.write(sampleStarts[sampleIndex]);
-					debugMusicData.write(sampleStarts[sampleIndex]>>8);
-					debugMusicData.write(sampleLengths[sampleIndex]);
-					debugMusicData.write(sampleLengths[sampleIndex]>>8);
+					debugMusicData.write(sampleIndex);
 
 					// Convert internal frequency to hardware values
 					int frequency = (actMemo.currentTuning * sampleRate) / (1<<Helpers.SHIFT);
 					int realFrequency = AudioExpansion.calculateRateFromFrequency(frequency);
 					debugMusicData.write(realFrequency);
 					debugMusicData.write(realFrequency>>8);
-
-					debugMusicData.write(sampleLoopStarts[sampleIndex]);
-					debugMusicData.write(sampleLoopStarts[sampleIndex]>>8);
-					debugMusicData.write(sampleLoopLengths[sampleIndex]);
-					debugMusicData.write(sampleLoopLengths[sampleIndex]>>8);
 
 					debugMusicData.flush();
 				} catch (IOException e) {
@@ -1391,6 +1382,7 @@ public abstract class BasicModMixer
 		if (sampleExported[sampleIndex]) {
 			return;
 		}
+
 		sampleStarts[sampleIndex] = debugSampleData.size();
 
 		int realLength = actMemo.currentSample.length;
@@ -1419,6 +1411,22 @@ public abstract class BasicModMixer
 		try {
 			debugSampleData.write(buffer);
 			debugSampleData.flush();
+
+			// And write the sample data
+			debugMusicData.write(Helpers.kMusicCommandSetSampleData);
+			debugMusicData.write(sampleIndex);
+
+			debugMusicData.write(sampleStarts[sampleIndex]);
+			debugMusicData.write(sampleStarts[sampleIndex]>>8);
+			debugMusicData.write(sampleLengths[sampleIndex]);
+			debugMusicData.write(sampleLengths[sampleIndex]>>8);
+
+			debugMusicData.write(sampleLoopStarts[sampleIndex]);
+			debugMusicData.write(sampleLoopStarts[sampleIndex]>>8);
+			debugMusicData.write(sampleLoopLengths[sampleIndex]);
+			debugMusicData.write(sampleLoopLengths[sampleIndex]>>8);
+			debugMusicData.flush();
+
 		} catch (IOException e) {
 		}
 

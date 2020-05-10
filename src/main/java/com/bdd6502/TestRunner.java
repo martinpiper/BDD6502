@@ -284,6 +284,11 @@ public class TestRunner {
             byte[] bytes = Files.readAllBytes(Paths.get("target/exportedMusicMusic.bin"));
             int pos = 0;
 
+            int sampleStarts[] = new int[256];
+            int sampleLengths[] = new int[256];
+            int sampleLoopStarts[] = new int[256];
+            int sampleLoopLengths[] = new int[256];
+
             audioExpansion.start();
             long startTime = System.currentTimeMillis();
             int waitUntil = 0;
@@ -302,20 +307,25 @@ public class TestRunner {
                         waitUntil += (Byte.toUnsignedInt(bytes[pos++]) * (1000 / 60));
                         continue;
                     }
+                    case Helpers.kMusicCommandSetSampleData: {
+                        int sampleIndex = Byte.toUnsignedInt(bytes[pos++]);
+                        sampleStarts[sampleIndex] = Byte.toUnsignedInt(bytes[pos++]) | (Byte.toUnsignedInt(bytes[pos++]) << 8);
+                        sampleLengths[sampleIndex] = Byte.toUnsignedInt(bytes[pos++]) | (Byte.toUnsignedInt(bytes[pos++]) << 8);
+                        sampleLoopStarts[sampleIndex] = Byte.toUnsignedInt(bytes[pos++]) | (Byte.toUnsignedInt(bytes[pos++]) << 8);
+                        sampleLoopLengths[sampleIndex] = Byte.toUnsignedInt(bytes[pos++]) | (Byte.toUnsignedInt(bytes[pos++]) << 8);
+                        continue;
+                    }
                     case Helpers.kMusicCommandPlayNote: {
                         byte channel = bytes[pos++];
                         int volume = Byte.toUnsignedInt(bytes[pos++]);
-                        int sampleStart = Byte.toUnsignedInt(bytes[pos++]);
-                        sampleStart |= Byte.toUnsignedInt(bytes[pos++]) << 8;
-                        int sampleLength = Byte.toUnsignedInt(bytes[pos++]);
-                        sampleLength |= Byte.toUnsignedInt(bytes[pos++]) << 8;
+                        int sampleIndex = Byte.toUnsignedInt(bytes[pos++]);
+                        int sampleStart = sampleStarts[sampleIndex];
+                        int sampleLength = sampleLengths[sampleIndex];
+                        int sampleLoopStart = sampleLoopStarts[sampleIndex];;
+                        int sampleLoopLength = sampleLoopLengths[sampleIndex];
+
                         int sampleFrequency = Byte.toUnsignedInt(bytes[pos++]);
                         sampleFrequency |= Byte.toUnsignedInt(bytes[pos++]) << 8;
-
-                        int sampleLoopStart = Byte.toUnsignedInt(bytes[pos++]);
-                        sampleLoopStart |= Byte.toUnsignedInt(bytes[pos++]) << 8;
-                        int sampleLoopLength = Byte.toUnsignedInt(bytes[pos++]);
-                        sampleLoopLength |= Byte.toUnsignedInt(bytes[pos++]) << 8;
 
                         channelLoopingMask = channelLoopingMask & ~(1<<channel);
 

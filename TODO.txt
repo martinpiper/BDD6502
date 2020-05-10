@@ -1,11 +1,5 @@
 ; TODO items
 
-* Add kMusicCommandDefineSample with index, then remove duplicate sample data from kMusicCommandPlayNote
-	Currently: "C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod"
-		3 m 20s in 127,487 bytes
-
-
-
 * Add audio expansion prototype
 	First single channel sound is working at the correct sample rate
 	Multiple channel is also working

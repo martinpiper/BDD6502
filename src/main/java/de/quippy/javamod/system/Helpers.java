@@ -1784,6 +1784,7 @@ public class Helpers
 		return 0;
 	}
 
-	public static final byte kMusicCommandWaitFrames	= 0;
-	public static final byte kMusicCommandPlayNote		= 1;
+	public static final byte kMusicCommandWaitFrames		= 0;
+	public static final byte kMusicCommandSetSampleData		= 1;
+	public static final byte kMusicCommandPlayNote			= 2;
 }

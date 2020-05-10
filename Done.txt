@@ -125,3 +125,10 @@ Added: Given I am using C64 processor port options
 
 * AudioExpansion could probably do with a loop address and loop length to be used after the first values
 	Could use a flip-flop to hold the state, which is reset when high length is written. This obviously adds complexity though.
+
+
+
+* Add kMusicCommandDefineSample with index, then remove duplicate sample data from kMusicCommandPlayNote
+	Currently: "C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod"
+		3 m 20s in 127,487 bytes
+		After writing common sample data withkMusicCommandSetSampleData: 61,766 bytes
