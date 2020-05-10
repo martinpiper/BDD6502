@@ -28,6 +28,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import com.bdd6502.AudioExpansion;
 import de.quippy.javamod.multimedia.mod.loader.Module;
 import de.quippy.javamod.multimedia.mod.loader.instrument.Envelope;
 import de.quippy.javamod.multimedia.mod.loader.instrument.Instrument;
@@ -1318,8 +1319,8 @@ public abstract class BasicModMixer
 					debugMusicData.write(sampleLengths[sampleIndex]);
 					debugMusicData.write(sampleLengths[sampleIndex]>>8);
 					// Convert internal frequency to hardware values
-					double frequency = (actMemo.currentTuning * sampleRate) / (1<<Helpers.SHIFT);
-					int realFrequency = (256 * (int)frequency) / 31250;
+					int frequency = (actMemo.currentTuning * sampleRate) / (1<<Helpers.SHIFT);
+					int realFrequency = AudioExpansion.calculateRateFromFrequency(frequency);
 					debugMusicData.write(realFrequency);
 					debugMusicData.write(realFrequency>>8);
 					debugMusicData.flush();

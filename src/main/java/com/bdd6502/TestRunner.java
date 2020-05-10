@@ -353,9 +353,9 @@ public class TestRunner {
             // Length
             audioExpansion.writeData(0x8003, 0x01, 0xff);
             audioExpansion.writeData(0x8004, 0x01, 0xff);
-            // Rate 256 * 22050 / 31250 = 180
-            audioExpansion.writeData(0x8005, 0x01, 180);
-            audioExpansion.writeData(0x8006, 0x01, 0);
+            int rate = AudioExpansion.calculateRateFromFrequency(22050);
+            audioExpansion.writeData(0x8005, 0x01, rate);
+            audioExpansion.writeData(0x8006, 0x01, rate >> 8);
 
             // Voice 1
             audioExpansion.writeData(0x8008, 0x01, 0xff);
@@ -363,8 +363,8 @@ public class TestRunner {
             audioExpansion.writeData(0x800b, 0x01, 0xf0);
             audioExpansion.writeData(0x800c, 0x01, 0xff);
             // Different frequency
-            audioExpansion.writeData(0x800d, 0x01, 0);
-            audioExpansion.writeData(0x800e, 0x01, 0x02);
+            audioExpansion.writeData(0x800d, 0x01, (rate * 2));
+            audioExpansion.writeData(0x800e, 0x01, (rate * 2) >> 8);
 
             // Voice 2
             audioExpansion.writeData(0x8010, 0x01, 0xff);
@@ -372,8 +372,8 @@ public class TestRunner {
             audioExpansion.writeData(0x8013, 0x01, 0xff);
             audioExpansion.writeData(0x8014, 0x01, 0xff);
             // Different frequency
-            audioExpansion.writeData(0x8015, 0x01, 64);
-            audioExpansion.writeData(0x8016, 0x01, 0x00);
+            audioExpansion.writeData(0x8015, 0x01, (rate / 2));
+            audioExpansion.writeData(0x8016, 0x01, (rate / 2) >> 8);
 
             // Set voice 0 loop
             audioExpansion.writeData(0x8040, 0x01, 0x01);

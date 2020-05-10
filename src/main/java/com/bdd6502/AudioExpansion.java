@@ -11,9 +11,12 @@ public class AudioExpansion extends MemoryBus {
     int addressExSampleBank = 0x04;
 
     // 2MHz /8 /8 gives ample time to latch, add, select, apply volume for 8 voices, accumlate and output in a cyclic pattern
-    final int sampleRate = 31250;
-    final int numVoices = 8;
-    final int samplesToMix = 8;
+    public static final int sampleRate = 31250;
+    static final int numVoices = 8;
+    static final int samplesToMix = 8;
+    public static final int counterShift = 12;
+    public static final int counterShiftValue = 1<<counterShift;
+    public static final int counterShiftMask = counterShiftValue - 1;
     byte[] sampleBuffer = new byte[samplesToMix];
 
     SourceDataLine line = null;
@@ -34,6 +37,10 @@ public class AudioExpansion extends MemoryBus {
     int voiceAddress[] = new int[numVoices];
     int voiceLength[] = new int[numVoices];
     int voiceRate[] = new int[numVoices];
+
+    public static int calculateRateFromFrequency(int frequency) {
+        return (AudioExpansion.counterShiftValue * frequency) / AudioExpansion.sampleRate;
+    }
 
     public AudioExpansion() {
     }
@@ -131,17 +138,17 @@ public class AudioExpansion extends MemoryBus {
             for (int voice = 0 ; voice < numVoices ; voice++) {
                 if ((voicesActiveMask & (1 << voice)) > 0) {
                     // HW: Note accuracy shifting is just address line selection
-                    int address = voiceAddress[voice] + (voiceInternalCounter[voice] >> 8);
+                    int address = voiceAddress[voice] + (voiceInternalCounter[voice] >> counterShift);
 
                     int sample = sampleRAM[address & 0xffff] & 0xff;
                     // HW: This will be implemented with a 0x10000 byte ROM containing a multiply/divide lookup table
                     sample = (sample * voiceVolume[voice]) / 255;
 
                     // HW: Note selective comparison is just address line selection
-                    if (((voiceInternalCounter[voice] >> 8) & 0xffff) >= voiceLength[voice]) {
+                    if (((voiceInternalCounter[voice] >> counterShift) & 0xffff) >= voiceLength[voice]) {
                         if ((voicesLoopMask & (1 << voice)) > 0) {
                             // HW: Note selective reset of only some adders when length is reached
-                            voiceInternalCounter[voice] = voiceInternalCounter[voice] & 0xff;
+                            voiceInternalCounter[voice] = voiceInternalCounter[voice] & counterShiftMask;
                         } else {
                             // HW: Note this will override whatever is calculated with the volume lookup
                             sample = 0x80;
