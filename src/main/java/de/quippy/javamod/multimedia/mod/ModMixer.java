@@ -43,6 +43,7 @@ public class ModMixer extends BasicMixer
 {
 	private static final int TMPBUFFERLENGTH = 2048;
 	public static final String EVENTS_BIN = "Events.bin";
+	public static final String EVENTS_CMP = "Events.cmp";
 
 	private final Module mod;
 	private final BasicModMixer modMixer;
@@ -734,7 +735,7 @@ public class ModMixer extends BasicMixer
 		headerBytes[2] = (byte)(originalLength >> 16);
 		headerBytes[3] = escapeByte;
 
-		Files.write(Paths.get(filename + EVENTS_BIN),headerBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-		Files.write(Paths.get(filename + EVENTS_BIN),bytes, StandardOpenOption.APPEND);
+		Files.write(Paths.get(filename + EVENTS_CMP),headerBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+		Files.write(Paths.get(filename + EVENTS_CMP),bytes, StandardOpenOption.APPEND);
 	}
 }

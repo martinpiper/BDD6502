@@ -3,17 +3,17 @@
 !source "C64/stdlib/stdlib.a"
 *=$200
 !zn
-MusicInit
+start
 	sei
-	ldx #$ff
-	txs
+;	ldx #$ff
+;	txs
 
 	jsr Bus24Bit_Init
 
 	jsr Bus24Bit_DisableDisplay
 	lda #$30
 	jsr Bus24Bit_EnableDisplay
-	jsr Bus24Bit_WaitVBlank
+;	jsr Bus24Bit_WaitVBlank
 
 	; Setup a background colour that is visible
 	jsr Bus24Bit_SetAddressPalette
@@ -23,15 +23,7 @@ MusicInit
 
 	rts
 
-!zn
-.counter !by 0,3
-MusicPoll
-	jsr Bus24Bit_WaitVBlank
-	dec .counter
-	bne MusicPoll
-	dec .counter+1
-	bne MusicPoll
-	rts
+
 
 !zn
 PlaySample
@@ -76,3 +68,148 @@ PlaySample
 
 !source "BombJack/stdlib/Bus24Bit.a"
 !source "BombJack/stdlib/Video.a"
+
+!zn
+zeroPageCode_start
+!pseudopc $02 {
+zeroPageCode_realStart
+GetNextByte_raw
+smGetNextByte_addr = * + 1
+	lda $1234
+	inc+1 smGetNextByte_addr
+	beq .incHi
+	rts
+.incHi
+	inc+1 smGetNextByte_addr + 1
+	rts
+}
+zeroPageCode_end
+
+.escapeByteRun	!by 0
+.stackedPos		!by 0 , 0
+.stackedThisRun	!by 0
+
+DecompressMusic_GetNextByte
+	lda .escapeByteRun
+	beq .no_escapeByteRun
+	dec .escapeByteRun
+	lda DecompressMusic_escapeByte
+	rts
+
+.no_escapeByteRun
+	lda .stackedThisRun
+	beq .no_stackedThisRun
+
+	jsr GetNextByte_raw
+	sta .smretValue1
+	dec .stackedThisRun
+	bne .ret1
+	; And restore
+	lda .stackedPos
+	sta smGetNextByte_addr
+	lda .stackedPos + 1
+	sta smGetNextByte_addr + 1
+.ret1
+.smretValue1 = * + 1
+	lda #0		; Self modifying value
+	rts
+
+.no_stackedThisRun
+	jsr GetNextByte_raw
+DecompressMusic_escapeByte = * + 1
+	cmp #$aa	; Self modifying value
+	beq .escapeByte
+
+	; Return the data
+	rts
+
+.escapeByte
+	jsr GetNextByte_raw
+	cmp #0
+	bne .isLongCopy
+
+	jsr GetNextByte_raw
+	sta .escapeByteRun
+	dec .escapeByteRun		; TODO: Optimise by storing this pre-decremented
+	lda DecompressMusic_escapeByte
+	rts
+
+.isLongCopy
+	sta .stackedThisRun
+	lda smGetNextByte_addr
+	clc
+	adc #2		; Calculate the next bytes after the escapeByte data
+	sta .stackedPos
+	lda smGetNextByte_addr + 1
+	adc #0
+	sta .stackedPos+1
+
+	; Get newPos
+	jsr GetNextByte_raw
+	sta .sml
+	jsr GetNextByte_raw
+	sta .smh
+
+	lda #<MusicDataStart_afterHeader
+	clc
+.sml = *+1
+	adc #0	; Self modifying value
+	sta smGetNextByte_addr
+
+	lda #>MusicDataStart_afterHeader
+.smh = *+1
+	adc #0	; Self modifying value
+	sta smGetNextByte_addr + 1
+	dec .stackedThisRun		; TODO: Optimise by storing this pre-decremented
+
+	; Gets the first duplicate byte from the existing data
+	jsr GetNextByte_raw
+	rts
+
+
+
+!zn
+MusicInit
+	; Setup optimised zeropage code
+	ldx #zeroPageCode_end-zeroPageCode_start
+.l1
+	lda zeroPageCode_start-1,x
+	sta+2 zeroPageCode_realStart-1,x
+	dex
+	bne .l1
+
+	+MWordValueToAddress_A MusicDataStart , smGetNextByte_addr
+	jsr GetNextByte_raw
+	jsr GetNextByte_raw
+	jsr GetNextByte_raw
+	jsr GetNextByte_raw
+	sta DecompressMusic_escapeByte
+
+!if 0 {
+	; Quick test
+	ldx #0
+.l2
+	jsr DecompressMusic_GetNextByte
+	sta $ff00,x
+	inx
+;	cpx #$2d
+	bne .l2
+}
+	rts
+
+!zn
+.counter !by 0,3
+MusicPoll
+	jsr Bus24Bit_WaitVBlank
+	dec .counter
+	bne MusicPoll
+	dec .counter+1
+	bne MusicPoll
+	rts
+
+
+!zn
+MusicDataStart
+MusicDataStart_afterHeader = MusicDataStart + 4
+	!bin "testdata/exportedMusicEvents.bin"
+MusicDataEnd

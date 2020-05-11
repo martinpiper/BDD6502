@@ -10,20 +10,25 @@ Feature: Tests the video and audio hardware expansion together
     Given video display does not save debug BMP images
     Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
+    And That does fail on BRK
+    And I enable unitialised memory read protection with immediate fail
     Given a user port to 24 bit bus is installed
     Given limit video display to 60 fps
     And I enable trace with indent
     Given show video window
 
+
     # Instead of writing this data via the 6502 CPU, just send it straight to memory
     # Audio
-    Given write data from file "testdata/sample.pcmu8" to 24bit bus at '0x0000' and addressEx '0x04'
+    Given write data from file "testdata/exportedMusicSamples.bin" to 24bit bus at '0x0000' and addressEx '0x04'
 
     And I load prg "test.prg"
     And I load labels "test.lbl"
 
 #    Given property "bdd6502.bus24.trace" is set to string "false"
+    When I execute the procedure at start for no more than 1000000 instructions
     When I execute the procedure at MusicInit for no more than 1000000 instructions
     And I disable trace
+#    Then I hex dump memory between $ff00 and $ffff
     When I execute the procedure at PlaySample for no more than 1000000 instructions
     When I execute the procedure at MusicPoll until return

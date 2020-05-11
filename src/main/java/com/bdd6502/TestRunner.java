@@ -330,7 +330,7 @@ public class TestRunner {
             audioExpansion.writeData(0x8041, 0x01, 0x01);
 
             // Now try decompression
-            compressedData = Files.readAllBytes(Paths.get("target/exportedMusic" + ModMixer.EVENTS_BIN));
+            compressedData = Files.readAllBytes(Paths.get("target/exportedMusic" + ModMixer.EVENTS_CMP));
             int originalLength = Byte.toUnsignedInt(compressedData[0]) | (Byte.toUnsignedInt(compressedData[1]) << 8) | (Byte.toUnsignedInt(compressedData[2]) << 16);
             escapeByte = compressedData[3];
 

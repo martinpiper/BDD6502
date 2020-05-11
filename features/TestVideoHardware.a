@@ -5,8 +5,8 @@
 !zn
 start
 	sei
-	ldx #$ff
-	txs
+;	ldx #$ff
+;	txs
 
 	jsr Bus24Bit_Init
 
@@ -95,8 +95,8 @@ start
 !zn
 start2
 	sei
-	ldx #$ff
-	txs
+;	ldx #$ff
+;	txs
 	
 	jsr Bus24Bit_WaitVBlank
 	; Full borders again
@@ -185,8 +185,8 @@ start2
 !zn
 start3
 	sei
-	ldx #$ff
-	txs
+;	ldx #$ff
+;	txs
 	
 	jsr Bus24Bit_WaitVBlank
 	; Shrink borderX
@@ -209,8 +209,8 @@ start3
 !zn
 start4
 	sei
-	ldx #$ff
-	txs
+;	ldx #$ff
+;	txs
 
 	jsr Bus24Bit_WaitVBlank
 
@@ -251,8 +251,8 @@ start4
 !zn
 start5
 	sei
-	ldx #$ff
-	txs
+;	ldx #$ff
+;	txs
 
 	jsr Bus24Bit_WaitVBlank
 
@@ -292,8 +292,8 @@ start5
 !zn
 start6
 	sei
-	ldx #$ff
-	txs
+;	ldx #$ff
+;	txs
 	
 	jsr Bus24Bit_WaitVBlank
 	; Shrink borderX+Y
