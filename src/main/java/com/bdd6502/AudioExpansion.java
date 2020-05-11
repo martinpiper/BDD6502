@@ -137,13 +137,13 @@ public class AudioExpansion extends MemoryBus {
 
         // HW: Full 64K for sample memory, must use a proper selector
         // Some contention here as this uses banks of RAM
-        if (MemoryBus.addressActive(addressEx, 0x04)) {
+        if (MemoryBus.addressActive(addressEx, addressExSampleBank)) {
             busContention = 8;
             sampleRAM[address] = data;
         }
     }
 
-    void calculateSamples() {
+    public void calculateSamples() {
         if (line.available() < sampleBuffer.length) {
             return;
         }

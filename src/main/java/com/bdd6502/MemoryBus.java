@@ -49,4 +49,9 @@ public abstract class MemoryBus {
         }
         return value;
     }
+
+    public boolean extEXTWANTIRQ() {
+        // Float high
+        return true;
+    }
 }

@@ -1,9 +1,14 @@
 package com.loomcom.symon.devices;
 
+import com.bdd6502.AudioExpansion;
 import com.bdd6502.DisplayBombJack;
+import com.bdd6502.MemoryBus;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import cucumber.api.Scenario;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class UserPortTo24BitAddress extends Device {
     private Scenario mScenario = null;
@@ -12,13 +17,18 @@ public class UserPortTo24BitAddress extends Device {
     int bus24State = 0;
     boolean bus24CountEnabled = false;
     int bus24Bytes[] = new int[3];
-    DisplayBombJack displayBombJack;
+    List<MemoryBus> externalDevices = new LinkedList<>();
     boolean vsyncTriggered = false;
 
-    public UserPortTo24BitAddress(Scenario scenario, DisplayBombJack displayBombJack) throws MemoryRangeException {
+    public UserPortTo24BitAddress(Scenario scenario) throws MemoryRangeException {
         super(0xdd00, 0xdd0f, "UserPortTo24BitAddress");
         mScenario = scenario;
-        this.displayBombJack = displayBombJack;
+    }
+
+    public void addDevice(MemoryBus device) {
+        if (device != null) {
+            externalDevices.add(device);
+        }
     }
 
     @Override
@@ -51,7 +61,9 @@ public class UserPortTo24BitAddress extends Device {
                 if (registerDDRPortB == 0xff) {
                     if (bus24CountEnabled) {
                         if (bus24State == 3) {
-                            displayBombJack.writeData(bus24Bytes[1] | (bus24Bytes[2] << 8), bus24Bytes[0], data);
+                            for (MemoryBus device : externalDevices) {
+                                device.writeData(bus24Bytes[1] | (bus24Bytes[2] << 8), bus24Bytes[0], data);
+                            }
                             bus24Bytes[1]++;
                             if (bus24Bytes[1] == 256) {
                                 bus24Bytes[1] = 0;
@@ -86,11 +98,13 @@ public class UserPortTo24BitAddress extends Device {
                 return 0;
 
             case 0x0d:
-                int ret;
-                if (!displayBombJack.getVBlank()) {
-                    ret = 0x10;
-                } else {
-                    ret = 0x00;
+                // Float high...
+                int ret = 0x10;
+                for (MemoryBus device : externalDevices) {
+                    if (!device.extEXTWANTIRQ()) {
+                        // Drive low
+                        ret = 0x00;
+                    }
                 }
                 return ret;
         }

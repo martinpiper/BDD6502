@@ -66,6 +66,11 @@ public class DisplayBombJack extends MemoryBus {
         return vBlank;
     }
 
+    @Override
+    public boolean extEXTWANTIRQ() {
+        return !vBlank;
+    }
+
     public DisplayBombJack() throws IOException {
         debugData = new PrintWriter(new FileWriter("target/debugData.txt"));
         debugData.println("; Automatically created by DisplayBombJack");

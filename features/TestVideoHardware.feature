@@ -1,8 +1,10 @@
-Feature: Tests the video hardware expansion
+Feature: Tests the video and audio hardware expansion together
 
   @TC-1
-  Scenario: Full display test with sprites, borders, contention, chars, tiles, and mode7
+  Scenario: Full display test with sprites, borders, contention, chars, tiles, and mode7, and sample play
+    Given clear all external devices
     Given a new video display
+    Given a new audio expansion
     Given video display processes 8 pixels per instruction
     Given video display refresh window every 32 instructions
     Given video display does not save debug BMP images
@@ -18,6 +20,21 @@ Feature: Tests the video hardware expansion
     Given show video window
 
     # Instead of writing this data via the 6502 CPU, just send it straight to memory
+    # Audio
+    Given write data from file "testdata/sample.pcmu8" to 24bit bus at '0x0000' and addressEx '0x04'
+    # Disabled the test write of the video during the frame unlimited code
+#    Given write data byte '0x00' to 24bit bus at '0x802d' and addressEx '0x01'
+#    Given write data byte '0xff' to 24bit bus at '0x8000' and addressEx '0x01'
+#    Given write data byte '0xff' to 24bit bus at '0x8003' and addressEx '0x01'
+#    Given write data byte '0xff' to 24bit bus at '0x8004' and addressEx '0x01'
+#    Given write data byte '0x4a' to 24bit bus at '0x8005' and addressEx '0x01'
+#    Given write data byte '0x0b' to 24bit bus at '0x8006' and addressEx '0x01'
+#    Given write data byte '0xff' to 24bit bus at '0x8009' and addressEx '0x01'
+#    Given write data byte '0xff' to 24bit bus at '0x800a' and addressEx '0x01'
+#    Given write data byte '0x01' to 24bit bus at '0x802c' and addressEx '0x01'
+#    Given write data byte '0x01' to 24bit bus at '0x802d' and addressEx '0x01'
+#    When rendering the video until window closed
+
     # Palette
     Given write data from file "C:\work\BombJack\PaletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
     # Sprites
@@ -103,4 +120,5 @@ Feature: Tests the video hardware expansion
     Given property "bdd6502.bus24.trace" is set to string "false"
     Given video display does not save debug BMP images
     Given limit video display to 60 fps
+    When I execute the procedure at PlaySample for no more than 50686 instructions
     When I execute the procedure at start5 until return

@@ -180,3 +180,9 @@ Added: Given I am using C64 processor port options
 	Currently: "C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod"
 		3 m 20s in 127,487 bytes
 		After writing common sample data withkMusicCommandSetSampleData: 61,766 bytes
+
+		
+		
+* Added audio hardware syntax and test code
+	The MemoryBus architecture is also expansion aware.
+	

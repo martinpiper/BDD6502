@@ -376,7 +376,49 @@ start6
 	jsr Bus24Bit_WaitVBlank
 
 	rts
-	
+
+!zn
+PlaySample
+	lda #$01
+	+MWordValueTo_XY $802c
+	jsr Bus24Bit_SetAddressBus
+	lda #0
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+
+	lda #$01
+	+MWordValueTo_XY $8000
+	jsr Bus24Bit_SetAddressBus
+
+	lda #$ff
+	sta CIA2PortBRS232
+	lda #$00
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+	lda #$ff
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+	lda #$4a
+	sta CIA2PortBRS232
+	lda #$0b
+	sta CIA2PortBRS232
+	lda #$10
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+	lda #$1f
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+
+	lda #$01
+	+MWordValueTo_XY $802c
+	jsr Bus24Bit_SetAddressBus
+	lda #1
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+
+	rts
+
+
 !zn	
 Mode7Regs1
 	+MLittleEndian24Bit $100

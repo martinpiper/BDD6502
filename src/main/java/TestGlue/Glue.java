@@ -45,15 +45,21 @@ public class Glue {
     static private Map<Integer, Integer> traceMapWord = new TreeMap<Integer, Integer>();
     static private Map<Integer, Integer> traceMapByteUpdate = new TreeMap<Integer, Integer>();
     static private Map<Integer, Integer> traceMapWordUpdate = new TreeMap<Integer, Integer>();
+    static private List<MemoryBus> devices = new LinkedList<MemoryBus>();
     static private boolean traceOveride = false;
     static private boolean indentTrace = false;
     static private int lastStackValue = -1;
     static private boolean enableUnitialisedReadProtection = false;
     static private boolean enableUnitialisedReadProtectionWithFail = false;
     static private DisplayBombJack displayBombJack = null;
+    static private AudioExpansion audioExpansion = null;
+    static private UserPortTo24BitAddress userPort24BitAddress = null;
     private int pixelsPerInstruction = 8;
     private int instructionsPerDisplayRefresh = 32;
     private int instructionsPerDisplayRefreshCount = 0;
+
+    private int instructionsPerAudioRefresh = 32;
+    private int instructionsPerAudioRefreshCount = 0;
 
     Scenario scenario = null;
     ScriptEngineManager manager = new ScriptEngineManager();
@@ -199,6 +205,17 @@ public class Glue {
     public void i_have_a_simple_overclocked_6502_system() throws Throwable {
         initMachine();
         machine.getCpu().setOverclock();
+    }
+
+    @Given("^clear all external devices$")
+    public void clearDevices() {
+        devices.clear();
+        displayBombJack = null;
+        if (audioExpansion != null) {
+            audioExpansion.close();
+        }
+        audioExpansion = null;
+        userPort24BitAddress = null;
     }
 
     public void initMachine() throws MemoryRangeException, MemoryAccessException {
@@ -628,6 +645,14 @@ public class Glue {
                 if (!displayBombJack.isVisible())
                 {
                     break;
+                }
+            }
+
+            if (audioExpansion != null) {
+                instructionsPerAudioRefreshCount--;
+                if (instructionsPerAudioRefreshCount <= 0) {
+                    audioExpansion.calculateSamples();
+                    instructionsPerAudioRefreshCount = instructionsPerAudioRefresh;
                 }
             }
 
@@ -1124,6 +1149,14 @@ public class Glue {
     @Given("^a new video display$")
     public void aNewVideoDisplay() throws IOException {
         displayBombJack = new DisplayBombJack();
+        devices.add(displayBombJack);
+    }
+
+    @Given("^a new audio expansion$")
+    public void aNewAudioExpansion() throws IOException {
+        audioExpansion = new AudioExpansion();
+        audioExpansion.start();
+        devices.add(audioExpansion);
     }
 
     @Given("^show video window$")
@@ -1139,8 +1172,10 @@ public class Glue {
 
     @Given("^a user port to 24 bit bus is installed$")
     public void aUserportToBitBusIsInstalled() throws MemoryRangeException {
-        assertThat(displayBombJack, is(notNullValue()));
-        machine.getBus().addDevice(new UserPortTo24BitAddress(scenario, displayBombJack));
+        userPort24BitAddress = new UserPortTo24BitAddress(scenario);
+        userPort24BitAddress.addDevice(displayBombJack);
+        userPort24BitAddress.addDevice(audioExpansion);
+        machine.getBus().addDevice(userPort24BitAddress);
     }
 
     @Given("^add a Mode7 layer with registers at '(.*)' and addressEx '(.*)'$")
@@ -1165,12 +1200,16 @@ public class Glue {
 
     @Given("^write data from file \"([^\"]*)\" to 24bit bus at '(.*)' and addressEx '(.*)'$")
     public void writeDataFromFileToBitBusAtXCAndAddressExX(String filename, String address, String addressEx) throws Throwable {
-        displayBombJack.writeDataFromFile(valueToInt(address), valueToInt(addressEx), filename);
+        for (MemoryBus device : devices) {
+            device.writeDataFromFile(valueToInt(address), valueToInt(addressEx), filename);
+        }
     }
 
     @Given("^write data byte '(.*)' to 24bit bus at '(.*)' and addressEx '(.*)'$")
     public void writeDataByteToBitBusAtXCAndAddressExX(String value, String address, String addressEx) throws Throwable {
-        displayBombJack.writeData(valueToInt(address), valueToInt(addressEx), valueToInt(value));
+        for (MemoryBus device : devices) {
+            device.writeData(valueToInt(address), valueToInt(addressEx), valueToInt(value));
+        }
     }
 
     @When("^rendering the video until window closed$")
@@ -1180,7 +1219,13 @@ public class Glue {
         while (displayBombJack.isVisible()) {
             displayBombJack.RepaintWindow();
 
-            Thread.sleep(10);
+            if (audioExpansion != null) {
+                for (int i = 0 ; i < 100 ; i++) {
+                    audioExpansion.calculateSamples();
+                }
+            }
+
+            Thread.sleep(1);
         }
     }
 
