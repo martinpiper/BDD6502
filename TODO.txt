@@ -5,6 +5,10 @@
 	This is based on byte stream data compression, it isn't taking into account the command lengths
 		This means the buffer will need shuffling around when a match is found to enable the next searches to use real in memory data including the new compressed chunked
 		The buffer will also need to be pre-scanned to find a suitable escape byte
+		* With all the above: saving=37059
+			The reduced saving is expected due to some of the duplicated existing data being detected has been removed
+			There are 5 levels of recursion here
+		* With escapeByte handling: saving=36898
 
 
 

@@ -3,17 +3,64 @@ package com.bdd6502;
 import com.replicanet.cukesplus.Main;
 import de.quippy.javamod.multimedia.MultimediaContainer;
 import de.quippy.javamod.multimedia.MultimediaContainerManager;
-import de.quippy.javamod.multimedia.mod.ModContainer;
-import de.quippy.javamod.multimedia.mod.loader.Module;
-import de.quippy.javamod.multimedia.mod.loader.tracker.ProTrackerMod;
 import de.quippy.javamod.system.Helpers;
 
-import javax.sound.sampled.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 
+
 public class TestRunner {
+
+    static byte[] compressedData = null;
+    static int compressedPos = 0;
+    static byte escapeByte = 0;
+    static int escapeByteRun = 0;
+    static int stackedPos = 0;
+    static int stackedThisRun = 0;
+
+    static byte getNextByte() {
+        if(escapeByteRun > 0) {
+            escapeByteRun--;
+            return escapeByte;
+        }
+
+        if (stackedThisRun > 0) {
+            byte data = compressedData[compressedPos++];
+
+            stackedThisRun--;
+            if (stackedThisRun == 0) {
+                // And restore
+                compressedPos = stackedPos;
+            }
+
+            return data;
+        }
+
+        byte data = compressedData[compressedPos++];
+
+        if (data == escapeByte) {
+            data = compressedData[compressedPos++];
+            if (data == 0) {
+                // Run of escape bytes
+                data = compressedData[compressedPos++];
+                escapeByteRun = Byte.toUnsignedInt(data);
+                escapeByteRun--;
+                return escapeByte;
+            } else {
+                stackedPos = compressedPos + 2; // Calculate the next bytes after the escapeByte data
+                stackedThisRun = data;
+                // Set the offset to read from
+                int newPos = Byte.toUnsignedInt(compressedData[compressedPos++]) | (Byte.toUnsignedInt(compressedData[compressedPos++]) << 8);
+                compressedPos = newPos;
+                stackedThisRun--;
+                return compressedData[compressedPos++];
+            }
+        }
+
+        return data;
+    }
+
     public static void main(String args[]) throws Exception {
         if (args.length >= 1 && args[0].compareToIgnoreCase("--execVideoTest") == 0) {
             DisplayBombJack displayBombJack = new DisplayBombJack();
@@ -282,32 +329,81 @@ public class TestRunner {
             audioExpansion.writeData(0x8041, 0x01, 0x01);
 
             byte[] bytes = Files.readAllBytes(Paths.get("target/exportedMusicMusic.bin"));
+            // TODO: Calculate an escape byte
+            escapeByte = (byte)0xaa;
 
-            int saving = 0;
-            for (int i = 1 ; i < bytes.length ; ) {
+            byte[] originalBytes = bytes;
+            int originalLength = bytes.length;
 
+            System.out.println("processing input length=" + bytes.length);
+            for (int i = 0; i < bytes.length; ) {
                 int bestLen = 0;
                 int bestPos = 0;
-                for (int j = 0 ; j < i && bestLen < 255; j++) {
-                    int len = 0;
-                    while (len < 255 && (i+len) < bytes.length && (j+len) < i && bytes[j+len] == bytes[i+len]) {
-                        len++;
-                    }
-                    if (len > bestLen) {
-                        bestLen = len;
-                        bestPos = j;
+                if (i > 0) {
+                    for (int j = 0; j < i && bestLen < 255; j++) {
+                        int len = 0;
+                        while ((len < 255) && ((i + len) < bytes.length) && ((j + len) < i) && (bytes[j + len] == bytes[i + len])) {
+                            len++;
+                        }
+                        if (len > bestLen) {
+                            bestLen = len;
+                            bestPos = j;
+                        }
                     }
                 }
-                // If a "gosub" will save data, then...
+                if (bytes[i] == escapeByte) {
+                    System.out.println("escape byte at " + i);
+                    // Handle a run of escape bytes?
+                    int nextBytesPos = i;
+                    int runLength = 0;
+                    while ((runLength < 255) && (nextBytesPos < bytes.length) && (bytes[nextBytesPos] == escapeByte)) {
+                        nextBytesPos++;
+                        runLength++;
+                    }
+                    int afterLength = bytes.length - nextBytesPos;
+                    byte[] newBytes = new byte[i + 3 + afterLength];
+                    System.arraycopy(bytes,0,newBytes,0,i);
+                    newBytes[i++] = escapeByte;
+                    newBytes[i++] = 0;  // 0 reserved for output the escape byte
+                    newBytes[i++] = (byte)runLength;
+                    if (runLength > 1) {
+                        runLength = runLength;
+                    }
+                    System.arraycopy(bytes,nextBytesPos,newBytes,i, afterLength);
+                    bytes = newBytes;
+                    continue;
+                }
+                // If there is a good pattern match that will save data, then...
                 if (bestLen > 6) {
                     System.out.println("for " + i + " found bestLen=" + bestLen + " bestPos=" + bestPos);
-                    i += bestLen;
-                    saving += bestLen - 5;
+                    int nextBytesPos = i + bestLen;
+                    int afterLength = bytes.length - nextBytesPos;
+                    byte[] newBytes = new byte[i + 4 + afterLength];
+                    System.arraycopy(bytes,0,newBytes,0,i);
+                    newBytes[i++] = escapeByte;
+                    newBytes[i++] = (byte)bestLen;  // 0 reserved for output the escape byte
+                    newBytes[i++] = (byte)bestPos;
+                    newBytes[i++] = (byte)(bestPos>>8);
+                    System.arraycopy(bytes,nextBytesPos,newBytes,i, afterLength);
+                    bytes = newBytes;
                     continue;
                 }
                 i++;
             }
-            System.out.println("saving="+saving);
+
+            System.out.println("saving=" + (originalLength - bytes.length));
+
+            // Now try decompression
+            byte[] decompressbytes = new byte[originalBytes.length];
+            compressedPos = 0;
+            compressedData = bytes;
+            int outPos = 0;
+            while (compressedPos < bytes.length) {
+                byte data = getNextByte();
+                decompressbytes[outPos++] = data;
+            }
+
+            boolean equal = java.util.Arrays.equals(originalBytes, decompressbytes);
 
             int pos = 0;
 
