@@ -9,6 +9,9 @@
 			The reduced saving is expected due to some of the duplicated existing data being detected has been removed
 			There are 5 levels of recursion here
 		* With escapeByte handling: saving=36898
+	* Single pass savings: saving=24686
+		Multiple pass decompression is going to be hard in 6502 with limited RAM
+		With escapeByte detection: saving=24693
 
 
 

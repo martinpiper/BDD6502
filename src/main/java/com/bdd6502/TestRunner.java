@@ -3,6 +3,7 @@ package com.bdd6502;
 import com.replicanet.cukesplus.Main;
 import de.quippy.javamod.multimedia.MultimediaContainer;
 import de.quippy.javamod.multimedia.MultimediaContainerManager;
+import de.quippy.javamod.multimedia.mod.ModMixer;
 import de.quippy.javamod.system.Helpers;
 
 import java.nio.file.Files;
@@ -19,10 +20,10 @@ public class TestRunner {
     static int stackedPos = 0;
     static int stackedThisRun = 0;
 
-    static byte getNextByte() {
+    static int getNextByte() {
         if(escapeByteRun > 0) {
             escapeByteRun--;
-            return escapeByte;
+            return Byte.toUnsignedInt(escapeByte);
         }
 
         if (stackedThisRun > 0) {
@@ -34,7 +35,7 @@ public class TestRunner {
                 compressedPos = stackedPos;
             }
 
-            return data;
+            return Byte.toUnsignedInt(data);
         }
 
         byte data = compressedData[compressedPos++];
@@ -46,19 +47,19 @@ public class TestRunner {
                 data = compressedData[compressedPos++];
                 escapeByteRun = Byte.toUnsignedInt(data);
                 escapeByteRun--;
-                return escapeByte;
+                return Byte.toUnsignedInt(escapeByte);
             } else {
                 stackedPos = compressedPos + 2; // Calculate the next bytes after the escapeByte data
                 stackedThisRun = data;
                 // Set the offset to read from
                 int newPos = Byte.toUnsignedInt(compressedData[compressedPos++]) | (Byte.toUnsignedInt(compressedData[compressedPos++]) << 8);
-                compressedPos = newPos;
+                compressedPos = newPos + 4; // +4 for the file header
                 stackedThisRun--;
-                return compressedData[compressedPos++];
+                return Byte.toUnsignedInt(compressedData[compressedPos++]);
             }
         }
 
-        return data;
+        return Byte.toUnsignedInt(data);
     }
 
     public static void main(String args[]) throws Exception {
@@ -328,82 +329,12 @@ public class TestRunner {
 
             audioExpansion.writeData(0x8041, 0x01, 0x01);
 
-            byte[] bytes = Files.readAllBytes(Paths.get("target/exportedMusicMusic.bin"));
-            // TODO: Calculate an escape byte
-            escapeByte = (byte)0xaa;
-
-            byte[] originalBytes = bytes;
-            int originalLength = bytes.length;
-
-            System.out.println("processing input length=" + bytes.length);
-            for (int i = 0; i < bytes.length; ) {
-                int bestLen = 0;
-                int bestPos = 0;
-                if (i > 0) {
-                    for (int j = 0; j < i && bestLen < 255; j++) {
-                        int len = 0;
-                        while ((len < 255) && ((i + len) < bytes.length) && ((j + len) < i) && (bytes[j + len] == bytes[i + len])) {
-                            len++;
-                        }
-                        if (len > bestLen) {
-                            bestLen = len;
-                            bestPos = j;
-                        }
-                    }
-                }
-                if (bytes[i] == escapeByte) {
-                    System.out.println("escape byte at " + i);
-                    // Handle a run of escape bytes?
-                    int nextBytesPos = i;
-                    int runLength = 0;
-                    while ((runLength < 255) && (nextBytesPos < bytes.length) && (bytes[nextBytesPos] == escapeByte)) {
-                        nextBytesPos++;
-                        runLength++;
-                    }
-                    int afterLength = bytes.length - nextBytesPos;
-                    byte[] newBytes = new byte[i + 3 + afterLength];
-                    System.arraycopy(bytes,0,newBytes,0,i);
-                    newBytes[i++] = escapeByte;
-                    newBytes[i++] = 0;  // 0 reserved for output the escape byte
-                    newBytes[i++] = (byte)runLength;
-                    if (runLength > 1) {
-                        runLength = runLength;
-                    }
-                    System.arraycopy(bytes,nextBytesPos,newBytes,i, afterLength);
-                    bytes = newBytes;
-                    continue;
-                }
-                // If there is a good pattern match that will save data, then...
-                if (bestLen > 6) {
-                    System.out.println("for " + i + " found bestLen=" + bestLen + " bestPos=" + bestPos);
-                    int nextBytesPos = i + bestLen;
-                    int afterLength = bytes.length - nextBytesPos;
-                    byte[] newBytes = new byte[i + 4 + afterLength];
-                    System.arraycopy(bytes,0,newBytes,0,i);
-                    newBytes[i++] = escapeByte;
-                    newBytes[i++] = (byte)bestLen;  // 0 reserved for output the escape byte
-                    newBytes[i++] = (byte)bestPos;
-                    newBytes[i++] = (byte)(bestPos>>8);
-                    System.arraycopy(bytes,nextBytesPos,newBytes,i, afterLength);
-                    bytes = newBytes;
-                    continue;
-                }
-                i++;
-            }
-
-            System.out.println("saving=" + (originalLength - bytes.length));
-
             // Now try decompression
-            byte[] decompressbytes = new byte[originalBytes.length];
-            compressedPos = 0;
-            compressedData = bytes;
-            int outPos = 0;
-            while (compressedPos < bytes.length) {
-                byte data = getNextByte();
-                decompressbytes[outPos++] = data;
-            }
+            compressedData = Files.readAllBytes(Paths.get("target/exportedMusic" + ModMixer.EVENTS_BIN));
+            int originalLength = Byte.toUnsignedInt(compressedData[0]) | (Byte.toUnsignedInt(compressedData[1]) << 8) | (Byte.toUnsignedInt(compressedData[2]) << 16);
+            escapeByte = compressedData[3];
 
-            boolean equal = java.util.Arrays.equals(originalBytes, decompressbytes);
+            compressedPos = 4;
 
             int pos = 0;
 
@@ -417,38 +348,37 @@ public class TestRunner {
             int waitUntil = 0;
             int channelPlayingMask = 0;
             int channelLoopingMask = 0;
-            while (pos < bytes.length) {
+            while (compressedPos < compressedData.length) {
                 while (System.currentTimeMillis() < (startTime+waitUntil)) {
                     for (int i = 0; i < 50; i++) {
                         audioExpansion.calculateSamples();
                     }
                     Thread.sleep(1);
                 }
-                byte command = bytes[pos++];
+                int command = getNextByte();
                 switch (command) {
                     case Helpers.kMusicCommandWaitFrames: {
-                        waitUntil += (Byte.toUnsignedInt(bytes[pos++]) * (1000 / 60));
+                        waitUntil += (getNextByte() * (1000 / 60));
                         continue;
                     }
                     case Helpers.kMusicCommandSetSampleData: {
-                        int sampleIndex = Byte.toUnsignedInt(bytes[pos++]);
-                        sampleStarts[sampleIndex] = Byte.toUnsignedInt(bytes[pos++]) | (Byte.toUnsignedInt(bytes[pos++]) << 8);
-                        sampleLengths[sampleIndex] = Byte.toUnsignedInt(bytes[pos++]) | (Byte.toUnsignedInt(bytes[pos++]) << 8);
-                        sampleLoopStarts[sampleIndex] = Byte.toUnsignedInt(bytes[pos++]) | (Byte.toUnsignedInt(bytes[pos++]) << 8);
-                        sampleLoopLengths[sampleIndex] = Byte.toUnsignedInt(bytes[pos++]) | (Byte.toUnsignedInt(bytes[pos++]) << 8);
+                        int sampleIndex = getNextByte();
+                        sampleStarts[sampleIndex] = getNextByte() | (getNextByte() << 8);
+                        sampleLengths[sampleIndex] = getNextByte() | (getNextByte() << 8);
+                        sampleLoopStarts[sampleIndex] = getNextByte() | (getNextByte() << 8);
+                        sampleLoopLengths[sampleIndex] = getNextByte() | (getNextByte() << 8);
                         continue;
                     }
                     case Helpers.kMusicCommandPlayNote: {
-                        byte channel = bytes[pos++];
-                        int volume = Byte.toUnsignedInt(bytes[pos++]);
-                        int sampleIndex = Byte.toUnsignedInt(bytes[pos++]);
+                        int channel = getNextByte();
+                        int volume = getNextByte();
+                        int sampleIndex = getNextByte();
                         int sampleStart = sampleStarts[sampleIndex];
                         int sampleLength = sampleLengths[sampleIndex];
                         int sampleLoopStart = sampleLoopStarts[sampleIndex];;
                         int sampleLoopLength = sampleLoopLengths[sampleIndex];
 
-                        int sampleFrequency = Byte.toUnsignedInt(bytes[pos++]);
-                        sampleFrequency |= Byte.toUnsignedInt(bytes[pos++]) << 8;
+                        int sampleFrequency = getNextByte() | (getNextByte() << 8);
 
                         channelLoopingMask = channelLoopingMask & ~(1<<channel);
 
