@@ -1,0 +1,78 @@
+!sal
+!pdb "t.pdb"
+!source "C64/stdlib/stdlib.a"
+*=$200
+!zn
+MusicInit
+	sei
+	ldx #$ff
+	txs
+
+	jsr Bus24Bit_Init
+
+	jsr Bus24Bit_DisableDisplay
+	lda #$30
+	jsr Bus24Bit_EnableDisplay
+	jsr Bus24Bit_WaitVBlank
+
+	; Setup a background colour that is visible
+	jsr Bus24Bit_SetAddressPalette
+	lda #$21
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+
+	rts
+
+!zn
+.counter !by 0,3
+MusicPoll
+	jsr Bus24Bit_WaitVBlank
+	dec .counter
+	bne MusicPoll
+	dec .counter+1
+	bne MusicPoll
+	rts
+
+!zn
+PlaySample
+	lda #$01
+	+MWordValueTo_XY $802c
+	jsr Bus24Bit_SetAddressBus
+	lda #0
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+
+	lda #$01
+	+MWordValueTo_XY $8000
+	jsr Bus24Bit_SetAddressBus
+
+	lda #$ff
+	sta CIA2PortBRS232
+	lda #$00
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+	lda #$ff
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+	lda #$4a
+	sta CIA2PortBRS232
+	lda #$0b
+	sta CIA2PortBRS232
+	lda #$10
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+	lda #$1f
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+
+	lda #$01
+	+MWordValueTo_XY $802c
+	jsr Bus24Bit_SetAddressBus
+	lda #1
+	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+
+	rts
+
+!source "BombJack/stdlib/Bus24Bit.a"
+!source "BombJack/stdlib/Video.a"

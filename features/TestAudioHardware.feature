@@ -1,0 +1,29 @@
+Feature: Tests the video and audio hardware expansion together
+
+  @TC-1
+  Scenario: Full display test with sprites, borders, contention, chars, tiles, and mode7, and sample play
+    Given I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm features/TestAudioHardware.a
+
+    Given clear all external devices
+    Given a new video display
+    Given a new audio expansion
+    Given video display does not save debug BMP images
+    Given property "bdd6502.bus24.trace" is set to string "true"
+    Given I have a simple overclocked 6502 system
+    Given a user port to 24 bit bus is installed
+    Given limit video display to 60 fps
+    And I enable trace with indent
+    Given show video window
+
+    # Instead of writing this data via the 6502 CPU, just send it straight to memory
+    # Audio
+    Given write data from file "testdata/sample.pcmu8" to 24bit bus at '0x0000' and addressEx '0x04'
+
+    And I load prg "test.prg"
+    And I load labels "test.lbl"
+
+#    Given property "bdd6502.bus24.trace" is set to string "false"
+    When I execute the procedure at MusicInit for no more than 1000000 instructions
+    And I disable trace
+    When I execute the procedure at PlaySample for no more than 1000000 instructions
+    When I execute the procedure at MusicPoll until return

@@ -3,14 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/MemoryBus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/MemoryBus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -80,7 +72,7 @@
       <recent name="C:\Work\BDD6502\src\test\resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner VideoHardware">
+  <component name="RunManager" selected="Application.TestRunner TestAudioHardware.feature">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -131,6 +123,14 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\tiny music\mods\artists\h0ffman\H0ffman - Freerunner.mod&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner TestAudioHardware.feature" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/TestAudioHardware.feature" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -428,6 +428,7 @@
       <item itemvalue="Application.TestRunner --exportmod (2)" />
       <item itemvalue="Application.TestRunner --exportmod (3)" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature " />
+      <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
       <item itemvalue="Application.TestRunner UnitialisedMemory.feature" />
       <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
       <item itemvalue="Application.TestRunner VideoHardware" />
@@ -507,11 +508,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="790" y="374" key="#com.intellij.debugger.actions.ViewTextAction/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589184724216" />
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589206862431">
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589207688872">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1729" y="-3" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589082837376" />
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589206862431" />
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589207688872" />
     <state x="689" y="321" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1587393658085">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -532,26 +533,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="848" y="272" key="#xdebugger.XInspectDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589006205721" />
-    <state width="1877" height="115" key="GridCell.Tab.0.bottom" timestamp="1589206916108">
+    <state width="1877" height="115" key="GridCell.Tab.0.bottom" timestamp="1589207815045">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="3800" height="126" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589084370802" />
-    <state width="1877" height="115" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589206916108" />
-    <state width="1877" height="115" key="GridCell.Tab.0.center" timestamp="1589206916108">
+    <state width="1877" height="115" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589207815045" />
+    <state width="1877" height="115" key="GridCell.Tab.0.center" timestamp="1589207815045">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="3800" height="126" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589084370802" />
-    <state width="1877" height="115" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589206916108" />
-    <state width="1877" height="115" key="GridCell.Tab.0.left" timestamp="1589206916108">
+    <state width="1877" height="115" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589207815045" />
+    <state width="1877" height="115" key="GridCell.Tab.0.left" timestamp="1589207815045">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="3800" height="126" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589084370802" />
-    <state width="1877" height="115" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589206916108" />
-    <state width="1877" height="115" key="GridCell.Tab.0.right" timestamp="1589206916108">
+    <state width="1877" height="115" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589207815045" />
+    <state width="1877" height="115" key="GridCell.Tab.0.right" timestamp="1589207815045">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="3800" height="126" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589084370802" />
-    <state width="1877" height="115" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589206916108" />
+    <state width="1877" height="115" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589207815045" />
     <state width="1877" height="286" key="GridCell.Tab.1.bottom" timestamp="1589206781980">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
