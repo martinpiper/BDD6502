@@ -1,5 +1,9 @@
 ; TODO items
 
+* Create data decompression only unit test
+
+
+
 * Continue MusicPoll with jsr DecompressMusic_GetNextByte
 	Process the music events kMusicCommandWaitFrames etc
 

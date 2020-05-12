@@ -313,9 +313,11 @@ public class TestRunner {
 
             MultimediaContainer loaded = MultimediaContainerManager.getMultimediaContainer(args[1]);
 //            loaded.createNewMixer().startPlayback();
-            loaded.createNewMixer().fastExport("target/exportedMusic");
+            String filename = "target/exportedMusic";
+            loaded.createNewMixer().fastExport(filename);
+            CompressData.compressMusicData(filename);
 
-
+            // Test output data
             AudioExpansion audioExpansion = new AudioExpansion();
             audioExpansion.writeDataFromFile(0, 0x04, "target/exportedMusicSamples.bin");
 
