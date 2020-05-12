@@ -6,7 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 // Any comment with "HW:" draws attention to hardware design considerations
-public class AudioExpansion extends MemoryBus {
+public class AudioExpansion extends MemoryBus implements Runnable {
     int addressRegisters = 0x8000, addressExRegisters = 0x01;
     int addressExSampleBank = 0x04;
 
@@ -71,8 +71,19 @@ public class AudioExpansion extends MemoryBus {
         }
     }
 
-    public void close() {
+    public void close()
+    {
+        if (thread != null) {
+            thread.interrupt();
+            thread = null;
+        }
         line.close();
+    }
+
+    Thread thread = null;
+    public void startThread() {
+        thread = new Thread(this);
+        thread.start();
     }
 
     @Override
@@ -143,9 +154,9 @@ public class AudioExpansion extends MemoryBus {
         }
     }
 
-    public void calculateSamples() {
+    public boolean calculateSamples() {
         if (line.available() < sampleBuffer.length) {
-            return;
+            return false;
         }
         for (int i = 0 ; i < sampleBuffer.length ; i++) {
             ageContention();
@@ -205,5 +216,18 @@ public class AudioExpansion extends MemoryBus {
             sampleBuffer[i] = (byte)(accumulatedSample & 0xff);
         }
         line.write(sampleBuffer,0,sampleBuffer.length);
+        return true;
+    }
+
+    @Override
+    public void run() {
+        while (!Thread.currentThread().isInterrupted()) {
+            while (calculateSamples() ) {}
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
     }
 }

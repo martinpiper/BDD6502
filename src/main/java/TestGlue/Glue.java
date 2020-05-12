@@ -12,6 +12,7 @@ import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 import cucumber.api.PendingException;
 import cucumber.api.Scenario;
+import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -77,6 +78,13 @@ public class Glue {
     public void BeforeHook(Scenario scenario) {
         glue = this;
         this.scenario = scenario;
+    }
+
+    @After
+    public void AfterHook(Scenario scenario) {
+        if (audioExpansion != null) {
+            audioExpansion.close();
+        }
     }
 
     public int valueToIntFast(String valueIn) throws ScriptException {
@@ -649,10 +657,12 @@ public class Glue {
             }
 
             if (audioExpansion != null) {
-                instructionsPerAudioRefreshCount--;
-                if (instructionsPerAudioRefreshCount <= 0) {
-                    audioExpansion.calculateSamples();
-                    instructionsPerAudioRefreshCount = instructionsPerAudioRefresh;
+                if (instructionsPerAudioRefresh > 0) {
+                    instructionsPerAudioRefreshCount--;
+                    if (instructionsPerAudioRefreshCount <= 0) {
+                        audioExpansion.calculateSamples();
+                        instructionsPerAudioRefreshCount = instructionsPerAudioRefresh;
+                    }
                 }
             }
 
@@ -1220,8 +1230,10 @@ public class Glue {
             displayBombJack.RepaintWindow();
 
             if (audioExpansion != null) {
-                for (int i = 0 ; i < 100 ; i++) {
-                    audioExpansion.calculateSamples();
+                if (instructionsPerAudioRefresh > 0) {
+                    for (int i = 0; i < 100; i++) {
+                        audioExpansion.calculateSamples();
+                    }
                 }
             }
 
@@ -1269,6 +1281,16 @@ public class Glue {
     @Given("^video display refresh window every (.*) instructions$")
     public void videoDisplayRefreshWindowEveryInstructions(String refreshEvery) throws ScriptException {
         instructionsPerDisplayRefresh = valueToInt(refreshEvery);
+    }
+
+    @Given("^audio refresh window every (.*) instructions$")
+    public void audioRefreshWindowEveryInstructions(String refreshEvery) throws ScriptException {
+        instructionsPerAudioRefresh = valueToInt(refreshEvery);
+    }
+
+    @Given("^audio refresh is independent$")
+    public void audioRefreshIsIndependent() throws ScriptException {
+        audioExpansion.startThread();
     }
 
     long startTime  = 0;

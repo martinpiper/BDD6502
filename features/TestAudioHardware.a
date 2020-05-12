@@ -83,9 +83,9 @@ MusicPlay
 	rts
 
 
-
+; Using: --exportmod "C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod"
 !zn
 MusicDataStart
 MusicDataStart_afterHeader = MusicDataStart + 4
-	!bin "testdata/exportedMusicEvents.bin"
+	!bin "testdata/exportedMusicEvents.cmp"
 MusicDataEnd

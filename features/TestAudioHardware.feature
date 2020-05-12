@@ -7,6 +7,9 @@ Feature: Tests the video and audio hardware expansion together
     Given clear all external devices
     Given a new video display
     Given a new audio expansion
+    And audio refresh window every 32 instructions
+    And audio refresh window every 0 instructions
+    And audio refresh is independent
     Given video display does not save debug BMP images
     Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
