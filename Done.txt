@@ -185,4 +185,8 @@ Added: Given I am using C64 processor port options
 		
 * Added audio hardware syntax and test code
 	The MemoryBus architecture is also expansion aware.
-	
+
+
+
+* Continue MusicPoll with jsr DecompressMusic_GetNextByte
+	Process the music events kMusicCommandWaitFrames etc
