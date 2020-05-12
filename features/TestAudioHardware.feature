@@ -13,7 +13,6 @@ Feature: Tests the video and audio hardware expansion together
     And That does fail on BRK
     And I enable unitialised memory read protection with immediate fail
     Given a user port to 24 bit bus is installed
-    Given limit video display to 60 fps
     And I enable trace with indent
     Given show video window
 
@@ -25,10 +24,12 @@ Feature: Tests the video and audio hardware expansion together
     And I load prg "test.prg"
     And I load labels "test.lbl"
 
-#    Given property "bdd6502.bus24.trace" is set to string "false"
+    Given property "bdd6502.bus24.trace" is set to string "false"
     When I execute the procedure at start for no more than 1000000 instructions
     When I execute the procedure at MusicInit for no more than 1000000 instructions
+#    When I execute the procedure at MusicDecompressTest for no more than 1000000 instructions
     And I disable trace
 #    Then I hex dump memory between $ff00 and $ffff
-    When I execute the procedure at PlaySample for no more than 1000000 instructions
-    When I execute the procedure at MusicPoll until return
+#    When I execute the procedure at PlaySample for no more than 1000000 instructions
+    Given limit video display to 60 fps
+    When I execute the procedure at MusicPlay until return

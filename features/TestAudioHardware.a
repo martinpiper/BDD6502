@@ -169,6 +169,37 @@ DecompressMusic_escapeByte = * + 1
 
 
 !zn
+
+.kMusicCommandWaitFrames			= 0;
+.kMusicCommandSetSampleData			= 1;
+.kMusicCommandPlayNote				= 2;
+
+.numVoices				= 4
+.voiceSize				= 11
+.regBase				= $8000
+.regBaseEx				= $01
+.regLoopControl			= .regBase + (.numVoices * .voiceSize)
+.regActiveControl		= .regLoopControl + 1
+.channelToBit			!by %00000001 , %00000010 , %00000100 , %00001000 , %00010000, %00100000 , %01000000 , %10000000
+.channelToMask			!by %11111110 , %11111101 , %11111011 , %11110111 , %11101111, %11011111 , %10111111 , %01111111
+.channelToVoiceRegLo	!for .t,8 { !by < (.regBase + ((.t-1) *  .voiceSize)) }
+.channelToVoiceRegHi	!for .t,8 { !by > (.regBase + ((.t-1) *  .voiceSize)) }
+
+.sampleStartsLo			!fill 32 , 0
+.sampleStartsHi			!fill 32 , 0
+.sampleLengthsLo		!fill 32 , 0
+.sampleLengthsHi		!fill 32 , 0
+.sampleLoopStartsLo		!fill 32 , 0
+.sampleLoopStartsHi		!fill 32 , 0
+.sampleLoopLengthsLo	!fill 32 , 0
+.sampleLoopLengthsHi	!fill 32 , 0
+.sampleLoopLengthsFlag	!fill 32 , 0
+
+.currentFrame		!by 0,0
+.waitUntil			!by 0,0
+.channelPlayingMask	!by 0
+.channelLoopingMask	!by 0
+
 MusicInit
 	; Setup optimised zeropage code
 	ldx #zeroPageCode_end-zeroPageCode_start
@@ -184,7 +215,9 @@ MusicInit
 	jsr GetNextByte_raw
 	jsr GetNextByte_raw
 	sta DecompressMusic_escapeByte
+	rts
 
+MusicDecompressTest
 !if 0 {
 	; Quick test
 	ldx #0
@@ -197,15 +230,171 @@ MusicInit
 }
 	rts
 
+.incrementCurrentFrame
+	inc .currentFrame
+	beq .i1
+	rts
+.i1
+	inc .currentFrame+1
+	rts
+
+MusicPoll
+	lda .waitUntil
+	cmp .currentFrame
+	beq .maybeTime
+	jmp .incrementCurrentFrame
+.maybeTime
+	lda .waitUntil + 1
+	cmp .currentFrame + 1
+	beq .isTime
+	jmp .incrementCurrentFrame
+.isTime
+	jsr .incrementCurrentFrame
+.getNextCommand
+
+	jsr DecompressMusic_GetNextByte
+	cmp #.kMusicCommandWaitFrames
+	bne .notkMusicCommandWaitFrames
+
+	jsr DecompressMusic_GetNextByte
+	clc
+	adc .waitUntil
+	sta .waitUntil
+	lda .waitUntil+1
+	adc #0
+	sta .waitUntil+1
+	rts
+
+.notkMusicCommandWaitFrames
+	cmp #.kMusicCommandSetSampleData
+	bne .notkMusicCommandSetSampleData
+
+	jsr DecompressMusic_GetNextByte
+	tay
+	jsr DecompressMusic_GetNextByte
+	sta .sampleStartsLo,y
+	jsr DecompressMusic_GetNextByte
+	sta .sampleStartsHi,y
+	jsr DecompressMusic_GetNextByte
+	sta .sampleLengthsLo,y
+	jsr DecompressMusic_GetNextByte
+	sta .sampleLengthsHi,y
+	jsr DecompressMusic_GetNextByte
+	sta .sampleLoopStartsLo,y
+	jsr DecompressMusic_GetNextByte
+	sta .sampleLoopStartsHi,y
+	jsr DecompressMusic_GetNextByte
+	sta .sampleLoopLengthsLo,y
+	jsr DecompressMusic_GetNextByte
+	sta .sampleLoopLengthsHi,y
+	; And calculate the flag
+	ora .sampleLoopLengthsLo,y
+	sta .sampleLoopLengthsFlag,y
+	jmp .getNextCommand
+
+.notkMusicCommandSetSampleData
+	cmp #.kMusicCommandPlayNote
+	beq .iskMusicCommandPlayNote
+
+	brk	; Should never get here
+	rts
+
+.iskMusicCommandPlayNote
+	jsr DecompressMusic_GetNextByte
+	tax
+
+	lda .channelPlayingMask
+	and .channelToMask,x
+	sta .channelPlayingMask
+	lda .channelLoopingMask
+	and .channelToMask,x
+	sta .channelLoopingMask
+
+	; Write the voice active mask
+	jsr Bus24Bit_Reset
+	lda #.regBaseEx
+	sta CIA2PortBRS232
+	lda #<.regActiveControl
+	sta CIA2PortBRS232
+	lda #>.regActiveControl
+	sta CIA2PortBRS232
+	lda .channelPlayingMask
+	sta CIA2PortBRS232
+
+	; Setup the voice reg writes
+	jsr Bus24Bit_Reset
+	lda #.regBaseEx
+	sta CIA2PortBRS232
+	lda .channelToVoiceRegLo,x
+	sta CIA2PortBRS232
+	lda .channelToVoiceRegHi,x
+	sta CIA2PortBRS232
+
+	; Now write the registers
+	jsr DecompressMusic_GetNextByte
+	sta CIA2PortBRS232
+	jsr DecompressMusic_GetNextByte
+	tay
+	lda .sampleStartsLo,y
+	sta CIA2PortBRS232
+	lda .sampleStartsHi,y
+	sta CIA2PortBRS232
+	lda .sampleLengthsLo,y
+	sta CIA2PortBRS232
+	lda .sampleLengthsHi,y
+	sta CIA2PortBRS232
+	; Frequency
+	jsr DecompressMusic_GetNextByte
+	sta CIA2PortBRS232
+	jsr DecompressMusic_GetNextByte
+	sta CIA2PortBRS232
+	lda .sampleLoopLengthsFlag,y
+	beq .noLoopLength
+
+	lda .sampleLoopStartsLo,y
+	sta CIA2PortBRS232
+	lda .sampleLoopStartsHi,y
+	sta CIA2PortBRS232
+	lda .sampleLoopLengthsLo,y
+	sta CIA2PortBRS232
+	lda .sampleLoopLengthsHi,y
+	sta CIA2PortBRS232
+
+	lda .channelLoopingMask
+	ora .channelToBit,x
+	sta .channelLoopingMask
+
+.noLoopLength
+	lda .channelPlayingMask
+	ora .channelToBit,x
+	sta .channelPlayingMask
+
+	jsr Bus24Bit_Reset
+	lda #.regBaseEx
+	sta CIA2PortBRS232
+	lda #<.regLoopControl
+	sta CIA2PortBRS232
+	lda #>.regLoopControl
+	sta CIA2PortBRS232
+	lda .channelLoopingMask
+	sta CIA2PortBRS232
+	lda .channelPlayingMask
+	sta CIA2PortBRS232
+
+	jmp .getNextCommand
+
+
 !zn
 .counter !by 0,3
-MusicPoll
+MusicPlay
 	jsr Bus24Bit_WaitVBlank
+	jsr MusicPoll
 	dec .counter
-	bne MusicPoll
+	bne MusicPlay
 	dec .counter+1
-	bne MusicPoll
+	bne MusicPlay
 	rts
+
 
 
 !zn
