@@ -1,10 +1,7 @@
 ; TODO items
 
-* Find out why when running from jar the video display slows down.
-	It's almost like not enough pixels get calculated?
-	* Print the number of instructions elapsed per video display frame
-	Hmm Oracle java is slowing down, but this java does not: "C:\Users\Martin Piper\.jdks\corretto-1.8.0_252\bin\java.exe"
-		https://aws.amazon.com/corretto/faqs/ is better performance than Oracle java
+* Measure average instructions between label pairs and output on demand or on schedule
+
 
 
 * Create data decompression only unit test

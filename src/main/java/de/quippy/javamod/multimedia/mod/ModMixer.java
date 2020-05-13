@@ -632,8 +632,6 @@ public class ModMixer extends BasicMixer
 
 		try {
 			if (debugData != null) {
-				musicData.write(Helpers.kMusicCommandPlayNote);
-				musicData.flush();
 				debugData.flush();
 				debugData.close();
 			}
@@ -642,6 +640,8 @@ public class ModMixer extends BasicMixer
 				sampleData.close();
 			}
 			if (musicData != null) {
+				musicData.write(Helpers.kMusicCommandStop);
+				musicData.flush();
 				musicData.flush();
 				musicData.close();
 			}

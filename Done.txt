@@ -190,3 +190,20 @@ Added: Given I am using C64 processor port options
 
 * Continue MusicPoll with jsr DecompressMusic_GetNextByte
 	Process the music events kMusicCommandWaitFrames etc
+
+
+
+* Find out why when running from jar the video display slows down.
+	It's almost like not enough pixels get calculated?
+	* Print the number of instructions elapsed per video display frame
+	Hmm Oracle java is slowing down, but this java does not: "C:\Users\Martin Piper\.jdks\corretto-1.8.0_252\bin\java.exe"
+		https://aws.amazon.com/corretto/faqs/ is better performance than Oracle java
+		Oracle java sucks
+			1>Rendered FPS = 48 frameDelta = 535 period=1001 instructionsThisPeriod=610032 instructionsPerFrame=10157 instructionsShortfall=2515
+			instructionsThisPeriod=610032
+			number of emulated 6502 instructions in 1001 milliseconds
+			so .6 MHz
+		same jar with Corretto java:
+			1>Rendered FPS = 60 frameDelta = 1 period=1001 instructionsThisPeriod=3463955 instructionsPerFrame=57674 instructionsShortfall=-45002
+			5.6 times faster
+	* QuickDrawPanel::fastSetRGB() created to optimise image drawing further, this is to fix slowdown when using Oracle java compared to the much faster Corretto

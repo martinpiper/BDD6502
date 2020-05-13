@@ -72,6 +72,10 @@ public class DisplayBombJack extends MemoryBus {
     }
 
     public DisplayBombJack() throws IOException {
+        //enableDebugData();
+    }
+
+    public void enableDebugData() throws IOException {
         debugData = new PrintWriter(new FileWriter("target/debugData.txt"));
         debugData.println("; Automatically created by DisplayBombJack");
         // The address is handled by the writeData
@@ -135,13 +139,15 @@ public class DisplayBombJack extends MemoryBus {
             // This check removes waits for display H/V positions during the VBLANK, the non-visible part of the frame
             // The waits during the VBLANK would not really be that important from a simulation point of view
             // This is true, as long as mode7 writes (due to resetting the internal values on _VSYNC) are completed before the end of the _VSYNC which starts later and shorter than the VBLANK
-            if (enableDisplay && !vBlank) {
+            if (enableDisplay && !vBlank && debugData != null) {
                 debugData.println("d$0");
                 debugData.printf("w$ff01ff00,$%02x%02x%02x00\n", displayV & 0xff , (displayH >> 8) & 0x01 , displayH & 0xff );
                 debugData.println("d$0");
             }
         }
-        debugData.printf("d$%04x%02x%02x\n" , address , addressEx , data);
+        if (debugData != null) {
+            debugData.printf("d$%04x%02x%02x\n", address, addressEx, data);
+        }
 
         lastDataWritten = data;
         if (addressActive(addressEx, addressExPalette) && address >= addressPalette && address < (addressPalette + 0x200)) {
@@ -174,9 +180,13 @@ public class DisplayBombJack extends MemoryBus {
     }
 
     public void calculateAFrame() {
-        for (int i = 0 ; i < displayWidth*displayHeight ; i++) {
+        for (int i = 0 ; i < pixelsInWholeFrame() ; i++) {
             calculatePixel();
         }
+    }
+
+    public int pixelsInWholeFrame() {
+        return displayWidth*displayHeight;
     }
 
     public void calculatePixel() {
@@ -249,7 +259,7 @@ public class DisplayBombJack extends MemoryBus {
         }
         // The hardware syncs on -ve _VBLANK
         if (displayX == 0 && displayV == 0xf0) {
-            if (enableDisplay) {
+            if (enableDisplay && debugData != null) {
                 debugData.println("d$0");
                 debugData.println("^-$01");
                 debugData.println("d$0");
@@ -261,16 +271,16 @@ public class DisplayBombJack extends MemoryBus {
         if (enableDisplay) {
             int tempy = displayBitmapY;
             // Make sure the rendering position is in the screen
-            if (displayBitmapX >= 0 && tempy >= 0 && displayBitmapX < panel.getImage().getWidth() && tempy < panel.getImage().getHeight()) {
+            if (displayBitmapX >= 0 && tempy >= 0 && displayBitmapX < panel.fastGetWidth() && tempy < panel.fastGetHeight()) {
                 // Delayed due to pixel latching in the output mixer 8B2 and 7A2
                 if (enablePixels) {
                     if (busContentionPalette > 0) {
                         latchedPixel = getContentionColouredPixel();
                     }
                     int realColour = palette[latchedPixel & 0xff];
-                    panel.getImage().setRGB(displayBitmapX, tempy, realColour);
+                    panel.fastSetRGB(displayBitmapX, tempy, realColour);
                 } else {
-                    panel.getImage().setRGB(displayBitmapX, tempy, 0);
+                    panel.fastSetRGB(displayBitmapX, tempy, 0);
                 }
             }
         }

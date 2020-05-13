@@ -317,6 +317,10 @@ public class TestRunner {
             loaded.createNewMixer().fastExport(filename);
             CompressData.compressMusicData(filename);
 
+            System.exit(0);
+        }
+
+        if (args.length >= 1 && args[0].compareToIgnoreCase("--playmod") == 0) {
             // Test output data
             AudioExpansion audioExpansion = new AudioExpansion();
             audioExpansion.writeDataFromFile(0, 0x04, "target/exportedMusicSamples.bin");

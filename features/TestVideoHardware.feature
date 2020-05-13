@@ -4,6 +4,7 @@ Feature: Tests the video and audio hardware expansion together
   Scenario: Full display test with sprites, borders, contention, chars, tiles, and mode7, and sample play
     Given clear all external devices
     Given a new video display
+    And enable video display bus debug output
     Given a new audio expansion
     Given video display processes 8 pixels per instruction
     Given video display refresh window every 32 instructions

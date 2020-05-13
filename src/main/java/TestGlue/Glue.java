@@ -24,6 +24,7 @@ import javax.imageio.ImageIO;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.sql.Time;
@@ -82,9 +83,6 @@ public class Glue {
 
     @After
     public void AfterHook(Scenario scenario) {
-        if (audioExpansion != null) {
-            audioExpansion.close();
-        }
     }
 
     public int valueToIntFast(String valueIn) throws ScriptException {
@@ -218,6 +216,9 @@ public class Glue {
     @Given("^clear all external devices$")
     public void clearDevices() {
         devices.clear();
+        if (displayBombJack != null) {
+            displayBombJack.getWindow().dispatchEvent(new WindowEvent(displayBombJack.getWindow(), WindowEvent.WINDOW_CLOSING));
+        }
         displayBombJack = null;
         if (audioExpansion != null) {
             audioExpansion.close();
@@ -595,6 +596,14 @@ public class Glue {
 
         machine.getCpu().initRegisterTestStackIfNeeded();
 
+        long instructionsThisPeriod = 0;
+        timeSinceLastDebugDisplayTimes = System.currentTimeMillis();
+        if (displayBombJack != null) {
+            lastFramesCount = displayBombJack.getFrameNumberForSync();
+        } else {
+            lastFramesCount = 0;
+        }
+
         // Pushing lots of 0 onto the stack will eventually return to address 1
         while (machine.getCpu().getProgramCounter() > 1) {
 
@@ -625,10 +634,19 @@ public class Glue {
                 int displayFrame = displayBombJack.getFrameNumberForSync() - displaySyncFrame;
 
                 long frameDelta = targetNumberFrames - displayFrame;
-                if (displayLimitFPS > 0 && System.currentTimeMillis() > timeSinceLastDebugDisplayTimes) {
-                    timeSinceLastDebugDisplayTimes = System.currentTimeMillis() + 1000;
-                    System.out.println("Rendered FPS = " + (displayBombJack.getFrameNumberForSync()- lastFramesCount) + " frameDelta = " + frameDelta);
+                if (displayBombJack != null && displayLimitFPS > 0 && System.currentTimeMillis() > (timeSinceLastDebugDisplayTimes + 1000)) {
+                    long timeNowMillis = System.currentTimeMillis();
+                    long periodMillis = timeNowMillis - timeSinceLastDebugDisplayTimes;
+                    if (periodMillis > 0 && pixelsPerInstruction > 0) {
+                        long instructionsPerFrame = (1000 * instructionsThisPeriod) / periodMillis;
+                        instructionsPerFrame /= displayLimitFPS;
+                        long pixelsShortfall = displayBombJack.pixelsInWholeFrame() - (instructionsPerFrame * pixelsPerInstruction);
+                        long instructionsShortfall = pixelsShortfall / pixelsPerInstruction;
+                        System.out.println("Rendered FPS = " + (displayBombJack.getFrameNumberForSync() - lastFramesCount) + " frameDelta = " + frameDelta + " period=" + periodMillis + " instructionsThisPeriod=" + instructionsThisPeriod + " instructionsPerFrame=" + instructionsPerFrame + " instructionsShortfall=" + instructionsShortfall);
+                    }
                     lastFramesCount = displayBombJack.getFrameNumberForSync();
+                    instructionsThisPeriod = 0;
+                    timeSinceLastDebugDisplayTimes = timeNowMillis;
                 }
 
                 if (displayLimitFPS == 0 || frameDelta > 0) {
@@ -671,6 +689,7 @@ public class Glue {
             }
             Integer addr = machine.getCpu().getCpuState().pc;
             internalCPUStep(displayTrace);
+            instructionsThisPeriod++;
             if (maxInstructions > 0) {
                 assertThat(++numInstructions, is(lessThanOrEqualTo(maxInstructions)));
             }
@@ -1158,12 +1177,23 @@ public class Glue {
 
     @Given("^a new video display$")
     public void aNewVideoDisplay() throws IOException {
+        if (displayBombJack != null) {
+            displayBombJack.getWindow().dispatchEvent(new WindowEvent(displayBombJack.getWindow(), WindowEvent.WINDOW_CLOSING));
+        }
         displayBombJack = new DisplayBombJack();
         devices.add(displayBombJack);
     }
 
+    @Given("^enable video display bus debug output$")
+    public void enableVideoBusDebug() throws IOException {
+        displayBombJack.enableDebugData();
+    }
+
     @Given("^a new audio expansion$")
     public void aNewAudioExpansion() throws IOException {
+        if (audioExpansion != null) {
+            audioExpansion.close();
+        }
         audioExpansion = new AudioExpansion();
         audioExpansion.start();
         devices.add(audioExpansion);
