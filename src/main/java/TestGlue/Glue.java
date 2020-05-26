@@ -17,6 +17,7 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import gherkin.lexer.Th;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,6 +28,7 @@ import javax.script.ScriptException;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.Socket;
 import java.sql.Time;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -882,29 +884,48 @@ public class Glue {
     @Given("^I run the command line: (.*)$")
     public void i_run_the_command_line(String arg1) throws Throwable {
         checkScenario();
+        StringBuffer sb = new StringBuffer();
         // Write code here that turns the phrase above into concrete actions
         Process p = Runtime.getRuntime().exec(arg1);
+        updateStringBufferFromProcess(p, sb);
         p.waitFor();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-        StringBuffer sb = new StringBuffer();
-        String line = "";
-        while ((line = reader.readLine()) != null) {
-            sb.append(line + "\n");
-        }
-
-        reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        sb = new StringBuffer();
-        while ((line = reader.readLine()) != null) {
-            sb.append(line + "\n");
-        }
 
         if (p.exitValue() != 0) {
             throw new Exception(String.format("Return code: %d with message '%s'", p.exitValue(), sb.toString()));
         }
 
         scenario.write(String.format("After executing command line '%s' return code: %d with message '%s'\n", arg1, p.exitValue(), sb.toString()));
+    }
+
+    public static void updateStringBufferFromProcess(Process p, StringBuffer sb) throws IOException {
+        final StringBuffer[] temp = {sb};
+        Runnable getter = new Runnable() {
+            @Override
+            public void run() {
+                StringBuffer sb = temp[0];
+                try {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+                    String line = "";
+                    while (true) {
+                        if (!((line = reader.readLine()) != null)) break;
+                        sb.append(line + "\n");
+                    }
+
+                    reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                    sb = new StringBuffer();
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+
+                } catch (IOException e) {
+                }
+                System.out.println("Process completed");
+            }
+        };
+        Thread thread = new Thread(getter);
+        thread.start();
     }
 
     @Given("^I load prg \"(.*?)\"$")
@@ -1346,5 +1367,39 @@ public class Glue {
     @Given("^video display add joystick to port 1$")
     public void addJoystickPort1() {
         enableJoystick1 = true;
+    }
+
+    Socket remoteMonitor;
+    @Given("^connect to remote monitor at TCP \"([^\"]*)\" port \"([^\"]*)\"$")
+    public void connect_to_remote_monitor_at_TCP_port(String host, Integer port) throws Throwable {
+        remoteMonitor = new Socket(host, port);
+    }
+
+    @When("^send remote monitor command \"([^\"]*)\"$")
+    public void send_remote_monitor_command(String command) throws Throwable {
+        // This space padding is needed because of a bug in Vice remote monitor
+        String realCommand = command + "\n" + "                                                                                             ";
+        OutputStream os = remoteMonitor.getOutputStream();
+        os.write(realCommand.getBytes());
+
+        String reply = "";
+        InputStream is = remoteMonitor.getInputStream();
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader reader = new BufferedReader(isr);
+
+        while (is.available() == 0) {
+            Thread.sleep(10);
+        }
+
+        while (is.available() > 0) {
+            int toRead = is.available();
+            byte buffer[] = new byte[toRead];
+            is.read(buffer);
+
+            String fragment = new String(buffer);
+            reply += fragment;
+        }
+
+        scenario.write("Got monitor reply: " + reply);
     }
 }
