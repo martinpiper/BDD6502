@@ -85,6 +85,15 @@ public class Glue {
 
     @After
     public void AfterHook(Scenario scenario) {
+        try {
+            if (remoteMonitor != null) {
+                sendMonitorCommand("quit");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public int valueToIntFast(String valueIn) throws ScriptException {
@@ -1320,6 +1329,16 @@ public class Glue {
     public void expectImageToBeIdenticalTo(String expectedFilename, String testFilename) throws Throwable {
         BufferedImage expected = ImageIO.read(new File(expectedFilename));
         BufferedImage test = ImageIO.read(new File(testFilename));
+        // Vice "scrsh" command seems to lock the output file for a while?
+        // So we will retry once
+        if (expected == null) {
+            Thread.sleep(500);
+            expected = ImageIO.read(new File(expectedFilename));
+        }
+        if (test == null) {
+            Thread.sleep(500);
+            test = ImageIO.read(new File(testFilename));
+        }
 
         assertThat("Images differ",bufferedImagesEqual(expected,test),is(true));
     }
@@ -1375,21 +1394,28 @@ public class Glue {
         remoteMonitor = new Socket(host, port);
     }
 
-    @When("^send remote monitor command \"([^\"]*)\"$")
-    public void send_remote_monitor_command(String command) throws Throwable {
-        // This space padding is needed because of a bug in Vice remote monitor
-        String realCommand = command + "\n" + "                                                                                             ";
+    public void sendMonitorCommand(String command) throws IOException, InterruptedException {
+        command = command.replace("%WCD%",System.getProperty("user.dir").replace("/", "\\"));
+        // Make sure the input is empty first
+        getMonitorReply();
+        // This space padding is needed because of a bug in Vice remote monitor, the EOL at the end is important for commands with different length to be parsed correctly
+        String realCommand = command + "                                                                                                                                                                      \n";
         OutputStream os = remoteMonitor.getOutputStream();
         os.write(realCommand.getBytes());
+    }
 
-        String reply = "";
+    public void waitMonitorReply() throws IOException, InterruptedException {
+        Thread.sleep(100);  // Urghh, why do we have to? :D
         InputStream is = remoteMonitor.getInputStream();
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader reader = new BufferedReader(isr);
 
         while (is.available() == 0) {
             Thread.sleep(10);
         }
+    }
+
+    public String getMonitorReply() throws IOException, InterruptedException {
+        String reply = "";
+        InputStream is = remoteMonitor.getInputStream();
 
         while (is.available() > 0) {
             int toRead = is.available();
@@ -1400,6 +1426,56 @@ public class Glue {
             reply += fragment;
         }
 
-        scenario.write("Got monitor reply: " + reply);
+        if (!reply.isEmpty()) {
+            scenario.write("Got monitor reply: " + reply);
+        }
+
+        return reply;
+    }
+
+    @When("^send remote monitor command \"([^\"]*)\"$")
+    public void send_remote_monitor_command(String command) throws Throwable {
+        sendMonitorCommand(command);
+        waitMonitorReply();
+        getMonitorReply();
+    }
+
+    @When("^send remote monitor command without parsing \"(.*)\"$")
+    public void send_remote_monitor_command_without_parsing(String command) throws Throwable {
+        sendMonitorCommand(command);
+        waitMonitorReply();
+        getMonitorReply();
+    }
+
+    @When("^send remote monitor command \"([^\"]*)\" \"([^\"]*)\"$")
+    public void send_remote_monitor_command2(String command, String param) throws Throwable {
+        command += " $";
+        command += Integer.toHexString(valueToInt(param));
+        sendMonitorCommand(command);
+        waitMonitorReply();
+        getMonitorReply();
+    }
+
+    @When("^remote monitor wait for hit$")
+    public void remote_monitor_wait_for_hit() throws Throwable {
+        sendMonitorCommand("x");
+        waitMonitorReply();
+        getMonitorReply();
+        // Then send a command to get a reply and sync the remote monitor
+        sendMonitorCommand("r");
+        waitMonitorReply();
+        getMonitorReply();
+    }
+
+    @When("^remote monitor continue without waiting$")
+    public void remote_monitor_continue_without_waiting() throws Throwable {
+        sendMonitorCommand("x");
+        getMonitorReply();
+    }
+
+    @When("^disconnect remote monitor$")
+    public void disconnect_remote_monitor() throws Throwable {
+        remoteMonitor.close();
+        remoteMonitor = null;
     }
 }

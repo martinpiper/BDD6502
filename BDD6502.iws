@@ -4,6 +4,8 @@
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -551,46 +553,46 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="848" y="272" key="#xdebugger.XInspectDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589006205721" />
-    <state width="1877" height="285" key="GridCell.Tab.0.bottom" timestamp="1590507630007">
+    <state width="1877" height="181" key="GridCell.Tab.0.bottom" timestamp="1590594145981">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="166" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589365865708" />
-    <state width="1877" height="285" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590507630007" />
-    <state width="1877" height="285" key="GridCell.Tab.0.center" timestamp="1590507630007">
+    <state width="1877" height="181" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590594145981" />
+    <state width="1877" height="181" key="GridCell.Tab.0.center" timestamp="1590594145980">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="166" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589365865708" />
-    <state width="1877" height="285" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590507630007" />
-    <state width="1877" height="285" key="GridCell.Tab.0.left" timestamp="1590507630007">
+    <state width="1877" height="181" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590594145980" />
+    <state width="1877" height="181" key="GridCell.Tab.0.left" timestamp="1590594145980">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="166" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589365865708" />
-    <state width="1877" height="285" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590507630007" />
-    <state width="1877" height="285" key="GridCell.Tab.0.right" timestamp="1590507630007">
+    <state width="1877" height="181" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590594145980" />
+    <state width="1877" height="181" key="GridCell.Tab.0.right" timestamp="1590594145981">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="166" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589365865708" />
-    <state width="1877" height="285" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590507630007" />
-    <state width="1877" height="285" key="GridCell.Tab.1.bottom" timestamp="1590507630007">
+    <state width="1877" height="181" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590594145981" />
+    <state width="1877" height="285" key="GridCell.Tab.1.bottom" timestamp="1590594001850">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="166" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589365865709" />
-    <state width="1877" height="285" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590507630007" />
-    <state width="1877" height="285" key="GridCell.Tab.1.center" timestamp="1590507630007">
+    <state width="1877" height="285" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590594001850" />
+    <state width="1877" height="285" key="GridCell.Tab.1.center" timestamp="1590594001849">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="166" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589365865709" />
-    <state width="1877" height="285" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590507630007" />
-    <state width="1877" height="285" key="GridCell.Tab.1.left" timestamp="1590507630007">
+    <state width="1877" height="285" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590594001849" />
+    <state width="1877" height="285" key="GridCell.Tab.1.left" timestamp="1590594001849">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="166" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589365865709" />
-    <state width="1877" height="285" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590507630007" />
-    <state width="1877" height="285" key="GridCell.Tab.1.right" timestamp="1590507630007">
+    <state width="1877" height="285" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590594001849" />
+    <state width="1877" height="285" key="GridCell.Tab.1.right" timestamp="1590594001850">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="166" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589365865709" />
-    <state width="1877" height="285" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590507630007" />
+    <state width="1877" height="285" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590594001850" />
     <state x="540" y="262" key="IDE.errors.dialog" timestamp="1587399023292">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -603,10 +605,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="968" height="528" key="XDebugger.FullValuePopup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590507575797" />
-    <state x="1255" y="89" key="extract.method.dialog" timestamp="1590502492761">
+    <state x="1255" y="89" key="extract.method.dialog" timestamp="1590589792884">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="1255" y="89" key="extract.method.dialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590502492761" />
+    <state x="1255" y="89" key="extract.method.dialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590589792884" />
     <state x="541" y="275" width="1239" height="608" key="find.popup" timestamp="1590502175549">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -650,7 +652,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>717</line>
+          <line>726</line>
           <option name="timeStamp" value="161" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -671,12 +673,17 @@
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
           <line>1393</line>
-          <option name="timeStamp" value="280" />
+          <option name="timeStamp" value="289" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>1402</line>
-          <option name="timeStamp" value="281" />
+          <line>1464</line>
+          <option name="timeStamp" value="291" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
+          <line>1460</line>
+          <option name="timeStamp" value="292" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
