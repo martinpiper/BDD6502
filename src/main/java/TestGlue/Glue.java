@@ -1467,6 +1467,13 @@ public class Glue {
         getMonitorReply();
     }
 
+    @When("^remote monitor wait for (.*) hits$")
+    public void remote_monitor_wait_for_hit(Integer numHits) throws Throwable {
+        while (numHits-- > 0) {
+            remote_monitor_wait_for_hit();
+        }
+    }
+
     @When("^remote monitor continue without waiting$")
     public void remote_monitor_continue_without_waiting() throws Throwable {
         sendMonitorCommand("x");
