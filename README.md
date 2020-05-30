@@ -19,7 +19,8 @@ The step "* I fill memory with <value>" will fill memory with a different value.
 
 Setup:
 
-Build the jar or download it from: https://github.com/martinpiper/BDD6502/releases
+Build the jar, use the built version in the "target" directory, or download it from: https://github.com/martinpiper/BDD6502/releases
+
 If you are running the examples, you will need various files from inside this repository.
 	Get the repository https://github.com/martinpiper/C64Public and make sure the contents are place in a "C64" directory at the same level as this BDD6502 directory.
 	Note: Many of the examples expect to find ../C64/ and use ../C64/ACME.exe to compile example assembly code, as well as reference ../C64/stdlib/ for library functions, macros, and defines
@@ -28,15 +29,25 @@ The video hardware example also uses files from: https://github.com/martinpiper/
 	Get the repository and make sure the directory "BombJack" is at the same level as this BDD6502 directory.
 	
 
-To run the test code execute the command line:
+* To run the test code execute the command line:
+
+(If your java complains about --add-opens then use the second command line)
 
 	java --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.text=ALL-UNNAMED --add-opens java.desktop/java.awt.font=ALL-UNNAMED -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --monochrome --plugin pretty --plugin html:target/cucumber --plugin json:target/report1.json --glue TestGlue features
 
-If the Java property "bdd6502.trace" is set to be "true" then the simulator state is dumped for each cycle.
+	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --monochrome --plugin pretty --plugin html:target/cucumber --plugin json:target/report1.json --glue TestGlue features
+
+
+* If the Java property "bdd6502.trace" is set to be "true" then the simulator state is dumped for each cycle.
 This can be set on the command java line before the -jar option: jar -Dbdd6502.trace=true
 Or when using an IDE: -Dbdd6502.trace=true
 
 
-To use the feature editor and debugger:
+
+* To use the feature editor and debugger, this will display a URL to open in your browser: http://127.0.0.1:8001/ace-builds-master/demo/autocompletion.html
+
+(If your java complains about --add-opens then use the second command line)
 
 	java -Dcom.replicanet.cukesplus.server.featureEditor -Dcom.replicanet.ACEServer.debug.requests= --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.text=ALL-UNNAMED --add-opens java.desktop/java.awt.font=ALL-UNNAMED -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --monochrome --plugin pretty --plugin html:target/cucumber --plugin json:target/report1.json --glue TestGlue features
+
+	java -Dcom.replicanet.cukesplus.server.featureEditor -Dcom.replicanet.ACEServer.debug.requests= -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --monochrome --plugin pretty --plugin html:target/cucumber --plugin json:target/report1.json --glue TestGlue features
