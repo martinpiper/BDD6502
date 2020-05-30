@@ -1,23 +1,72 @@
 BDD6502
 =======
 
-A project to allow Behaviour Driven Development (BDD) to be used with 6502 code.
+A project to allow Behaviour Driven Development (BDD) testing to be used with 6502 code. As code gets more complex, reliable easy to execute comprehensive tests helps reduce the amount of time spent debugging and checking existing code. This helps improve the efficiency of future code change because you're worrying less about checking for changes breaking existing code. 
 
-The idea is to allow 6502 code to be tested with human readable automated tests.
+This framework allows 6502 code to be tested with human readable automated tests.
 The tests are located in feature files that describe expected software behaviour.
 The feature files are parsed and executed with Cucumber-JVM. See http://cukes.info/
 This uses a 6502 simulator (Symon from https://github.com/sethm/symon) in the JVM to allow very low level control over the virtual machine test environment.
 It has some minor tweaks to allow greater access to the simulator.
 
+Test cases can also enable unitialised memory access protection, this is a very powerful feature that allows unintended memory access to be detected while running tests. Combined with the full trace output this can show exactly which instruction is at fault, which reduces debugging time.
+
 Usually with BDD each test scenario in a feature file will be entirely separate and not maintain state from previous scenarios.
-In other words a scenario should contain all the state needed for a test and test code usually enforces this rule.
-However in this implementation this is only optional behaviour, by default the 6502 simulator state will be kept across scenario and feature file boundaries.
-This means scenarios and features can rely on the 6502 simulator state from scenarios and states in the current execution run.
+In other words a scenario should contain all the state needed for a test and test code usually enforces this rule. However in this implementation this is only optional behaviour, by default the 6502 simulator state will be kept across scenario and feature file boundaries. This means scenarios and features can rely on the 6502 simulator state from scenarios and states in the current execution run.
 The scenario step "* I have a simple 6502 system" will initialise the 6502 simulator state and fill memory to 0.
 The step "* I fill memory with <value>" will fill memory with a different value.
 
 
-Setup:
+Example test case
+-----------------
+
+This example [test case](https://github.com/martinpiper/BDD6502/blob/master/features/assemble.feature) describes a short piece of code, how to assemble it, and what values are expected in memory before and after executing the procedure under test.  
+```
+   Given I have a simple 6502 system
+    And I create file "test.a" with
+      """
+      !sal
+      *=$400
+      start
+        lda #0
+        sta $400
+        ldx #$20
+      .l1
+        inc $400
+        dex
+        bne .l1
+        rts
+      """
+    And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
+    And I load prg "test.prg"
+    And I load labels "test.lbl"
+    Then I expect to see $400 equal 0xa9
+    Then I expect to see $400 contain $81
+    Then I expect to see $400 exclude $40
+    # The above code is actually 100 instructions long when executing
+    When I execute the procedure at start until return
+    Then I assert the unitialised memory read flag is clear
+    # Note how the label "start" is used below and correctly resolves to be $400 when checking memory
+    Then I expect to see start equal 32
+    And I expect to see $402 equal $8d
+    And I expect to see $400 equal 32
+```
+
+Code can of course be included from existing source code and tested, as this example from a [game project demonstrates](https://github.com/martinpiper/C64Public/blob/master/Citadel2/features/Score.feature) where its score routine is tested.
+
+Syntax also exists to interface with the remote monitor in [Vice emulator](https://vice-emu.sourceforge.io/).
+This allows completed game code to be accurately emulated and verified, for example by comparing screenshots of game code as it [executes frame by frame](https://github.com/martinpiper/C64Public/blob/master/Scroller/features/VerifyByScreenshots.feature).
+
+Syntax for test cases
+---------------------
+
+Syntax included in [source control](https://github.com/martinpiper/BDD6502/blob/master/target/syntax.html) along with the [built jars](https://github.com/martinpiper/BDD6502/tree/master/target).
+
+Syntax can also be extended by using a [java maven build](https://github.com/martinpiper/C64Public/blob/master/Citadel2/pom.xml) to add [extension syntax](https://github.com/martinpiper/C64Public/blob/master/Citadel2/src/test/java/MazeGlue6502/Memory.java#L54-L59)  
+
+
+Setup
+-----
 
 Build the jar, use the built version in the "target" directory, or download it from: https://github.com/martinpiper/BDD6502/releases
 
@@ -51,3 +100,4 @@ Or when using an IDE: -Dbdd6502.trace=true
 	java -Dcom.replicanet.cukesplus.server.featureEditor -Dcom.replicanet.ACEServer.debug.requests= --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.text=ALL-UNNAMED --add-opens java.desktop/java.awt.font=ALL-UNNAMED -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --monochrome --plugin pretty --plugin html:target/cucumber --plugin json:target/report1.json --glue TestGlue features
 
 	java -Dcom.replicanet.cukesplus.server.featureEditor -Dcom.replicanet.ACEServer.debug.requests= -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --monochrome --plugin pretty --plugin html:target/cucumber --plugin json:target/report1.json --glue TestGlue features
+
