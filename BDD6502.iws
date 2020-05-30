@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-    </list>
+    <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="" />
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -438,21 +435,21 @@
       <item itemvalue="Application.TestRunner --exportmod (2)" />
       <item itemvalue="Application.TestRunner --exportmod (3)" />
       <item itemvalue="Application.TestRunner --exportmod" />
+      <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature " />
       <item itemvalue="Application.TestRunner UnitialisedMemory.feature" />
       <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
       <item itemvalue="Application.TestRunner VideoHardware" />
-      <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner no parameters" />
       <item itemvalue="Cucumber Java.All features" />
       <item itemvalue="Cucumber Java.Compare Test" />
-      <item itemvalue="Cucumber Java.Simple ALL" />
-      <item itemvalue="Cucumber Java.Trace Test" />
       <item itemvalue="Cucumber Java.Scenario: Simple binary test code" />
       <item itemvalue="Cucumber Java.Scenario: Simple memory test code" />
-      <item itemvalue="JUnit.JUnit all" />
+      <item itemvalue="Cucumber Java.Simple ALL" />
+      <item itemvalue="Cucumber Java.Trace Test" />
       <item itemvalue="JUnit.GlueTest.testValueToInt" />
+      <item itemvalue="JUnit.JUnit all" />
       <item itemvalue="Maven.BDD6502 [install] (1)" />
       <item itemvalue="Maven.BDD6502 [install]" />
     </list>
