@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="" />
+    <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java" afterDir="false" />
+    </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +75,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner Scroller VerifyByScreenshots.feature">
+  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature ">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -517,11 +521,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="790" y="374" key="#com.intellij.debugger.actions.ViewTextAction/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589184724216" />
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1590678207038">
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591363727666">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1729" y="-3" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589365646973" />
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590678207038" />
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1591363727666" />
     <state x="689" y="321" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1587393658085">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -552,26 +556,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="587" y="88" key="CommitChangelistDialog2/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590818405880" />
-    <state width="1877" height="181" key="GridCell.Tab.0.bottom" timestamp="1590820053716">
+    <state width="1877" height="181" key="GridCell.Tab.0.bottom" timestamp="1591363750939">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="166" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589365865708" />
-    <state width="1877" height="181" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590820053716" />
-    <state width="1877" height="181" key="GridCell.Tab.0.center" timestamp="1590820053715">
+    <state width="1877" height="181" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1591363750939" />
+    <state width="1877" height="181" key="GridCell.Tab.0.center" timestamp="1591363750938">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="166" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589365865708" />
-    <state width="1877" height="181" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590820053715" />
-    <state width="1877" height="181" key="GridCell.Tab.0.left" timestamp="1590820053715">
+    <state width="1877" height="181" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1591363750938" />
+    <state width="1877" height="181" key="GridCell.Tab.0.left" timestamp="1591363750938">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="166" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589365865708" />
-    <state width="1877" height="181" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590820053715" />
-    <state width="1877" height="181" key="GridCell.Tab.0.right" timestamp="1590820053715">
+    <state width="1877" height="181" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1591363750938" />
+    <state width="1877" height="181" key="GridCell.Tab.0.right" timestamp="1591363750939">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1237" height="166" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1589365865708" />
-    <state width="1877" height="181" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1590820053715" />
+    <state width="1877" height="181" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1591363750939" />
     <state width="1877" height="285" key="GridCell.Tab.1.bottom" timestamp="1590594001850">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -621,10 +625,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="616" y="240" key="run.anything.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589203070720" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1589379536582">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="-1505" y="144" width="672" height="452" key="search.everywhere.popup" timestamp="1591281430270">
+      <screen x="-1920" y="-6" width="1280" height="693" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1589379536582" />
+    <state x="-1505" y="144" width="672" height="452" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@-1920.-6.1280.693" timestamp="1591281430270" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1591280429840" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

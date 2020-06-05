@@ -1,5 +1,12 @@
 ; TODO items
 
+* Does audio frequency need a latch on the high byte to make it read a complete 16 bit value?
+	Sometimes yes, if the music updates the frequency a lot, but during tests it isn't that noticable if the update is done quickly
+		In usual cases the update would be done quickly enough not to notice
+		Also the latch would mean extra complexity in hardware, which is perhaps not needed
+
+
+
 * Measure average instructions between label pairs and output on demand or on schedule
 
 

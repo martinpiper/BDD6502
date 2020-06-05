@@ -186,14 +186,16 @@ public class AudioExpansion extends MemoryBus implements Runnable {
                     if (voiceInternalChooseLoop[voice]) {
                         if (((voiceInternalCounter[voice] >> counterShift) & 0xffff) >= voiceLoopLength[voice]) {
                             // HW: Note selective reset of only some adders when length is reached
-                            voiceInternalCounter[voice] = voiceInternalCounter[voice] & counterShiftMask;
+//                            voiceInternalCounter[voice] = voiceInternalCounter[voice] & counterShiftMask;
+                            voiceInternalCounter[voice] = 0;
                         }
                     } else {
                         if (((voiceInternalCounter[voice] >> counterShift) & 0xffff) >= voiceLength[voice]) {
                             if ((voicesLoopMask & (1 << voice)) > 0) {
                                 voiceInternalChooseLoop[voice] = true;
                                 // HW: Note selective reset of only some adders when length is reached
-                                voiceInternalCounter[voice] = voiceInternalCounter[voice] & counterShiftMask;
+//                                voiceInternalCounter[voice] = voiceInternalCounter[voice] & counterShiftMask;
+                                voiceInternalCounter[voice] = 0;
                             } else {
                                 // HW: Reset the latch for this specific voice
                                 voicesActiveMask = (byte) (voicesActiveMask & ~(1 << voice));
