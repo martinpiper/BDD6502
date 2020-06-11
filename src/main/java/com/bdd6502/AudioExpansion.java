@@ -2,6 +2,8 @@ package com.bdd6502;
 
 import javax.sound.sampled.*;
 
+import java.io.*;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -10,8 +12,9 @@ public class AudioExpansion extends MemoryBus implements Runnable {
     int addressRegisters = 0x8000, addressExRegisters = 0x01;
     int addressExSampleBank = 0x04;
 
-    // 2MHz /8 /8 gives ample time to latch, add, select, apply volume for 8 voices, accumulate and output in a cyclic pattern
-    public static final int sampleRate = 31250;
+    // 2MHz /8 /8 gives 31250 Hz and ample time to latch, add, select, apply volume for 8 voices, accumulate and output in a cyclic pattern
+    // The real hardware LOADOUTPUT period gives 25000 Hz
+    public static final int sampleRate = 25000;
     static final int numVoices = 4;
     public static final int voiceSize = 11;
     static final int samplesToMix = 8;
@@ -42,6 +45,8 @@ public class AudioExpansion extends MemoryBus implements Runnable {
     int voiceLoopAddress[] = new int[numVoices];
     int voiceLoopLength[] = new int[numVoices];
 
+    OutputStream outSamples;
+
     public static int calculateRateFromFrequency(int frequency) {
         return (AudioExpansion.counterShiftValue * frequency) / AudioExpansion.sampleRate;
     }
@@ -58,6 +63,11 @@ public class AudioExpansion extends MemoryBus implements Runnable {
     }
 
     public void start() {
+        try {
+            outSamples = new BufferedOutputStream(new FileOutputStream("target/debugchannel.pcmu8"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         // https://docs.oracle.com/javase/tutorial/sound/playing.html
         AudioFormat format = new AudioFormat(sampleRate, 8, 1, false, false);
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
@@ -218,6 +228,10 @@ public class AudioExpansion extends MemoryBus implements Runnable {
             sampleBuffer[i] = (byte)(accumulatedSample & 0xff);
         }
         line.write(sampleBuffer,0,sampleBuffer.length);
+        try {
+            outSamples.write(sampleBuffer,0,sampleBuffer.length);
+        } catch (IOException e) {
+        }
         return true;
     }
 

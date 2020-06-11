@@ -390,21 +390,27 @@ PlaySample
 	+MWordValueTo_XY $8000
 	jsr Bus24Bit_SetAddressBus
 
+	; Volume
 	lda #$ff
 	sta CIA2PortBRS232
+	; Start
 	lda #$00
 	sta CIA2PortBRS232
 	sta CIA2PortBRS232
+	; Length
 	lda #$ff
 	sta CIA2PortBRS232
 	sta CIA2PortBRS232
-	lda #$4a
-	sta CIA2PortBRS232
-	lda #$0b
+	; Rate ($1000) = counterShiftValue which should be exactly sampleRate
+	lda #$00
 	sta CIA2PortBRS232
 	lda #$10
 	sta CIA2PortBRS232
+	; Loop start
+	lda #$10
 	sta CIA2PortBRS232
+	sta CIA2PortBRS232
+	; Loop length
 	lda #$1f
 	sta CIA2PortBRS232
 	sta CIA2PortBRS232
