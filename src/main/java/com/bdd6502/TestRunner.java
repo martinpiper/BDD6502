@@ -65,6 +65,7 @@ public class TestRunner {
     public static void main(String args[]) throws Exception {
         if (args.length >= 1 && args[0].compareToIgnoreCase("--execVideoTest") == 0) {
             DisplayBombJack displayBombJack = new DisplayBombJack();
+            displayBombJack.enableDebugData();
             displayBombJack.addLayer(new Mode7(0xa000, 0x08));
             displayBombJack.addLayer(new Tiles(0x9e00, 0x80, 0x40));
             displayBombJack.addLayer(new Chars(0x9000, 0x20));
@@ -72,7 +73,8 @@ public class TestRunner {
             displayBombJack.InitWindow();
 
 //            displayBombJack.writeData(0x9e00, 0x01, 0xf0);
-            displayBombJack.writeData(0x9e00, 0x01, 0x30);
+            // Just display, no tiles
+            displayBombJack.writeData(0x9e00, 0x01, 0x20);
 
             // Background colour palette index
             displayBombJack.writeData(0x9e07, 0x01, 0x13);
@@ -145,6 +147,8 @@ public class TestRunner {
 
             // Background colour
             displayBombJack.writeData(0xa014, 0x01, 0x14);
+            // Enable flags
+            displayBombJack.writeData(0xa015, 0x01, 0x07);
 
             // Sprite data
             displayBombJack.writeDataFromFile(0x2000, 0x10, "C:\\work\\BombJack\\14_j07b.bin");
@@ -174,6 +178,188 @@ public class TestRunner {
             int scrollXTimeout = 50, scrollYTimeout = 150;
             double mode7Rot = 0.0f;
             int frame = 0;
+
+            while (displayBombJack.isVisible() && frame < 100) {
+                displayBombJack.calculatePixelsUntilVSync();
+
+                displayBombJack.writeData(0xa000, 0x01, 0);
+                displayBombJack.writeData(0xa001, 0x01, 1);
+                displayBombJack.writeData(0xa002, 0x01, 0);
+
+                displayBombJack.writeData(0xa003, 0x01, 0);
+                displayBombJack.writeData(0xa004, 0x01, 0);
+                displayBombJack.writeData(0xa005, 0x01, 0);
+
+                displayBombJack.writeData(0xa006, 0x01, 0);
+                displayBombJack.writeData(0xa007, 0x01, 1);
+                displayBombJack.writeData(0xa008, 0x01, 0);
+
+                displayBombJack.writeData(0xa009, 0x01, 0);
+                displayBombJack.writeData(0xa00a, 0x01, 0);
+                displayBombJack.writeData(0xa00b, 0x01, 0);
+
+                // Test mode7 internal register reset logic
+
+                // Test complex perspective mode7 register updates
+                for (int ypos = 100; ypos < 240; ypos++) {
+                    double scaleValue = (256.0f * 400.0f) / ypos;
+                    displayBombJack.calculatePixelsUntil(0x1b0, ypos);
+                    displayBombJack.writeData(0xa014, 0x01, ypos);
+                    // Reset internal counters
+                    displayBombJack.writeData(0xa015, 0x01, 0);
+
+
+                    double dx = Math.sin((mode7Rot + (Math.PI / 2.0f))) * scaleValue;
+                    int intValue = (int) dx;
+                    displayBombJack.writeData(0xa000, 0x01, intValue);
+                    displayBombJack.writeData(0xa001, 0x01, intValue >> 8);
+                    displayBombJack.writeData(0xa002, 0x01, intValue >> 16);
+
+                    double dxy = Math.sin(mode7Rot) * scaleValue;
+                    intValue = (int) dxy;
+                    displayBombJack.writeData(0xa003, 0x01, intValue);
+                    displayBombJack.writeData(0xa004, 0x01, intValue >> 8);
+                    displayBombJack.writeData(0xa005, 0x01, intValue >> 16);
+
+                    double dy = -Math.sin(mode7Rot + (Math.PI / 2.0f) + (Math.PI / 2.0f) + (Math.PI / 2.0f)) * scaleValue;
+                    intValue = (int) dy;
+                    displayBombJack.writeData(0xa006, 0x01, intValue);
+                    displayBombJack.writeData(0xa007, 0x01, intValue >> 8);
+                    displayBombJack.writeData(0xa008, 0x01, intValue >> 16);
+                    double dyx = Math.sin(mode7Rot + (Math.PI / 2.0f) + (Math.PI / 2.0f)) * scaleValue;
+                    intValue = (int) dyx;
+                    displayBombJack.writeData(0xa009, 0x01, intValue);
+                    displayBombJack.writeData(0xa00a, 0x01, intValue >> 8);
+                    displayBombJack.writeData(0xa00b, 0x01, intValue >> 16);
+
+                    // xpos/ypos org calculation, note how the coordinates project back along the deltas calculated above
+                    // xorg neg dx + yorg neg dxy
+                    intValue = (int) (((double) frame * 256.0f) + (192.5f * -dx) + (64.5f * -dxy));
+                    displayBombJack.writeData(0xa00c, 0x01, intValue);
+                    displayBombJack.writeData(0xa00d, 0x01, intValue >> 8);
+                    displayBombJack.writeData(0xa00e, 0x01, intValue >> 16);
+                    // xorg neg dyx + yorg neg dy
+                    intValue = (int) ((192.5f * -dyx) + (64.5f * -dy));
+                    displayBombJack.writeData(0xa00f, 0x01, intValue);
+                    displayBombJack.writeData(0xa010, 0x01, intValue >> 8);
+                    displayBombJack.writeData(0xa011, 0x01, intValue >> 16);
+
+                    // Simulate updating the registers later on
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa015, 0x01, 0x07);
+
+
+
+
+                    // Vertical splits
+                    scaleValue = (256.0f * 200.0f) / ypos;
+                    displayBombJack.calculatePixelsUntil(0x40, ypos);
+                    // Reset internal counters
+                    displayBombJack.writeData(0xa015, 0x01, 0);
+
+
+                    dx = Math.sin((-mode7Rot + (Math.PI / 2.0f))) * scaleValue;
+                    intValue = (int) dx;
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa000, 0x01, intValue);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa001, 0x01, intValue >> 8);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa002, 0x01, intValue >> 16);
+
+                    dxy = Math.sin(-mode7Rot) * scaleValue;
+                    intValue = (int) dxy;
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa003, 0x01, intValue);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa004, 0x01, intValue >> 8);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa005, 0x01, intValue >> 16);
+
+                    dy = -Math.sin(-mode7Rot + (Math.PI / 2.0f) + (Math.PI / 2.0f) + (Math.PI / 2.0f)) * scaleValue;
+                    intValue = (int) dy;
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa006, 0x01, intValue);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa007, 0x01, intValue >> 8);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa008, 0x01, intValue >> 16);
+                    dyx = Math.sin(-mode7Rot + (Math.PI / 2.0f) + (Math.PI / 2.0f)) * scaleValue;
+                    intValue = (int) dyx;
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa009, 0x01, intValue);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa00a, 0x01, intValue >> 8);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa00b, 0x01, intValue >> 16);
+
+                    // xpos/ypos org calculation, note how the coordinates project back along the deltas calculated above
+                    // xorg neg dx + yorg neg dxy
+                    intValue = (int) (((double) frame * 256.0f) + (292.5f * -dx) + (164.5f * -dxy));
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa00c, 0x01, intValue);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa00d, 0x01, intValue >> 8);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa00e, 0x01, intValue >> 16);
+                    // xorg neg dyx + yorg neg dy
+                    intValue = (int) ((292.5f * -dyx) + (164.5f * -dy));
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa00f, 0x01, intValue);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa010, 0x01, intValue >> 8);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa011, 0x01, intValue >> 16);
+
+                    // Simulate updating the registers later on
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa015, 0x01, 0x07);
+
+
+
+                    displayBombJack.calculatePixelsUntil(0x80, ypos);
+                    // Reset some internal counters for yx and x
+                    displayBombJack.writeData(0xa015, 0x01, 0x05);
+                    dx = -dx;
+                    intValue = (int) dx;
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa000, 0x01, intValue);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa001, 0x01, intValue >> 8);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa002, 0x01, intValue >> 16);
+
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa015, 0x01, 0x07);
+
+                    displayBombJack.calculatePixelsUntil(0xc0, ypos);
+                    // Reset some internal counters for x and xy
+                    displayBombJack.writeData(0xa015, 0x01, 0x03);
+
+                    dxy = -dxy;
+                    intValue = (int) dxy;
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa003, 0x01, intValue);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa004, 0x01, intValue >> 8);
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa005, 0x01, intValue >> 16);
+
+                    displayBombJack.calculatePixel();
+                    displayBombJack.writeData(0xa015, 0x01, 0x07);
+                }
+
+                mode7Rot += 0.01f;
+
+                displayBombJack.RepaintWindow();
+
+                frame++;
+                Thread.sleep(10);
+            }
+
+            // Now enable tiles
+            displayBombJack.writeData(0x9e00, 0x01, 0x30);
+
             while (displayBombJack.isVisible()) {
 
                 displayBombJack.calculatePixelsUntilVSync();

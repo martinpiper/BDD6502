@@ -17,6 +17,10 @@ public class Mode7 extends DisplayLayer {
     boolean previousHSync = false, previousVSync = false;
     int x = 0, y = 0;
     int xy = 0, yx = 0;
+    // New default state
+    boolean flagXCounter = false;
+    boolean flagYCounter = false;
+    boolean flagDisplayEnable = false;
 
     public Mode7() {
     }
@@ -94,6 +98,32 @@ public class Mode7 extends DisplayLayer {
             backgroundColour = data & 0xff;
         }
 
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x15) {
+            flagXCounter = false;
+            flagYCounter = false;
+            flagDisplayEnable = false;
+            if ((data & 0x01) > 0) {
+                flagDisplayEnable = true;
+            }
+            if ((data & 0x02) > 0) {
+                flagXCounter = true;
+            }
+            if ((data & 0x04) > 0) {
+                flagYCounter = true;
+            }
+
+            // Immediate effect
+            if (flagXCounter == false) {
+                yx = 0;
+                x = 0;
+            }
+            if (flagYCounter == false) {
+                y = 0;
+                xy = 0;
+            }
+
+        }
+
         // This selection logic is because the actual address line is used to select the memory, not a decoder
         if (MemoryBus.addressActive(addressEx, addressExMap) && MemoryBus.addressActive(address, addressMap)) {
             busContention = display.getBusContentionPixels();
@@ -111,18 +141,21 @@ public class Mode7 extends DisplayLayer {
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
+        boolean intHSync = _hSync && flagXCounter;
+        boolean intVSync = _vSync && flagYCounter;
+
         x += dx;
         yx += dyx;
 
-        if (!previousHSync && _hSync) {
+        if (!previousHSync && intHSync) {
             xy += dxy;
             y += dy;
         }
-        if (_hSync == false) {
+        if (intHSync == false) {
             yx = 0;
             x = 0;
         }
-        if (_vSync == false) {
+        if (intVSync == false) {
             y = 0;
             xy = 0;
         }
@@ -130,8 +163,8 @@ public class Mode7 extends DisplayLayer {
         int xo = x + xy + xorg;
         int yo = y + yx + yorg;
 
-        previousHSync = _hSync;
-        previousVSync = _vSync;
+        previousHSync = intHSync;
+        previousVSync = intVSync;
 
         displayH = xo >> 8;
         displayV = yo >> 8;
@@ -153,7 +186,7 @@ public class Mode7 extends DisplayLayer {
         }
         theChar &= 0x3f;
         int finalPixel = tiles[(theChar << 8) + (displayV * 0x10) + displayH];
-        if (finalPixel == 0) {
+        if (finalPixel == 0 || flagDisplayEnable == false) {
             finalPixel = backgroundColour;
         }
         return getByteOrContention(finalPixel);
