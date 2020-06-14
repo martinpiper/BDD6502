@@ -18,9 +18,11 @@ public class Mode7 extends DisplayLayer {
     int x = 0, y = 0;
     int xy = 0, yx = 0;
     // New default state
-    boolean flagXCounter = false;
-    boolean flagYCounter = false;
     boolean flagDisplayEnable = false;
+    boolean flagRegisterX = false;
+    boolean flagRegisterXY = false;
+    boolean flagRegisterY = false;
+    boolean flagRegisterYX = false;
 
     public Mode7() {
     }
@@ -99,29 +101,27 @@ public class Mode7 extends DisplayLayer {
         }
 
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x15) {
-            flagXCounter = false;
-            flagYCounter = false;
+            flagRegisterX = false;
+            flagRegisterXY = false;
+            flagRegisterY = false;
+            flagRegisterYX = false;
             flagDisplayEnable = false;
             if ((data & 0x01) > 0) {
                 flagDisplayEnable = true;
             }
             if ((data & 0x02) > 0) {
-                flagXCounter = true;
+                flagRegisterX = true;
             }
             if ((data & 0x04) > 0) {
-                flagYCounter = true;
+                flagRegisterXY = true;
             }
-
-            // Immediate effect
-            if (flagXCounter == false) {
-                yx = 0;
-                x = 0;
+            if ((data & 0x08) > 0) {
+                flagRegisterY = true;
             }
-            if (flagYCounter == false) {
-                y = 0;
-                xy = 0;
+            if ((data & 0x10) > 0) {
+                flagRegisterYX = true;
             }
-
+            handleRegisterFlags();
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
@@ -141,30 +141,29 @@ public class Mode7 extends DisplayLayer {
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
-        boolean intHSync = _hSync && flagXCounter;
-        boolean intVSync = _vSync && flagYCounter;
-
         x += dx;
         yx += dyx;
 
-        if (!previousHSync && intHSync) {
+        if (!previousHSync && _hSync) {
             xy += dxy;
             y += dy;
         }
-        if (intHSync == false) {
+        if (_hSync == false) {
             yx = 0;
             x = 0;
         }
-        if (intVSync == false) {
+        if (_vSync == false) {
             y = 0;
             xy = 0;
         }
 
+        handleRegisterFlags();
+
         int xo = x + xy + xorg;
         int yo = y + yx + yorg;
 
-        previousHSync = intHSync;
-        previousVSync = intVSync;
+        previousHSync = _hSync;
+        previousVSync = _vSync;
 
         displayH = xo >> 8;
         displayV = yo >> 8;
@@ -190,5 +189,20 @@ public class Mode7 extends DisplayLayer {
             finalPixel = backgroundColour;
         }
         return getByteOrContention(finalPixel);
+    }
+
+    public void handleRegisterFlags() {
+        if (!flagRegisterX) {
+            x = 0;
+        }
+        if (!flagRegisterXY) {
+            xy = 0;
+        }
+        if (!flagRegisterY) {
+            y = 0;
+        }
+        if (!flagRegisterYX) {
+            yx = 0;
+        }
     }
 }

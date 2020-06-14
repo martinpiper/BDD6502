@@ -85,8 +85,10 @@ start
 	; Colour index
 	lda #14
 	sta CIA2PortBRS232
+	; Enable flags
+	lda #$1f
+	sta CIA2PortBRS232
 
-	
 	jsr Bus24Bit_WaitVBlank
 
 	rts

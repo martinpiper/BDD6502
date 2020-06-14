@@ -148,7 +148,7 @@ public class TestRunner {
             // Background colour
             displayBombJack.writeData(0xa014, 0x01, 0x14);
             // Enable flags
-            displayBombJack.writeData(0xa015, 0x01, 0x07);
+            displayBombJack.writeData(0xa015, 0x01, 0x1f);
 
             // Sprite data
             displayBombJack.writeDataFromFile(0x2000, 0x10, "C:\\work\\BombJack\\14_j07b.bin");
@@ -246,7 +246,7 @@ public class TestRunner {
 
                     // Simulate updating the registers later on
                     displayBombJack.calculatePixel();
-                    displayBombJack.writeData(0xa015, 0x01, 0x07);
+                    displayBombJack.writeData(0xa015, 0x01, 0x1f);
 
 
 
@@ -313,7 +313,7 @@ public class TestRunner {
 
                     // Simulate updating the registers later on
                     displayBombJack.calculatePixel();
-                    displayBombJack.writeData(0xa015, 0x01, 0x07);
+                    displayBombJack.writeData(0xa015, 0x01, 0x1f);
 
 
 
@@ -330,7 +330,7 @@ public class TestRunner {
                     displayBombJack.writeData(0xa002, 0x01, intValue >> 16);
 
                     displayBombJack.calculatePixel();
-                    displayBombJack.writeData(0xa015, 0x01, 0x07);
+                    displayBombJack.writeData(0xa015, 0x01, 0x1f);
 
                     displayBombJack.calculatePixelsUntil(0xc0, ypos);
                     // Reset some internal counters for x and xy
@@ -346,7 +346,7 @@ public class TestRunner {
                     displayBombJack.writeData(0xa005, 0x01, intValue >> 16);
 
                     displayBombJack.calculatePixel();
-                    displayBombJack.writeData(0xa015, 0x01, 0x07);
+                    displayBombJack.writeData(0xa015, 0x01, 0x1f);
                 }
 
                 mode7Rot += 0.01f;

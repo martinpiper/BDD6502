@@ -1330,7 +1330,7 @@ public class Glue {
         BufferedImage expected = ImageIO.read(new File(expectedFilename));
         BufferedImage test = ImageIO.read(new File(testFilename));
         // Vice "scrsh" command seems to lock the output file for a while?
-        // So we will retry once
+        // So we will retry
         if (expected == null) {
             Thread.sleep(500);
             expected = ImageIO.read(new File(expectedFilename));
