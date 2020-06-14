@@ -1,14 +1,5 @@
 ; TODO items
 
-* Output raw sample bytes for debug playback and comparison with the hardware
-	e.g. "C:\Users\Martin Piper\Downloads\ffmpeg-20200422-2e38c63-win64-static\ffmpeg-20200422-2e38c63-win64-static\bin\ffplay.exe" -f u8 -ar 25000 c:\work\C64\VideoHardware\target\debugchannel.pcmu8
-
-
-
-* Emulation will need to match hardware design which now has stereo output
-
-
-
 * Does audio frequency need a latch on the high byte to make it read a complete 16 bit value?
 	Sometimes yes, if the music updates the frequency a lot, but during tests it isn't that noticable if the update is done quickly
 		In usual cases the update would be done quickly enough not to notice

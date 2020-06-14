@@ -207,3 +207,13 @@ Added: Given I am using C64 processor port options
 			1>Rendered FPS = 60 frameDelta = 1 period=1001 instructionsThisPeriod=3463955 instructionsPerFrame=57674 instructionsShortfall=-45002
 			5.6 times faster
 	* QuickDrawPanel::fastSetRGB() created to optimise image drawing further, this is to fix slowdown when using Oracle java compared to the much faster Corretto
+
+
+
+* Output raw sample bytes for debug playback and comparison with the hardware
+	e.g. "C:\Users\Martin Piper\Downloads\ffmpeg-20200422-2e38c63-win64-static\ffmpeg-20200422-2e38c63-win64-static\bin\ffplay.exe" -f u8 -channels 2 -ar 25000 c:\work\C64\VideoHardware\target\debugchannel.pcmu8
+	e.g. "C:\Users\Martin Piper\Downloads\ffmpeg-20200422-2e38c63-win64-static\ffmpeg-20200422-2e38c63-win64-static\bin\ffplay.exe" -f u8 -channels 2 -ar 25000 C:\Work\BDD6502\target\debugchannel.pcmu8
+
+
+
+* Emulation will need to match hardware design which now has stereo output

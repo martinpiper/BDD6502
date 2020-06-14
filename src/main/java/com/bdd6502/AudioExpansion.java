@@ -69,12 +69,14 @@ public class AudioExpansion extends MemoryBus implements Runnable {
             e.printStackTrace();
         }
         // https://docs.oracle.com/javase/tutorial/sound/playing.html
-        AudioFormat format = new AudioFormat(sampleRate, 8, 1, false, false);
+        AudioFormat format = new AudioFormat(sampleRate, 8, 2, false, false);
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 
         try {
             line = (SourceDataLine) AudioSystem.getLine(info);
-            line.open(format, sampleRate / 60);    // At 60 fps we want this many samples
+
+            line.open(format, (sampleRate*2) / 60);    // At 60 fps we want this many samples
+            Control[] controls = line.getControls();
             line.start();
         } catch (LineUnavailableException e) {
             e.printStackTrace();
@@ -168,11 +170,23 @@ public class AudioExpansion extends MemoryBus implements Runnable {
         if (line.available() < sampleBuffer.length) {
             return false;
         }
-        for (int i = 0 ; i < sampleBuffer.length ; i++) {
+        calculateBalancedSamples(0);
+        calculateBalancedSamples(1);
+        line.write(sampleBuffer,0,sampleBuffer.length);
+        try {
+            outSamples.write(sampleBuffer,0,sampleBuffer.length);
+        } catch (IOException e) {
+        }
+        return true;
+    }
+
+    public void calculateBalancedSamples(int offset) {
+        for (int i = offset ; i < sampleBuffer.length ; i+=2) {
             ageContention();
 
             int accumulatedSample = 0;
-            for (int voice = 0 ; voice < numVoices ; voice++) {
+            for (int index = 0 ; index < (numVoices/2) ; index++) {
+                int voice = (offset * (numVoices/2)) + index;
                 if ((voicesActiveMask & (1 << voice)) > 0) {
                     int address;
                     if (voiceInternalChooseLoop[voice]) {
@@ -221,18 +235,12 @@ public class AudioExpansion extends MemoryBus implements Runnable {
 
             // HW: Note voice division is just address line selection
             // HW: There will need to be an overflow and upper clamp applied
-            accumulatedSample = accumulatedSample / numVoices;
+            accumulatedSample = accumulatedSample / (numVoices/2);
             if (accumulatedSample > 255) {
                 accumulatedSample = 255;
             }
             sampleBuffer[i] = (byte)(accumulatedSample & 0xff);
         }
-        line.write(sampleBuffer,0,sampleBuffer.length);
-        try {
-            outSamples.write(sampleBuffer,0,sampleBuffer.length);
-        } catch (IOException e) {
-        }
-        return true;
     }
 
     @Override
