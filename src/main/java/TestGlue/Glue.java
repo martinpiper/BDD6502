@@ -599,7 +599,7 @@ public class Glue {
         }
 
         int maxInstructions = 0;
-        if (arg2.isEmpty()) {
+        if (!arg2.isEmpty()) {
             maxInstructions = valueToInt(arg2);
         }
         int numInstructions = 0;
@@ -701,8 +701,9 @@ public class Glue {
             Integer addr = machine.getCpu().getCpuState().pc;
             internalCPUStep(displayTrace);
             instructionsThisPeriod++;
+            numInstructions++;
             if (maxInstructions > 0) {
-                assertThat(++numInstructions, is(lessThanOrEqualTo(maxInstructions)));
+                assertThat(numInstructions, is(lessThanOrEqualTo(maxInstructions)));
             }
             if (enableUnitialisedReadProtection && machine.getRam().isUnitialisedReadOccured()) {
                 processUnitialisedMemoryRead(addr);
@@ -972,6 +973,19 @@ public class Glue {
             if (StringUtils.isNumeric(splits[0])) {
                 // If the value is numeric this will affect the operation of valueToInt so we avoid this by adding a prefix underscore
                 splits[0] = "_" + splits[0];
+            }
+            // Ignore some reserved keywords
+            if (splits[0].compareToIgnoreCase("lo") == 0) {
+                continue;
+            }
+            if (splits[0].compareToIgnoreCase("low") == 0) {
+                continue;
+            }
+            if (splits[0].compareToIgnoreCase("hi") == 0) {
+                continue;
+            }
+            if (splits[0].compareToIgnoreCase("high") == 0) {
+                continue;
             }
             labelMap.put(splits[0], splits2[0]);
             try {
