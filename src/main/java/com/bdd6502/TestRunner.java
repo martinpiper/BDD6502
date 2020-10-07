@@ -65,6 +65,7 @@ public class TestRunner {
     public static void main(String args[]) throws Exception {
         if (args.length >= 1 && args[0].compareToIgnoreCase("--execVideoTest") == 0) {
             DisplayBombJack displayBombJack = new DisplayBombJack();
+//            displayBombJack.writeDebugBMPsToLeafFilename("target/frames/execVideoTest-");
             displayBombJack.enableDebugData();
             displayBombJack.addLayer(new Mode7(0xa000, 0x08));
             displayBombJack.addLayer(new Tiles(0x9e00, 0x80, 0x40));
