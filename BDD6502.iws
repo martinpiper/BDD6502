@@ -6,6 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/syntax.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/syntax.html" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -83,7 +87,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware Chars.feature">
+  <component name="RunManager" selected="Application.TestRunner no parameters">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -540,50 +544,70 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604216630047" />
+    <state x="673" y="321" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1604586223058">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="673" y="321" key="#com.intellij.fileTypes.FileTypeChooser/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604586223058" />
+    <state x="765" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1604583454793">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="765" y="220" key="#com.intellij.ide.util.MemberChooser/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604583454793" />
     <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1604216054067">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="274" key="FileChooserDialogImpl/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604216054067" />
-    <state width="1877" height="181" key="GridCell.Tab.0.bottom" timestamp="1604217260084">
+    <state width="1877" height="285" key="GridCell.Tab.0.bottom" timestamp="1604590825574">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="181" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604217260084" />
-    <state width="1877" height="181" key="GridCell.Tab.0.center" timestamp="1604217260083">
+    <state width="1877" height="285" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604590825574" />
+    <state width="1877" height="285" key="GridCell.Tab.0.center" timestamp="1604590825574">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="181" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604217260083" />
-    <state width="1877" height="181" key="GridCell.Tab.0.left" timestamp="1604217260083">
+    <state width="1877" height="285" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604590825574" />
+    <state width="1877" height="285" key="GridCell.Tab.0.left" timestamp="1604590825574">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="181" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604217260083" />
-    <state width="1877" height="181" key="GridCell.Tab.0.right" timestamp="1604217260083">
+    <state width="1877" height="285" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604590825574" />
+    <state width="1877" height="285" key="GridCell.Tab.0.right" timestamp="1604590825574">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="181" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604217260083" />
-    <state width="1877" height="285" key="GridCell.Tab.1.bottom" timestamp="1599837302785">
+    <state width="1877" height="285" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604590825574" />
+    <state width="1877" height="285" key="GridCell.Tab.1.bottom" timestamp="1604590825574">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="285" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1599837302785" />
-    <state width="1877" height="285" key="GridCell.Tab.1.center" timestamp="1599837302785">
+    <state width="1877" height="285" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604590825574" />
+    <state width="1877" height="285" key="GridCell.Tab.1.center" timestamp="1604590825574">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="285" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1599837302785" />
-    <state width="1877" height="285" key="GridCell.Tab.1.left" timestamp="1599837302785">
+    <state width="1877" height="285" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604590825574" />
+    <state width="1877" height="285" key="GridCell.Tab.1.left" timestamp="1604590825574">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="285" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1599837302785" />
-    <state width="1877" height="285" key="GridCell.Tab.1.right" timestamp="1599837302785">
+    <state width="1877" height="285" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604590825574" />
+    <state width="1877" height="285" key="GridCell.Tab.1.right" timestamp="1604590825574">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="285" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1599837302785" />
-    <state x="541" y="275" width="1239" height="608" key="find.popup" timestamp="1604215271493">
+    <state width="1877" height="285" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604590825574" />
+    <state x="775" y="453" key="ReplaceDuplicatesPrompt" timestamp="1604584515809">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="541" y="275" width="1239" height="608" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604215271493" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1604215474705">
+    <state x="775" y="453" key="ReplaceDuplicatesPrompt/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604584515809" />
+    <state width="498" height="446" key="SwitcherDM" timestamp="1604589996369">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604215474705" />
+    <state width="498" height="446" key="SwitcherDM/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604589996369" />
+    <state x="1263" y="175" key="extract.method.dialog" timestamp="1604584511801">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1263" y="175" key="extract.method.dialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604584511801" />
+    <state x="541" y="275" width="1239" height="608" key="find.popup" timestamp="1604589730657">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="541" y="275" width="1239" height="608" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604589730657" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1604586269379">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604586269379" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -630,43 +654,23 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>1407</line>
+          <line>1413</line>
           <option name="timeStamp" value="289" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>1478</line>
+          <line>1484</line>
           <option name="timeStamp" value="291" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>1474</line>
+          <line>1480</line>
           <option name="timeStamp" value="292" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java</url>
           <line>79</line>
           <option name="timeStamp" value="294" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>197</line>
-          <option name="timeStamp" value="298" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>180</line>
-          <option name="timeStamp" value="299" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>150</line>
-          <option name="timeStamp" value="300" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>964</line>
-          <option name="timeStamp" value="301" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -679,6 +683,7 @@
         <watch expression="image.getWidth()" language="JAVA" />
         <watch expression="image.getHeight()" language="JAVA" />
         <watch expression="size" language="JAVA" />
+        <watch expression="bus24Bytes" />
       </configuration>
     </watches-manager>
   </component>

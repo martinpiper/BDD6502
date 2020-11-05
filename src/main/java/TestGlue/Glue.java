@@ -1262,6 +1262,12 @@ public class Glue {
         machine.getBus().addDevice(userPort24BitAddress);
     }
 
+    @Given("^a simple user port to 24 bit bus is installed$")
+    public void aSimpleUserportToBitBusIsInstalled() throws MemoryRangeException {
+        aUserportToBitBusIsInstalled();
+        userPort24BitAddress.setSimpleMode(true);
+    }
+
     @Given("^add a Mode7 layer with registers at '(.*)' and addressEx '(.*)'$")
     public void addAModeDisplayWithRegistersAtXaAndAddressExX(String addressRegisters, String addressExMap) throws ScriptException {
         displayBombJack.addLayer(new Mode7(valueToInt(addressRegisters), valueToInt(addressExMap)));

@@ -16,9 +16,12 @@ public class UserPortTo24BitAddress extends Device {
     int registerDDRPortB = 0;
     int bus24State = 0;
     boolean bus24CountEnabled = false;
-    int bus24Bytes[] = new int[3];
+    int bus24Bytes[] = new int[4];
     List<MemoryBus> externalDevices = new LinkedList<>();
     boolean vsyncTriggered = false;
+    boolean simpleMode = false;
+    boolean simpleModeLastMEWR = true;
+    boolean simpleModeLastLatchCLK = true;
 
     public UserPortTo24BitAddress(Scenario scenario) throws MemoryRangeException {
         super(0xdd00, 0xdd0f, "UserPortTo24BitAddress");
@@ -29,6 +32,10 @@ public class UserPortTo24BitAddress extends Device {
         if (device != null) {
             externalDevices.add(device);
         }
+    }
+
+    public void setSimpleMode(boolean simpleMode) {
+        this.simpleMode = simpleMode;
     }
 
     @Override
@@ -44,37 +51,94 @@ public class UserPortTo24BitAddress extends Device {
             case 0:
                 if ((registerDDRPortA & 0x04) == 0x04) {
                     if ((data & 0x04) == 0) {
-                        bus24State = 0;
-                        bus24CountEnabled = false;
-                        if (busTrace) {
-                            System.out.println("Bus24 reset");
+                        if (simpleMode) {
+                            simpleModeLastMEWR = false;
+                        } else {
+                            bus24State = 0;
+                            bus24CountEnabled = false;
+                            if (busTrace) {
+                                System.out.println("Bus24 reset");
+                            }
                         }
                     } else {
-                        bus24CountEnabled = true;
-                        if (busTrace) {
-                            System.out.println("Bus24 ready");
+                        if (simpleMode) {
+                            if (!simpleModeLastMEWR) {
+                                simpleModeLastMEWR = true;
+                                writeMemoryBusWithState(bus24Bytes[3]);
+
+                                if (busTrace) {
+                                    System.out.println("Bus24 simple write : ebs " + bus24Bytes[0] + " : addrl " + bus24Bytes[1] + " : addrh " + bus24Bytes[2] + " : data " + bus24Bytes[3]);
+                                }
+                            }
+                        } else {
+                            bus24CountEnabled = true;
+                            if (busTrace) {
+                                System.out.println("Bus24 ready");
+                            }
                         }
                     }
                 }
                 break;
             case 1:
                 if (registerDDRPortB == 0xff) {
-                    if (bus24CountEnabled) {
-                        if (bus24State == 3) {
-                            for (MemoryBus device : externalDevices) {
-                                device.writeData(bus24Bytes[1] | (bus24Bytes[2] << 8), bus24Bytes[0], data);
-                            }
-                            bus24Bytes[1]++;
-                            if (bus24Bytes[1] == 256) {
-                                bus24Bytes[1] = 0;
-                                bus24Bytes[2]++;
-                            }
+                    if (simpleMode) {
+                        boolean clock = (data & 0x08) == 0x08;
+                        if (!clock) {
+                            simpleModeLastLatchCLK = false;
                         } else {
-                            bus24Bytes[bus24State] = data;
-                            if (busTrace) {
-                                System.out.println("Bus24 received " + bus24State + " : " + data);
+                            if (!simpleModeLastLatchCLK) {
+                                simpleModeLastLatchCLK = true;
+                                switch (data & 0x07) {
+                                    case 0x00:
+                                        bus24Bytes[0] = (bus24Bytes[0] & 0xf0) | ((data >> 4) & 0x0f);
+                                        break;
+                                    case 0x01:
+                                        bus24Bytes[0] = (bus24Bytes[0] & 0x0f) | (data & 0x0f0);
+                                        break;
+
+                                    case 0x02:
+                                        bus24Bytes[1] = (bus24Bytes[1] & 0xf0) | ((data >> 4) & 0x0f);
+                                        break;
+                                    case 0x03:
+                                        bus24Bytes[1] = (bus24Bytes[1] & 0x0f) | (data & 0x0f0);
+                                        break;
+
+                                    case 0x04:
+                                        bus24Bytes[2] = (bus24Bytes[2] & 0xf0) | ((data >> 4) & 0x0f);
+                                        break;
+                                    case 0x05:
+                                        bus24Bytes[2] = (bus24Bytes[2] & 0x0f) | (data & 0x0f0);
+                                        break;
+
+                                    case 0x06:
+                                        bus24Bytes[3] = (bus24Bytes[3] & 0xf0) | ((data >> 4) & 0x0f);
+                                        break;
+                                    case 0x07:
+                                        bus24Bytes[3] = (bus24Bytes[3] & 0x0f) | (data & 0x0f0);
+                                        break;
+                                }
+
+                                if (busTrace) {
+                                    System.out.println("Bus24 simple received : " + data);
+                                }
                             }
-                            bus24State++;
+                        }
+                    } else {
+                        if (bus24CountEnabled) {
+                            if (bus24State == 3) {
+                                writeMemoryBusWithState(data);
+                                bus24Bytes[1]++;
+                                if (bus24Bytes[1] == 256) {
+                                    bus24Bytes[1] = 0;
+                                    bus24Bytes[2]++;
+                                }
+                            } else {
+                                bus24Bytes[bus24State] = data;
+                                if (busTrace) {
+                                    System.out.println("Bus24 received " + bus24State + " : " + data);
+                                }
+                                bus24State++;
+                            }
                         }
                     }
                 }
@@ -87,6 +151,12 @@ public class UserPortTo24BitAddress extends Device {
                 break;
             default:
                 break;
+        }
+    }
+
+    public void writeMemoryBusWithState(int data) {
+        for (MemoryBus device : externalDevices) {
+            device.writeData(bus24Bytes[1] | (bus24Bytes[2] << 8), bus24Bytes[0], data);
         }
     }
 
