@@ -161,6 +161,26 @@
   </component>
   <component name="ProjectCodeStyleConfiguration">
     <option name="PREFERRED_PROJECT_CODE_STYLE" value="Default" />
+    <code_scheme name="Project" version="173">
+      <JetCodeStyleSettings>
+        <option name="PACKAGES_TO_USE_STAR_IMPORTS">
+          <value>
+            <package name="java.util" alias="false" withSubpackages="false" />
+            <package name="kotlinx.android.synthetic" alias="false" withSubpackages="true" />
+            <package name="io.ktor" alias="false" withSubpackages="true" />
+          </value>
+        </option>
+        <option name="PACKAGES_IMPORT_LAYOUT">
+          <value>
+            <package name="" alias="false" withSubpackages="true" />
+            <package name="java" alias="false" withSubpackages="true" />
+            <package name="javax" alias="false" withSubpackages="true" />
+            <package name="kotlin" alias="false" withSubpackages="true" />
+            <package name="" alias="true" withSubpackages="true" />
+          </value>
+        </option>
+      </JetCodeStyleSettings>
+    </code_scheme>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -300,15 +320,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/info/cukes/gherkin/2.12.2/gherkin-2.12.2-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: junit:junit:4.11">
+    <library name="Maven: junit:junit:4.13.1">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.11/junit-4.11.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.13.1/junit-4.13.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.11/junit-4.11-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.13.1/junit-4.13.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.11/junit-4.11-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.13.1/junit-4.13.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.apache.commons:commons-lang3:3.3.2">

@@ -48,6 +48,7 @@ Feature: Tests the videocharacter screen data conversion
     Given a simple user port to 24 bit bus is installed
     Given add a Chars layer with registers at '0x9000' and addressEx '0x20'
     Given show video window
+#    Given wait for 5000 milliseconds
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Chars.a"
     And I run the command line: ..\C64\bin\LZMPi.exe -c64mbe test.prg testcmp.prg $200

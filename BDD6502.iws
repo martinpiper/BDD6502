@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/BDD6502.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/syntax.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/syntax.html" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
@@ -87,7 +88,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner no parameters">
+  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature ">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -556,22 +557,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="274" key="FileChooserDialogImpl/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604216054067" />
-    <state width="1877" height="285" key="GridCell.Tab.0.bottom" timestamp="1604590825574">
+    <state width="1877" height="181" key="GridCell.Tab.0.bottom" timestamp="1604651602567">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="285" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604590825574" />
-    <state width="1877" height="285" key="GridCell.Tab.0.center" timestamp="1604590825574">
+    <state width="1877" height="181" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604651602567" />
+    <state width="1877" height="181" key="GridCell.Tab.0.center" timestamp="1604651602567">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="285" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604590825574" />
-    <state width="1877" height="285" key="GridCell.Tab.0.left" timestamp="1604590825574">
+    <state width="1877" height="181" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604651602567" />
+    <state width="1877" height="181" key="GridCell.Tab.0.left" timestamp="1604651602567">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="285" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604590825574" />
-    <state width="1877" height="285" key="GridCell.Tab.0.right" timestamp="1604590825574">
+    <state width="1877" height="181" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604651602567" />
+    <state width="1877" height="181" key="GridCell.Tab.0.right" timestamp="1604651602567">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="285" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604590825574" />
+    <state width="1877" height="181" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604651602567" />
     <state width="1877" height="285" key="GridCell.Tab.1.bottom" timestamp="1604590825574">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -600,14 +601,14 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1263" y="175" key="extract.method.dialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604584511801" />
-    <state x="541" y="275" width="1239" height="608" key="find.popup" timestamp="1604589730657">
+    <state x="541" y="275" width="1239" height="608" key="find.popup" timestamp="1604650272670">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="541" y="275" width="1239" height="608" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604589730657" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1604586269379">
+    <state x="541" y="275" width="1239" height="608" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604650272670" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1604649031488">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604586269379" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604649031488" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

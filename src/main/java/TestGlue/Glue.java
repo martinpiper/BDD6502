@@ -1505,4 +1505,9 @@ public class Glue {
         remoteMonitor.close();
         remoteMonitor = null;
     }
+
+    @Given("^wait for (\\d+) milliseconds$")
+    public void waitForMilliseconds(int milliseconds) throws InterruptedException {
+        Thread.sleep(milliseconds);
+    }
 }
