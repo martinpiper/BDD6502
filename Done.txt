@@ -222,3 +222,11 @@ Added: Given I am using C64 processor port options
 
 * Force plane ordering, including a plane that is configured to output a specific pixel colour (to emulate poking wires into the header)
 	* Tile layer background pixel transparency check. Layer should use specific plane.
+
+
+
+
+* In the hardware simulaton: If the sprites layer is the last layer, the sprite's x position seems to update the colour information for the whole vertical strip
+	This makes sense since the full height sprite flag has consistent colour and comes from the colour read.
+	The bit planes shifters wil be emitting zeros since they will not load the sprite data based on the vertical position test.
+	The emulation needs to be updated to reflect this. Currently the emulation does not write colour inforation if the sprite vertical portion is out of range.

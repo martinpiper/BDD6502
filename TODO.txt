@@ -1,12 +1,5 @@
 ; TODO items
 
-* In the hardware simulaton: If the sprites layer is the last layer, the sprite's x position seems to update the colour information for the whole vertical strip
-	This makes sense since the full height sprite flag has consistent colour and comes from the colour read.
-	The bit planes shifters wil be emitting zeros since they will not load the sprite data based on the vertical position test.
-	The emulation needs to be updated to reflect this. Currently the emulation does not write colour inforation if the sprite vertical portion is out of range.
-
-
-
 * Does audio frequency need a latch on the high byte to make it read a complete 16 bit value?
 	Sometimes yes, if the music updates the frequency a lot, but during tests it isn't that noticable if the update is done quickly
 		In usual cases the update would be done quickly enough not to notice

@@ -158,6 +158,13 @@ public class Sprites extends DisplayLayer {
         // +32 to adjust for expected behaviour where 0y = Bottom of the sprite on the bottom edge of the visible screen
         int deltaY = (displayV + spriteSize + getByteOrContention(spriteY[spriteIndex])) & 0xff;
         if (!fullHeightSprite && (deltaY >= spriteSize)) {
+            int finalPixel = ((theColour & 0x1f) << 3);
+            for (int pixelIndex = 0; pixelIndex < spriteSize; pixelIndex++) {
+                int finalXPos = (getByteOrContention(spriteX[spriteIndex]) + pixelIndex) & 0xff;
+                if ((calculatedRasters[offScreen][finalXPos] & 0x07) == 0) {
+                    calculatedRasters[offScreen][finalXPos] = finalPixel;   // Note, no contention since bit plane shifters are forced to be reset to 0
+                }
+            }
             return;
         }
 
