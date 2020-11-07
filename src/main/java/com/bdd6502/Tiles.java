@@ -173,12 +173,7 @@ public class Tiles extends DisplayLayer {
         if (pixelPlane2 > 0) {
             finalPixel |= 4;
         }
-        if (finalPixel == 0) {
-            // Without this, the lack of connection from the tiles board to the layer4 header is simulated
-//            finalPixel = backgroundColour;
-        } else {
-            finalPixel |= ((theColour & 0x1f) << 3);
-        }
+        finalPixel |= ((theColour & 0x1f) << 3);
 
         return getByteOrContention(finalPixel);
     }

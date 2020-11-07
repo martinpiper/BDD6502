@@ -2,6 +2,7 @@ Feature: Tests the videocharacter screen data conversion
 
   Uses ImageToBitplane config: oldbridge char screen
   Use ImageToBitplane config to improve clouds conversion as it priortises their colours: oldbridge char screen with rgbfactor
+  Use ImageToBitplane config to add use of colour 0, since if it is the back most layer then then it can use all 8 colours in the character block: oldbridge char screen with rgbfactor no force colour 0
   Or uses ImageToBitplane config: map_9 - Copy - chars.png char screen
 
 
@@ -14,8 +15,11 @@ Feature: Tests the videocharacter screen data conversion
     Given video display refresh window every 32 instructions
     Given video display does not save debug BMP images
     Given property "bdd6502.bus24.trace" is set to string "true"
+#    Given add a GetBackground layer fetching from layer index '0'
+#    Given add a StaticColour layer for palette index '1'
     Given add a Chars layer with registers at '0x9000' and addressEx '0x20'
     Given show video window
+    Given render a video display frame
 
     # Palette
     Given write data from file "C:\Work\ImageToBitplane\target\chars_paletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
@@ -46,8 +50,10 @@ Feature: Tests the videocharacter screen data conversion
     Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     Given a simple user port to 24 bit bus is installed
+#    Given add a GetBackground layer fetching from layer index '0'
     Given add a Chars layer with registers at '0x9000' and addressEx '0x20'
     Given show video window
+    Given render a video display frame
 #    Given wait for 5000 milliseconds
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Chars.a"

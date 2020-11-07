@@ -1268,6 +1268,16 @@ public class Glue {
         userPort24BitAddress.setSimpleMode(true);
     }
 
+    @Given("^add a StaticColour layer for palette index '(.*)'$")
+    public void addAStaticColourLayerForPaletteIndex(String paletteIndex) throws ScriptException {
+        displayBombJack.addLayer((new StaticColour(valueToInt(paletteIndex))));
+    }
+
+    @Given("^add a GetBackground layer fetching from layer index '(.*)'$")
+    public void addAGetBackgroundLayerFetchingFromLayerIndex(String layerIndex) throws ScriptException {
+        displayBombJack.addLayer((new GetBackground(valueToInt(layerIndex))));
+    }
+
     @Given("^add a Mode7 layer with registers at '(.*)' and addressEx '(.*)'$")
     public void addAModeDisplayWithRegistersAtXaAndAddressExX(String addressRegisters, String addressExMap) throws ScriptException {
         displayBombJack.addLayer(new Mode7(valueToInt(addressRegisters), valueToInt(addressExMap)));

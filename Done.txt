@@ -217,3 +217,8 @@ Added: Given I am using C64 processor port options
 
 
 * Emulation will need to match hardware design which now has stereo output
+
+
+
+* Force plane ordering, including a plane that is configured to output a specific pixel colour (to emulate poking wires into the header)
+	* Tile layer background pixel transparency check. Layer should use specific plane.
