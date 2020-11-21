@@ -69,3 +69,4 @@ test.a
 test.prg
 test.lbl
 *.pdb
+testcmp.prg

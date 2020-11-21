@@ -39,7 +39,7 @@ Feature: Tests the videocharacter screen data conversion
     When rendering the video until window closed
 
 
-  @TC-2
+  @TC-3
   Scenario: Chars display test with simple user port bus code
     Given clear all external devices
     Given a new video display
@@ -63,7 +63,7 @@ Feature: Tests the videocharacter screen data conversion
 #    And I enable trace with indent
 
 #    When I execute the procedure at start for no more than 99999999 instructions
-    When I execute the procedure at start until return
+    When I execute the procedure at DisplayScreen until return
     Given render a video display frame
 
     When rendering the video until window closed

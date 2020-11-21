@@ -1,5 +1,12 @@
 ; TODO items
 
+* Emulate RAM contention when their relevant EBBS is set and their address line is set.
+	Especially on the character bitplane RAMs and screen/palette data.
+	This is to close the emulation gaps to the hardware
+
+
+
+
 * Does audio frequency need a latch on the high byte to make it read a complete 16 bit value?
 	Sometimes yes, if the music updates the frequency a lot, but during tests it isn't that noticable if the update is done quickly
 		In usual cases the update would be done quickly enough not to notice
