@@ -111,15 +111,16 @@ Feature: Tests the video and audio hardware expansion together
 
     When I execute the procedure at start6 for no more than 50686 instructions
     Given render a video display frame
-    Then expect image "testdata/TC-1-000028.bmp" to be identical to "target/frames/TC-1-000028.bmp"
-    Then expect image "testdata/TC-1-000029.bmp" to be identical to "target/frames/TC-1-000029.bmp"
-    Then expect image "testdata/TC-1-000030.bmp" to be identical to "target/frames/TC-1-000030.bmp"
-    Then expect image "testdata/TC-1-000031.bmp" to be identical to "target/frames/TC-1-000031.bmp"
-    Then expect image "testdata/TC-1-000032.bmp" to be identical to "target/frames/TC-1-000032.bmp"
+#    Then expect image "testdata/TC-1-000028.bmp" to be identical to "target/frames/TC-1-000028.bmp"
+#    Then expect image "testdata/TC-1-000029.bmp" to be identical to "target/frames/TC-1-000029.bmp"
+#    Then expect image "testdata/TC-1-000030.bmp" to be identical to "target/frames/TC-1-000030.bmp"
+#    Then expect image "testdata/TC-1-000031.bmp" to be identical to "target/frames/TC-1-000031.bmp"
+#    Then expect image "testdata/TC-1-000032.bmp" to be identical to "target/frames/TC-1-000032.bmp"
 
 #    When rendering the video until window closed
 
     # This goes on for longer, due to the counter going through 0 to 255
+#    And I enable trace with indent
     Given property "bdd6502.bus24.trace" is set to string "false"
     Given video display does not save debug BMP images
     Given limit video display to 60 fps

@@ -168,12 +168,18 @@ public class UserPortTo24BitAddress extends Device {
                 return 0;
 
             case 0x0d:
-                // Float high...
-                int ret = 0x10;
+                // A double read can happen, once for the log, once for the CPU
+                // We ignore the first read
+                int ret = 0x0;
                 for (MemoryBus device : externalDevices) {
-                    if (!device.extEXTWANTIRQ()) {
-                        // Drive low
-                        ret = 0x00;
+                    if (device.extEXTWANTIRQ()) {
+                        // Drive high
+                        ret = 0x10;
+                    }
+                }
+                if (logRead) {
+                    for (MemoryBus device : externalDevices) {
+                        device.resetExtEXTWANTIRQ();
                     }
                 }
                 return ret;

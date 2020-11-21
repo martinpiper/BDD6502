@@ -55,6 +55,7 @@ public class DisplayBombJack extends MemoryBus {
     int lastDataWritten = 0;
     boolean vBlank = false;
     boolean _hSync = true, _vSync = true;
+    boolean extEXTWANTIRQFlag = false;
     PrintWriter debugData = null;
     int pixelsSinceLastDebugWrite = 0;
     int pixelsSinceLastDebugWriteMax = 32;
@@ -68,7 +69,12 @@ public class DisplayBombJack extends MemoryBus {
 
     @Override
     public boolean extEXTWANTIRQ() {
-        return !vBlank;
+        return extEXTWANTIRQFlag;
+    }
+
+    @Override
+    public void resetExtEXTWANTIRQ() {
+        extEXTWANTIRQFlag = false;
     }
 
     public DisplayBombJack() throws IOException {
@@ -252,6 +258,9 @@ public class DisplayBombJack extends MemoryBus {
         vBlank = false;
         if (displayV < 0x10 || displayV >= 0xf0) {
             vBlank = true;
+        }
+        if (displayH == 0x180 && displayV == 0xf0) {
+            extEXTWANTIRQFlag = true;
         }
 
         if (vBlank /*|| (displayH & 256) == 256*/) {

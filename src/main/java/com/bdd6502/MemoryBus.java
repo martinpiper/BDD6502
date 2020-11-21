@@ -51,7 +51,9 @@ public abstract class MemoryBus {
     }
 
     public boolean extEXTWANTIRQ() {
-        // Float high
-        return true;
+        return false;
+    }
+
+    public void resetExtEXTWANTIRQ() {
     }
 }

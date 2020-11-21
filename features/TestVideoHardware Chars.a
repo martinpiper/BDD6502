@@ -6,11 +6,11 @@
 start
 	lda #ProcessorPortAllRAMWithIO
 	jsr InitialiseMachine
-	+SetDefaultScreen_A
+;	+SetDefaultScreen_A
 
 	jsr DisplayScreen
-.main
-!if 0 {
+mainLoop
+!if 1 {
 
 ; Test increment of character and colour screens
 	ldx #0
@@ -25,12 +25,12 @@ start
 	+WaitForFireB_A
 	; Test for screen/colour RAM write sync to vblank
 	lda #8
+	lda #16	; This larger value will show a raster bar effect near the top of the screen (in real hardware)
 	sta Bus24Bit_WriteMakeSafeReset
-	jsr Bus24Bit_WaitVBlank
 	jsr Bus24Bit_WaitVBlank
 	jsr CopyScreen
 
-	jmp .main
+	jmp mainLoop
 
 DisplayScreen
 	jsr Bus24Bit_Init

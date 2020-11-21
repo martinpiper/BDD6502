@@ -619,24 +619,27 @@ public class Glue {
         while (machine.getCpu().getProgramCounter() > 1) {
 
             if (displayBombJack != null) {
+                int joystickBits = 0;
+                if (!displayBombJack.getWindow().isPressedUp()) {
+                    joystickBits |= 0x1;
+                }
+                if (!displayBombJack.getWindow().isPressedDown()) {
+                    joystickBits |= 0x2;
+                }
+                if (!displayBombJack.getWindow().isPressedLeft()) {
+                    joystickBits |= 0x4;
+                }
+                if (!displayBombJack.getWindow().isPressedRight()) {
+                    joystickBits |= 0x8;
+                }
+                if (!displayBombJack.getWindow().isPressedFire()) {
+                    joystickBits |= 0x10;
+                }
                 if (enableJoystick1) {
-                    int joystickBits = 0;
-                    if (!displayBombJack.getWindow().isPressedUp()) {
-                        joystickBits |= 0x1;
-                    }
-                    if (!displayBombJack.getWindow().isPressedDown()) {
-                        joystickBits |= 0x2;
-                    }
-                    if (!displayBombJack.getWindow().isPressedLeft()) {
-                        joystickBits |= 0x4;
-                    }
-                    if (!displayBombJack.getWindow().isPressedRight()) {
-                        joystickBits |= 0x8;
-                    }
-                    if (!displayBombJack.getWindow().isPressedFire()) {
-                        joystickBits |= 0x10;
-                    }
                     machine.getBus().write(0xdc00, joystickBits);
+                }
+                if (enableJoystick2) {
+                    machine.getBus().write(0xdc01, joystickBits);
                 }
                 // Execute video clocks while running the CPU
                 long targetNumberFrames = System.currentTimeMillis() - startTime;
@@ -1416,6 +1419,12 @@ public class Glue {
     @Given("^video display add joystick to port 1$")
     public void addJoystickPort1() {
         enableJoystick1 = true;
+    }
+
+    boolean enableJoystick2 = false;
+    @Given("^video display add joystick to port 2$")
+    public void addJoystickPort2() {
+        enableJoystick2 = true;
     }
 
     Socket remoteMonitor;
