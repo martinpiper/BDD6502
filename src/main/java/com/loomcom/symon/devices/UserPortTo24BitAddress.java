@@ -118,6 +118,8 @@ public class UserPortTo24BitAddress extends Device {
                                         break;
                                 }
 
+                                setMemoryBusState();
+
                                 if (busTrace) {
                                     System.out.println("Bus24 simple received : " + data);
                                 }
@@ -157,6 +159,14 @@ public class UserPortTo24BitAddress extends Device {
     public void writeMemoryBusWithState(int data) {
         for (MemoryBus device : externalDevices) {
             device.writeData(bus24Bytes[1] | (bus24Bytes[2] << 8), bus24Bytes[0], data);
+        }
+    }
+
+    // Only really used by the simple memory bus interface
+    // The counting memory bus interface does not assert the memory bus when memory is not being accessed
+    public void setMemoryBusState() {
+        for (MemoryBus device : externalDevices) {
+            device.setAddressBus(bus24Bytes[1] | (bus24Bytes[2] << 8), bus24Bytes[0]);
         }
     }
 

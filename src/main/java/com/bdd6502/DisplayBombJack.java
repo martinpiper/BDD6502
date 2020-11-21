@@ -173,6 +173,13 @@ public class DisplayBombJack extends MemoryBus {
         }
     }
 
+    @Override
+    public void setAddressBus(int address, int addressEx) {
+        for (DisplayLayer layer : layers) {
+            layer.setAddressBus(address, addressEx);
+        }
+    }
+
     public void calculatePixelsUntilVSync() {
         do {
             calculatePixel();

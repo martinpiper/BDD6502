@@ -24,6 +24,11 @@ public class GetBackground extends DisplayLayer {
     }
 
     @Override
+    public void setAddressBus(int address, int addressEx) {
+
+    }
+
+    @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
         if (layer == null) {
             layer = display.layers.get(layerIndex);

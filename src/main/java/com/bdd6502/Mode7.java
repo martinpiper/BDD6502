@@ -140,6 +140,20 @@ public class Mode7 extends DisplayLayer {
     }
 
     @Override
+    public void setAddressBus(int address, int addressEx) {
+        memoryAsserted = false;
+        if (MemoryBus.addressActive(addressEx, addressExMap) && MemoryBus.addressActive(address, addressMap)) {
+//            memoryAsserted = true;
+        }
+        if (MemoryBus.addressActive(addressEx, addressExTiles0) && MemoryBus.addressActive(address, addressTiles0)) {
+//            memoryAsserted = true;
+        }
+        if (MemoryBus.addressActive(addressEx, addressExTiles1) && MemoryBus.addressActive(address, addressTiles1)) {
+//            memoryAsserted = true;
+        }
+    }
+
+    @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
         x += dx;
         yx += dyx;

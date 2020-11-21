@@ -15,6 +15,10 @@ public class Chars extends DisplayLayer {
     byte plane1[] = new byte[0x2000];
     byte plane2[] = new byte[0x2000];
     int latchedDisplayV = 0;
+    boolean memoryAssertedScreenRAM = false;
+    boolean memoryAssertedPlane0 = false;
+    boolean memoryAssertedPlane1 = false;
+    boolean memoryAssertedPlane2 = false;
 
     public Chars() {
     }
@@ -57,6 +61,34 @@ public class Chars extends DisplayLayer {
     }
 
     @Override
+    public void setAddressBus(int address, int addressEx) {
+        memoryAssertedScreenRAM = false;
+        if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x400)) {
+            memoryAssertedScreenRAM = true;
+        }
+        if (MemoryBus.addressActive(addressEx, addressExColour) && address >= addressColour && address < (addressColour + 0x400)) {
+            memoryAssertedScreenRAM = true;
+        }
+
+        // This selection logic is because the actual address line is used to select the memory, not a decoder
+        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
+            memoryAssertedPlane0 = true;
+        } else {
+            memoryAssertedPlane0 = false;
+        }
+        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane1)) {
+            memoryAssertedPlane1 = true;
+        } else {
+            memoryAssertedPlane1 = false;
+        }
+        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane2)) {
+            memoryAssertedPlane2 = true;
+        } else {
+            memoryAssertedPlane2 = false;
+        }
+    }
+
+    @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
         if ((displayH & 0x188) == 0) {
             latchedDisplayV = displayV;
@@ -71,6 +103,10 @@ public class Chars extends DisplayLayer {
         int theChar = (screenData[index]) & 0xff;
 //        System.out.println(displayH + " " + latchedDisplayV + " Chars index: " + Integer.toHexString(index) + " char " + Integer.toHexString(theChar));
         byte theColour = colourData[index];
+        if (memoryAssertedScreenRAM) {
+            theChar = 0xff;
+            theColour = (byte) 0xff;
+        }
         // Include extra chars from the colour
         theChar |= (theColour & 0x30) << 4;
         displayH &= 0x07;
@@ -87,6 +123,15 @@ public class Chars extends DisplayLayer {
         int pixelPlane0 = plane0[(theChar << 3) + latchedDisplayV2] & (1 << displayH);
         int pixelPlane1 = plane1[(theChar << 3) + latchedDisplayV2] & (1 << displayH);
         int pixelPlane2 = plane2[(theChar << 3) + latchedDisplayV2] & (1 << displayH);
+        if (memoryAssertedPlane0) {
+            pixelPlane0 = 0xff;
+        }
+        if (memoryAssertedPlane1) {
+            pixelPlane1 = 0xff;
+        }
+        if (memoryAssertedPlane2) {
+            pixelPlane2 = 0xff;
+        }
         int finalPixel = 0;
         if (pixelPlane0 > 0) {
             finalPixel |= 1;

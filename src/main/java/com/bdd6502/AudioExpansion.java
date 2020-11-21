@@ -166,6 +166,11 @@ public class AudioExpansion extends MemoryBus implements Runnable {
         }
     }
 
+    @Override
+    public void setAddressBus(int address, int addressEx) {
+
+    }
+
     public boolean calculateSamples() {
         if (line.available() < sampleBuffer.length) {
             return false;

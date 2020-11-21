@@ -10,7 +10,7 @@ public abstract class DisplayLayer extends MemoryBus {
     public abstract int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync);
 
     protected int getByteOrContention(int value) {
-        if (busContention > 0) {
+        if (busContention > 0 || memoryAsserted) {
             return display.getContentionColouredPixel();
         }
         return value;

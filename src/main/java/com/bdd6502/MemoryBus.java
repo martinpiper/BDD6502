@@ -7,6 +7,7 @@ import java.io.IOException;
 
 public abstract class MemoryBus {
     protected int busContention = 0;
+    protected boolean memoryAsserted = false;
 
     static boolean addressActive(int addressEx, int selector) {
         if ((addressEx & selector) > 0) {
@@ -16,6 +17,9 @@ public abstract class MemoryBus {
     }
 
     public void ageContention() {
+        if (memoryAsserted) {
+            return;
+        }
         if (busContention > 0) {
             busContention--;
         }
@@ -40,6 +44,8 @@ public abstract class MemoryBus {
     }
 
     abstract void writeData(int address, int addressEx, byte data);
+
+    abstract public void setAddressBus(int address, int addressEx);
 
     int sequentialValue = 0;
     protected int getByteOrContention(int value) {

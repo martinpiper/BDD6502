@@ -22,6 +22,11 @@ public class StaticColour extends DisplayLayer {
     }
 
     @Override
+    public void setAddressBus(int address, int addressEx) {
+
+    }
+
+    @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
         return getByteOrContention(paletteIndex);
     }

@@ -13,7 +13,7 @@ mainLoop
 	+WaitForFireB_A
 	; Test for screen/colour RAM write sync to vblank
 	lda #8
-;	lda #16	; This larger value will show a raster bar effect near the top of the screen (in real hardware)
+	lda #16	; This larger value will show a raster bar effect near the top of the screen (in real hardware)
 	sta Bus24Bit_WriteMakeSafeReset
 	jsr Bus24Bit_WaitVBlank
 	jsr CopyScreen

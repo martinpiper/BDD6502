@@ -91,6 +91,23 @@ public class Sprites extends DisplayLayer {
     }
 
     @Override
+    public void setAddressBus(int address, int addressEx) {
+        memoryAsserted = false;
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= (addressRegisters + 0x20) && address < (addressRegisters + 0x80)) {
+//            memoryAsserted = true;
+        }
+        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
+//            memoryAsserted = true;
+        }
+        if (MemoryBus.addressActive(addressEx, addressExPlane1) && MemoryBus.addressActive(address, addressPlane1)) {
+//            memoryAsserted = true;
+        }
+        if (MemoryBus.addressActive(addressEx, addressExPlane2) && MemoryBus.addressActive(address, addressPlane2)) {
+//            memoryAsserted = true;
+        }
+    }
+
+    @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
         if (!spriteEnable) {
             return 0;
