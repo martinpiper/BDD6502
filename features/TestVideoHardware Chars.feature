@@ -44,14 +44,14 @@ Feature: Tests the videocharacter screen data conversion
     Given clear all external devices
     Given a new video display
     And enable video display bus debug output
-    Given video display processes 32 pixels per instruction
+    Given video display processes 24 pixels per instruction
     Given video display refresh window every 32 instructions
     Given video display add joystick to port 2
     Given video display does not save debug BMP images
     Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     Given a simple user port to 24 bit bus is installed
-    Given add a StaticColour layer for palette index '0xff'
+    Given add a StaticColour layer for palette index '0x7f'
     Given add a Chars layer with registers at '0x9000' and addressEx '0x20'
     Given show video window
     Given render a video display frame
@@ -67,6 +67,6 @@ Feature: Tests the videocharacter screen data conversion
     When I execute the procedure at DisplayScreen until return
     Given render a video display frame
 
-#    When I execute the procedure at mainLoop until return
+    When I execute the procedure at mainLoop until return
 
     When rendering the video until window closed
