@@ -1,0 +1,122 @@
+!sal
+!pdb "t.pdb"
+!source "C64/stdlib/stdlib.a"
+*=$200
+!zn
+start
+	lda #ProcessorPortAllRAMWithIO
+	jsr InitialiseMachine
+;	+SetDefaultScreen_A
+
+	jsr DisplayScreen
+mainLoop
+	+WaitForFireB_A
+	; Test for screen/colour RAM write sync to vblank
+;	lda #8
+;	lda #16	; This larger value will show a raster bar effect near the top of the screen (in real hardware)
+;	sta Bus24Bit_WriteMakeSafeReset
+	jsr Bus24Bit_WaitVBlank
+	jsr CopyScreen
+
+!if 1 {
+	; Test increment of character and colour screens
+	ldx #0
+.l1
+!for .i , 8 {
+	inc .screen + ((.i-1) * $100),x
+}
+	inx
+	bne .l1
+}
+
+	jmp mainLoop
+
+DisplayScreen
+	jsr Bus24Bit_Init
+
+	jsr Bus24Bit_WaitVBlank
+	inc VIC2BorderColour
+
+	lda #1
+	+MWordValueTo_XY $9c00
+	jsr Bus24Bit_SetAddressBus
+
+	+MWordValueTo_AX .palette
+	ldy #0
+	jsr Bus24Bit_CopySmallData
+	jsr Bus24Bit_CopySmallDataAgain
+	inc VIC2BorderColour
+
+	jsr CopyScreen
+
+
+	lda #$20
+	+MWordValueTo_XY $2000
+	jsr Bus24Bit_SetAddressBus
+	+MWordValueTo_AX .plane0
+	ldy #0
+	jsr Bus24Bit_CopySmallData
+	ldx #$1f
+	jsr Bus24Bit_CopySmallDataRepeatForX
+	inc VIC2BorderColour
+
+	lda #$20
+	+MWordValueTo_XY $4000
+	jsr Bus24Bit_SetAddressBus
+	+MWordValueTo_AX .plane1
+	ldy #0
+	jsr Bus24Bit_CopySmallData
+	ldx #$1f
+	jsr Bus24Bit_CopySmallDataRepeatForX
+	inc VIC2BorderColour
+
+	lda #$20
+	+MWordValueTo_XY $8000
+	jsr Bus24Bit_SetAddressBus
+	+MWordValueTo_AX .plane2
+	ldy #0
+	jsr Bus24Bit_CopySmallData
+	ldx #$1f
+	jsr Bus24Bit_CopySmallDataRepeatForX
+	inc VIC2BorderColour
+
+	jsr Bus24Bit_Reset
+
+	rts
+
+CopyScreen
+	lda #$01
+	+MWordValueTo_XY $9000
+	jsr Bus24Bit_SetAddressBus
+	+MWordValueTo_AX .screen
+	ldy #0
+	jsr Bus24Bit_CopySmallData
+	ldx #$7
+	jsr Bus24Bit_CopySmallDataRepeatForX
+	jsr Bus24Bit_Reset
+	inc VIC2BorderColour
+	rts
+
+.palette
+	!bin "C:\Work\ImageToBitplane\target\chars_paletteData.bin"
+
+.plane0
+	!bin "C:\Work\ImageToBitplane\target\chars_plane0.bin"
+.plane1
+	!bin "C:\Work\ImageToBitplane\target\chars_plane1.bin"
+.plane2
+	!bin "C:\Work\ImageToBitplane\target\chars_plane2.bin"
+
+;    # Chars screen
+.screen
+	!bin "C:\Work\ImageToBitplane\target\chars_scr.bin"
+
+
+Initialise_NoPreserveStack = 1
+Initialise_NoIRQServiceRoutine = 1
+Initialise_NoMACROWaitForTheLastScan = 1
+!source "C64/stdlib/Initialise.a"
+
+
+!source "BombJack/stdlib/Bus24Bit.a"
+!source "BombJack/stdlib/Video.a"
