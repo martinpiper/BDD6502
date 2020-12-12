@@ -12,6 +12,11 @@ start
 
 mainLoop
 	+WaitForFireB_A
+	lda #50
+	sta Bus24Bit_WriteMakeSafeReset
+	jsr Bus24Bit_WaitVBlank
+	jsr CopyScreen
+
 mainLoop2
 	; Test for screen/colour RAM write sync to vblank
 ;	lda #50
