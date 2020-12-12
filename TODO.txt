@@ -1,5 +1,11 @@
 ; TODO items
 
+* Simulation of the test data from the chars + sprites test shows char bitplanes uploaded during the screen display have "random" data contention issues.
+	This behaviour is not observed in the hardware with full user port interface.
+
+
+
+
 * Emulate RAM contention when their relevant EBBS is set and their address line is set.
 	Especially on the character bitplane RAMs and screen/palette data.
 	This is to close the emulation gaps to the hardware

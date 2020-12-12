@@ -159,24 +159,28 @@ public class Sprites extends DisplayLayer {
 
         // Handle timings of sprite register reads at the appropriate time in the raster
         int theColour = getByteOrContention(spritePalette[spriteIndex]);
-        int spriteSize = 16;
+        int spriteSizeX = 16;
+        int spriteSizeY = 16;
         // Same logic as hardware 6R, 6S, 5R, 5S, 5T, 6T
         int tweakIndex = (spriteIndex >> 1) + 3;
         if ((tweakIndex < lo32 && !(tweakIndex < hi32)) || (tweakIndex < hi32 && !(tweakIndex < lo32))) {
-            spriteSize = 32;
+            spriteSizeX = 32;
+            spriteSizeY = 32;
             skipNextSprite = true;
         }
         boolean fullHeightSprite = false;
         if ((theColour & 0x20) > 0) {
             fullHeightSprite = true;
+            // Simulation shows sprite size in the Y is ignored for full height sprites
+            spriteSizeY = 16;
         }
 
         // Sprite Y position range check
         // +32 to adjust for expected behaviour where 0y = Bottom of the sprite on the bottom edge of the visible screen
-        int deltaY = (displayV + spriteSize + getByteOrContention(spriteY[spriteIndex])) & 0xff;
-        if (!fullHeightSprite && (deltaY >= spriteSize)) {
+        int deltaY = (displayV + spriteSizeX + getByteOrContention(spriteY[spriteIndex])) & 0xff;
+        if (!fullHeightSprite && (deltaY >= spriteSizeX)) {
             int finalPixel = ((theColour & 0x1f) << 3);
-            for (int pixelIndex = 0; pixelIndex < spriteSize; pixelIndex++) {
+            for (int pixelIndex = 0; pixelIndex < spriteSizeX; pixelIndex++) {
                 int finalXPos = (getByteOrContention(spriteX[spriteIndex]) + pixelIndex) & 0xff;
                 if ((calculatedRasters[offScreen][finalXPos] & 0x07) == 0) {
                     calculatedRasters[offScreen][finalXPos] = finalPixel;   // Note, no contention since bit plane shifters are forced to be reset to 0
@@ -186,17 +190,17 @@ public class Sprites extends DisplayLayer {
         }
 
         // Range to max sprite size, to handle fullHeightSprite
-        deltaY = deltaY & (spriteSize - 1);
+        deltaY = deltaY & (spriteSizeY - 1);
         int realPixelIndex, realDeltaY;
         if ((theColour & 0x80) > 0) {
-            realDeltaY = (spriteSize - 1) - deltaY;
+            realDeltaY = (spriteSizeY - 1) - deltaY;
         } else {
             realDeltaY = deltaY;
         }
-        for (int pixelIndex = 0; pixelIndex < spriteSize; pixelIndex++) {
+        for (int pixelIndex = 0; pixelIndex < spriteSizeX; pixelIndex++) {
             // Include flips
             if ((theColour & 0x40) > 0) {
-                realPixelIndex = (spriteSize - 1) - pixelIndex;
+                realPixelIndex = (spriteSizeX - 1) - pixelIndex;
             } else {
                 realPixelIndex = pixelIndex;
             }
@@ -204,7 +208,7 @@ public class Sprites extends DisplayLayer {
             int pixelPlane1;
             int pixelPlane2;
             int quadrantOffset = 0;
-            if (spriteSize == 32) {
+            if (spriteSizeX == 32) {
                 // TODO: Needs expansion for 32x32 sprites
                 if ((realDeltaY & 0x1f) < 8) {
                     if (realPixelIndex < 8) {
@@ -266,8 +270,14 @@ public class Sprites extends DisplayLayer {
             int pixelShift = 0x07 - (realPixelIndex & 0x07);
             int tileY = realDeltaY & 0x07;
             int tweakFrame = getByteOrContention(spriteFrame[spriteIndex]);
-            if (spriteSize == 32) {
+            if (spriteSizeX == 32 && spriteSizeY == 32) {
                 tweakFrame *= 4;
+                tweakFrame &= 0xff;
+            }
+            // Emulate the observed simulation behaviour for this strange mode :)
+            if (spriteSizeX == 32 && spriteSizeY == 16) {
+                tweakFrame *= 4;
+                tweakFrame += 2;
                 tweakFrame &= 0xff;
             }
             int planeOffset = (tweakFrame << 5) + tileY + quadrantOffset;

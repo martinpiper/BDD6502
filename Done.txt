@@ -230,3 +230,8 @@ Added: Given I am using C64 processor port options
 	This makes sense since the full height sprite flag has consistent colour and comes from the colour read.
 	The bit planes shifters wil be emitting zeros since they will not load the sprite data based on the vertical position test.
 	The emulation needs to be updated to reflect this. Currently the emulation does not write colour inforation if the sprite vertical portion is out of range.
+
+
+
+* Full height sprites with 32x32 mode enabled, should not display repeated 32x32 sprite data chunks, they should show 32x16 sprite data
+	According to the simulation from bus data output by features\TestVideoHardware Chars Sprites.feature
