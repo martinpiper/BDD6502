@@ -1,0 +1,222 @@
+!sal
+!pdb "t.pdb"
+!source "C64/stdlib/stdlib.a"
+*=$200
+!zn
+start
+	lda #ProcessorPortAllRAMWithIO
+	jsr InitialiseMachine
+;	+SetDefaultScreen_A
+
+	jsr DisplayScreen
+
+mainLoop
+	+WaitForFireB_A
+mainLoop2
+	; Test for screen/colour RAM write sync to vblank
+;	lda #50
+;	sta Bus24Bit_WriteMakeSafeReset
+	jsr Bus24Bit_WaitVBlank
+;	jsr CopyScreen
+	jsr CopySprites
+!for .i , 24 {
+;	inc SpriteFrame0+0 + ((.i-1)*4)
+;	inc SpriteFrame0+1 + ((.i-1)*4)
+!if (.i & 3) = 0 {
+	dec SpriteFrame0+2 + ((.i-1)*4)
+} else {
+	inc SpriteFrame0+2 + ((.i-1)*4)
+}
+!if (.i & 1) = 0 {
+	dec SpriteFrame0+3 + ((.i-1)*4)
+} else {
+	inc SpriteFrame0+3 + ((.i-1)*4)
+}
+}
+
+	jmp mainLoop2
+
+DisplayScreen
+	jsr Bus24Bit_Init
+
+	jsr Bus24Bit_WaitVBlank
+	inc VIC2BorderColour
+
+	jsr Bus24Bit_SetAddressSpritesControl
+	lda #$10
+	sta CIA2PortBRS232
+	lda #$00
+	sta CIA2PortBRS232
+
+	lda #1
+	+MWordValueTo_XY $9c00
+	jsr Bus24Bit_SetAddressBus
+
+	+MWordValueTo_AX .palette
+	ldy #0
+	jsr Bus24Bit_CopySmallData
+	jsr Bus24Bit_CopySmallDataAgain
+	inc VIC2BorderColour
+
+	jsr CopyScreen
+
+
+	lda #$20
+	+MWordValueTo_XY $2000
+	jsr Bus24Bit_SetAddressBus
+	+MWordValueTo_AX .plane0
+	ldy #0
+	jsr Bus24Bit_CopySmallData
+	ldx #$1f
+	jsr Bus24Bit_CopySmallDataRepeatForX
+	inc VIC2BorderColour
+
+	lda #$20
+	+MWordValueTo_XY $4000
+	jsr Bus24Bit_SetAddressBus
+	+MWordValueTo_AX .plane1
+	ldy #0
+	jsr Bus24Bit_CopySmallData
+	ldx #$1f
+	jsr Bus24Bit_CopySmallDataRepeatForX
+	inc VIC2BorderColour
+
+	lda #$20
+	+MWordValueTo_XY $8000
+	jsr Bus24Bit_SetAddressBus
+	+MWordValueTo_AX .plane2
+	ldy #0
+	jsr Bus24Bit_CopySmallData
+	ldx #$1f
+	jsr Bus24Bit_CopySmallDataRepeatForX
+	inc VIC2BorderColour
+
+	; Sprites
+	lda #$10
+	+MWordValueTo_XY $2000
+	jsr Bus24Bit_SetAddressBus
+	+MWordValueTo_AX .spritesPlane0
+	ldy #0
+	jsr Bus24Bit_CopySmallData
+	ldx #$1f
+	jsr Bus24Bit_CopySmallDataRepeatForX
+	inc VIC2BorderColour
+
+	lda #$10
+	+MWordValueTo_XY $4000
+	jsr Bus24Bit_SetAddressBus
+	+MWordValueTo_AX .spritesPlane1
+	ldy #0
+	jsr Bus24Bit_CopySmallData
+	ldx #$1f
+	jsr Bus24Bit_CopySmallDataRepeatForX
+	inc VIC2BorderColour
+
+	lda #$10
+	+MWordValueTo_XY $8000
+	jsr Bus24Bit_SetAddressBus
+	+MWordValueTo_AX .spritesPlane2
+	ldy #0
+	jsr Bus24Bit_CopySmallData
+	ldx #$1f
+	jsr Bus24Bit_CopySmallDataRepeatForX
+	inc VIC2BorderColour
+
+	jsr CopySprites
+
+	jsr Bus24Bit_Reset
+
+	rts
+
+CopyScreen
+	lda #$01
+	+MWordValueTo_XY $9000
+	jsr Bus24Bit_SetAddressBus
+	+MWordValueTo_AX .screen
+	ldy #0
+	jsr Bus24Bit_CopySmallData
+	ldx #$7
+	jsr Bus24Bit_CopySmallDataRepeatForX
+	jsr Bus24Bit_Reset
+	inc VIC2BorderColour
+	rts
+
+; Sprite positions
+SpriteFrame0
+	!by $04,$11,$80,$00
+	!by $04,$91,$80,$28
+	!by $04,$51,$80,$50
+	!by $04,$d1,$80,$78
+
+	!by $14,$12,$10,$10
+	!by $24,$93,$20,$28
+	!by $34,$54,$30,$50
+	!by $44,$d5,$40,$78
+
+	!by $16,$12,$80,$10
+	!by $27,$93,$90,$28
+	!by $38,$54,$a0,$50
+	!by $49,$d5,$b0,$78
+
+	!by $8a,$12,$40,$10
+	!by $7b,$93,$50,$28
+	!by $6c,$54,$60,$50
+	!by $5d,$d5,$70,$78
+
+	!by $66,$12,$10,$80
+	!by $77,$93,$21,$48
+	!by $88,$54,$37,$70
+	!by $99,$d5,$23,$18
+
+	!by $3a,$12,$68,$c0
+	!by $2b,$93,$58,$d8
+	!by $1c,$54,$68,$20
+	!by $0d,$d5,$78,$e8
+SpriteFrame0Size = * - SpriteFrame0
+
+CopySprites
+	jsr Bus24Bit_SetAddressSprites
+	; Very optimised unrolled loop to copy sprite data in the vblank
+!for .i , 24 * 4 {
+	lda SpriteFrame0 + (.i-1)
+	sta CIA2PortBRS232
+}
+	jsr Bus24Bit_Reset
+	inc VIC2BorderColour
+	rts
+
+.palette
+	!bin "C:\Work\ImageToBitplane\target\chars_paletteData.bin"
+	!bin "C:\work\BombJack\PaletteData.bin"
+
+.plane0
+	!bin "C:\Work\ImageToBitplane\target\chars_plane0.bin"
+.plane1
+	!bin "C:\Work\ImageToBitplane\target\chars_plane1.bin"
+.plane2
+	!bin "C:\Work\ImageToBitplane\target\chars_plane2.bin"
+
+;    # Chars screen
+.screen
+;	!fill $400 , $ff
+;	!fill $400 , $0f
+	!bin "C:\Work\ImageToBitplane\target\chars_scr.bin"
+
+
+.spritesPlane0
+	!bin "C:\work\BombJack\14_j07b.bin"
+.spritesPlane1
+	!bin "C:\work\BombJack\15_l07b.bin"
+.spritesPlane2
+	!bin "C:\work\BombJack\16_m07b.bin"
+
+
+
+Initialise_NoPreserveStack = 1
+Initialise_NoIRQServiceRoutine = 1
+Initialise_NoMACROWaitForTheLastScan = 1
+!source "C64/stdlib/Initialise.a"
+
+
+!source "BombJack/stdlib/Bus24Bit.a"
+!source "BombJack/stdlib/Video.a"

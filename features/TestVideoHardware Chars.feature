@@ -1,4 +1,4 @@
-Feature: Tests the videocharacter screen data conversion
+Feature: Tests the video character screen data conversion
 
   Uses ImageToBitplane config: oldbridge char screen
   Use ImageToBitplane config to improve clouds conversion as it priortises their colours: oldbridge char screen with rgbfactor
