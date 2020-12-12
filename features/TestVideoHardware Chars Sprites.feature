@@ -22,8 +22,6 @@ Feature: Tests the video character screen data conversion and sprites
     Given add a Chars layer with registers at '0x9000' and addressEx '0x20'
     Given add a Sprites layer with registers at '0x9800' and addressEx '0x10'
     Given show video window
-    Given render a video display frame
-#    Given wait for 5000 milliseconds
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Chars Sprites full.a"
     And I run the command line: ..\C64\bin\LZMPi.exe -c64mbe test.prg testcmp.prg $200

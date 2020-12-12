@@ -34,7 +34,9 @@ mainLoop
 DisplayScreen
 	jsr Bus24Bit_Init
 
-	jsr Bus24Bit_WaitVBlank
+	jsr Bus24Bit_DisableDisplay
+	lda #$30
+	jsr Bus24Bit_EnableDisplay
 	inc VIC2BorderColour
 
 	lda #1

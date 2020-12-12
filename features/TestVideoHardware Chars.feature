@@ -19,7 +19,6 @@ Feature: Tests the video character screen data conversion
 #    Given add a StaticColour layer for palette index '1'
     Given add a Chars layer with registers at '0x9000' and addressEx '0x20'
     Given show video window
-    Given render a video display frame
 
     # Palette
     Given write data from file "C:\Work\ImageToBitplane\target\chars_paletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
@@ -54,8 +53,6 @@ Feature: Tests the video character screen data conversion
     Given add a StaticColour layer for palette index '0x7f'
     Given add a Chars layer with registers at '0x9000' and addressEx '0x20'
     Given show video window
-    Given render a video display frame
-#    Given wait for 5000 milliseconds
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Chars.a"
     And I run the command line: ..\C64\bin\LZMPi.exe -c64mbe test.prg testcmp.prg $200
@@ -89,8 +86,6 @@ Feature: Tests the video character screen data conversion
     Given add a StaticColour layer for palette index '0x7f'
     Given add a Chars layer with registers at '0x9000' and addressEx '0x20'
     Given show video window
-    Given render a video display frame
-#    Given wait for 5000 milliseconds
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Chars full.a"
     And I run the command line: ..\C64\bin\LZMPi.exe -c64mbe test.prg testcmp.prg $200

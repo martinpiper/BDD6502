@@ -24,13 +24,25 @@ mainLoop2
 ;	inc SpriteFrame0+1 + ((.i-1)*4)
 !if (.i & 3) = 0 {
 	dec SpriteFrame0+2 + ((.i-1)*4)
+!if ((.i+3) & 7) = 0 {
+	dec SpriteFrame0+2 + ((.i-1)*4)
+}
 } else {
 	inc SpriteFrame0+2 + ((.i-1)*4)
+!if ((.i+10) & 7) = 0 {
+	inc SpriteFrame0+2 + ((.i-1)*4)
+}
 }
 !if (.i & 1) = 0 {
 	dec SpriteFrame0+3 + ((.i-1)*4)
+!if (.i & 7) = 0 {
+	dec SpriteFrame0+3 + ((.i-1)*4)
+}
 } else {
 	inc SpriteFrame0+3 + ((.i-1)*4)
+!if ((.i+3) & 7) = 0 {
+	inc SpriteFrame0+3 + ((.i-1)*4)
+}
 }
 }
 
@@ -39,13 +51,15 @@ mainLoop2
 DisplayScreen
 	jsr Bus24Bit_Init
 
-	jsr Bus24Bit_WaitVBlank
+	jsr Bus24Bit_DisableDisplay
+	lda #$30
+	jsr Bus24Bit_EnableDisplay
 	inc VIC2BorderColour
 
 	jsr Bus24Bit_SetAddressSpritesControl
 	lda #$10
 	sta CIA2PortBRS232
-	lda #$00
+	lda #$08
 	sta CIA2PortBRS232
 
 	lda #1
@@ -143,7 +157,7 @@ CopyScreen
 
 ; Sprite positions
 SpriteFrame0
-	!by $04,$11,$80,$00
+	!by $04,$31,$80,$00
 	!by $04,$91,$80,$28
 	!by $04,$51,$80,$50
 	!by $04,$d1,$80,$78
