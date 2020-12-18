@@ -99,6 +99,10 @@ public class TestRunner {
 //                colour = 1;
                 displayBombJack.writeData(0x9400 + i, 0x01, colour | (flips << 6) | (exChars << 4));
             }
+
+            // Char screen palette lo/hi
+            //displayBombJack.writeData(0x9000, 0x01, 1);
+
             // Debug top right char screen, A then graphics vertical line on right (not visible due to border), horizontal line on bottom
             displayBombJack.writeData(0x905e,0x01,0x41);
             displayBombJack.writeData(0x905f, 0x01, 0x5f);

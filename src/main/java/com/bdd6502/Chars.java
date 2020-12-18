@@ -19,6 +19,7 @@ public class Chars extends DisplayLayer {
     boolean memoryAssertedPlane0 = false;
     boolean memoryAssertedPlane1 = false;
     boolean memoryAssertedPlane2 = false;
+    int hiPalette = 0;
 
     public Chars() {
     }
@@ -36,6 +37,10 @@ public class Chars extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
+        if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x1f)) {
+            busContention = display.getBusContentionPixels();
+            hiPalette = (data & 0x01) << 4;
+        }
         if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x400)) {
             busContention = display.getBusContentionPixels();
             screenData[address & 0x3ff] = data;
@@ -142,7 +147,7 @@ public class Chars extends DisplayLayer {
         if (pixelPlane2 > 0) {
             finalPixel |= 4;
         }
-        finalPixel |= ((theColour & 0x0f) << 3);
+        finalPixel |= (((theColour & 0x0f)| hiPalette) << 3);
         return getByteOrContention(finalPixel);
     }
 }

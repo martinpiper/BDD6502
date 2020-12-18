@@ -11,11 +11,12 @@ start
 	jsr DisplayScreen
 
 mainLoop
-	+WaitForFireB_A
 	lda #50
 	sta Bus24Bit_WriteMakeSafeReset
 	jsr Bus24Bit_WaitVBlank
 	jsr CopyScreen
+
+	+WaitForFireB_A
 
 mainLoop2
 	; Test for screen/colour RAM write sync to vblank
@@ -156,8 +157,18 @@ CopyScreen
 	jsr Bus24Bit_CopySmallData
 	ldx #$7
 	jsr Bus24Bit_CopySmallDataRepeatForX
+;	jsr SetCharUpperPaletteBank
 	jsr Bus24Bit_Reset
 	inc VIC2BorderColour
+	rts
+
+SetCharUpperPaletteBank
+	; Char screen upper palette bank test
+	lda #$01
+	+MWordValueTo_XY $9000
+	jsr Bus24Bit_SetAddressBus
+	lda #$01
+	sta CIA2PortBRS232
 	rts
 
 ; Sprite positions
@@ -217,8 +228,8 @@ CopySprites
 
 ;    # Chars screen
 .screen
-;	!fill $400 , $ff
-;	!fill $400 , $0f
+;	!fill $400 , $00
+;	!fill $400 , $21
 	!bin "C:\Work\ImageToBitplane\target\chars_scr.bin"
 
 
