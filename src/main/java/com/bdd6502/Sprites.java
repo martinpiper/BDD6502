@@ -133,6 +133,8 @@ public class Sprites extends DisplayLayer {
         return finalPixel;
     }
 
+    int spriteIndexReJig[] = {8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2,3,4,5,6,7};
+
     void handleSpriteSchedule(int displayH, int displayV) {
         if (displayH == 0x180) {
             skipNextSprite = false;
@@ -156,6 +158,9 @@ public class Sprites extends DisplayLayer {
             return;
         }
         int spriteIndex = (displayH / 16);
+        spriteIndex = spriteIndexReJig[spriteIndex];
+
+//        System.out.println("Sprite: " + spriteIndex  + " line " + displayV + " offScreen " + offScreen);
 
         // Handle timings of sprite register reads at the appropriate time in the raster
         int theColour = getByteOrContention(spritePalette[spriteIndex]);

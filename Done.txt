@@ -235,3 +235,7 @@ Added: Given I am using C64 processor port options
 
 * Full height sprites with 32x32 mode enabled, should not display repeated 32x32 sprite data chunks, they should show 32x16 sprite data
 	According to the simulation from bus data output by features\TestVideoHardware Chars Sprites.feature
+
+
+
+* spriteIndexReJig is used to adjust the sprite reading schedule to that of the hardware
