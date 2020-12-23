@@ -7,10 +7,14 @@
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Chars.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Chars.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Tiles.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Tiles.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/syntax.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testcmp.prg" beforeDir="false" afterPath="$PROJECT_DIR$/testcmp.prg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000006.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000006.bmp" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -91,7 +95,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5">
+  <component name="RunManager" selected="Application.TestRunner no parameters">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -167,6 +171,14 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags @TC-5 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue &quot;features/TestVideoHardware Chars Sprites.feature&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner TestVideoHardware Chars.feature @TC-2" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @TC-2 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue &quot;features/TestVideoHardware Chars.feature&quot;" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -498,6 +510,7 @@
       <item itemvalue="Application.TestRunner --exportmod" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
+      <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature @TC-2" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature @TC-3" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature @TC-4" />
@@ -563,10 +576,10 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1608540392539">
+    <state x="315" y="174" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1608712521009">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608540392539" />
+    <state x="315" y="174" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608712521009" />
     <state x="191" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1605845538642" />
     <state x="673" y="321" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1607742210265">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -580,29 +593,33 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="557" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604716647086" />
+    <state x="587" y="88" key="CommitChangelistDialog2" timestamp="1608714179655">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="587" y="88" key="CommitChangelistDialog2/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608714179655" />
     <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1604216054067">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="274" key="FileChooserDialogImpl/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604216054067" />
-    <state width="1877" height="242" key="GridCell.Tab.0.bottom" timestamp="1608541582811">
+    <state width="1877" height="242" key="GridCell.Tab.0.bottom" timestamp="1608715922223">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="242" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608541582811" />
+    <state width="1877" height="242" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608715922223" />
     <state width="1237" height="101" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1605849796715" />
-    <state width="1877" height="242" key="GridCell.Tab.0.center" timestamp="1608541582811">
+    <state width="1877" height="242" key="GridCell.Tab.0.center" timestamp="1608715922223">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="242" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608541582811" />
+    <state width="1877" height="242" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608715922223" />
     <state width="1237" height="101" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1605849796714" />
-    <state width="1877" height="242" key="GridCell.Tab.0.left" timestamp="1608541582811">
+    <state width="1877" height="242" key="GridCell.Tab.0.left" timestamp="1608715922223">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="242" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608541582811" />
+    <state width="1877" height="242" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608715922223" />
     <state width="1237" height="101" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1605849796714" />
-    <state width="1877" height="242" key="GridCell.Tab.0.right" timestamp="1608541582811">
+    <state width="1877" height="242" key="GridCell.Tab.0.right" timestamp="1608715922223">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="242" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608541582811" />
+    <state width="1877" height="242" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608715922223" />
     <state width="1237" height="101" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1605849796714" />
     <state width="1877" height="283" key="GridCell.Tab.1.bottom" timestamp="1608541471555">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -640,19 +657,19 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1263" y="175" key="extract.method.dialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1604584511801" />
-    <state x="541" y="275" width="1239" height="608" key="find.popup" timestamp="1608527409014">
+    <state x="541" y="275" width="1239" height="608" key="find.popup" timestamp="1608712605777">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="541" y="275" width="1239" height="608" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608527409014" />
+    <state x="541" y="275" width="1239" height="608" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608712605777" />
     <state x="361" y="0" width="826" height="680" key="find.popup/0.0.1280.680@0.0.1280.680" timestamp="1605846205299" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1606230120721">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="616" y="240" key="run.anything.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1606230120721" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1608540519115">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1608714394168">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608540519115" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608714394168" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

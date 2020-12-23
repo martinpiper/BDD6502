@@ -9,8 +9,9 @@ public class Chars extends DisplayLayer {
     int addressPlane0 = 0x2000, addressExPlane0 = 0x20;
     int addressPlane1 = 0x4000, addressExPlane1 = 0x20;
     int addressPlane2 = 0x8000, addressExPlane2 = 0x20;
-    byte screenData[] = new byte[0x400];
-    byte colourData[] = new byte[0x400];
+    int addressScreenV4_0 = 0x4000, addressExScreenV4_0 = 0x80;
+    byte screenData[];
+    byte colourData[];
     byte plane0[] = new byte[0x2000];
     byte plane1[] = new byte[0x2000];
     byte plane2[] = new byte[0x2000];
@@ -20,6 +21,10 @@ public class Chars extends DisplayLayer {
     boolean memoryAssertedPlane1 = false;
     boolean memoryAssertedPlane2 = false;
     int hiPalette = 0;
+    boolean isV4_0 = false;
+    byte screenDataV4_0[];
+    int theBank = 0;
+    boolean displayDisable = false;
 
     public Chars() {
     }
@@ -33,21 +38,49 @@ public class Chars extends DisplayLayer {
         this.addressExPlane0 = addressExPlane0;
         this.addressExPlane1 = addressExPlane0;
         this.addressExPlane2 = addressExPlane0;
+        screenData = new byte[0x400];
+        colourData = new byte[0x400];
+    }
+
+    public Chars(int addressScreen, int addressExScreen, int addressExPlane0) {
+        assertThat(addressScreen, is(greaterThanOrEqualTo(0x8000)));
+        assertThat(addressScreen, is(lessThan(0xc000)));
+        assertThat(addressScreen & 0x7ff, is(equalTo(0x00)));
+        this.addressScreen = addressScreen;
+        this.addressColour = addressScreen + 0x400;
+        this.addressExPlane0 = addressExPlane0;
+        this.addressExPlane1 = addressExPlane0;
+        this.addressExPlane2 = addressExPlane0;
+        this.addressExScreenV4_0 = addressExScreen;
+        isV4_0 = true;
+        screenDataV4_0 = new byte[0x2000];
     }
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
         if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x1f)) {
-            busContention = display.getBusContentionPixels();
+            if (!isV4_0) {
+                busContention = display.getBusContentionPixels();
+            }
             hiPalette = (data & 0x01) << 4;
+            theBank = (data >> 6) & 0x03;
+
+            displayDisable = MemoryBus.addressActive(data , 0x02);
         }
-        if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x400)) {
-            busContention = display.getBusContentionPixels();
-            screenData[address & 0x3ff] = data;
-        }
-        if (MemoryBus.addressActive(addressEx, addressExColour) && address >= addressColour && address < (addressColour + 0x400)) {
-            busContention = display.getBusContentionPixels();
-            colourData[address & 0x3ff] = data;
+        if (!isV4_0) {
+            if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x400)) {
+                busContention = display.getBusContentionPixels();
+                screenData[address & 0x3ff] = data;
+            }
+            if (MemoryBus.addressActive(addressEx, addressExColour) && address >= addressColour && address < (addressColour + 0x400)) {
+                busContention = display.getBusContentionPixels();
+                colourData[address & 0x3ff] = data;
+            }
+        } else {
+            if (MemoryBus.addressActive(addressEx, addressExScreenV4_0) && address >= addressScreenV4_0 && address < (addressScreenV4_0 + 0x2000)) {
+                busContention = display.getBusContentionPixels();
+                screenDataV4_0[address & 0x1fff] = data;
+            }
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
@@ -95,6 +128,10 @@ public class Chars extends DisplayLayer {
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
+        if (displayDisable) {
+            return 0;
+        }
+
         if ((displayH & 0x188) == 0) {
             latchedDisplayV = displayV;
         }
@@ -105,9 +142,19 @@ public class Chars extends DisplayLayer {
         displayH = displayH & 0xff;
         // -1 to match the real hardware
         int index = (((displayH >> 3) - 1) & 0x1f) + (((latchedDisplayV >> 3) & 0x1f) * 0x20);
-        int theChar = (screenData[index]) & 0xff;
+        int theChar;
+        if (!isV4_0) {
+            theChar = (screenData[index]) & 0xff;
+        } else {
+            theChar = (screenDataV4_0[index + (theBank * 0x800)]) & 0xff;
+        }
 //        System.out.println(displayH + " " + latchedDisplayV + " Chars index: " + Integer.toHexString(index) + " char " + Integer.toHexString(theChar));
-        byte theColour = colourData[index];
+        byte theColour;
+        if (!isV4_0) {
+            theColour = colourData[index];
+        } else {
+            theColour = screenDataV4_0[index + (theBank * 0x800) + 0x400];
+        }
         if (memoryAssertedScreenRAM) {
             theChar = 0xff;
             theColour = (byte) 0xff;
@@ -147,7 +194,7 @@ public class Chars extends DisplayLayer {
         if (pixelPlane2 > 0) {
             finalPixel |= 4;
         }
-        finalPixel |= (((theColour & 0x0f)| hiPalette) << 3);
+        finalPixel |= (((theColour & 0x0f) | hiPalette) << 3);
         return getByteOrContention(finalPixel);
     }
 }

@@ -127,6 +127,7 @@ public class Tiles extends DisplayLayer {
         if (!enableTiles) {
             return 0;
         }
+
         if ((displayH & 0x188) == 0) {
             latchedDisplayV = displayV;
         }

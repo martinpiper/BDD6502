@@ -239,3 +239,8 @@ Added: Given I am using C64 processor port options
 
 
 * spriteIndexReJig is used to adjust the sprite reading schedule to that of the hardware
+
+
+
+* Chars V4.0 emulation update to match schematic
+
