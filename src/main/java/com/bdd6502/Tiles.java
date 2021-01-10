@@ -79,6 +79,7 @@ public class Tiles extends DisplayLayer {
         }
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x07) {
             backgroundColour = data & 0xff;
+//            System.out.println("BG change " + data + " " + display.displayH + " " + display.displayV + " " + display.getFrameNumberForSync());
         }
 
         if (MemoryBus.addressActive(addressEx, addressExScreen) && MemoryBus.addressActive(address, addressScreen)) {

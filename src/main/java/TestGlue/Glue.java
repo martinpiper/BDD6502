@@ -615,9 +615,10 @@ public class Glue {
             lastFramesCount = 0;
         }
 
+        long frameDelta = 0;
         // Pushing lots of 0 onto the stack will eventually return to address 1
         while (machine.getCpu().getProgramCounter() > 1) {
-
+            frameDelta = 0;
             if (displayBombJack != null) {
                 int joystickBits = 0;
                 if (!displayBombJack.getWindow().isPressedUp()) {
@@ -647,7 +648,7 @@ public class Glue {
                 targetNumberFrames /= 1000;
                 int displayFrame = displayBombJack.getFrameNumberForSync() - displaySyncFrame;
 
-                long frameDelta = targetNumberFrames - displayFrame;
+                frameDelta = targetNumberFrames - displayFrame;
                 if (displayBombJack != null && displayLimitFPS > 0 && System.currentTimeMillis() > (timeSinceLastDebugDisplayTimes + 1000)) {
                     long timeNowMillis = System.currentTimeMillis();
                     long periodMillis = timeNowMillis - timeSinceLastDebugDisplayTimes;
@@ -702,7 +703,11 @@ public class Glue {
                 break;
             }
             Integer addr = machine.getCpu().getCpuState().pc;
-            internalCPUStep(displayTrace);
+            if (displayLimitFPS > 0 && frameDelta <= 0) {
+                // If we are limiting the frames and no frame needs to be rendered then don't execute instructions
+            } else {
+                internalCPUStep(displayTrace);
+            }
             instructionsThisPeriod++;
             numInstructions++;
             if (maxInstructions > 0) {
