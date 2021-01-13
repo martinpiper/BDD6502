@@ -10,14 +10,12 @@ import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
-import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import gherkin.lexer.Th;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,7 +27,6 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
-import java.sql.Time;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -642,6 +639,13 @@ public class Glue {
                 if (enableJoystick2) {
                     machine.getBus().write(0xdc01, joystickBits);
                 }
+                if (displayBombJack != null && enableCIA1RasterTimer) {
+                    machine.getBus().write(0xdc04, (displayBombJack.getDisplayX(cia1RasterOffsetX) * 62) / 384); // CIA1TimerALo
+                    machine.getBus().write(0xdc05, 0); // CIA1TimerAHi
+                    machine.getBus().write(0xdc06, displayBombJack.getDisplayYForCIA(cia1RasterOffsetY)); // CIA1TimerBLo
+                    machine.getBus().write(0xdc07, displayBombJack.getDisplayYForCIA(cia1RasterOffsetY) >> 8); // CIA1TimerBHi
+                }
+
                 // Execute video clocks while running the CPU
                 long targetNumberFrames = System.currentTimeMillis() - startTime;
                 targetNumberFrames *= displayLimitFPS;
@@ -1435,6 +1439,16 @@ public class Glue {
     @Given("^video display add joystick to port 2$")
     public void addJoystickPort2() {
         enableJoystick2 = true;
+    }
+
+    boolean enableCIA1RasterTimer = false;
+    int cia1RasterOffsetX = 0;
+    int cia1RasterOffsetY = 0;
+    @Given("^video display add CIA1 timers with raster offset (\\d+) , (\\d+)$")
+    public void video_display_add_CIA_timers_with_raster_offset(int offsetX, int offsetY) throws Throwable {
+        enableCIA1RasterTimer = true;
+        cia1RasterOffsetX = offsetX;
+        cia1RasterOffsetY = cia1RasterOffsetY;
     }
 
     Socket remoteMonitor;

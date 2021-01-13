@@ -34,6 +34,14 @@ public class DisplayBombJack extends MemoryBus {
         return displayV;
     }
 
+    public int getDisplayX(int cia1RasterOffsetX) {
+        return displayX + cia1RasterOffsetX;
+    }
+
+    public int getDisplayYForCIA(int cia1RasterOffsetY) {
+        return ((displayHeight - (displayY + cia1RasterOffsetY)) - 16) & 0x1ff;   // These tweak values are aligned with using Bus24Bit_StartRasterTimers immediately after using Bus24Bit_WaitVBlank
+    }
+
     public boolean is_hSync() {
         return _hSync;
     }

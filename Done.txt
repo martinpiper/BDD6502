@@ -244,3 +244,13 @@ Added: Given I am using C64 processor port options
 
 * Chars V4.0 emulation update to match schematic
 
+
+
+* Emulate C64 timer to allow the video clock (12.096M) to drive the timer clocks
+	A use case is where the C64 sets a timer to count the vertical raster position after the vsync signal is detected
+		Pixel clock = 12.096M / 2 = 6048000 Hz
+		The line length is 384 pixels, which gives 15750 Hz or 0.063492063492063 ms or 6.349206349206349e-5 seconds
+		C64 CyclesPerSecondPALC64	= 985248 Hz
+			Which means 985248 (clocks per second) / 15750 (line length from video) = 62.56 clocks per line
+	* Added Bus24Bit_StartRasterTimers
+		* Easiest route will be to have a faked timer for the emulation that is setup to provide values like those in the hardware, but ignores the C64 CIA timer code setup values
