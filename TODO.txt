@@ -1,5 +1,11 @@
 ; TODO items
 
+* Note in hardware RH=$180 then $181 but RV = 0 and RV = 1. The first RH pixel is reported as the previous scan index
+	Technically the first RH pixel on the new scanline is $181, not $180
+
+
+
+
 * Simulation of the test data from the chars + sprites test shows char screen/colour uploaded during the screen display have "random" data contention issues.
 	This is because the V3.0 hardware prioritises the video address fetch setup over the memory write setup
 	This behaviour is observed in the hardware with full user port interface.
@@ -16,7 +22,7 @@
 
 
 * Does audio frequency need a latch on the high byte to make it read a complete 16 bit value?
-	Sometimes yes, if the music updates the frequency a lot, but during tests it isn't that noticable if the update is done quickly
+	Sometimes yes, if the music updates the frequency a lot, but during tests it isn't that noticeable if the update is done quickly
 		In usual cases the update would be done quickly enough not to notice
 		Also the latch would mean extra complexity in hardware, which is perhaps not needed
 
