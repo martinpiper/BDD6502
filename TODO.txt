@@ -2,6 +2,7 @@
 
 * Note in hardware RH=$180 then $181 but RV = 0 and RV = 1. The first RH pixel is reported as the previous scan index
 	Technically the first RH pixel on the new scanline is $181, not $180
+	This is going to be very important for the APU emulation
 
 
 
