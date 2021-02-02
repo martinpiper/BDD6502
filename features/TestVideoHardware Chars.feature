@@ -18,6 +18,8 @@ Feature: Tests the video character screen data conversion
 #    Given add a GetBackground layer fetching from layer index '0'
 #    Given add a StaticColour layer for palette index '1'
     Given add a Chars layer with registers at '0x9000' and addressEx '0x20'
+    # Enable display
+    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
     Given show video window
 
     # Palette
@@ -30,8 +32,7 @@ Feature: Tests the video character screen data conversion
     Given write data from file "C:\Work\ImageToBitplane\target\chars_scr.bin" to 24bit bus at '0x9000' and addressEx '0x01'
 
     # Enable display with all borders
-    Given write data byte '0xf0' to 24bit bus at '0x9e00' and addressEx '0x01'
-
+    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
 
     Given render a video display frame
     Then expect image "testdata/TC-2-000000.bmp" to be identical to "target/frames/TC-2-000000.bmp"
@@ -53,6 +54,8 @@ Feature: Tests the video character screen data conversion
     Given a simple user port to 24 bit bus is installed
     Given add a StaticColour layer for palette index '0x7f'
     Given add a Chars layer with registers at '0x9000' and addressEx '0x20'
+    # Enable display, since the Bus24Bit_EnableDisplay code dos not properly use the simple bus, however it is deprecated
+    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
     Given show video window
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Chars.a"
@@ -116,6 +119,8 @@ Feature: Tests the video character screen data conversion
 #    Given add a GetBackground layer fetching from layer index '0'
 #    Given add a StaticColour layer for palette index '1'
     Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
+    # Enable display
+    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
     Given show video window
 
     # Palette
@@ -135,9 +140,6 @@ Feature: Tests the video character screen data conversion
     # Bank 3
     Given write data byte '0x0f' to 24bit bus at '0x5840' and addressEx '0x80'
     Given write data byte '0x21' to 24bit bus at '0x5c40' and addressEx '0x80'
-
-    # Enable display with all borders
-    Given write data byte '0xf0' to 24bit bus at '0x9e00' and addressEx '0x01'
 
     # Test the chars layer display disable
     Given write data byte '0x02' to 24bit bus at '0x9000' and addressEx '0x01'

@@ -74,6 +74,8 @@ public class TestRunner {
             displayBombJack.InitWindow();
 
 //            displayBombJack.writeData(0x9e00, 0x01, 0xf0);
+            // Default layer order
+            displayBombJack.writeData(0x9e08, 0x01, 0xe4);
             // Just display, no tiles
             displayBombJack.writeData(0x9e00, 0x01, 0x20);
 

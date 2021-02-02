@@ -62,8 +62,13 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0xff' to 24bit bus at '0x9c00' and addressEx '0x01'
     # Enable display with all borders
     Given write data byte '0xf0' to 24bit bus at '0x9e00' and addressEx '0x01'
+    # Default layer priority
+    Given write data byte '0xe4' to 24bit bus at '0x9e08' and addressEx '0x01'
 
     Given render a video display frame
+
+    # Disable the display again, to prepare for the code to turn it back on again
+    Given write data byte '0x00' to 24bit bus at '0x9e00' and addressEx '0x01'
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm features/TestVideoHardware.a
     And I load prg "test.prg"

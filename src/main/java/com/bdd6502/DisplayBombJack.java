@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -12,13 +13,15 @@ public class DisplayBombJack extends MemoryBus {
     DisplayMainFrame window;
     QuickDrawPanel panel;
 
-    LinkedList<DisplayLayer> layers = new LinkedList<>();
+    ArrayList<DisplayLayer> layers = new ArrayList<>();
 
     int frameNumber = 0;
     int displayWidth = 384;
     int displayHeight = 264;
     int busContentionPalette = 0;
     int addressPalette = 0x9c00, addressExPalette = 0x01;
+    int addressRegisters = 0x9e00, addressExRegisters = 0x01;
+    int displayPriority = 0;  // Default to be 0, this helps ensure startup code correctly sets this option
 
     public int getFrameNumberForSync() {
         return frameNumberForSync;
@@ -54,8 +57,8 @@ public class DisplayBombJack extends MemoryBus {
     int displayX = 0, displayY = 0;
     int displayBitmapX = 0, displayBitmapY = 0;
     boolean enablePixels = false;
-    boolean borderX = false, borderY = false;   // Set by the Tiles layer (if added)
-    boolean enableDisplay = true;               // Set by the Tiles layer (if added)
+    boolean borderX = true, borderY = true;
+    boolean enableDisplay = false;  // Default to be display off, this helps ensure startup code correctly sets this option
     int latchedPixel = 0;
     int palette[] = new int[256];
     Random random = new Random();
@@ -176,6 +179,31 @@ public class DisplayBombJack extends MemoryBus {
                 palette[index] = colour.getRGB();
             }
         }
+
+        // This logic now exists on the video layer hardware
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters) {
+            if ((data & 0x20) > 0) {
+                enableDisplay = true;
+            } else {
+                enableDisplay = false;
+            }
+            if ((data & 0x80) > 0) {
+                borderY = true;
+            } else {
+                borderY = false;
+            }
+            if ((data & 0x40) > 0) {
+                borderX = true;
+            } else {
+                borderX = false;
+            }
+        }
+
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x08) {
+            displayPriority = data;
+        }
+
+        // Handle other layer writes
         for (DisplayLayer layer : layers) {
             layer.writeData(address, addressEx, data);
         }
@@ -311,14 +339,39 @@ public class DisplayBombJack extends MemoryBus {
 
         latchedPixel = 0;
         boolean firstLayer = true;
-        for (DisplayLayer layer : layers) {
-            int pixel = layer.calculatePixel(displayH, displayV, _hSync, _vSync);
-            layer.ageContention();
-            // If there is pixel data in the layer then use it
-            // Always use the first colour, which is the furthest layer colour
-            if ((pixel & 0x07) != 0 || firstLayer) {
-                latchedPixel = pixel;
-                firstLayer = false;
+        if (layers.size() <= 4) {
+            int cachedPixel[] = {-1,-1,-1,-1};
+            // Go backwards from the furthest plane first
+            for (int i = layers.size()-1 ; i >= 0 ; i--) {
+                int theLayer = (displayPriority >> (i*2)) & 0x03;
+                theLayer = (layers.size()-1)-theLayer;
+                if (theLayer >= 0 && theLayer < layers.size()) {
+                    // Ensure each layer index is executed once
+                    if (cachedPixel[theLayer] < 0) {
+                        DisplayLayer displayLayer = layers.get(theLayer);
+                        int pixel = displayLayer.calculatePixel(displayH, displayV, _hSync, _vSync);
+                        if ((pixel & 0x07) != 0 || firstLayer) {
+                            latchedPixel = pixel;
+                            firstLayer = false;
+                        }
+                        cachedPixel[theLayer] = pixel;
+                    }
+                }
+            }
+            // Age all layers once, regardless of the priority setting
+            for (DisplayLayer layer : layers) {
+                layer.ageContention();
+            }
+        } else {
+            for (DisplayLayer layer : layers) {
+                int pixel = layer.calculatePixel(displayH, displayV, _hSync, _vSync);
+                layer.ageContention();
+                // If there is pixel data in the layer then use it
+                // Always use the first colour, which is the furthest layer colour
+                if ((pixel & 0x07) != 0 || firstLayer) {
+                    latchedPixel = pixel;
+                    firstLayer = false;
+                }
             }
         }
 

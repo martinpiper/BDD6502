@@ -254,3 +254,7 @@ Added: Given I am using C64 processor port options
 			Which means 985248 (clocks per second) / 15750 (line length from video) = 62.56 clocks per line
 	* Added Bus24Bit_StartRasterTimers
 		* Easiest route will be to have a faked timer for the emulation that is setup to provide values like those in the hardware, but ignores the C64 CIA timer code setup values
+
+
+
+* Moved display enable/border/priority registers to video generation logic

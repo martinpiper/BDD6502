@@ -35,30 +35,8 @@ public class Tiles extends DisplayLayer {
     }
 
     @Override
-    public void setDisplay(DisplayBombJack theDisplay) {
-        theDisplay.enableDisplay = false;
-        super.setDisplay(theDisplay);
-    }
-
-    @Override
     public void writeData(int address, int addressEx, byte data) {
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x00) {
-            if ((data & 0x20) > 0) {
-                display.enableDisplay = true;
-            } else {
-                display.enableDisplay = false;
-            }
-            if ((data & 0x80) > 0) {
-                display.borderY = true;
-            } else {
-                display.borderY = false;
-            }
-            if ((data & 0x40) > 0) {
-                display.borderX = true;
-            } else {
-                display.borderX = false;
-            }
-
             if ((data & 0x10) > 0) {
                 enableTiles = true;
             } else {
