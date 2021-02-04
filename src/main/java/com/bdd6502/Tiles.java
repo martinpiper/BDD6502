@@ -70,17 +70,17 @@ public class Tiles extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
+        if (MemoryBus.addressActive(addressEx, addressExPlane0)) {
             busContention = display.getBusContentionPixels();
-            plane0[address & 0x1fff] = data;
-        }
-        if (MemoryBus.addressActive(addressEx, addressExPlane1) && MemoryBus.addressActive(address, addressPlane1)) {
-            busContention = display.getBusContentionPixels();
-            plane1[address & 0x1fff] = data;
-        }
-        if (MemoryBus.addressActive(addressEx, addressExPlane2) && MemoryBus.addressActive(address, addressPlane2)) {
-            busContention = display.getBusContentionPixels();
-            plane2[address & 0x1fff] = data;
+            if (MemoryBus.addressActive(address, addressPlane0)) {
+                plane0[address & 0x1fff] = data;
+            }
+            if (MemoryBus.addressActive(address, addressPlane1)) {
+                plane1[address & 0x1fff] = data;
+            }
+            if (MemoryBus.addressActive(address, addressPlane2)) {
+                plane2[address & 0x1fff] = data;
+            }
         }
     }
 

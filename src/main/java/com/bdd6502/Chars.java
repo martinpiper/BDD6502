@@ -17,9 +17,7 @@ public class Chars extends DisplayLayer {
     byte plane2[] = new byte[0x2000];
     int latchedDisplayV = 0;
     boolean memoryAssertedScreenRAM = false;
-    boolean memoryAssertedPlane0 = false;
-    boolean memoryAssertedPlane1 = false;
-    boolean memoryAssertedPlane2 = false;
+    boolean memoryAssertedPlane = false;
     int hiPalette = 0;
     boolean isV4_0 = false;
     byte screenDataV4_0[];
@@ -84,17 +82,17 @@ public class Chars extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
+        if (MemoryBus.addressActive(addressEx, addressExPlane0)) {
             busContention = display.getBusContentionPixels();
-            plane0[address & 0x1fff] = data;
-        }
-        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane1)) {
-            busContention = display.getBusContentionPixels();
-            plane1[address & 0x1fff] = data;
-        }
-        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane2)) {
-            busContention = display.getBusContentionPixels();
-            plane2[address & 0x1fff] = data;
+            if (MemoryBus.addressActive(address, addressPlane0)) {
+                plane0[address & 0x1fff] = data;
+            }
+            if (MemoryBus.addressActive(address, addressPlane1)) {
+                plane1[address & 0x1fff] = data;
+            }
+            if (MemoryBus.addressActive(address, addressPlane2)) {
+                plane2[address & 0x1fff] = data;
+            }
         }
     }
 
@@ -109,20 +107,10 @@ public class Chars extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
-            memoryAssertedPlane0 = true;
+        if (MemoryBus.addressActive(addressEx, addressExPlane0)) {
+            memoryAssertedPlane = true;
         } else {
-            memoryAssertedPlane0 = false;
-        }
-        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane1)) {
-            memoryAssertedPlane1 = true;
-        } else {
-            memoryAssertedPlane1 = false;
-        }
-        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane2)) {
-            memoryAssertedPlane2 = true;
-        } else {
-            memoryAssertedPlane2 = false;
+            memoryAssertedPlane = false;
         }
     }
 
@@ -175,13 +163,9 @@ public class Chars extends DisplayLayer {
         int pixelPlane0 = plane0[(theChar << 3) + latchedDisplayV2] & (1 << displayH);
         int pixelPlane1 = plane1[(theChar << 3) + latchedDisplayV2] & (1 << displayH);
         int pixelPlane2 = plane2[(theChar << 3) + latchedDisplayV2] & (1 << displayH);
-        if (memoryAssertedPlane0) {
+        if (memoryAssertedPlane) {
             pixelPlane0 = 0xff;
-        }
-        if (memoryAssertedPlane1) {
             pixelPlane1 = 0xff;
-        }
-        if (memoryAssertedPlane2) {
             pixelPlane2 = 0xff;
         }
         int finalPixel = 0;
