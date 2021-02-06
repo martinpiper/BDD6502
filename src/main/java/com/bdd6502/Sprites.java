@@ -12,6 +12,7 @@ public class Sprites extends DisplayLayer {
     byte plane0[] = new byte[0x2000];
     byte plane1[] = new byte[0x2000];
     byte plane2[] = new byte[0x2000];
+    byte plane3[] = new byte[0x2000];
     int lo32 = 0, hi32 = 0;
     boolean spriteEnable = false;
     boolean skipNextSprite = false;
@@ -86,6 +87,9 @@ public class Sprites extends DisplayLayer {
             }
             if (MemoryBus.addressActive(address, addressPlane2)) {
                 plane2[address & 0x1fff] = data;
+            }
+            if(is16Colours && MemoryBus.addressLower8KActive(address)) {
+                plane3[address & 0x1fff] = data;
             }
         }
     }
@@ -184,11 +188,22 @@ public class Sprites extends DisplayLayer {
         // +32 to adjust for expected behaviour where 0y = Bottom of the sprite on the bottom edge of the visible screen
         int deltaY = (displayV + spriteSizeX + getByteOrContention(spriteY[spriteIndex])) & 0xff;
         if (!fullHeightSprite && (deltaY >= spriteSizeX)) {
-            int finalPixel = ((theColour & 0x1f) << 3);
+            int finalPixel = 0;
+            if (is16Colours) {
+                finalPixel = ((theColour & 0x0f) << 4);
+            } else {
+                finalPixel = ((theColour & 0x1f) << 3);
+            }
             for (int pixelIndex = 0; pixelIndex < spriteSizeX; pixelIndex++) {
                 int finalXPos = (getByteOrContention(spriteX[spriteIndex]) + pixelIndex) & 0xff;
-                if ((calculatedRasters[offScreen][finalXPos] & 0x07) == 0) {
-                    calculatedRasters[offScreen][finalXPos] = finalPixel;   // Note, no contention since bit plane shifters are forced to be reset to 0
+                if (is16Colours) {
+                    if ((calculatedRasters[offScreen][finalXPos] & 0x0f) == 0) {
+                        calculatedRasters[offScreen][finalXPos] = finalPixel;   // Note, no contention since bit plane shifters are forced to be reset to 0
+                    }
+                } else {
+                    if ((calculatedRasters[offScreen][finalXPos] & 0x07) == 0) {
+                        calculatedRasters[offScreen][finalXPos] = finalPixel;   // Note, no contention since bit plane shifters are forced to be reset to 0
+                    }
                 }
             }
             return;
@@ -212,6 +227,7 @@ public class Sprites extends DisplayLayer {
             int pixelPlane0;
             int pixelPlane1;
             int pixelPlane2;
+            int pixelPlane3 = 0;
             int quadrantOffset = 0;
             if (spriteSizeX == 32) {
                 // TODO: Needs expansion for 32x32 sprites
@@ -290,6 +306,9 @@ public class Sprites extends DisplayLayer {
             pixelPlane0 = plane0[planeOffset] & (1 << pixelShift);
             pixelPlane1 = plane1[planeOffset] & (1 << pixelShift);
             pixelPlane2 = plane2[planeOffset] & (1 << pixelShift);
+            if (is16Colours) {
+                pixelPlane3 = plane3[planeOffset] & (1 << pixelShift);
+            }
             int finalPixel = 0;
             if (pixelPlane0 > 0) {
                 finalPixel |= 1;
@@ -300,11 +319,26 @@ public class Sprites extends DisplayLayer {
             if (pixelPlane2 > 0) {
                 finalPixel |= 4;
             }
-            finalPixel |= ((theColour & 0x1f) << 3);
+            if (is16Colours) {
+                if (pixelPlane3 > 0) {
+                    finalPixel |= 8;
+                }
+            }
+            if (is16Colours) {
+                finalPixel |= ((theColour & 0x0f) << 4);
+            } else {
+                finalPixel |= ((theColour & 0x1f) << 3);
+            }
             int finalXPos = (getByteOrContention(spriteX[spriteIndex]) + pixelIndex) & 0xff;
             // Only output the pixel if there is nothing else there
-            if ((calculatedRasters[offScreen][finalXPos] & 0x07) == 0) {
-                calculatedRasters[offScreen][finalXPos] = getByteOrContention(finalPixel);
+            if (is16Colours) {
+                if ((calculatedRasters[offScreen][finalXPos] & 0x0f) == 0) {
+                    calculatedRasters[offScreen][finalXPos] = getByteOrContention(finalPixel);
+                }
+            } else {
+                if ((calculatedRasters[offScreen][finalXPos] & 0x07) == 0) {
+                    calculatedRasters[offScreen][finalXPos] = getByteOrContention(finalPixel);
+                }
             }
         }
     }

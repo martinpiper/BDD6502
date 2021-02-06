@@ -15,6 +15,7 @@ public class Chars extends DisplayLayer {
     byte plane0[] = new byte[0x2000];
     byte plane1[] = new byte[0x2000];
     byte plane2[] = new byte[0x2000];
+    byte plane3[] = new byte[0x2000];
     int latchedDisplayV = 0;
     boolean memoryAssertedScreenRAM = false;
     boolean memoryAssertedPlane = false;
@@ -60,7 +61,9 @@ public class Chars extends DisplayLayer {
             if (!isV4_0) {
                 busContention = display.getBusContentionPixels();
             }
-            hiPalette = (data & 0x01) << 4;
+            if (!is16Colours) {
+                hiPalette = (data & 0x01) << 4;
+            }
             theBank = (data >> 6) & 0x03;
 
             displayDisable = MemoryBus.addressActive(data , 0x02);
@@ -93,6 +96,9 @@ public class Chars extends DisplayLayer {
             if (MemoryBus.addressActive(address, addressPlane2)) {
                 plane2[address & 0x1fff] = data;
             }
+            if(is16Colours && MemoryBus.addressLower8KActive(address)) {
+                plane3[address & 0x1fff] = data;
+            }
         }
     }
 
@@ -105,7 +111,6 @@ public class Chars extends DisplayLayer {
         if (MemoryBus.addressActive(addressEx, addressExColour) && address >= addressColour && address < (addressColour + 0x400)) {
             memoryAssertedScreenRAM = true;
         }
-
         // This selection logic is because the actual address line is used to select the memory, not a decoder
         if (MemoryBus.addressActive(addressEx, addressExPlane0)) {
             memoryAssertedPlane = true;
@@ -163,10 +168,17 @@ public class Chars extends DisplayLayer {
         int pixelPlane0 = plane0[(theChar << 3) + latchedDisplayV2] & (1 << displayH);
         int pixelPlane1 = plane1[(theChar << 3) + latchedDisplayV2] & (1 << displayH);
         int pixelPlane2 = plane2[(theChar << 3) + latchedDisplayV2] & (1 << displayH);
+        int pixelPlane3 = 0;
+        if (is16Colours) {
+            pixelPlane3 = plane3[(theChar << 3) + latchedDisplayV2] & (1 << displayH);
+        }
         if (memoryAssertedPlane) {
             pixelPlane0 = 0xff;
             pixelPlane1 = 0xff;
             pixelPlane2 = 0xff;
+            if (is16Colours) {
+                pixelPlane3 = 0xff;
+            }
         }
         int finalPixel = 0;
         if (pixelPlane0 > 0) {
@@ -178,7 +190,14 @@ public class Chars extends DisplayLayer {
         if (pixelPlane2 > 0) {
             finalPixel |= 4;
         }
-        finalPixel |= (((theColour & 0x0f) | hiPalette) << 3);
+        if (is16Colours) {
+            if (pixelPlane3 > 0) {
+                finalPixel |= 8;
+            }
+            finalPixel |= (((theColour & 0x0f)) << 4);
+        } else {
+            finalPixel |= (((theColour & 0x0f) | hiPalette) << 3);
+        }
         return getByteOrContention(finalPixel);
     }
 }

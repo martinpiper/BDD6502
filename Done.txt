@@ -258,3 +258,7 @@ Added: Given I am using C64 processor port options
 
 
 * Moved display enable/border/priority registers to video generation logic
+
+
+
+* Handle 16 colour mode for new hardware revision

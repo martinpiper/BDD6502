@@ -9,6 +9,10 @@ public abstract class MemoryBus {
     protected int busContention = 0;
     protected boolean memoryAsserted = false;
 
+    static boolean addressLower8KActive(int addressEx) {
+        return addressEx < 0x2000;
+    }
+
     static boolean addressActive(int addressEx, int selector) {
         if ((addressEx & selector) > 0) {
             return true;

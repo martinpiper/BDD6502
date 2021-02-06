@@ -2,6 +2,7 @@ package com.bdd6502;
 
 public abstract class DisplayLayer extends MemoryBus {
     protected DisplayBombJack display = null;
+    protected boolean is16Colours = false;
 
     public void setDisplay(DisplayBombJack theDisplay) {
         display = theDisplay;
@@ -14,6 +15,10 @@ public abstract class DisplayLayer extends MemoryBus {
             return display.getContentionColouredPixel();
         }
         return value;
+    }
+
+    public void make16Colours() {
+        is16Colours = true;
     }
 
 }

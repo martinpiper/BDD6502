@@ -70,6 +70,7 @@ public class DisplayBombJack extends MemoryBus {
     PrintWriter debugData = null;
     int pixelsSinceLastDebugWrite = 0;
     int pixelsSinceLastDebugWriteMax = 32;
+    boolean is16Colours = false;
 
     public boolean getVSync() {
         return _vSync;
@@ -90,6 +91,10 @@ public class DisplayBombJack extends MemoryBus {
 
     public DisplayBombJack() throws IOException {
         //enableDebugData();
+    }
+
+    public void make16Colours() {
+        is16Colours = true;
     }
 
     public void enableDebugData() throws IOException {
@@ -350,11 +355,17 @@ public class DisplayBombJack extends MemoryBus {
                     if (cachedPixel[theLayer] < 0) {
                         DisplayLayer displayLayer = layers.get(theLayer);
                         int pixel = displayLayer.calculatePixel(displayH, displayV, _hSync, _vSync);
-                        if ((pixel & 0x07) != 0 || firstLayer) {
-                            latchedPixel = pixel;
-                            firstLayer = false;
+                        if (is16Colours) {
+                            if ((pixel & 0x0f) != 0 || firstLayer) {
+                                latchedPixel = pixel;
+                            }
+                        } else {
+                            if ((pixel & 0x07) != 0 || firstLayer) {
+                                latchedPixel = pixel;
+                            }
                         }
                         cachedPixel[theLayer] = pixel;
+                        firstLayer = false;
                     }
                 }
             }
@@ -368,10 +379,16 @@ public class DisplayBombJack extends MemoryBus {
                 layer.ageContention();
                 // If there is pixel data in the layer then use it
                 // Always use the first colour, which is the furthest layer colour
-                if ((pixel & 0x07) != 0 || firstLayer) {
-                    latchedPixel = pixel;
-                    firstLayer = false;
+                if (is16Colours) {
+                    if ((pixel & 0x0f) != 0 || firstLayer) {
+                        latchedPixel = pixel;
+                    }
+                } else {
+                    if ((pixel & 0x07) != 0 || firstLayer) {
+                        latchedPixel = pixel;
+                    }
                 }
+                firstLayer = false;
             }
         }
 
@@ -408,5 +425,9 @@ public class DisplayBombJack extends MemoryBus {
 
     public DisplayMainFrame getWindow() {
         return window;
+    }
+
+    public DisplayLayer getLastLayer() {
+        return layers.get(layers.size()-1);
     }
 }

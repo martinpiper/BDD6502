@@ -1240,6 +1240,16 @@ public class Glue {
         devices.add(displayBombJack);
     }
 
+    @Given("^a new video display with 16 colours$")
+    public void aNewVideoDisplay16Colours() throws IOException {
+        if (displayBombJack != null) {
+            displayBombJack.getWindow().dispatchEvent(new WindowEvent(displayBombJack.getWindow(), WindowEvent.WINDOW_CLOSING));
+        }
+        displayBombJack = new DisplayBombJack();
+        displayBombJack.make16Colours();
+        devices.add(displayBombJack);
+    }
+
     @Given("^enable video display bus debug output$")
     public void enableVideoBusDebug() throws IOException {
         displayBombJack.enableDebugData();
@@ -1313,6 +1323,11 @@ public class Glue {
     @Given("^add a Sprites layer with registers at '(.*)' and addressEx '(.*)'$")
     public void addASpritesLayerWithRegistersAtXAndAddressExX(String addressRegisters, String addressEx) throws ScriptException {
         displayBombJack.addLayer(new Sprites(valueToInt(addressRegisters), valueToInt(addressEx)));
+    }
+
+    @Given("^the layer has 16 colours$")
+    public void make16Colours() throws ScriptException {
+        displayBombJack.getLastLayer().make16Colours();
     }
 
     @Given("^write data from file \"([^\"]*)\" to 24bit bus at '(.*)' and addressEx '(.*)'$")
