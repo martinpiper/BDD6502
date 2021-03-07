@@ -1276,6 +1276,18 @@ public class Glue {
         displayBombJack.RepaintWindow();
     }
 
+    @Given("^render a video display until H=(.*) and V=(.*)$")
+    public void renderAVideoDisplayUntilHV(String h, String v) throws ScriptException {
+        displayBombJack.calculatePixelsUntil(valueToInt(h),valueToInt(v));
+        displayBombJack.RepaintWindow();
+    }
+
+    @Given("^render a video display until vsync$")
+    public void renderAVideoDisplayUntilVSync() throws ScriptException {
+        displayBombJack.calculatePixelsUntilVSync();
+        displayBombJack.RepaintWindow();
+    }
+
     @Given("^a user port to 24 bit bus is installed$")
     public void aUserportToBitBusIsInstalled() throws MemoryRangeException {
         userPort24BitAddress = new UserPortTo24BitAddress(scenario);
@@ -1348,6 +1360,11 @@ public class Glue {
     public void renderingTheVideoUntilWindowClosed() throws InterruptedException {
         displayBombJack.writeDebugBMPsToLeafFilename(null);
         renderAVideoDisplayFrame();
+        displayUntilWindowClosed();
+    }
+
+    @When("^display until window closed$")
+    public void displayUntilWindowClosed() throws InterruptedException {
         while (displayBombJack.isVisible()) {
             displayBombJack.RepaintWindow();
 

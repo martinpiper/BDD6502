@@ -241,8 +241,12 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x60' to 24bit bus at '0x9836' and addressEx '0x01'
     Given write data byte '0x90' to 24bit bus at '0x9837' and addressEx '0x01'
 
-    Given render a video display frame
+    # Quickly verify mode7 register latch reset behaviour
+    Given render a video display until H=80 and V=128
+    Given write data byte '0x01' to 24bit bus at '0xa015' and addressEx '0x01'
+    Given write data byte '0x1f' to 24bit bus at '0xa015' and addressEx '0x01'
+    Given render a video display until vsync
 
-#    When rendering the video until window closed
+#    When display until window closed
 
     Then expect image "testdata/TC-6-000000.bmp" to be identical to "target/frames/TC-6-000000.bmp"

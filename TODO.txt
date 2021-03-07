@@ -1,5 +1,13 @@
 ; TODO items
 
+* Adding an APU means "a user port to 24 bit bus is installed" and "a new audio expansion" will need to cooperate since it's possible the APU drive the sound board
+	This means all display/audio layers will need to get their memory from the APU, not the user port
+	* The audio and display layer syntax can be re-ordered to be after the user port and APU syntax
+	* com.bdd6502.DisplayBombJack.calculatePixel will need a callback to an optional APU
+
+
+
+
 * Note in hardware RH=$180 then $181 but RV = 0 and RV = 1. The first RH pixel is reported as the previous scan index
 	Technically the first RH pixel on the new scanline is $181, not $180
 	This is going to be very important for the APU emulation
