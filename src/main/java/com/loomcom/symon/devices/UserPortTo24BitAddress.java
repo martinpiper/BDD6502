@@ -296,6 +296,7 @@ public class UserPortTo24BitAddress extends Device {
         if (apuInstuctionSchedule == 4) {
             int instruction = apuData.getApuInstructions()[apuPC*2] | (apuData.getApuInstructions()[(apuPC*2)+1] << 8);
             apuPC++;
+            apuPC &= 0x0fff;
 
             if (MemoryBus.addressActive(instruction , kAPU_Reset_ADDRB1)) {
                 apuEADDR = 0;

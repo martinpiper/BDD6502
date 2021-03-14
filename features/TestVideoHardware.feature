@@ -67,6 +67,9 @@ Feature: Tests the video and audio hardware expansion together
     # Default layer priority
     Given write data byte '0xe4' to 24bit bus at '0x9e08' and addressEx '0x01'
 
+    # Enable APU
+    Given write data byte '0x03' to 24bit bus at '0x2000' and addressEx '0x02'
+
     Given render a video display frame
 
     # Disable the display again, to prepare for the code to turn it back on again
