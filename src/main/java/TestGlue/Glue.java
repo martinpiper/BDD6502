@@ -1255,6 +1255,19 @@ public class Glue {
         displayBombJack.enableDebugData();
     }
 
+    @Given("^enable user port bus debug output$")
+    public void enableUserPortBusDebug() throws IOException {
+        userPort24BitAddress.enableDebugData();
+    }
+
+    @Given("^enable APU mode$")
+    public void enableAPUMode() throws IOException {
+        APUData apuData = new APUData();
+        devices.add(apuData);
+        userPort24BitAddress.setEnableAPU(displayBombJack , apuData);
+        displayBombJack.setCallbackAPU(userPort24BitAddress);
+    }
+
     @Given("^a new audio expansion$")
     public void aNewAudioExpansion() throws IOException {
         if (audioExpansion != null) {

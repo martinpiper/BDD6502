@@ -1,5 +1,7 @@
 package com.bdd6502;
 
+import com.loomcom.symon.devices.UserPortTo24BitAddress;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -71,6 +73,7 @@ public class DisplayBombJack extends MemoryBus {
     int pixelsSinceLastDebugWrite = 0;
     int pixelsSinceLastDebugWriteMax = 32;
     boolean is16Colours = false;
+    UserPortTo24BitAddress callbackAPU = null;
 
     public boolean getVSync() {
         return _vSync;
@@ -104,6 +107,10 @@ public class DisplayBombJack extends MemoryBus {
 //        debugData.println("+16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,+");
 //        debugData.println("<0,1,2,3,4,5,6,7,<");
         debugData.println("d0");
+    }
+
+    public void setCallbackAPU(UserPortTo24BitAddress apu) {
+        callbackAPU = apu;
     }
 
     public int getBusContentionPixels() {
@@ -267,6 +274,10 @@ public class DisplayBombJack extends MemoryBus {
             _vSync = false;
         } else {
             displayV = displayY - 0x08;
+        }
+
+        if (callbackAPU != null) {
+            callbackAPU.calculatePixel();
         }
 
         // Save the frame

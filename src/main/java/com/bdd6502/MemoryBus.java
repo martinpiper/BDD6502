@@ -13,7 +13,7 @@ public abstract class MemoryBus {
         return addressEx < 0x2000;
     }
 
-    static boolean addressActive(int addressEx, int selector) {
+    public static boolean addressActive(int addressEx, int selector) {
         if ((addressEx & selector) > 0) {
             return true;
         }
@@ -27,6 +27,16 @@ public abstract class MemoryBus {
         if (busContention > 0) {
             busContention--;
         }
+    }
+
+    public boolean hasContention() {
+        if (memoryAsserted) {
+            return true;
+        }
+        if (busContention > 0) {
+            return true;
+        }
+        return false;
     }
 
     public void writeDataFromFile(int address, int addressEx, String filename) throws IOException {
