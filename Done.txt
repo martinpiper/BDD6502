@@ -262,3 +262,10 @@ Added: Given I am using C64 processor port options
 
 
 * Handle 16 colour mode for new hardware revision
+
+
+
+* Adding an APU means "a user port to 24 bit bus is installed" and "a new audio expansion" will need to cooperate since it's possible the APU drive the sound board
+	This means all display/audio layers will need to get their memory from the APU, not the user port
+	* The audio and display layer syntax can be re-ordered to be after the user port and APU syntax
+	* com.bdd6502.DisplayBombJack.calculatePixel will need a callback to an optional APU

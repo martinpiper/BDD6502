@@ -32,6 +32,7 @@ public class UserPortTo24BitAddress extends Device {
     APUData apuData = null;
     final int kPixelsPerInstruction = 6;
     int apuInstuctionSchedule = 0;
+    boolean apuIntercepting = false;
 
     // All of these are reset by _RESET
     boolean apuHitWait = true;
@@ -65,6 +66,7 @@ public class UserPortTo24BitAddress extends Device {
         enableAPU = true;
         displayBombJack = display;
         this.apuData = data;
+        externalDevices.add(apuData);
     }
 
     public void setSimpleMode(boolean simpleMode) {
@@ -259,6 +261,7 @@ public class UserPortTo24BitAddress extends Device {
         if (!enableAPU || apuData == null) {
             return;
         }
+        apuData.ageContention();
 
         int displayH = displayBombJack.getDisplayH();
         int displayV = displayBombJack.getDisplayV();
@@ -273,6 +276,7 @@ public class UserPortTo24BitAddress extends Device {
         if (!MemoryBus.addressActive(controlRegister , 0x01)) {
             apuInstuctionSchedule = 0;
             apuHitWait = true;
+            apuIntercepting = false;
 
             apuADDRB1 = 0;
             apuPC = 0;
@@ -294,12 +298,12 @@ public class UserPortTo24BitAddress extends Device {
 
         // Perform any memory writes at this time, for this emulation do the logic now
         if (apuInstuctionSchedule == 4) {
-            int instruction = apuData.getApuInstructions()[apuPC*2] | (apuData.getApuInstructions()[(apuPC*2)+1] << 8);
+            int instruction = (apuData.getApuInstructions()[apuPC*2] & 0xff) | ((apuData.getApuInstructions()[(apuPC*2)+1] & 0xff) << 8);
             apuPC++;
             apuPC &= 0x0fff;
 
             if (MemoryBus.addressActive(instruction , kAPU_Reset_ADDRB1)) {
-                apuEADDR = 0;
+                apuADDRB1 = 0;
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Reset_PC)) {
@@ -323,8 +327,22 @@ public class UserPortTo24BitAddress extends Device {
                 apuEBS = 0;
             }
 
+            if (MemoryBus.addressActive(instruction , kAPU_InterceptBus)) {
+                apuIntercepting = true;
+                for (MemoryBus device : externalDevices) {
+                    device.setAddressBus(apuEADDR, apuEBS);
+                }
+            } else {
+                if (apuIntercepting) {
+                    apuIntercepting = false;
+                    for (MemoryBus device : externalDevices) {
+                        device.setAddressBus(0, 0);
+                    }
+                }
+            }
+
             if (MemoryBus.addressActive(instruction , kAPU_ExternalMEWR)) {
-                if (MemoryBus.addressActive(instruction , kAPU_InterceptBus)) {
+                if (!MemoryBus.addressActive(instruction , kAPU_InterceptBus)) {
                     System.out.println("kAPU_ExternalMEWR without kAPU_InterceptBus at address " + apuPC);
                 }
 
@@ -337,32 +355,32 @@ public class UserPortTo24BitAddress extends Device {
 
             if (MemoryBus.addressActive(instruction , kAPU_Load_EBS)) {
                 byte gotByte = apuData.getApuData()[apuADDRB1];
-                apuEBS = gotByte;
+                apuEBS = gotByte & 0xff;
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Load_EADDRLo)) {
                 byte gotByte = apuData.getApuData()[apuADDRB1];
-                apuEADDR = (apuEADDR & 0xff00) | gotByte;
+                apuEADDR = (apuEADDR & 0xff00) | (gotByte & 0xff);
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Load_EADDRHi)) {
                 byte gotByte = apuData.getApuData()[apuADDRB1];
-                apuEADDR = (apuEADDR & 0xff) | (((int)gotByte) << 8);
+                apuEADDR = (apuEADDR & 0xff) | ((gotByte & 0xff) << 8);
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Load_Wait24)) {
                 byte gotByte = apuData.getApuData()[apuADDRB1];
-                apuWait24 = gotByte;
+                apuWait24 = gotByte & 0xff;
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Load_Wait16)) {
                 byte gotByte = apuData.getApuData()[apuADDRB1];
-                apuWait16 = gotByte;
+                apuWait16 = gotByte & 0xff;
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Load_Wait8)) {
                 byte gotByte = apuData.getApuData()[apuADDRB1];
-                apuWait8 = gotByte;
+                apuWait8 = gotByte & 0xff;
             }
         }
 

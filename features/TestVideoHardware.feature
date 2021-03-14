@@ -59,16 +59,12 @@ Feature: Tests the video and audio hardware expansion together
     Given write data from file "C:\work\BombJack\Mode7.bin" to 24bit bus at '0x4000' and addressEx '0x08'
     Given write data from file "C:\work\BombJack\Mode7B.bin" to 24bit bus at '0x8000' and addressEx '0x08'
 
-
     # Setup bright yellow as background colour
     Given write data byte '0xff' to 24bit bus at '0x9c00' and addressEx '0x01'
     # Enable display with all borders
     Given write data byte '0xf0' to 24bit bus at '0x9e00' and addressEx '0x01'
     # Default layer priority
     Given write data byte '0xe4' to 24bit bus at '0x9e08' and addressEx '0x01'
-
-    # Enable APU
-    Given write data byte '0x03' to 24bit bus at '0x2000' and addressEx '0x02'
 
     Given render a video display frame
 
