@@ -6,38 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000001.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000001.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000002.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000002.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000003.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000003.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000004.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000004.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000005.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000005.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testcmp.prg" beforeDir="false" afterPath="$PROJECT_DIR$/testcmp.prg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/testdata/TC-1-000006.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000006.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000007.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000007.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000008.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000008.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000009.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000009.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000010.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000010.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000011.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000011.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000012.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000012.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000013.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000013.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000014.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000014.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000015.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000015.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000016.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000016.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000017.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000017.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000018.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000018.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000019.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000019.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000020.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000020.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000021.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000021.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000022.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000022.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000023.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000023.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000024.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000024.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000025.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000025.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000026.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000026.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000027.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000027.bmp" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -121,7 +94,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-1">
+  <component name="RunManager" selected="Application.TestRunner --execVideoTest">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -197,6 +170,14 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags @TC-5 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue &quot;features/TestVideoHardware Chars Sprites.feature&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner TestVideoHardware Chars Sprites.feature" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue &quot;features/TestVideoHardware Chars Sprites.feature&quot;" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -570,6 +551,7 @@
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5" />
+      <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature @TC-2-0" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature @TC-2-1" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature @TC-2" />
@@ -643,10 +625,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="790" y="374" key="#com.intellij.debugger.actions.ViewTextAction/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615733291203" />
-    <state x="430" y="241" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1615722215761">
+    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1616082367591">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="430" y="241" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615722215761" />
+    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616082367591" />
     <state x="673" y="321" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1607742210265">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -659,38 +641,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="587" y="88" key="CommitChangelistDialog2/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608714179655" />
-    <state width="1877" height="243" key="GridCell.Tab.0.bottom" timestamp="1615734761681">
+    <state width="1877" height="243" key="GridCell.Tab.0.bottom" timestamp="1616082707791">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="243" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615734761681" />
-    <state width="1877" height="243" key="GridCell.Tab.0.center" timestamp="1615734761680">
+    <state width="1877" height="243" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616082707791" />
+    <state width="1877" height="243" key="GridCell.Tab.0.center" timestamp="1616082707790">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="243" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615734761680" />
-    <state width="1877" height="243" key="GridCell.Tab.0.left" timestamp="1615734761680">
+    <state width="1877" height="243" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616082707790" />
+    <state width="1877" height="243" key="GridCell.Tab.0.left" timestamp="1616082707790">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="243" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615734761680" />
-    <state width="1877" height="243" key="GridCell.Tab.0.right" timestamp="1615734761680">
+    <state width="1877" height="243" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616082707790" />
+    <state width="1877" height="243" key="GridCell.Tab.0.right" timestamp="1616082707790">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="243" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615734761680" />
-    <state width="1877" height="306" key="GridCell.Tab.1.bottom" timestamp="1615734761675">
+    <state width="1877" height="243" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616082707790" />
+    <state width="1877" height="235" key="GridCell.Tab.1.bottom" timestamp="1616082707783">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="306" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615734761675" />
-    <state width="1877" height="306" key="GridCell.Tab.1.center" timestamp="1615734761675">
+    <state width="1877" height="235" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616082707783" />
+    <state width="1877" height="235" key="GridCell.Tab.1.center" timestamp="1616082707783">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="306" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615734761675" />
-    <state width="1877" height="306" key="GridCell.Tab.1.left" timestamp="1615734761675">
+    <state width="1877" height="235" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616082707783" />
+    <state width="1877" height="235" key="GridCell.Tab.1.left" timestamp="1616082707783">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="306" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615734761675" />
-    <state width="1877" height="306" key="GridCell.Tab.1.right" timestamp="1615734761675">
+    <state width="1877" height="235" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616082707783" />
+    <state width="1877" height="235" key="GridCell.Tab.1.right" timestamp="1616082707783">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="306" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615734761675" />
+    <state width="1877" height="235" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616082707783" />
     <state x="503" y="248" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1612239592856">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -707,17 +689,17 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="616" y="240" key="run.anything.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615557570425" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1615734028937">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1616078543147">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615734028937" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616078543147" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java</url>
-          <line>334</line>
+          <line>338</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -729,6 +711,11 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
           <line>294</line>
           <option name="timeStamp" value="59" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java</url>
+          <line>160</line>
+          <option name="timeStamp" value="60" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

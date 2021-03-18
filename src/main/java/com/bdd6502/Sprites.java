@@ -113,10 +113,6 @@ public class Sprites extends DisplayLayer {
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
-        if (!spriteEnable) {
-            return 0;
-        }
-
         handleSpriteSchedule(displayH, displayV);
 
 
@@ -188,6 +184,8 @@ public class Sprites extends DisplayLayer {
         // +32 to adjust for expected behaviour where 0y = Bottom of the sprite on the bottom edge of the visible screen
         int deltaY = (displayV + spriteSizeX + getByteOrContention(spriteY[spriteIndex])) & 0xff;
         if (!fullHeightSprite && (deltaY >= spriteSizeX)) {
+            // This paints transparent pixels, but with palette information.
+            // This emulates the observed sprite display behaviour if it is the last layer
             int finalPixel = 0;
             if (is16Colours) {
                 finalPixel = ((theColour & 0x0f) << 4);
@@ -324,20 +322,26 @@ public class Sprites extends DisplayLayer {
                     finalPixel |= 8;
                 }
             }
+            finalPixel = getByteOrContention(finalPixel);
+            // Like the hardware, the sprite enable forces the sprite pixel to be all transparent
+            if (!spriteEnable) {
+                finalPixel = 0;
+            }
             if (is16Colours) {
                 finalPixel |= ((theColour & 0x0f) << 4);
             } else {
                 finalPixel |= ((theColour & 0x1f) << 3);
             }
             int finalXPos = (getByteOrContention(spriteX[spriteIndex]) + pixelIndex) & 0xff;
+
             // Only output the pixel if there is nothing else there
             if (is16Colours) {
                 if ((calculatedRasters[offScreen][finalXPos] & 0x0f) == 0) {
-                    calculatedRasters[offScreen][finalXPos] = getByteOrContention(finalPixel);
+                    calculatedRasters[offScreen][finalXPos] = finalPixel;
                 }
             } else {
                 if ((calculatedRasters[offScreen][finalXPos] & 0x07) == 0) {
-                    calculatedRasters[offScreen][finalXPos] = getByteOrContention(finalPixel);
+                    calculatedRasters[offScreen][finalXPos] = finalPixel;
                 }
             }
         }
