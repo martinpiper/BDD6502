@@ -298,7 +298,7 @@ public class UserPortTo24BitAddress extends Device {
 
         // Perform any memory writes at this time, for this emulation do the logic now
         if (apuInstuctionSchedule == 4) {
-            int instruction = (apuData.getApuInstructions()[apuPC*2] & 0xff) | ((apuData.getApuInstructions()[(apuPC*2)+1] & 0xff) << 8);
+            int instruction = (apuData.getApuInstructions()[apuPC*4] & 0xff) | ((apuData.getApuInstructions()[(apuPC*4)+1] & 0xff) << 8);
             apuPC++;
             apuPC &= 0x0fff;
 

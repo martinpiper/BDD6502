@@ -10,17 +10,21 @@ start
 
 	jsr Bus24Bit_Init
 	jsr APU_ResetDisable
+	jsr Bus24Bit_DisableDisplay
+
 	jsr Bus24Bit_SetAddressAPUInstructions
 	+MWordValueTo_AX APUCode_Start
-	ldy #APUCode_Size
+	ldy #<APUCode_Size
 	jsr Bus24Bit_CopySmallData
+	ldx #>APUCode_Size
+	jsr Bus24Bit_CopySmallDataRepeatForX
+
 	jsr Bus24Bit_SetAddressAPUData
 	+MWordValueTo_AX APUData_Start
 	ldy #APUData_Size
 	jsr Bus24Bit_CopySmallData
 	jsr APU_Enable
 
-	jsr Bus24Bit_DisableDisplay
 	lda #$30
 	jsr Bus24Bit_EnableDisplay
 	jsr Bus24Bit_WaitVBlank
@@ -548,9 +552,9 @@ APUCode_Start
 	+MAPU
 
 APUCode_Size = *-APUCode_Start
-!if APUCode_Size >= 256 {
-!error "APU Code too large, need better memcpy"
-}
+;!if APUCode_Size >= 256 {
+;!error "APU Code too large, need better memcpy"
+;}
 
 APUData_Start
 	; Palette EBS+address
