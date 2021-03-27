@@ -242,20 +242,47 @@ public class UserPortTo24BitAddress extends Device {
     }
 
     // From: Assembly
-    final int kAPU_Reset_ADDRB1		= 0b0000000000000001;
-    final int kAPU_Reset_PC			= 0b0000000000000010;
-    final int kAPU_InterceptBus		= 0b0000000000000100;
-    final int kAPU_WaitForEqualsHV	= 0b0000000000001000;
-    final int kAPU_Reset_EBSEADDR	= 0b0000000000010000;
-    final int kAPU_Incr_ADDRB1		= 0b0000000000100000;
-    final int kAPU_Incr_EADDR		= 0b0000000001000000;
-    final int kAPU_ExternalMEWR		= 0b0000000010000000;		// This is timed to pulse low on the PCINCR (cycle 3)
-    final int kAPU_Load_EBS			= 0b0000000100000000;
-    final int kAPU_Load_EADDRLo		= 0b0000001000000000;
-    final int kAPU_Load_EADDRHi		= 0b0000010000000000;
-    final int kAPU_Load_Wait24		= 0b0000100000000000;
-    final int kAPU_Load_Wait16		= 0b0001000000000000;
-    final int kAPU_Load_Wait8		= 0b0010000000000000;
+    // ; Instructions, can be combined
+    final int kAPU_Reset_ADDRB1		= 0b00000000000000000000000000000001;
+    final int kAPU_Reset_PC			= 0b00000000000000000000000000000010;
+    final int kAPU_InterceptBus		= 0b00000000000000000000000000000100;
+    final int kAPU_WaitForEqualsHV	= 0b00000000000000000000000000001000;
+    final int kAPU_Reset_EBSEADDR	= 0b00000000000000000000000000010000;
+    final int kAPU_Incr_ADDRB1		= 0b00000000000000000000000000100000;
+    final int kAPU_Incr_EADDR		= 0b00000000000000000000000001000000;
+    final int kAPU_ExternalMEWR		= 0b00000000000000000000000010000000;		// ; This is timed to pulse low on the PCINCR (cycle 3)
+    final int kAPU_Load_EBS			= 0b00000000000000000000000100000000;
+    final int kAPU_Load_EADDRLo		= 0b00000000000000000000001000000000;
+    final int kAPU_Load_EADDRHi		= 0b00000000000000000000010000000000;
+    final int kAPU_Load_Wait24		= 0b00000000000000000000100000000000;
+    final int kAPU_Load_Wait16		= 0b00000000000000000001000000000000;
+    final int kAPU_Load_Wait8		= 0b00000000000000000010000000000000;
+
+    // ; New instructions
+    final int kAPU_SelectEBS2EADDR2	= 0b00000000000000000100000000000000;
+    final int kAPU_Load_EBS2		= 0b00000000000000001000000000000000;
+    // ; 16th bit
+    final int kAPU_Load_EADDR2Lo	= 0b00000000000000010000000000000000;
+    final int kAPU_Load_EADDR2Hi	= 0b00000000000000100000000000000000;
+    final int kAPU_Incr_EADDR2		= 0b00000000000001000000000000000000;
+
+    // ; Do not combine these IDataSelect values
+    final int kAPU_IDataSelectRAM	= 0b00000000000000000000000000000000;
+    final int kAPU_IDataSelectReg0	= 0b00000000000010000000000000000000;
+    final int kAPU_IDataSelectReg1	= 0b00000000000100000000000000000000;
+    final int kAPU_IDataSelectReg2	= 0b00000000000110000000000000000000;
+    final int kAPU_IDataSelectMask	= 0b00000000000110000000000000000000;
+
+    final int kAPU_IDataRegLoad0	= 0b00000000001000000000000000000000;
+    final int kAPU_IDataRegLoad1	= 0b00000000010000000000000000000000;
+    final int kAPU_IDataRegLoad2	= 0b00000000100000000000000000000000;
+
+    final int kAPU_ADDRB2Select		= 0b00000001000000000000000000000000;
+    final int kAPU_Incr_ADDRB2		= 0b00000010000000000000000000000000;
+    final int kAPU_ADDRB1Load16		= 0b00000100000000000000000000000000;
+    final int kAPU_ADDRB2Load16		= 0b00001000000000000000000000000000;
+
+
 
     public void calculatePixel() {
         if (!enableAPU || apuData == null) {
