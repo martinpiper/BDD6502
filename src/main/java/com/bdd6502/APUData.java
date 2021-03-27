@@ -33,7 +33,7 @@ public class APUData extends MemoryBus {
     }
 
     @Override
-    void writeData(int address, int addressEx, byte data) {
+    public void writeData(int address, int addressEx, byte data) {
         // Some contention here as this uses banks of RAM
         if (MemoryBus.addressActive(addressEx, addressExRegisters)) {
             if (MemoryBus.addressActive(address, addressRegisters)) {

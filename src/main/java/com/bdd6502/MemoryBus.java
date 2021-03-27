@@ -57,7 +57,7 @@ public abstract class MemoryBus {
         writeData(address, addressEx, (byte) data);
     }
 
-    abstract void writeData(int address, int addressEx, byte data);
+    protected abstract void writeData(int address, int addressEx, byte data);
 
     abstract public void setAddressBus(int address, int addressEx);
 
