@@ -123,6 +123,7 @@ public class UserPortTo24BitAddressTest {
         // Enable APU
         apu.apuData.writeData(0x2000, 0x02, 0x03);
 
+        // TODO: Add render for display position and memory checks
         display.calculateAFrame();
 
         assertThat(memoryAddressByteSequence, contains(
