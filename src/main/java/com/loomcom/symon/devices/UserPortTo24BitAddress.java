@@ -22,7 +22,6 @@ public class UserPortTo24BitAddress extends Device {
     boolean bus24CountEnabled = false;
     int bus24Bytes[] = new int[4];
     List<MemoryBus> externalDevices = new LinkedList<>();
-    boolean vsyncTriggered = false;
     boolean simpleMode = false;
     boolean simpleModeLastMEWR = true;
     boolean simpleModeLastLatchCLK = true;
@@ -37,12 +36,16 @@ public class UserPortTo24BitAddress extends Device {
     // All of these are reset by _RESET
     boolean apuHitWait = true;
     int apuADDRB1 = 0;
+    int apuADDRB2 = 0;
     int apuPC = 0;
     int apuEBS = 0;
     int apuEADDR = 0;
+    int apuEBS2 = 0;
+    int apuEADDR2 = 0;
     int apuWait8 = 0;
     int apuWait16 = 0;
     int apuWait24 = 0;
+    int apuDataReg[] = new int[3];
 
 
     public UserPortTo24BitAddress(Scenario scenario) throws MemoryRangeException {
@@ -306,12 +309,18 @@ public class UserPortTo24BitAddress extends Device {
             apuIntercepting = false;
 
             apuADDRB1 = 0;
+            apuADDRB2 = 0;
             apuPC = 0;
             apuEBS = 0;
             apuEADDR = 0;
+            apuEBS2 = 0;
+            apuEADDR2 = 0;
             apuWait8 = 0;
             apuWait16 = 0;
             apuWait24 = 0;
+            apuDataReg[0] = 0;
+            apuDataReg[1] = 0;
+            apuDataReg[2] = 0;
         }
 
         if (!apuEnable) {
@@ -344,9 +353,16 @@ public class UserPortTo24BitAddress extends Device {
             if (MemoryBus.addressActive(instruction , kAPU_Incr_ADDRB1)) {
                 apuADDRB1++;
             }
+            if (MemoryBus.addressActive(instruction , kAPU_Incr_ADDRB2)) {
+                apuADDRB2++;
+            }
 
             if (MemoryBus.addressActive(instruction , kAPU_Incr_EADDR)) {
                 apuEADDR++;
+            }
+
+            if (MemoryBus.addressActive(instruction , kAPU_Incr_EADDR2)) {
+                apuEADDR2++;
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Reset_EBSEADDR)) {
@@ -357,7 +373,11 @@ public class UserPortTo24BitAddress extends Device {
             if (MemoryBus.addressActive(instruction , kAPU_InterceptBus)) {
                 apuIntercepting = true;
                 for (MemoryBus device : externalDevices) {
-                    device.setAddressBus(apuEADDR, apuEBS);
+                    if (MemoryBus.addressActive(instruction , kAPU_SelectEBS2EADDR2)) {
+                        device.setAddressBus(apuEADDR2, apuEBS2);
+                    } else {
+                        device.setAddressBus(apuEADDR, apuEBS);
+                    }
                 }
             } else {
                 if (apuIntercepting) {
@@ -368,46 +388,93 @@ public class UserPortTo24BitAddress extends Device {
                 }
             }
 
+            int iDataSelect = instruction & kAPU_IDataSelectMask;
+            int gotByte;
+            switch (iDataSelect) {
+                default:
+                case kAPU_IDataSelectRAM:
+                    if (MemoryBus.addressActive(instruction , kAPU_ADDRB2Select)) {
+                        gotByte = apuData.getApuData()[apuADDRB2] & 0xff;
+                    } else {
+                        gotByte = apuData.getApuData()[apuADDRB1] & 0xff;
+                    }
+                    break;
+                case kAPU_IDataSelectReg0:
+                    gotByte = apuDataReg[0];
+                    break;
+                case kAPU_IDataSelectReg1:
+                    gotByte = apuDataReg[1];
+                    break;
+                case kAPU_IDataSelectReg2:
+                    gotByte = apuDataReg[2];
+                    break;
+            }
+
             if (MemoryBus.addressActive(instruction , kAPU_ExternalMEWR)) {
                 if (!MemoryBus.addressActive(instruction , kAPU_InterceptBus)) {
                     System.out.println("kAPU_ExternalMEWR without kAPU_InterceptBus at address " + apuPC);
                 }
 
-                byte gotByte = apuData.getApuData()[apuADDRB1];
-
                 for (MemoryBus device : externalDevices) {
-                    device.writeData(apuEADDR, apuEBS, gotByte);
+                    if (MemoryBus.addressActive(instruction , kAPU_SelectEBS2EADDR2)) {
+                        device.writeData(apuEADDR2, apuEBS2, gotByte);
+                    } else {
+                        device.writeData(apuEADDR, apuEBS, gotByte);
+                    }
                 }
             }
 
+            if (MemoryBus.addressActive(instruction , kAPU_IDataRegLoad0)) {
+                apuDataReg[0] = gotByte;
+            }
+            if (MemoryBus.addressActive(instruction , kAPU_IDataRegLoad1)) {
+                apuDataReg[1] = gotByte;
+            }
+            if (MemoryBus.addressActive(instruction , kAPU_IDataRegLoad2)) {
+                apuDataReg[2] = gotByte;
+            }
+
             if (MemoryBus.addressActive(instruction , kAPU_Load_EBS)) {
-                byte gotByte = apuData.getApuData()[apuADDRB1];
-                apuEBS = gotByte & 0xff;
+                apuEBS = gotByte;
+            }
+
+            if (MemoryBus.addressActive(instruction , kAPU_Load_EBS2)) {
+                apuEBS2 = gotByte;
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Load_EADDRLo)) {
-                byte gotByte = apuData.getApuData()[apuADDRB1];
-                apuEADDR = (apuEADDR & 0xff00) | (gotByte & 0xff);
+                apuEADDR = (apuEADDR & 0xff00) | gotByte;
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Load_EADDRHi)) {
-                byte gotByte = apuData.getApuData()[apuADDRB1];
-                apuEADDR = (apuEADDR & 0xff) | ((gotByte & 0xff) << 8);
+                apuEADDR = (apuEADDR & 0xff) | (gotByte << 8);
+            }
+
+            if (MemoryBus.addressActive(instruction , kAPU_Load_EADDR2Lo)) {
+                apuEADDR2 = (apuEADDR2 & 0xff00) | gotByte;
+            }
+
+            if (MemoryBus.addressActive(instruction , kAPU_Load_EADDR2Hi)) {
+                apuEADDR2 = (apuEADDR2 & 0xff) | (gotByte << 8);
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Load_Wait24)) {
-                byte gotByte = apuData.getApuData()[apuADDRB1];
-                apuWait24 = gotByte & 0xff;
+                apuWait24 = gotByte;
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Load_Wait16)) {
-                byte gotByte = apuData.getApuData()[apuADDRB1];
-                apuWait16 = gotByte & 0xff;
+                apuWait16 = gotByte;
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Load_Wait8)) {
-                byte gotByte = apuData.getApuData()[apuADDRB1];
-                apuWait8 = gotByte & 0xff;
+                apuWait8 = gotByte;
+            }
+
+            if (MemoryBus.addressActive(instruction , kAPU_ADDRB1Load16)) {
+                apuADDRB1 = apuDataReg[0] | (apuDataReg[1] << 8);
+            }
+            if (MemoryBus.addressActive(instruction , kAPU_ADDRB2Load16)) {
+                apuADDRB2 = apuDataReg[0] | (apuDataReg[1] << 8);
             }
         }
 

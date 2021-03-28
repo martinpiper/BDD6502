@@ -63,8 +63,8 @@ public class Glue {
     private int instructionsPerAudioRefreshCount = 0;
 
     Scenario scenario = null;
-    ScriptEngineManager manager = new ScriptEngineManager();
-    ScriptEngine engine = manager.getEngineByName("JavaScript");
+    static ScriptEngineManager manager = new ScriptEngineManager();
+    static ScriptEngine engine = manager.getEngineByName("JavaScript");
 
     public static Machine getMachine() {
         return machine;
@@ -93,7 +93,7 @@ public class Glue {
         }
     }
 
-    public int valueToIntFast(String valueIn) throws ScriptException {
+    static public int valueToIntFast(String valueIn) throws ScriptException {
         String origValueIn = valueIn.trim();
         Object found = labelMap.get(origValueIn);
         if (null != found) {
@@ -120,7 +120,7 @@ public class Glue {
 
     }
 
-    public int valueToInt(String valueIn) throws ScriptException {
+    static public int valueToInt(String valueIn) throws ScriptException {
         if (null == valueIn || valueIn.isEmpty()) {
             return -1;
         }
@@ -906,18 +906,22 @@ public class Glue {
     @Given("^I run the command line: (.*)$")
     public void i_run_the_command_line(String arg1) throws Throwable {
         checkScenario();
+        String returnString = runProcessWithOutput(arg1);
+        scenario.write(returnString);
+    }
+
+    public static String runProcessWithOutput(String arg1) throws Exception {
         StringBuffer sb = new StringBuffer();
         // Write code here that turns the phrase above into concrete actions
         Process p = Runtime.getRuntime().exec(arg1);
         updateStringBufferFromProcess(p, sb);
         p.waitFor();
 
-
         if (p.exitValue() != 0) {
             throw new Exception(String.format("Return code: %d with message '%s'", p.exitValue(), sb.toString()));
         }
-
-        scenario.write(String.format("After executing command line '%s' return code: %d with message '%s'\n", arg1, p.exitValue(), sb.toString()));
+        String returnString = String.format("After executing command line '%s' return code: %d with message '%s'\n", arg1, p.exitValue(), sb.toString());
+        return returnString;
     }
 
     public static void updateStringBufferFromProcess(Process p, StringBuffer sb) throws IOException {
@@ -974,6 +978,10 @@ public class Glue {
 
     @Given("^I load labels \"(.*?)\"$")
     public void i_load_labels(String arg1) throws Throwable {
+        loadLabels(arg1);
+    }
+
+    public static void loadLabels(String arg1) throws IOException {
         calculationMap.clear();
         BufferedReader br = new BufferedReader(new FileReader(arg1));
         String line;
