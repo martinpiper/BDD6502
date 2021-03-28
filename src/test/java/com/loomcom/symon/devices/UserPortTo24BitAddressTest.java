@@ -137,12 +137,15 @@ public class UserPortTo24BitAddressTest {
         ));
         memoryAddressByteSequence.clear();
 
-
-
+        // Check APU pause while instruction or data address set
+        apu.apuData.setAddressBus(0x8000, 0x02);
         display.calculatePixelsUntil(0x188, 0x50);
         assertThat(memoryAddressByteSequence, is(empty()));
 
         display.calculatePixelsUntil(0x00, 0x50);
+        assertThat(memoryAddressByteSequence, is(empty()));
+        apu.apuData.setAddressBus(0x0000, 0x00);
+        display.calculatePixelsUntil(0xf0, 0x50);
         assertThat(memoryAddressByteSequence, contains(
                 fromAddrValue(0x9c00,0x01,0x33) ,
                 fromAddrValue(0x9c01,0x01,0x44) ,

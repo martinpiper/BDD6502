@@ -52,6 +52,18 @@ public class APUData extends MemoryBus {
 
     @Override
     public void setAddressBus(int address, int addressEx) {
+        memoryAsserted = false;
+        if (MemoryBus.addressActive(addressEx, addressExRegisters)) {
+            if (MemoryBus.addressActive(address, addressRegisters)) {
+                memoryAsserted = true;
+            }
+            if (MemoryBus.addressActive(address, addressInstructions)) {
+                memoryAsserted = true;
+            }
+            if (MemoryBus.addressActive(address, addressData)) {
+                memoryAsserted = true;
+            }
+        }
 
     }
 }
