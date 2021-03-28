@@ -123,25 +123,47 @@ public class UserPortTo24BitAddressTest {
         // Enable APU
         apu.apuData.writeData(0x2000, 0x02, 0x03);
 
-        // TODO: Add render for display position and memory checks
-        display.calculateAFrame();
 
+        // Render for display position and use memory checks to validate wait for position logic
+        display.calculatePixelsUntil(0x188, 0x40);
+        assertThat(memoryAddressByteSequence, is(empty()));
+
+        display.calculatePixelsUntil(0x00, 0x40);
         assertThat(memoryAddressByteSequence, contains(
                 fromAddrValue(0x9c00,0x01,0x11) ,
                 fromAddrValue(0x9c01,0x01,0x22) ,
                 fromAddrValue(0x9c1c,0x01,0x11) ,
-                fromAddrValue(0x9c1d,0x01,0x22) ,
+                fromAddrValue(0x9c1d,0x01,0x22)
+        ));
+        memoryAddressByteSequence.clear();
 
+
+
+        display.calculatePixelsUntil(0x188, 0x50);
+        assertThat(memoryAddressByteSequence, is(empty()));
+
+        display.calculatePixelsUntil(0x00, 0x50);
+        assertThat(memoryAddressByteSequence, contains(
                 fromAddrValue(0x9c00,0x01,0x33) ,
                 fromAddrValue(0x9c01,0x01,0x44) ,
                 fromAddrValue(0x9c1c,0x01,0x33) ,
-                fromAddrValue(0x9c1d,0x01,0x44) ,
+                fromAddrValue(0x9c1d,0x01,0x44)
+        ));
+        memoryAddressByteSequence.clear();
 
+
+
+        display.calculatePixelsUntil(0x188, 0x60);
+        assertThat(memoryAddressByteSequence, is(empty()));
+
+        display.calculatePixelsUntil(0x00, 0x60);
+        assertThat(memoryAddressByteSequence, contains(
                 fromAddrValue(0x9c00,0x01,0x55) ,
                 fromAddrValue(0x9c01,0x01,0x66) ,
                 fromAddrValue(0x9c1c,0x01,0x55) ,
                 fromAddrValue(0x9c1d,0x01,0x66)
         ));
+        memoryAddressByteSequence.clear();
 
     }
 }
