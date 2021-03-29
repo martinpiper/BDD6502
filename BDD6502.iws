@@ -6,7 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/APUData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/APUData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/checkAPU1.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/checkAPU1.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
@@ -62,9 +63,6 @@
     <property name="settings.editor.selected.configurable" value="Console" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="com.loomcom.symon.devices" />
-    </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="com.bdd6502" />
     </key>
@@ -80,20 +78,23 @@
       <recent name="com.bdd6502" />
       <recent name="bdd6502" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Work\BDD6502\src\test\resources" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.bdd6502" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Work\BDD6502\features" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Work\BDD6502\src\test\resources" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.loomcom.symon.devices" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.UserPortTo24BitAddressTest.checkAPU1">
+  <component name="RunManager" selected="JUnit.UserPortTo24BitAddressTest.checkAPU2">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -333,22 +334,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Scenario: Simple memory test code" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java" temporary="true" nameIsGenerated="true">
-      <option name="FILE_PATH" value="C:\Work\BDD6502\features" />
-      <option name="GLUE" value="TestGlue" />
-      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
-      <module name="BDD6502" />
-      <option name="PROGRAM_PARAMETERS" value=" --format org.jetbrains.plugins.cucumber.java.run.CucumberJvmSMFormatter --monochrome --name &quot;^Simple memory test code$&quot;" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="cucumber.api.cli.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Simple ALL" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java">
       <option name="FILE_PATH" value="C:\Work\BDD6502\features" />
       <option name="GLUE" value="TestGlue" />
@@ -424,6 +409,23 @@
       <option name="PACKAGE_NAME" value="com.loomcom.symon.devices" />
       <option name="MAIN_CLASS_NAME" value="com.loomcom.symon.devices.UserPortTo24BitAddressTest" />
       <option name="METHOD_NAME" value="checkAPU1" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserPortTo24BitAddressTest.checkAPU2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="BDD6502" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.loomcom.symon.devices.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.loomcom.symon.devices" />
+      <option name="MAIN_CLASS_NAME" value="com.loomcom.symon.devices.UserPortTo24BitAddressTest" />
+      <option name="METHOD_NAME" value="checkAPU2" />
       <option name="TEST_OBJECT" value="method" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
       <method v="2">
@@ -570,15 +572,16 @@
       <item itemvalue="Cucumber Java.Compare Test" />
       <item itemvalue="Cucumber Java.Simple ALL" />
       <item itemvalue="Cucumber Java.Trace Test" />
-      <item itemvalue="Cucumber Java.Scenario: Simple memory test code" />
       <item itemvalue="JUnit.JUnit all" />
       <item itemvalue="JUnit.GlueTest.testValueToInt" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU1" />
       <item itemvalue="Maven.BDD6502 [install] (1)" />
       <item itemvalue="Maven.BDD6502 [install]" />
+      <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU2" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU2" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU1" />
         <item itemvalue="Maven.BDD6502 [install]" />
         <item itemvalue="Maven.BDD6502 [install] (1)" />
@@ -634,10 +637,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="92" y="92" width="1736" height="896" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616902357793" />
-    <state x="710" y="341" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1616898657165">
+    <state x="710" y="341" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1617028391032">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="710" y="341" key="#com.intellij.fileTypes.FileTypeChooser/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616898657165" />
+    <state x="710" y="341" key="#com.intellij.fileTypes.FileTypeChooser/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1617028391032" />
     <state x="765" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1616901023311">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -646,38 +649,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="587" y="88" key="CommitChangelistDialog2/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1608714179655" />
-    <state width="1877" height="254" key="GridCell.Tab.0.bottom" timestamp="1616926199297">
+    <state width="1877" height="308" key="GridCell.Tab.0.bottom" timestamp="1617030612209">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="254" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616926199297" />
-    <state width="1877" height="254" key="GridCell.Tab.0.center" timestamp="1616926199297">
+    <state width="1877" height="308" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1617030612209" />
+    <state width="1877" height="308" key="GridCell.Tab.0.center" timestamp="1617030612209">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="254" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616926199297" />
-    <state width="1877" height="254" key="GridCell.Tab.0.left" timestamp="1616926199297">
+    <state width="1877" height="308" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1617030612209" />
+    <state width="1877" height="308" key="GridCell.Tab.0.left" timestamp="1617030612209">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="254" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616926199297" />
-    <state width="1877" height="254" key="GridCell.Tab.0.right" timestamp="1616926199297">
+    <state width="1877" height="308" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1617030612209" />
+    <state width="1877" height="308" key="GridCell.Tab.0.right" timestamp="1617030612209">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="254" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616926199297" />
-    <state width="1877" height="323" key="GridCell.Tab.1.bottom" timestamp="1616912799476">
+    <state width="1877" height="308" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1617030612209" />
+    <state width="1877" height="308" key="GridCell.Tab.1.bottom" timestamp="1617030613531">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="323" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616912799476" />
-    <state width="1877" height="323" key="GridCell.Tab.1.center" timestamp="1616912799476">
+    <state width="1877" height="308" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1617030613531" />
+    <state width="1877" height="308" key="GridCell.Tab.1.center" timestamp="1617030613531">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="323" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616912799476" />
-    <state width="1877" height="323" key="GridCell.Tab.1.left" timestamp="1616912799476">
+    <state width="1877" height="308" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1617030613531" />
+    <state width="1877" height="308" key="GridCell.Tab.1.left" timestamp="1617030613531">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="323" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616912799476" />
-    <state width="1877" height="323" key="GridCell.Tab.1.right" timestamp="1616912799476">
+    <state width="1877" height="308" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1617030613531" />
+    <state width="1877" height="308" key="GridCell.Tab.1.right" timestamp="1617030613531">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="323" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616912799476" />
+    <state width="1877" height="308" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1617030613531" />
     <state x="731" y="233" key="com.intellij.testIntegration.createTest.CreateTestDialog" timestamp="1616834372342">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -702,10 +705,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="616" y="240" key="run.anything.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616679783451" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1616926099377">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1617028552255">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616926099377" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1617028552255" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -719,6 +722,31 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
           <line>369</line>
           <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
+          <line>413</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java</url>
+          <line>196</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
+          <line>349</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
+          <line>482</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
+          <line>298</line>
+          <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

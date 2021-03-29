@@ -334,9 +334,9 @@ public class UserPortTo24BitAddress extends Device {
 
         // Perform any memory writes at this time, for this emulation do the logic now
         if (apuInstuctionSchedule == 4) {
-            int instruction = (apuData.getApuInstructions()[apuPC*4] & 0xff) | ((apuData.getApuInstructions()[(apuPC*4)+1] & 0xff) << 8);
+            int instruction = (apuData.getApuInstructions()[apuPC*4] & 0xff) | ((apuData.getApuInstructions()[(apuPC*4)+1] & 0xff) << 8) | ((apuData.getApuInstructions()[(apuPC*4)+2] & 0xff) << 16) | ((apuData.getApuInstructions()[(apuPC*4)+3] & 0xff) << 24);
             apuPC++;
-            apuPC &= 0x0fff;
+            apuPC &= 0x07ff;
 
             if (MemoryBus.addressActive(instruction , kAPU_Reset_ADDRB1)) {
                 apuADDRB1 = 0;

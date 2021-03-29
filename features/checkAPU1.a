@@ -54,9 +54,7 @@ APUCode_Start
 	+MAPU
 
 APUCode_Size = *-APUCode_Start
-;!if APUCode_Size >= 256 {
-;!error "APU Code too large, need better memcpy"
-;}
+
 
 APUData_Start
 	; Palette EBS+address

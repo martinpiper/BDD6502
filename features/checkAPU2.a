@@ -1,0 +1,40 @@
+!source "BombJack/stdlib/APU_Macros.a"
+
+* = 0
+
+APUCode_Start
+	+MAPU
+	+MAPU kAPU_Reset_ADDRB1 | kAPU_Reset_EBSEADDR
+
+	; Load both external addresses at the same time
+	+MAPU kAPU_Load_EBS | kAPU_Load_EBS2
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_Load_EADDRLo | kAPU_Load_EADDR2Lo
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_Load_EADDRHi | kAPU_Load_EADDR2Hi
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR2
+
+
+	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_SelectEBS2EADDR2
+	+MAPU kAPU_Incr_ADDRB1
+
+	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_Incr_ADDRB1
+
+	; Endlessly wait
+	+MAPU kAPU_WaitForEqualsHV
+	+MAPU
+
+APUCode_Size = *-APUCode_Start
+
+
+APUData_Start
+	; Palette EBS+address
+	!by $01 , $00 , $9c
+
+	; Value to store in $9c01
+	!by $11
+	; Value to store in $9c00
+	!by $22
+
+APUData_Size = * -APUData_Start
