@@ -7,11 +7,11 @@ APUCode_Start
 	+MAPU kAPU_Reset_ADDRB1 | kAPU_Reset_EBSEADDR
 
 	; Load both external addresses at the same time
-	+MAPU kAPU_Load_EBS | kAPU_Load_EBS2
+	+MAPU kAPU_Load_EBS | kAPU_Load_EBS2 | kAPU_IDataRegLoad0
 	+MAPU kAPU_Incr_ADDRB1
-	+MAPU kAPU_Load_EADDRLo | kAPU_Load_EADDR2Lo
+	+MAPU kAPU_Load_EADDRLo | kAPU_Load_EADDR2Lo | kAPU_IDataRegLoad1
 	+MAPU kAPU_Incr_ADDRB1
-	+MAPU kAPU_Load_EADDRHi | kAPU_Load_EADDR2Hi
+	+MAPU kAPU_Load_EADDRHi | kAPU_Load_EADDR2Hi | kAPU_IDataRegLoad2
 	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR2
 
 
@@ -19,6 +19,16 @@ APUCode_Start
 	+MAPU kAPU_Incr_ADDRB1
 
 	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_Incr_ADDRB1
+
+	; Select the registers and write values
+	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_IDataSelectReg0
+	+MAPU kAPU_Incr_ADDRB1
+
+	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_SelectEBS2EADDR2 | kAPU_IDataSelectReg1
+	+MAPU kAPU_Incr_ADDRB1
+
+	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_IDataSelectReg2
 	+MAPU kAPU_Incr_ADDRB1
 
 	; Endlessly wait

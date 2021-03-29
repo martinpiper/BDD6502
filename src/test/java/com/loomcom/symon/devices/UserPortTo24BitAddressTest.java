@@ -29,13 +29,13 @@ public class UserPortTo24BitAddressTest {
         return new MemoryItem(fullAddressFromAddrEx(address,addressEx), value);
     }
 
-    static class MemoryItem extends Pair<Integer,Byte> {
+    static class MemoryItem extends Pair<Integer,Integer> {
 
         public MemoryItem(Integer key, Byte value) {
-            super(key, value);
+            super(key, value & 0xff);
         }
         public MemoryItem(Integer key, Integer value) {
-            super(key, value.byteValue());
+            super(key, value.byteValue() & 0xff);
         }
 
         @Override
@@ -196,7 +196,11 @@ public class UserPortTo24BitAddressTest {
 
         assertThat(memoryAddressByteSequence, contains(
                 fromAddrValue(0x9c01,0x01,0x11) ,
-                fromAddrValue(0x9c00,0x01,0x22)
+                fromAddrValue(0x9c00,0x01,0x22) ,
+
+                fromAddrValue(0x9c00,0x01,0x01) ,
+                fromAddrValue(0x9c01,0x01,0x00) ,
+                fromAddrValue(0x9c00,0x01,0x9c)
         ));
         memoryAddressByteSequence.clear();
 
