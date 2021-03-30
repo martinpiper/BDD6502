@@ -1,9 +1,5 @@
 ; TODO items
 
-* Tidy up all the "gotByte & 0xff" rubbish. Make it an accessor that returns an int ready for registers to use
-
-
-
 * APU: Cycle exact stateful emulation may be needed to precisely replicate all combinations, for example where ABBRB1/2 is incremented (or loaded) at the same time as reading a value from RAM and assigning it to an internal register
 
 

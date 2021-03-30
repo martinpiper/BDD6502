@@ -200,7 +200,18 @@ public class UserPortTo24BitAddressTest {
 
                 fromAddrValue(0x9c00,0x01,0x01) ,
                 fromAddrValue(0x9c01,0x01,0x00) ,
-                fromAddrValue(0x9c00,0x01,0x9c)
+                fromAddrValue(0x9c00,0x01,0x9c) ,
+
+                fromAddrValue(0x9c00,0x01,0x11) ,
+                fromAddrValue(0x9c02,0x01,0x11) ,
+                fromAddrValue(0x9c00,0x01,0x22) ,
+
+                fromAddrValue(0x9c00,0x01,0x56) ,
+                fromAddrValue(0x9c00,0x01,0x11) ,
+                fromAddrValue(0x9c00,0x01,0x78) ,
+                fromAddrValue(0x9c00,0x01,0x22)
+
+
         ));
         memoryAddressByteSequence.clear();
 
