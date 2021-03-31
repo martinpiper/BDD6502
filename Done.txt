@@ -273,3 +273,9 @@ Added: Given I am using C64 processor port options
 
 
 * Tidy up all the "gotByte & 0xff" rubbish. Make it an accessor that returns an int ready for registers to use
+
+
+
+* APU: Debug display, configurable via syntax (and property) to display
+	Instruction hex, binary flags, text flags
+	PC, registers, and small memory dump for the various address registers
