@@ -1,5 +1,11 @@
 ; TODO items
 
+* APU: Debug display, configurable via syntax (and property) to display
+	Instruction hex, binary flags, text flags
+	PC, registers, and small memory dump for the various address registers
+
+
+
 * APU: Cycle exact stateful emulation may be needed to precisely replicate all combinations, for example where ABBRB1/2 is incremented (or loaded) at the same time as reading a value from RAM and assigning it to an internal register
 
 
