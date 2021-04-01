@@ -53,7 +53,7 @@ public class UserPortTo24BitAddress extends Device {
         super(0xdd00, 0xdd0f, "UserPortTo24BitAddress");
         mScenario = scenario;
 
-        if (System.getProperty("test.enable.APU.debug").toLowerCase().equals("true")) {
+        if (System.getProperty("test.enable.APU.debug","").toLowerCase().equals("true")) {
             apuEnableDebug = true;
         }
     }
