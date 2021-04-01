@@ -53,7 +53,7 @@ public class UserPortTo24BitAddress extends Device {
         super(0xdd00, 0xdd0f, "UserPortTo24BitAddress");
         mScenario = scenario;
 
-        if (System.getProperty("test.enable.APU.debug","").toLowerCase().equals("true")) {
+        if (System.getProperty("bdd6502.apu.trace","").toLowerCase().equals("true")) {
             apuEnableDebug = true;
         }
     }
@@ -556,9 +556,6 @@ public class UserPortTo24BitAddress extends Device {
                 if (MemoryBus.addressActive(instruction , kAPU_Load_EADDR2Hi)) {
                     instructionString += "Load_EADDR2Hi ";
                 }
-                if (MemoryBus.addressActive(instruction , kAPU_Load_EADDR2Hi)) {
-                    instructionString += "Load_EADDR2Hi ";
-                }
                 if (MemoryBus.addressActive(instruction , kAPU_Incr_EADDR2)) {
                     instructionString += "Incr_EADDR2 ";
                 }
@@ -622,6 +619,7 @@ public class UserPortTo24BitAddress extends Device {
 
                 System.out.println(kAPUDEBUG + ">> PC: " + Integer.toHexString(currentPC) + " : " + instructionString.trim());
                 System.out.println(kAPUDEBUG + "Wait8: " + Integer.toHexString(apuWait8) + " Wait16: " + Integer.toHexString(apuWait16) + " Wait24: " + Integer.toHexString(apuWait24));
+                System.out.println(kAPUDEBUG + "RH8: " + Integer.toHexString(displayBombJack.getDisplayH() & 0xff) + " RH16: " + Integer.toHexString((displayBombJack.getDisplayH() >> 8) & 0xff) + " RV24: " + Integer.toHexString(displayBombJack.getDisplayV() & 0xff));
                 System.out.println(kAPUDEBUG + selectADDRB1 + "ADDRB1: " + Integer.toHexString(apuADDRB1) + " Contents: " + Integer.toHexString(apuData.getApuData()[(apuADDRB1-1) & 0x1fff] & 0xff) + " >" + Integer.toHexString(apuData.getApuData()[apuADDRB1 & 0x1fff] & 0xff) + "< " + Integer.toHexString(apuData.getApuData()[(apuADDRB1 + 1) & 0x1fff] & 0xff));
                 System.out.println(kAPUDEBUG + selectADDRB2 + "ADDRB2: " + Integer.toHexString(apuADDRB2) + " Contents: " + Integer.toHexString(apuData.getApuData()[(apuADDRB2-1) & 0x1fff] & 0xff) + " >" + Integer.toHexString(apuData.getApuData()[apuADDRB1 & 0x1fff] & 0xff) + "< " + Integer.toHexString(apuData.getApuData()[(apuADDRB2 + 1) & 0x1fff] & 0xff));
                 System.out.println(kAPUDEBUG + ebs1Select + "EBS: " + Integer.toHexString(apuEBS) + " "+ebs1Select+"EADDR: " + Integer.toHexString(apuEADDR) + " "+ebs2Select+"EBS2: " + Integer.toHexString(apuEBS2) + " "+ebs2Select+"EADDR2: " + Integer.toHexString(apuEADDR2));
