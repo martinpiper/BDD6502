@@ -176,6 +176,7 @@ public class DisplayBombJack extends MemoryBus {
         }
         if (debugData != null) {
             debugData.printf("d$%04x%02x%02x\n", address, addressEx, data);
+            debugData.flush();
         }
 
         lastDataWritten = data;

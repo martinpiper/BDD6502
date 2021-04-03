@@ -202,6 +202,7 @@ public class UserPortTo24BitAddress extends Device {
     public void writeMemoryBusWithState(int data) {
         if (debugData != null) {
             debugData.printf("d$%04x%02x%02x\n", bus24Bytes[1] | (bus24Bytes[2] << 8), bus24Bytes[0], data);
+            debugData.flush();
         }
 
 

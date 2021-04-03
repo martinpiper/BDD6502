@@ -8,6 +8,7 @@ import com.bdd6502.MemoryBus;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import javafx.util.Pair;
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -80,8 +81,10 @@ public class UserPortTo24BitAddressTest {
         display.addLayer(debugLayer);
 
         apu = new UserPortTo24BitAddress(null);
+        apu.enableDebugData();
         apu.addDevice(display);
         APUData apuData = new APUData();
+        apuData.enableDebugData();
         apu.setEnableAPU(display , apuData);
         display.setCallbackAPU(apu);
 
@@ -98,8 +101,14 @@ public class UserPortTo24BitAddressTest {
         int apuDataStart = Glue.valueToInt("APUData_Start");
         int apuDataSize = Glue.valueToInt("APUData_Size");
 
+
         apu.apuData.writeDataFromFile(0x8000, 0x02, "target/apu.bin", apuCodeStart, apuCodeSize);
         apu.apuData.writeDataFromFile(0x4000, 0x02, "target/apu.bin", apuDataStart, apuDataSize);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        apu.apuData.closeDebugData();
     }
 
     @Test
