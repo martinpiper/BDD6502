@@ -41,7 +41,7 @@ APUCode_Start
 	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR
 	+MAPU kAPU_Incr_ADDRB2 | kAPU_Incr_EADDR2
 
-	; Check 16 bit loads
+	; Check 16 bit loads from ADDRB2
 	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR
 	+MAPU kAPU_ADDRB2Load16
 
