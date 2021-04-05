@@ -1,0 +1,93 @@
+!source "BombJack/stdlib/APU_Macros.a"
+
+* = 0
+
+APUCode_Start
+	+MAPU
+	+MAPU kAPU_Reset_ADDRB1 | kAPU_Reset_EBSEADDR
+
+	; Load both external addresses at the same time
+	+MAPU kAPU_Load_EBS | kAPU_Load_EBS2 | kAPU_IDataRegLoad0
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_Load_EADDRLo | kAPU_Load_EADDR2Lo | kAPU_IDataRegLoad1
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_Load_EADDRHi | kAPU_Load_EADDR2Hi | kAPU_IDataRegLoad2
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR2
+
+
+	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_SelectEBS2EADDR2
+	+MAPU kAPU_Incr_ADDRB1
+
+	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_ADDRB2
+
+	; Select the registers and write values, the kAPU_ADDRB2Select is not needed and should not affect the register selects
+	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_IDataSelectReg0
+	+MAPU kAPU_Incr_ADDRB1
+
+	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_SelectEBS2EADDR2 | kAPU_IDataSelectReg1
+	+MAPU kAPU_Incr_ADDRB2
+
+	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_IDataSelectReg2
+	+MAPU kAPU_Incr_ADDRB2
+
+	; Select the registers and write values
+	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR2
+
+	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_SelectEBS2EADDR2
+	+MAPU kAPU_Incr_ADDRB2 | kAPU_Incr_EADDR2
+
+	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_Incr_ADDRB2 | kAPU_Incr_EADDR2
+
+	; Check 16 bit loads from ADDRB2
+	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_ADDRB2Load16
+
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU
+
+	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU
+
+	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_ADDRB1Load16
+
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU
+
+	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU
+
+	; Endlessly wait
+	+MAPU kAPU_WaitForEqualsHV
+	+MAPU
+
+APUCode_Size = *-APUCode_Start
+
+
+APUData_Start
+	; Palette EBS+address
+	!by $01 , $00 , $9c
+
+	; Value to store in $9c01
+	!by $11
+	; Value to store in $9c00
+	!by $22
+
+	; Some extra values
+	!by $56
+	!by $67
+	!by $78
+	!by $89
+
+APUData_Size = * -APUData_Start

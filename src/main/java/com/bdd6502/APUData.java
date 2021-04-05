@@ -11,6 +11,18 @@ public class APUData extends MemoryBus {
     int addressRegisters = 0x2000, addressExRegisters = 0x02;
     int addressInstructions = 0x8000;
     int addressData = 0x4000;
+    PrintWriter debugData = null;
+
+    public void enableDebugData() throws IOException {
+        debugData = new PrintWriter(new FileWriter("target/debugDataAPU.txt"));
+        debugData.println("; Automatically created by APUData");
+        debugData.println("d0");
+    }
+
+    public void closeDebugData() throws IOException {
+        debugData.println("d0");
+        debugData.flush();
+    }
 
     public byte[] getApuInstructions() {
         return apuInstructions;
@@ -33,9 +45,14 @@ public class APUData extends MemoryBus {
     }
 
     @Override
-    void writeData(int address, int addressEx, byte data) {
+    public void writeData(int address, int addressEx, byte data) {
         // Some contention here as this uses banks of RAM
         if (MemoryBus.addressActive(addressEx, addressExRegisters)) {
+            if (debugData != null) {
+                debugData.printf("d$%04x%02x%02x\n", address, addressEx, data);
+                debugData.flush();
+            }
+
             if (MemoryBus.addressActive(address, addressRegisters)) {
                 apuRegisters[address & 0x1fff] = data;
             }
@@ -52,6 +69,18 @@ public class APUData extends MemoryBus {
 
     @Override
     public void setAddressBus(int address, int addressEx) {
+        memoryAsserted = false;
+        if (MemoryBus.addressActive(addressEx, addressExRegisters)) {
+            if (MemoryBus.addressActive(address, addressRegisters)) {
+                memoryAsserted = true;
+            }
+            if (MemoryBus.addressActive(address, addressInstructions)) {
+                memoryAsserted = true;
+            }
+            if (MemoryBus.addressActive(address, addressData)) {
+                memoryAsserted = true;
+            }
+        }
 
     }
 }

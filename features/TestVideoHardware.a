@@ -10,17 +10,21 @@ start
 
 	jsr Bus24Bit_Init
 	jsr APU_ResetDisable
+	jsr Bus24Bit_DisableDisplay
+
 	jsr Bus24Bit_SetAddressAPUInstructions
 	+MWordValueTo_AX APUCode_Start
-	ldy #APUCode_Size
+	ldy #<APUCode_Size
 	jsr Bus24Bit_CopySmallData
+	ldx #>APUCode_Size
+	jsr Bus24Bit_CopySmallDataRepeatForX
+
 	jsr Bus24Bit_SetAddressAPUData
 	+MWordValueTo_AX APUData_Start
 	ldy #APUData_Size
 	jsr Bus24Bit_CopySmallData
 	jsr APU_Enable
 
-	jsr Bus24Bit_DisableDisplay
 	lda #$30
 	jsr Bus24Bit_EnableDisplay
 	jsr Bus24Bit_WaitVBlank
@@ -511,8 +515,7 @@ SpriteFrame2Size = * - SpriteFrame2
 	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
 	+MAPU kAPU_Incr_ADDRB1
 
-	+MAPU kAPU_Load_EADDRLo
-	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_Load_EADDRLo | kAPU_IDataSelectReg1
 
 	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
 	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
@@ -520,19 +523,21 @@ SpriteFrame2Size = * - SpriteFrame2
 	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
 	+MAPU kAPU_Incr_ADDRB1
 
-	+MAPU kAPU_Load_EADDRLo
-	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_Load_EADDRLo | kAPU_IDataSelectReg0
 }
 
 APUCode_Start
 	+MAPU
 	+MAPU kAPU_Reset_ADDRB1 | kAPU_Reset_EBSEADDR
 
+	; Setup address lo value for the palette writes
+	+MAPU kAPU_IDataRegLoad1
+	+MAPU kAPU_Incr_ADDRB1
+
 	; Get palette address
 	+MAPU kAPU_Load_EBS
 	+MAPU kAPU_Incr_ADDRB1
-	+MAPU kAPU_Load_EADDRLo
-	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_Load_EADDRLo | kAPU_IDataSelectReg0
 	+MAPU kAPU_Load_EADDRHi
 	+MAPU kAPU_Incr_ADDRB1
 
@@ -548,13 +553,16 @@ APUCode_Start
 	+MAPU
 
 APUCode_Size = *-APUCode_Start
-!if APUCode_Size >= 256 {
-!error "APU Code too large, need better memcpy"
-}
+;!if APUCode_Size >= 256 {
+;!error "APU Code too large, need better memcpy"
+;}
 
 APUData_Start
-	; Palette EBS+address
-	!by $01 , $00 , $9c
+	; Set address to $9c1c
+	!by $1c
+
+	; Palette EBS+hi address
+	!by $01 , $9c
 
 	; Next RHRV to wait for
 	!by $88 , $01 , $40
@@ -563,14 +571,10 @@ APUData_Start
 	!by $11
 	; Value to store in $9c01
 	!by $22
-	; Then set address to $9c1c
-	!by $1c
 	; Value to store in $9c1c
 	!by $11
 	; Value to store in $9c1d
 	!by $22
-	; Then reset address back to $9c00
-	!by $00
 
 
 	; Next RHRV to wait for
@@ -580,14 +584,10 @@ APUData_Start
 	!by $33
 	; Value to store in $9c01
 	!by $44
-	; Then set address to $9c1c
-	!by $1c
 	; Value to store in $9c1c
 	!by $33
 	; Value to store in $9c1d
 	!by $44
-	; Then reset address back to $9c00
-	!by $00
 
 
 	; Next RHRV to wait for
@@ -597,14 +597,10 @@ APUData_Start
 	!by $55
 	; Value to store in $9c01
 	!by $66
-	; Then set address to $9c1c
-	!by $1c
 	; Value to store in $9c1c
 	!by $55
 	; Value to store in $9c1d
 	!by $66
-	; Then reset address back to $9c00
-	!by $00
 
 
 	; Next frame
@@ -616,14 +612,10 @@ APUData_Start
 	!by $22
 	; Value to store in $9c01
 	!by $11
-	; Then set address to $9c1c
-	!by $1c
 	; Value to store in $9c1c
 	!by $22
 	; Value to store in $9c1d
 	!by $11
-	; Then reset address back to $9c00
-	!by $00
 
 
 	; Next RHRV to wait for
@@ -633,14 +625,10 @@ APUData_Start
 	!by $44
 	; Value to store in $9c01
 	!by $33
-	; Then set address to $9c1c
-	!by $1c
 	; Value to store in $9c1c
 	!by $44
 	; Value to store in $9c1d
 	!by $33
-	; Then reset address back to $9c00
-	!by $00
 
 
 	; Next RHRV to wait for
@@ -650,14 +638,10 @@ APUData_Start
 	!by $66
 	; Value to store in $9c01
 	!by $55
-	; Then set address to $9c1c
-	!by $1c
 	; Value to store in $9c1c
 	!by $66
 	; Value to store in $9c1d
 	!by $55
-	; Then reset address back to $9c00
-	!by $00
 
 
 APUData_Size = * -APUData_Start

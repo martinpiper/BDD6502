@@ -18,7 +18,7 @@ public class StaticColour extends DisplayLayer {
     }
 
     @Override
-    void writeData(int address, int addressEx, byte data) {
+    public void writeData(int address, int addressEx, byte data) {
     }
 
     @Override

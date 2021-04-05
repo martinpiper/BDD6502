@@ -269,3 +269,13 @@ Added: Given I am using C64 processor port options
 	This means all display/audio layers will need to get their memory from the APU, not the user port
 	* The audio and display layer syntax can be re-ordered to be after the user port and APU syntax
 	* com.bdd6502.DisplayBombJack.calculatePixel will need a callback to an optional APU
+
+
+
+* Tidy up all the "gotByte & 0xff" rubbish. Make it an accessor that returns an int ready for registers to use
+
+
+
+* APU: Debug display, configurable via syntax (and property) to display
+	Instruction hex, binary flags, text flags
+	PC, registers, and small memory dump for the various address registers

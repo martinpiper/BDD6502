@@ -99,7 +99,7 @@ public class AudioExpansion extends MemoryBus implements Runnable {
     }
 
     @Override
-    void writeData(int address, int addressEx, byte data) {
+    public void writeData(int address, int addressEx, byte data) {
         // No contention, this will use latches, many of them
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && (address >= addressRegisters) && (address < (addressRegisters + (numVoices * voiceSize)))) {
             int voice = (address - addressRegisters) / voiceSize;
