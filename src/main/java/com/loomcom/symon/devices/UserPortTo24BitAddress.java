@@ -368,9 +368,11 @@ public class UserPortTo24BitAddress extends Device {
 
             if (MemoryBus.addressActive(instruction , kAPU_Incr_ADDRB1)) {
                 apuADDRB1++;
+                apuADDRB1 &= 0x3fff;
             }
             if (MemoryBus.addressActive(instruction , kAPU_Incr_ADDRB2)) {
                 apuADDRB2++;
+                apuADDRB2 &= 0x3fff;
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Incr_EADDR)) {
@@ -488,9 +490,11 @@ public class UserPortTo24BitAddress extends Device {
 
             if (MemoryBus.addressActive(instruction , kAPU_ADDRB1Load16)) {
                 apuADDRB1 = apuDataReg[0] | (apuDataReg[1] << 8);
+                apuADDRB1 &= 0x3fff;
             }
             if (MemoryBus.addressActive(instruction , kAPU_ADDRB2Load16)) {
                 apuADDRB2 = apuDataReg[0] | (apuDataReg[1] << 8);
+                apuADDRB2 &= 0x3fff;
             }
 
             if (apuEnableDebug) {
