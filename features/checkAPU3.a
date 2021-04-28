@@ -1,0 +1,113 @@
+!source "BombJack/stdlib/APU_Macros.a"
+
+* = 0
+
+APUCode_Start
+	+MAPU
+	+MAPU kAPU_Reset_ADDRB1
+
+	; Load external address
+	+MAPU kAPU_Load_EBS
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_Load_EADDRLo
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_Load_EADDRHi
+	+MAPU kAPU_Incr_ADDRB1
+
+	; Load new PC value
+	+MAPU kAPU_IDataRegLoad0
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataRegLoad1
+	+MAPU kAPU_Incr_ADDRB1
+
+	; Tests kAPU_PCLoad16
+	+MAPU kAPU_PCLoad16
+
+.realCode2
+	; This should not execute due to the above PCLoad16 beign successful
+	+MAPU kAPU_Reset_ADDRB1 | kAPU_Reset_PC
+
+.realCode1
+	; Write $9c00
+	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
+
+	; Load new PC value
+	+MAPU kAPU_IDataRegLoad0
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataRegLoad1
+	+MAPU kAPU_Incr_ADDRB1
+
+	; Tests kAPU_PCLoad16 and successful kAPU_SkipIfEQ
+	+MAPU kAPU_PCLoad16 | kAPU_SkipIfEQ
+	+MAPU kAPU_Incr_ADDRB1
+
+	; Write $9c01
+	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
+
+	; Tests kAPU_PCLoad16 and successful kAPU_SkipIfEQ
+	+MAPU kAPU_PCLoad16 | kAPU_SkipIfEQ
+	+MAPU kAPU_Incr_ADDRB1
+
+	; Write $9c02
+	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
+
+	; Load new PC value
+	+MAPU kAPU_IDataRegLoad0
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataRegLoad1
+	+MAPU kAPU_Incr_ADDRB1
+
+	; Tests kAPU_PCLoad16 and successful kAPU_SkipIfEQ
+	+MAPU kAPU_PCLoad16 | kAPU_SkipIfEQ
+
+.realCode3
+	+MAPU kAPU_Incr_ADDRB1
+	; Write $9c03
+	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
+
+	; Endlessly wait
+	+MAPU kAPU_WaitForEqualsHV
+	+MAPU
+
+APUCode_Size = *-APUCode_Start
+
+
+APUData_Start
+	; Palette EBS+address
+	!by $01 , $00 , $9c
+
+	; For kAPU_PCLoad16
+	+MAPU_EmitPC .realCode1
+
+	; Value to store in $9c00
+	!by $11
+
+	; For kAPU_PCLoad16
+	+MAPU_EmitPC .realCode2
+
+	; Succeed the kAPU_SkipIfEQ check
+	!by $00
+
+	; Value to store in $9c01
+	!by $22
+
+	; Succeed the kAPU_SkipIfEQ check (since bit 0 is not set)
+	!by $02
+
+	; Value to store in $9c02
+	!by $33
+
+	; For kAPU_PCLoad16
+	+MAPU_EmitPC .realCode3
+
+	; Fail the kAPU_SkipIfEQ check (since bit 0 is set)
+	!by $01
+
+	; Value to store in $9c03
+	!by $44
+
+APUData_Size = * -APUData_Start

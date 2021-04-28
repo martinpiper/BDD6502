@@ -81,6 +81,7 @@ public class UserPortTo24BitAddressTest {
         display.addLayer(debugLayer);
 
         apu = new UserPortTo24BitAddress(null);
+        apu.setApuEnableDebug(true);
         apu.enableDebugData();
         apu.addDevice(display);
         APUData apuData = new APUData();
@@ -175,7 +176,6 @@ public class UserPortTo24BitAddressTest {
                 fromAddrValue(0x9c1c,0x01,0x55) ,
                 fromAddrValue(0x9c1d,0x01,0x66)
         ));
-        memoryAddressByteSequence.clear();
 
     }
 
@@ -222,7 +222,39 @@ public class UserPortTo24BitAddressTest {
 
 
         ));
-        memoryAddressByteSequence.clear();
+
+    }
+
+
+    @Test
+    public void checkAPU3() throws Exception {
+
+        DisplayBombJack display = getDisplayBombJack();
+
+        addAPUCodeData("features/checkAPU3.a");
+
+        display.calculateAFrame();
+
+        assertThat(memoryAddressByteSequence, is(empty()));
+
+        // No APU reset
+        apu.apuData.writeData(0x2000, 0x02, 0x01);
+
+        display.calculateAFrame();
+
+        assertThat(memoryAddressByteSequence, is(empty()));
+
+        // Enable APU
+        apu.apuData.writeData(0x2000, 0x02, 0x03);
+
+        display.calculatePixelsUntil(0, 0);
+
+        assertThat(memoryAddressByteSequence, contains(
+                fromAddrValue(0x9c00,0x01,0x11) ,
+                fromAddrValue(0x9c01,0x01,0x22) ,
+                fromAddrValue(0x9c02,0x01,0x33) ,
+                fromAddrValue(0x9c03,0x01,0x44)
+        ));
 
     }
 }
