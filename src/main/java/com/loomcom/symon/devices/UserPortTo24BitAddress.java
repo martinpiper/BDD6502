@@ -358,7 +358,7 @@ public class UserPortTo24BitAddress extends Device {
             boolean wasSkipped = false;
             if (MemoryBus.addressActive(instruction , kAPU_SkipIfEQ)) {
                 // The test in the schematic uses the pre-latch signal, so this occurs first
-                if (!MemoryBus.addressActive(apuPreviousGotByte , 0x01)) {
+                if (apuPreviousGotByte == 0) {
                     instruction = 0;
                     wasSkipped = true;
                 }

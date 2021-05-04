@@ -46,10 +46,6 @@ APUCode_Start
 	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
 	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
 
-	; Tests kAPU_PCLoad16 and successful kAPU_SkipIfEQ
-	+MAPU kAPU_PCLoad16 | kAPU_SkipIfEQ
-	+MAPU kAPU_Incr_ADDRB1
-
 	; Write $9c02
 	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
 	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
@@ -95,16 +91,13 @@ APUData_Start
 	; Value to store in $9c01
 	!by $22
 
-	; Succeed the kAPU_SkipIfEQ check (since bit 0 is not set)
-	!by $02
-
 	; Value to store in $9c02
 	!by $33
 
 	; For kAPU_PCLoad16
 	+MAPU_EmitPC .realCode3
 
-	; Fail the kAPU_SkipIfEQ check (since bit 0 is set)
+	; Fail the kAPU_SkipIfEQ check
 	!by $01
 
 	; Value to store in $9c03
