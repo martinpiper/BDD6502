@@ -15,34 +15,34 @@ APUCode_Start
 	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR2
 
 
-	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_SelectEBS2EADDR2
+	+MAPU kAPU_ExternalMEWR | kAPU_SelectEBS2EADDR2
 	+MAPU kAPU_Incr_ADDRB1
 
-	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_ExternalMEWR
 	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_ADDRB2
 
 	; Select the registers and write values, the kAPU_ADDRB2Select is not needed and should not affect the register selects
-	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_IDataSelectReg0
+	+MAPU kAPU_ADDRB2Select | kAPU_ExternalMEWR | kAPU_IDataSelectReg0
 	+MAPU kAPU_Incr_ADDRB1
 
-	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_SelectEBS2EADDR2 | kAPU_IDataSelectReg1
+	+MAPU kAPU_ADDRB2Select | kAPU_ExternalMEWR | kAPU_SelectEBS2EADDR2 | kAPU_IDataSelectReg1
 	+MAPU kAPU_Incr_ADDRB2
 
-	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_IDataSelectReg2
+	+MAPU kAPU_ADDRB2Select | kAPU_ExternalMEWR | kAPU_IDataSelectReg2
 	+MAPU kAPU_Incr_ADDRB2
 
 	; Select the registers and write values
-	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_ADDRB2Select | kAPU_ExternalMEWR
 	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR2
 
-	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR | kAPU_SelectEBS2EADDR2
+	+MAPU kAPU_ADDRB2Select | kAPU_ExternalMEWR | kAPU_SelectEBS2EADDR2
 	+MAPU kAPU_Incr_ADDRB2 | kAPU_Incr_EADDR2
 
-	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_ADDRB2Select | kAPU_ExternalMEWR
 	+MAPU kAPU_Incr_ADDRB2 | kAPU_Incr_EADDR2
 
 	; Check 16 bit loads from ADDRB2
-	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_ADDRB2Select | kAPU_ExternalMEWR
 	+MAPU kAPU_ADDRB2Load16
 
 	+MAPU
@@ -51,10 +51,10 @@ APUCode_Start
 	+MAPU kAPU_Incr_ADDRB2
 	+MAPU
 
-	+MAPU kAPU_ADDRB2Select | kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_ADDRB2Select | kAPU_ExternalMEWR
 	+MAPU
 
-	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_ExternalMEWR
 	+MAPU kAPU_ADDRB1Load16
 
 	+MAPU
@@ -65,7 +65,7 @@ APUCode_Start
 	+MAPU kAPU_Incr_ADDRB1
 	+MAPU
 
-	+MAPU kAPU_InterceptBus | kAPU_ExternalMEWR
+	+MAPU kAPU_ExternalMEWR
 	+MAPU
 
 	; Endlessly wait

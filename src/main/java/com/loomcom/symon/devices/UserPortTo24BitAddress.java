@@ -255,7 +255,7 @@ public class UserPortTo24BitAddress extends Device {
     // ; Instructions, can be combined
     final int kAPU_Reset_ADDRB1		= 0b00000000000000000000000000000001;
     final int kAPU_Reset_PC			= 0b00000000000000000000000000000010;
-    final int kAPU_InterceptBus		= 0b00000000000000000000000000000100;
+;    final int kAPU_InterceptBus		= 0b00000000000000000000000000000100;
     final int kAPU_WaitForEqualsHV	= 0b00000000000000000000000000001000;
     final int kAPU_Reset_EBSEADDR	= 0b00000000000000000000000000010000;
     final int kAPU_Incr_ADDRB1		= 0b00000000000000000000000000100000;
@@ -402,24 +402,6 @@ public class UserPortTo24BitAddress extends Device {
                 apuEBS = 0;
             }
 
-            if (MemoryBus.addressActive(instruction , kAPU_InterceptBus)) {
-                apuIntercepting = true;
-                for (MemoryBus device : externalDevices) {
-                    if (MemoryBus.addressActive(instruction , kAPU_SelectEBS2EADDR2)) {
-                        device.setAddressBus(apuEADDR2, apuEBS2);
-                    } else {
-                        device.setAddressBus(apuEADDR, apuEBS);
-                    }
-                }
-            } else {
-                if (apuIntercepting) {
-                    apuIntercepting = false;
-                    for (MemoryBus device : externalDevices) {
-                        device.setAddressBus(0, 0);
-                    }
-                }
-            }
-
             int gotByte;
             int iDataSelect = instruction & kAPU_IDataSelectMask;
             switch (iDataSelect) {
@@ -443,12 +425,8 @@ public class UserPortTo24BitAddress extends Device {
             }
             apuPreviousGotByte = gotByte;
 
-
+            // This write is timed later in the schematic, so it handled later along with the loads
             if (MemoryBus.addressActive(instruction , kAPU_ExternalMEWR)) {
-                if (!MemoryBus.addressActive(instruction , kAPU_InterceptBus)) {
-                    System.out.println("kAPU_ExternalMEWR without kAPU_InterceptBus at address " + apuPC);
-                }
-
                 for (MemoryBus device : externalDevices) {
                     if (MemoryBus.addressActive(instruction , kAPU_SelectEBS2EADDR2)) {
                         device.writeData(apuEADDR2, apuEBS2, gotByte);
@@ -459,7 +437,6 @@ public class UserPortTo24BitAddress extends Device {
             }
 
             // Due to the load pulses being timed later in the schematic, these loads are handled last
-
             if (MemoryBus.addressActive(instruction , kAPU_IDataRegLoad0)) {
                 apuDataReg[0] = gotByte;
             }
@@ -531,9 +508,6 @@ public class UserPortTo24BitAddress extends Device {
                 }
                 if (MemoryBus.addressActive(originalInstruction , kAPU_Reset_PC)) {
                     instructionString += "Reset_PC ";
-                }
-                if (MemoryBus.addressActive(originalInstruction , kAPU_InterceptBus)) {
-                    instructionString += "InterceptBus ";
                 }
 
                 if (MemoryBus.addressActive(originalInstruction , kAPU_WaitForEqualsHV)) {
