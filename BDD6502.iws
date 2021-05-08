@@ -9,7 +9,6 @@
       <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.a" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/checkAPU1.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/checkAPU1.a" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/checkAPU2.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/checkAPU2.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/checkAPU3.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/checkAPU3.a" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
@@ -579,8 +578,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Maven.BDD6502 [install]" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest (1)" />
+        <item itemvalue="Maven.BDD6502 [install]" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU3" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU1" />
@@ -647,22 +646,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="587" y="88" key="CommitChangelistDialog2/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1617204264755" />
-    <state width="1877" height="348" key="GridCell.Tab.0.bottom" timestamp="1620402780798">
+    <state width="1877" height="348" key="GridCell.Tab.0.bottom" timestamp="1620444737349">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1620402780798" />
-    <state width="1877" height="348" key="GridCell.Tab.0.center" timestamp="1620402780798">
+    <state width="1877" height="348" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1620444737349" />
+    <state width="1877" height="348" key="GridCell.Tab.0.center" timestamp="1620444737349">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1620402780798" />
-    <state width="1877" height="348" key="GridCell.Tab.0.left" timestamp="1620402780798">
+    <state width="1877" height="348" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1620444737349" />
+    <state width="1877" height="348" key="GridCell.Tab.0.left" timestamp="1620444737348">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1620402780798" />
-    <state width="1877" height="348" key="GridCell.Tab.0.right" timestamp="1620402780798">
+    <state width="1877" height="348" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1620444737348" />
+    <state width="1877" height="348" key="GridCell.Tab.0.right" timestamp="1620444737349">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1620402780798" />
+    <state width="1877" height="348" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1620444737349" />
     <state width="1877" height="308" key="GridCell.Tab.1.bottom" timestamp="1619587293224">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

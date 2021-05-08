@@ -257,7 +257,7 @@ public class UserPortTo24BitAddress extends Device {
     final int kAPU_Reset_PC			= 0b00000000000000000000000000000010;
 ;    final int kAPU_InterceptBus		= 0b00000000000000000000000000000100;
     final int kAPU_WaitForEqualsHV	= 0b00000000000000000000000000001000;
-    final int kAPU_Reset_EBSEADDR	= 0b00000000000000000000000000010000;
+;    final int kAPU_Reset_EBSEADDR  	= 0b00000000000000000000000000010000;
     final int kAPU_Incr_ADDRB1		= 0b00000000000000000000000000100000;
     final int kAPU_Incr_EADDR		= 0b00000000000000000000000001000000;
     final int kAPU_ExternalMEWR		= 0b00000000000000000000000010000000;		// ; This is timed to pulse low on the PCINCR (cycle 3)
@@ -397,11 +397,6 @@ public class UserPortTo24BitAddress extends Device {
                 apuEADDR2++;
             }
 
-            if (MemoryBus.addressActive(instruction , kAPU_Reset_EBSEADDR)) {
-                apuEADDR = 0;
-                apuEBS = 0;
-            }
-
             int gotByte;
             int iDataSelect = instruction & kAPU_IDataSelectMask;
             switch (iDataSelect) {
@@ -512,9 +507,6 @@ public class UserPortTo24BitAddress extends Device {
 
                 if (MemoryBus.addressActive(originalInstruction , kAPU_WaitForEqualsHV)) {
                     instructionString += "WaitForEqualsHV ";
-                }
-                if (MemoryBus.addressActive(originalInstruction , kAPU_Reset_EBSEADDR)) {
-                    instructionString += "Reset_EBSEADDR ";
                 }
                 if (MemoryBus.addressActive(originalInstruction , kAPU_Incr_ADDRB1)) {
                     instructionString += "Incr_ADDRB1 ";
