@@ -6,12 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/checkAPU1.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/checkAPU1.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/checkAPU2.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/checkAPU2.a" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -570,10 +565,10 @@
       <item itemvalue="Cucumber Java.Simple ALL" />
       <item itemvalue="Cucumber Java.Trace Test" />
       <item itemvalue="JUnit.JUnit all" />
+      <item itemvalue="JUnit.UserPortTo24BitAddressTest (1)" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU1" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU3" />
-      <item itemvalue="JUnit.UserPortTo24BitAddressTest (1)" />
       <item itemvalue="Maven.BDD6502 [install]" />
     </list>
     <recent_temporary>

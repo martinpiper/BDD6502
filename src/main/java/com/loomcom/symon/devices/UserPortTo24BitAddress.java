@@ -47,7 +47,7 @@ public class UserPortTo24BitAddress extends Device {
     int apuWait8 = 0;
     int apuWait16 = 0;
     int apuWait24 = 0;
-    int apuDataReg[] = new int[3];
+    int apuDataReg[] = new int[5];
 
 
     public UserPortTo24BitAddress(Scenario scenario) throws MemoryRangeException {
@@ -277,11 +277,15 @@ public class UserPortTo24BitAddress extends Device {
     final int kAPU_Incr_EADDR2		= 0b00000000000001000000000000000000;
 
     // ; Do not combine these IDataSelect values
-    final int kAPU_IDataSelectRAM	= 0b00000000000000000000000000000000;
-    final int kAPU_IDataSelectReg0	= 0b00000000000010000000000000000000;
-    final int kAPU_IDataSelectReg1	= 0b00000000000100000000000000000000;
-    final int kAPU_IDataSelectReg2	= 0b00000000000110000000000000000000;
-    final int kAPU_IDataSelectMask	= 0b00000000000110000000000000000000;
+    final int kAPU_IDataSelectRAM	        = 0b00000000000000000000000000000000;
+    final int kAPU_IDataSelectReg0	        = 0b00000000000010000000000000000000;
+    final int kAPU_IDataSelectReg1	        = 0b00000000000100000000000000000000;
+    final int kAPU_IDataSelectReg2      	= 0b00000000000110000000000000000000;
+    final int kAPU_IDataSelectReg3	    	= 0b00000000000000000000000000010000;
+    final int kAPU_IDataSelectMemAddReg3	= 0b00000000000010000000000000010000;
+    final int kAPU_IDataSelectReg3AddReg4	= 0b00000000000100000000000000010000;
+    final int kAPU_IDataSelectReg3SubReg4	= 0b00000000000110000000000000010000;
+    final int kAPU_IDataSelectMask	        = 0b00000000000110000000000000010000;
 
     final int kAPU_IDataRegLoad0	= 0b00000000001000000000000000000000;
     final int kAPU_IDataRegLoad1	= 0b00000000010000000000000000000000;
@@ -293,6 +297,8 @@ public class UserPortTo24BitAddress extends Device {
     final int kAPU_ADDRB2Load16		= 0b00001000000000000000000000000000;
     final int kAPU_PCLoad16			= 0b00010000000000000000000000000000;
     final int kAPU_SkipIfEQ			= 0b00100000000000000000000000000000;
+    final int kAPU_IDataRegLoad3	= 0b01000000000000000000000000000000;
+    final int kAPU_IDataRegLoad4	= 0b10000000000000000000000000000000;
 
     public boolean isApuEnableDebug() {
         return apuEnableDebug;
@@ -339,6 +345,8 @@ public class UserPortTo24BitAddress extends Device {
             apuDataReg[0] = 0;
             apuDataReg[1] = 0;
             apuDataReg[2] = 0;
+            apuDataReg[3] = 0;
+            apuDataReg[4] = 0;
         }
 
         if (!apuEnable) {
@@ -417,6 +425,23 @@ public class UserPortTo24BitAddress extends Device {
                 case kAPU_IDataSelectReg2:
                     gotByte = apuDataReg[2];
                     break;
+                case kAPU_IDataSelectReg3:
+                    gotByte = apuDataReg[3];
+                    break;
+                case kAPU_IDataSelectMemAddReg3:
+                    if (MemoryBus.addressActive(instruction , kAPU_ADDRB2Select)) {
+                        gotByte = apuData.getApuData()[apuADDRB2] & 0xff;
+                    } else {
+                        gotByte = apuData.getApuData()[apuADDRB1] & 0xff;
+                    }
+                    gotByte = (gotByte + apuDataReg[3]) & 0xff;
+                    break;
+                case kAPU_IDataSelectReg3AddReg4:
+                    gotByte = (apuDataReg[3] + apuDataReg[4]) & 0xff;
+                    break;
+                case kAPU_IDataSelectReg3SubReg4:
+                    gotByte = (apuDataReg[3] - apuDataReg[4]) & 0xff;
+                    break;
             }
             apuPreviousGotByte = gotByte;
 
@@ -440,6 +465,12 @@ public class UserPortTo24BitAddress extends Device {
             }
             if (MemoryBus.addressActive(instruction , kAPU_IDataRegLoad2)) {
                 apuDataReg[2] = gotByte;
+            }
+            if (MemoryBus.addressActive(instruction , kAPU_IDataRegLoad3)) {
+                apuDataReg[3] = gotByte;
+            }
+            if (MemoryBus.addressActive(instruction , kAPU_IDataRegLoad4)) {
+                apuDataReg[4] = gotByte;
             }
 
             if (MemoryBus.addressActive(instruction , kAPU_Load_EBS)) {
@@ -566,6 +597,12 @@ public class UserPortTo24BitAddress extends Device {
                 }
                 if (MemoryBus.addressActive(originalInstruction , kAPU_IDataRegLoad2)) {
                     instructionString += "IDataRegLoad2 ";
+                }
+                if (MemoryBus.addressActive(originalInstruction , kAPU_IDataRegLoad3)) {
+                    instructionString += "IDataRegLoad3 ";
+                }
+                if (MemoryBus.addressActive(originalInstruction , kAPU_IDataRegLoad4)) {
+                    instructionString += "IDataRegLoad4 ";
                 }
 
 
