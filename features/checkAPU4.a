@@ -1,0 +1,74 @@
+!source "BombJack/stdlib/APU_Macros.a"
+
+* = 0
+
+APUCode_Start
+	+MAPU
+	+MAPU kAPU_Reset_ADDRB1
+
+	; Load external address
+	+MAPU kAPU_Load_EBS
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_Load_EADDRLo
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_Load_EADDRHi
+	+MAPU kAPU_Incr_ADDRB1
+
+	; Load all register values
+	+MAPU kAPU_IDataRegLoad0
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataRegLoad1
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataRegLoad2
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataRegLoad3
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataRegLoad4
+	+MAPU kAPU_Incr_ADDRB1
+
+	; Write $9c00 onwards with all the results of kAPU_IDataSelect*
+	+MAPU kAPU_ExternalMEWR | kAPU_IDataSelectRAM
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
+	+MAPU kAPU_ExternalMEWR | kAPU_IDataSelectReg0
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
+	+MAPU kAPU_ExternalMEWR | kAPU_IDataSelectReg1
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
+	+MAPU kAPU_ExternalMEWR | kAPU_IDataSelectReg2
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
+	+MAPU kAPU_ExternalMEWR | kAPU_IDataSelectReg3
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
+	+MAPU kAPU_ExternalMEWR | kAPU_IDataSelectMemAddReg3
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
+	+MAPU kAPU_ExternalMEWR | kAPU_IDataSelectReg3AddReg4
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
+	+MAPU kAPU_ExternalMEWR | kAPU_IDataSelectReg3SubReg4
+	+MAPU kAPU_Incr_ADDRB1 | kAPU_Incr_EADDR
+
+	; Endlessly wait
+	+MAPU kAPU_WaitForEqualsHV
+	+MAPU
+
+APUCode_Size = *-APUCode_Start
+
+
+APUData_Start
+	; Palette EBS+address
+	!by $01 , $00 , $9c
+
+	; Regs 0 to 4
+	!by $11
+	!by $22
+	!by $33
+	!by $44
+	!by $55
+
+	; Mem
+	!by $73
+	; Reg stores (ignored memory)
+	!by 3,4,5,6
+	; Mem + Reg3
+	!by $83
+	; Register results (ignored memory)
+	!by 7,8
+
+APUData_Size = * -APUData_Start

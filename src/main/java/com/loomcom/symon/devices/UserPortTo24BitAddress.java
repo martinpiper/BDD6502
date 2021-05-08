@@ -253,28 +253,28 @@ public class UserPortTo24BitAddress extends Device {
 
     // From: Assembly
     // ; Instructions, can be combined
-    final int kAPU_Reset_ADDRB1		= 0b00000000000000000000000000000001;
-    final int kAPU_Reset_PC			= 0b00000000000000000000000000000010;
-;    final int kAPU_InterceptBus		= 0b00000000000000000000000000000100;
-    final int kAPU_WaitForEqualsHV	= 0b00000000000000000000000000001000;
-;    final int kAPU_Reset_EBSEADDR  	= 0b00000000000000000000000000010000;
-    final int kAPU_Incr_ADDRB1		= 0b00000000000000000000000000100000;
-    final int kAPU_Incr_EADDR		= 0b00000000000000000000000001000000;
-    final int kAPU_ExternalMEWR		= 0b00000000000000000000000010000000;		// ; This is timed to pulse low on the PCINCR (cycle 3)
-    final int kAPU_Load_EBS			= 0b00000000000000000000000100000000;
-    final int kAPU_Load_EADDRLo		= 0b00000000000000000000001000000000;
-    final int kAPU_Load_EADDRHi		= 0b00000000000000000000010000000000;
-    final int kAPU_Load_Wait24		= 0b00000000000000000000100000000000;
-    final int kAPU_Load_Wait16		= 0b00000000000000000001000000000000;
-    final int kAPU_Load_Wait8		= 0b00000000000000000010000000000000;
+    final long kAPU_Reset_ADDRB1		= 0b00000000000000000000000000000001;
+    final long kAPU_Reset_PC			= 0b00000000000000000000000000000010;
+;    final long kAPU_InterceptBus		= 0b00000000000000000000000000000100;
+    final long kAPU_WaitForEqualsHV	= 0b00000000000000000000000000001000;
+;    final long kAPU_Reset_EBSEADDR  	= 0b00000000000000000000000000010000;
+    final long kAPU_Incr_ADDRB1		= 0b00000000000000000000000000100000;
+    final long kAPU_Incr_EADDR		= 0b00000000000000000000000001000000;
+    final long kAPU_ExternalMEWR		= 0b00000000000000000000000010000000;		// ; This is timed to pulse low on the PCINCR (cycle 3)
+    final long kAPU_Load_EBS			= 0b00000000000000000000000100000000;
+    final long kAPU_Load_EADDRLo		= 0b00000000000000000000001000000000;
+    final long kAPU_Load_EADDRHi		= 0b00000000000000000000010000000000;
+    final long kAPU_Load_Wait24		= 0b00000000000000000000100000000000;
+    final long kAPU_Load_Wait16		= 0b00000000000000000001000000000000;
+    final long kAPU_Load_Wait8		= 0b00000000000000000010000000000000;
 
     // ; New instructions
-    final int kAPU_SelectEBS2EADDR2	= 0b00000000000000000100000000000000;
-    final int kAPU_Load_EBS2		= 0b00000000000000001000000000000000;
+    final long kAPU_SelectEBS2EADDR2	= 0b00000000000000000100000000000000;
+    final long kAPU_Load_EBS2		= 0b00000000000000001000000000000000;
     // ; 16th bit
-    final int kAPU_Load_EADDR2Lo	= 0b00000000000000010000000000000000;
-    final int kAPU_Load_EADDR2Hi	= 0b00000000000000100000000000000000;
-    final int kAPU_Incr_EADDR2		= 0b00000000000001000000000000000000;
+    final long kAPU_Load_EADDR2Lo	= 0b00000000000000010000000000000000;
+    final long kAPU_Load_EADDR2Hi	= 0b00000000000000100000000000000000;
+    final long kAPU_Incr_EADDR2		= 0b00000000000001000000000000000000;
 
     // ; Do not combine these IDataSelect values
     final int kAPU_IDataSelectRAM	        = 0b00000000000000000000000000000000;
@@ -287,18 +287,18 @@ public class UserPortTo24BitAddress extends Device {
     final int kAPU_IDataSelectReg3SubReg4	= 0b00000000000110000000000000010000;
     final int kAPU_IDataSelectMask	        = 0b00000000000110000000000000010000;
 
-    final int kAPU_IDataRegLoad0	= 0b00000000001000000000000000000000;
-    final int kAPU_IDataRegLoad1	= 0b00000000010000000000000000000000;
-    final int kAPU_IDataRegLoad2	= 0b00000000100000000000000000000000;
+    final long kAPU_IDataRegLoad0	= 0b00000000001000000000000000000000L;
+    final long kAPU_IDataRegLoad1	= 0b00000000010000000000000000000000L;
+    final long kAPU_IDataRegLoad2	= 0b00000000100000000000000000000000L;
 
-    final int kAPU_ADDRB2Select		= 0b00000001000000000000000000000000;
-    final int kAPU_Incr_ADDRB2		= 0b00000010000000000000000000000000;
-    final int kAPU_ADDRB1Load16		= 0b00000100000000000000000000000000;
-    final int kAPU_ADDRB2Load16		= 0b00001000000000000000000000000000;
-    final int kAPU_PCLoad16			= 0b00010000000000000000000000000000;
-    final int kAPU_SkipIfEQ			= 0b00100000000000000000000000000000;
-    final int kAPU_IDataRegLoad3	= 0b01000000000000000000000000000000;
-    final int kAPU_IDataRegLoad4	= 0b10000000000000000000000000000000;
+    final long kAPU_ADDRB2Select	= 0b00000001000000000000000000000000L;
+    final long kAPU_Incr_ADDRB2		= 0b00000010000000000000000000000000L;
+    final long kAPU_ADDRB1Load16	= 0b00000100000000000000000000000000L;
+    final long kAPU_ADDRB2Load16	= 0b00001000000000000000000000000000L;
+    final long kAPU_PCLoad16		= 0b00010000000000000000000000000000L;
+    final long kAPU_SkipIfEQ		= 0b00100000000000000000000000000000L;
+    final long kAPU_IDataRegLoad3	= 0b01000000000000000000000000000000L;
+    final long kAPU_IDataRegLoad4	= 0b10000000000000000000000000000000L;
 
     public boolean isApuEnableDebug() {
         return apuEnableDebug;
@@ -361,8 +361,8 @@ public class UserPortTo24BitAddress extends Device {
         // Perform any memory writes at this time, for this emulation do the logic now
         if (apuInstuctionSchedule == 4) {
             int currentPC = apuPC;
-            int instruction = (apuData.getApuInstructions()[apuPC*4] & 0xff) | ((apuData.getApuInstructions()[(apuPC*4)+1] & 0xff) << 8) | ((apuData.getApuInstructions()[(apuPC*4)+2] & 0xff) << 16) | ((apuData.getApuInstructions()[(apuPC*4)+3] & 0xff) << 24);
-            int originalInstruction = instruction;
+            long instruction = (apuData.getApuInstructions()[apuPC*4] & 0xff) | ((apuData.getApuInstructions()[(apuPC*4)+1] & 0xff) << 8) | ((apuData.getApuInstructions()[(apuPC*4)+2] & 0xff) << 16) | ((apuData.getApuInstructions()[(apuPC*4)+3] & 0xff) << 24);
+            long originalInstruction = instruction;
             boolean wasSkipped = false;
             if (MemoryBus.addressActive(instruction , kAPU_SkipIfEQ)) {
                 // The test in the schematic uses the pre-latch signal, so this occurs first
@@ -406,8 +406,8 @@ public class UserPortTo24BitAddress extends Device {
             }
 
             int gotByte;
-            int iDataSelect = instruction & kAPU_IDataSelectMask;
-            switch (iDataSelect) {
+            long iDataSelect = instruction & kAPU_IDataSelectMask;
+            switch ((int)iDataSelect) {
                 default:
                 case kAPU_IDataSelectRAM:
                     if (MemoryBus.addressActive(instruction , kAPU_ADDRB2Select)) {
@@ -631,8 +631,10 @@ public class UserPortTo24BitAddress extends Device {
                 String selectReg0 = "";
                 String selectReg1 = "";
                 String selectReg2 = "";
+                String selectReg3 = "";
 
-                int iDataSelectDebug = instruction & kAPU_IDataSelectMask;
+                // Switch doesn't work with long... sigh...
+                int iDataSelectDebug = (int)instruction & kAPU_IDataSelectMask;
                 switch (iDataSelectDebug) {
                     default:
                     case kAPU_IDataSelectRAM:
@@ -656,6 +658,19 @@ public class UserPortTo24BitAddress extends Device {
                         selectReg2 = "*";
                         instructionString += "IDataSelectReg2 ";
                         break;
+                    case kAPU_IDataSelectReg3:
+                        selectReg3 = "*";
+                        instructionString += "IDataSelectReg3 ";
+                        break;
+                    case kAPU_IDataSelectMemAddReg3:
+                        instructionString += "IDataSelectMemAddReg3 ";
+                        break;
+                    case kAPU_IDataSelectReg3AddReg4:
+                        instructionString += "IDataSelectReg3AddReg4 ";
+                        break;
+                    case kAPU_IDataSelectReg3SubReg4:
+                        instructionString += "IDataSelectReg3SubReg4 ";
+                        break;
                 }
 
                 System.out.println(kAPUDEBUG + ">> PC: " + Integer.toHexString(currentPC) + " : " + instructionString.trim());
@@ -664,7 +679,7 @@ public class UserPortTo24BitAddress extends Device {
                 System.out.println(kAPUDEBUG + selectADDRB1 + "ADDRB1: " + Integer.toHexString(apuADDRB1) + " Contents: " + Integer.toHexString(apuData.getApuData()[(apuADDRB1-1) & 0x1fff] & 0xff) + " >" + Integer.toHexString(apuData.getApuData()[apuADDRB1 & 0x1fff] & 0xff) + "< " + Integer.toHexString(apuData.getApuData()[(apuADDRB1 + 1) & 0x1fff] & 0xff));
                 System.out.println(kAPUDEBUG + selectADDRB2 + "ADDRB2: " + Integer.toHexString(apuADDRB2) + " Contents: " + Integer.toHexString(apuData.getApuData()[(apuADDRB2-1) & 0x1fff] & 0xff) + " >" + Integer.toHexString(apuData.getApuData()[apuADDRB1 & 0x1fff] & 0xff) + "< " + Integer.toHexString(apuData.getApuData()[(apuADDRB2 + 1) & 0x1fff] & 0xff));
                 System.out.println(kAPUDEBUG + ebs1Select + "EBS: " + Integer.toHexString(apuEBS) + " "+ebs1Select+"EADDR: " + Integer.toHexString(apuEADDR) + " "+ebs2Select+"EBS2: " + Integer.toHexString(apuEBS2) + " "+ebs2Select+"EADDR2: " + Integer.toHexString(apuEADDR2));
-                System.out.println(kAPUDEBUG + selectReg0 + "DataReg0: " + Integer.toHexString(apuDataReg[0]) + " " + selectReg1 + "DataReg1: " + Integer.toHexString(apuDataReg[1]) + " " + selectReg2 +"DataReg2: " + Integer.toHexString(apuDataReg[2]));
+                System.out.println(kAPUDEBUG + selectReg0 + "DataReg0: " + Integer.toHexString(apuDataReg[0]) + " " + selectReg1 + "DataReg1: " + Integer.toHexString(apuDataReg[1]) + " " + selectReg2 +"DataReg2: " + Integer.toHexString(apuDataReg[2]) + " " + selectReg3 +"DataReg3: " + Integer.toHexString(apuDataReg[3]) + " " +"DataReg4: " + Integer.toHexString(apuDataReg[4]));
                 System.out.println();
             }
 

@@ -257,4 +257,35 @@ public class UserPortTo24BitAddressTest {
         ));
 
     }
+
+
+    @Test
+    public void checkAPU4() throws Exception {
+
+        DisplayBombJack display = getDisplayBombJack();
+
+        addAPUCodeData("features/checkAPU4.a");
+
+        display.calculateAFrame();
+
+        assertThat(memoryAddressByteSequence, is(empty()));
+
+        // No APU reset
+        apu.apuData.writeData(0x2000, 0x02, 0x01);
+        apu.apuData.writeData(0x2000, 0x02, 0x03);
+
+        display.calculatePixelsUntil(0, 0);
+
+        assertThat(memoryAddressByteSequence, contains(
+                fromAddrValue(0x9c00,0x01,0x73) ,
+                fromAddrValue(0x9c01,0x01,0x11) ,
+                fromAddrValue(0x9c02,0x01,0x22) ,
+                fromAddrValue(0x9c03,0x01,0x33) ,
+                fromAddrValue(0x9c04,0x01,0x44) ,
+                fromAddrValue(0x9c05,0x01,0xc7) ,
+                fromAddrValue(0x9c06,0x01,0x99) ,
+                fromAddrValue(0x9c07,0x01,0xef)
+        ));
+
+    }
 }

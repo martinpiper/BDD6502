@@ -20,6 +20,13 @@ public abstract class MemoryBus {
         return false;
     }
 
+    public static boolean addressActive(long addressEx, long selector) {
+        if ((addressEx & selector) > 0) {
+            return true;
+        }
+        return false;
+    }
+
     public void ageContention() {
         if (memoryAsserted) {
             return;
