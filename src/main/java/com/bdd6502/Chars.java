@@ -22,8 +22,8 @@ public class Chars extends DisplayLayer {
     int hiPalette = 0;
     boolean isV4_0 = false;
     byte screenDataV4_0[];
-    int theBank = 0;
     boolean displayDisable = false;
+    int scrollX , scrollY;
 
     public Chars() {
     }
@@ -57,18 +57,17 @@ public class Chars extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x1f)) {
-            if (!isV4_0) {
-                busContention = display.getBusContentionPixels();
-            }
-            if (!is16Colours) {
-                hiPalette = (data & 0x01) << 4;
-            }
-            theBank = (data >> 6) & 0x03;
-
-            displayDisable = MemoryBus.addressActive(data , 0x02);
-        }
         if (!isV4_0) {
+            if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x1f)) {
+                busContention = display.getBusContentionPixels();
+
+                if (!is16Colours) {
+                    hiPalette = (data & 0x01) << 4;
+                }
+
+                displayDisable = MemoryBus.addressActive(data , 0x02);
+            }
+
             if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x400)) {
                 busContention = display.getBusContentionPixels();
                 screenData[address & 0x3ff] = data;
@@ -78,6 +77,30 @@ public class Chars extends DisplayLayer {
                 colourData[address & 0x3ff] = data;
             }
         } else {
+            if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x1f)) {
+                // No bus contention with latches
+                if ((address & 0x1f) == 0x00) {
+                    if (!is16Colours) {
+                        hiPalette = (data & 0x01) << 4;
+                    }
+
+                    displayDisable = MemoryBus.addressActive(data, 0x02);
+                }
+
+                if ((address & 0x1f) == 0x01) {
+                    scrollX = (scrollX & 0x100) | (data & 0x0ff);
+                }
+                if ((address & 0x1f) == 0x02) {
+                    scrollX = (scrollX & 0x0ff) | ((data & 0x01) << 8);
+                }
+                if ((address & 0x1f) == 0x03) {
+                    scrollY = (scrollY & 0x100) | (data & 0x0ff);
+                }
+                if ((address & 0x1f) == 0x04) {
+                    scrollY = (scrollY & 0x0ff) | ((data & 0x01) << 8);
+                }
+            }
+
             if (MemoryBus.addressActive(addressEx, addressExScreenV4_0) && address >= addressScreenV4_0 && address < (addressScreenV4_0 + 0x2000)) {
                 busContention = display.getBusContentionPixels();
                 screenDataV4_0[address & 0x1fff] = data;
@@ -128,25 +151,52 @@ public class Chars extends DisplayLayer {
         if ((displayH & 0x188) == 0) {
             latchedDisplayV = displayV;
         }
+        int useDisplayV = latchedDisplayV;
         // Adjust for the extra timing
         if (displayH >= 0x180) {
             displayH -= 0x80;
         }
-        displayH = displayH & 0xff;
+        boolean generateBadRead = false;
+        if (!isV4_0) {
+            displayH = displayH & 0xff;
+        } else {
+            if ((scrollX & 0x07) >= 4 && (scrollX & 0x07) <= 7 && (displayH & 0x07) < 0x03) {
+                if (((displayH >> 3) & 0x1f) == 0x01) {
+                    generateBadRead = true;
+                }
+                if (((displayH >> 3) & 0x1f) == 0x00) {
+                    generateBadRead = true;
+                }
+            }
+            useDisplayV += scrollY;
+            displayH += scrollX;
+            displayH = displayH & 0x1ff;
+        }
         // -1 to match the real hardware
-        int index = (((displayH >> 3) - 1) & 0x1f) + (((latchedDisplayV >> 3) & 0x1f) * 0x20);
+        int index = 0;
+        if (!isV4_0) {
+            index = (((displayH >> 3) - 1) & 0x1f) + (((useDisplayV >> 3) & 0x1f) * 0x20);
+        } else {
+            index = (((displayH >> 3) - 1) & 0x3f) + (((useDisplayV >> 3) & 0x3f) * 0x40);
+        }
         int theChar;
         if (!isV4_0) {
             theChar = (screenData[index]) & 0xff;
         } else {
-            theChar = (screenDataV4_0[index + (theBank * 0x800)]) & 0xff;
+            theChar = (screenDataV4_0[index]) & 0xff;
         }
 //        System.out.println(displayH + " " + latchedDisplayV + " Chars index: " + Integer.toHexString(index) + " char " + Integer.toHexString(theChar));
         byte theColour;
         if (!isV4_0) {
             theColour = colourData[index];
         } else {
-            theColour = screenDataV4_0[index + (theBank * 0x800) + 0x400];
+            theColour = screenDataV4_0[index + 0x1000];
+        }
+        if (generateBadRead) {
+            theChar = (byte)~theChar;
+            theChar &= 0xff;
+//            theColour = (byte)~theColour;
+//            theColour &= 0xff;
         }
         if (memoryAssertedScreenRAM) {
             theChar = 0xff;
