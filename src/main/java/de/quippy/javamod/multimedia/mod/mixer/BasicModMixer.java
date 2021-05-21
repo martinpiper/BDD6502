@@ -231,6 +231,16 @@ public abstract class BasicModMixer
 	DataOutputStream debugSampleData = null;
 	DataOutputStream debugMusicData = null;
 
+	public void setSampleRatio1(int sampleRatio1) {
+		this.sampleRatio1 = sampleRatio1;
+	}
+
+	public void setSampleRatio2(int sampleRatio2) {
+		this.sampleRatio2 = sampleRatio2;
+	}
+
+	int sampleRatio1 = 1, sampleRatio2 = 1;
+
 	/**
 	 * Constructor for BasicModMixer
 	 */
@@ -283,7 +293,7 @@ public abstract class BasicModMixer
 	/**
 	 * Changes the interpolation routine. This can be done at any time
 	 * @since 09.07.2006
-	 * @param newISP
+	 * @param newDoNoLoops
 	 */
 	public void changeDoNoLoops(int newDoNoLoops)
 	{
@@ -354,7 +364,6 @@ public abstract class BasicModMixer
 	 * Normally you would use the formula (25*samplerate)/(bpm*10)
 	 * which is (2.5*sampleRate)/bpm. But (2.5 * sampleRate) is the same
 	 * as (sampleRate*2) + (sampleRate/2)
-	 * @param currentBPM
 	 * @return
 	 */
 	protected int calculateSamplesPerTick()
@@ -563,7 +572,7 @@ public abstract class BasicModMixer
 	/**
 	 * @since 31.03.2010
 	 * @param actMemo
-	 * @param sample
+	 * @param s
 	 * @return
 	 */
 	private long doResonance(final ChannelMemory actMemo, final long s)
@@ -604,23 +613,23 @@ public abstract class BasicModMixer
 	protected abstract void resetAllEffects(ChannelMemory aktMemo, PatternElement nextElement, boolean forced);
 	/**
 	 * Returns true, if the Effekt and EffektOp indicate a NoteDelayEffekt
-	 * @param effekt
-	 * @param effektOp
+	 * @param aktMemo
+	 * @param aktMemo
 	 * @return
 	 */
 	protected abstract boolean isNoteDelayEffekt(final ChannelMemory aktMemo);
 	/**
 	 * Returns true, if the Effekt and EffektOp indicate a PortaToNoteEffekt
-	 * @param effekt
-	 * @param effektOp
+	 * @param aktMemo
+	 * @param aktMemo
 	 * @return
 	 */
 	protected abstract boolean isPortaToNoteEffekt(final ChannelMemory aktMemo);
 	/**
 	 * Return true, if the effekt and effektop indicate the sample offset effekt
 	 * @since 19.06.2006
-	 * @param effekt
-	 * @param effektParam
+	 * @param aktMemo
+	 * @param aktMemo
 	 * @return
 	 */
 	protected abstract boolean isSampleOffsetEffekt(final ChannelMemory aktMemo);
@@ -1202,7 +1211,7 @@ public abstract class BasicModMixer
 	 * fit currentSamplePos into loop values
 	 * or signal Sample finished
 	 * @since 18.06.2006
-	 * @param aktMemo
+	 * @param actMemo
 	 */
 	protected void fitIntoLoops(final ChannelMemory actMemo)
 	{
@@ -1262,13 +1271,15 @@ public abstract class BasicModMixer
 	int sampleLengths[] = new int[256];
 	int sampleLoopStarts[] = new int[256];
 	int sampleLoopLengths[] = new int[256];
+	int sampleFinalRatio1[] = new int[256];
+	int sampleFinalRatio2[] = new int[256];
 	/**
 	 * Fill the buffers with channel data
 	 * @since 18.06.2006
 	 * @param leftBuffer
 	 * @param rightBuffer
 	 * @param startIndex
-	 * @param amount
+	 * @param endIndex
 	 * @param actMemo
 	 */
 	private void mixChannelIntoBuffers(final int[] leftBuffer, final int[] rightBuffer, final int startIndex, final int endIndex, final ChannelMemory actMemo)
@@ -1321,6 +1332,7 @@ public abstract class BasicModMixer
 
 					// Convert internal frequency to hardware values
 					int frequency = (actMemo.currentTuning * sampleRate) / (1<<Helpers.SHIFT);
+					frequency = applySampleRatioForIndex(frequency , sampleIndex);
 					int realFrequency = AudioExpansion.calculateRateFromFrequency(frequency);
 					debugMusicData.write(realFrequency);
 					debugMusicData.write(realFrequency>>8);
@@ -1377,6 +1389,11 @@ public abstract class BasicModMixer
 		}
 	}
 
+	int applySampleRatioForIndex(int value , int sampleIndex) {
+		return (value * sampleFinalRatio1[sampleIndex]) / sampleFinalRatio2[sampleIndex];
+	}
+
+
 	private void exportSample(ChannelMemory actMemo) {
 		int sampleIndex = actMemo.currentSample.index;
 		if (sampleExported[sampleIndex]) {
@@ -1386,18 +1403,24 @@ public abstract class BasicModMixer
 		sampleStarts[sampleIndex] = debugSampleData.size();
 
 		int realLength = actMemo.currentSample.length;
-		sampleLengths[sampleIndex] = realLength;
+		sampleFinalRatio1[sampleIndex] = 1;
+		sampleFinalRatio2[sampleIndex] = 1;
+		if (realLength > 256) {
+			sampleFinalRatio1[sampleIndex] = sampleRatio1;
+			sampleFinalRatio2[sampleIndex] = sampleRatio2;
+		}
+		sampleLengths[sampleIndex] = applySampleRatioForIndex(realLength  , sampleIndex);
 
 		int loopLength = actMemo.currentSample.repeatLength;
 		if (loopLength == 0) {
 			sampleLoopStarts[sampleIndex] = 0;
 			sampleLoopLengths[sampleIndex] = 0;
 		} else {
-			sampleLoopStarts[sampleIndex] = sampleStarts[sampleIndex] + actMemo.currentSample.repeatStart;
-			sampleLoopLengths[sampleIndex] = loopLength;
+			sampleLoopStarts[sampleIndex] = sampleStarts[sampleIndex] + applySampleRatioForIndex(actMemo.currentSample.repeatStart , sampleIndex);
+			sampleLoopLengths[sampleIndex] = applySampleRatioForIndex(loopLength ,sampleIndex);
 		}
 
-		byte[] buffer = new byte[realLength];
+		byte[] buffer = new byte[applySampleRatioForIndex(realLength ,sampleIndex)];
 		for (int i = 0; i < realLength ; i++) {
 			int sample = 0x80 + (actMemo.currentSample.sample[i+5] >> 16);
 			if (sample < 0) {
@@ -1406,7 +1429,10 @@ public abstract class BasicModMixer
 			if (sample > 255) {
 				sample = 255;
 			}
-			buffer[i] = (byte) sample;
+			int realI = applySampleRatioForIndex(i , sampleIndex);
+			if (realI < buffer.length) {
+				buffer[realI] =(byte) sample;
+			}
 		}
 		try {
 			debugSampleData.write(buffer);
@@ -1522,6 +1548,7 @@ public abstract class BasicModMixer
 						mixChannelIntoBuffers(leftBuffer, rightBuffer, bufferIdx, endIndex, actMemo);
 						
 						// and get the ramp data for interweaving, if there is something left
+// MPi: Disabled this as it was causing actRampVolCombined to appear after newInstrumentSet:
 						if (!actMemo.instrumentFinished) fillRampDataIntoBuffers(nvRampL, nvRampR, actMemo);
 					}
 				}

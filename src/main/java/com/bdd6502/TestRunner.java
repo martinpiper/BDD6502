@@ -50,7 +50,7 @@ public class TestRunner {
                 return Byte.toUnsignedInt(escapeByte);
             } else {
                 stackedPos = compressedPos + 2; // Calculate the next bytes after the escapeByte data
-                stackedThisRun = data;
+                stackedThisRun = Byte.toUnsignedInt(data);
                 // Set the offset to read from
                 int newPos = Byte.toUnsignedInt(compressedData[compressedPos++]) | (Byte.toUnsignedInt(compressedData[compressedPos++]) << 8);
                 compressedPos = newPos + 4; // +4 for the file header
@@ -506,9 +506,28 @@ public class TestRunner {
 
             MultimediaContainer loaded = MultimediaContainerManager.getMultimediaContainer(args[1]);
 //            loaded.createNewMixer().startPlayback();
-            String filename = "target/exportedMusic";
-            loaded.createNewMixer().fastExport(filename);
-            CompressData.compressMusicData(filename);
+            String filename = args[2];
+            loaded.createNewMixer().fastExport(filename, Integer.parseInt(args[3]), Integer.parseInt(args[4]));
+            int bestLen = 6;
+            int bestSize = -1;
+
+            // Try various thresholds
+            for (int i = 3 ; i < 30 ; i++) {
+                System.out.println("Testing length threshold: " + i);
+                int theSize = CompressData.compressMusicData(filename , i);
+                if (bestSize == -1 || theSize < bestSize) {
+                    System.out.println("** New best");
+                    bestSize = theSize;
+                    bestLen = i;
+                }
+                // Early out if the best size is increasing too far beyond the current best
+                if (theSize > (bestSize + (bestSize/10))) {
+                    break;
+                }
+            }
+
+            System.out.println("Best length threshold: " + bestLen);
+            CompressData.compressMusicData(filename , bestLen);
 
             System.exit(0);
         }
@@ -516,7 +535,7 @@ public class TestRunner {
         if (args.length >= 1 && args[0].compareToIgnoreCase("--playmod") == 0) {
             // Test output data
             AudioExpansion audioExpansion = new AudioExpansion();
-            audioExpansion.writeDataFromFile(0, 0x04, "target/exportedMusicSamples.bin");
+            audioExpansion.writeDataFromFile(0, 0x04, args[1] + ModMixer.SAMPLES_BIN);
 
             audioExpansion.writeData(0x8041, 0x01, 0);
 
@@ -529,7 +548,7 @@ public class TestRunner {
             audioExpansion.writeData(0x8041, 0x01, 0x01);
 
             // Now try decompression
-            compressedData = Files.readAllBytes(Paths.get("target/exportedMusic" + ModMixer.EVENTS_CMP));
+            compressedData = Files.readAllBytes(Paths.get(args[1] + ModMixer.EVENTS_CMP));
             int originalLength = Byte.toUnsignedInt(compressedData[0]) | (Byte.toUnsignedInt(compressedData[1]) << 8) | (Byte.toUnsignedInt(compressedData[2]) << 16);
             escapeByte = compressedData[3];
 

@@ -216,7 +216,7 @@ public abstract class Mixer
 	public abstract void stopPlayback();
 	public abstract void pausePlayback();
 	public abstract void startPlayback();
-	public abstract void fastExport(String filename);
+	public abstract void fastExport(String filename, int ratio1, int ratio2);
 	public abstract boolean isSeekSupported();
 	public abstract void setMillisecondPosition(long milliseconds);
 	public abstract void setStopMillisecondPosition(long milliseconds);

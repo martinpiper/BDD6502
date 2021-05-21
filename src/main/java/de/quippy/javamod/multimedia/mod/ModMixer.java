@@ -23,7 +23,6 @@ package de.quippy.javamod.multimedia.mod;
 
 import javax.sound.sampled.AudioFormat;
 
-import com.bdd6502.CompressData;
 import de.quippy.javamod.mixer.BasicMixer;
 import de.quippy.javamod.multimedia.mod.loader.Module;
 import de.quippy.javamod.multimedia.mod.mixer.BasicModMixer;
@@ -39,8 +38,11 @@ import java.io.*;
 public class ModMixer extends BasicMixer
 {
 	private static final int TMPBUFFERLENGTH = 2048;
+	public static final String CHANNEL_EVENTS_TXT = "ChannelEvents.txt";
 	public static final String EVENTS_BIN = "Events.bin";
 	public static final String EVENTS_CMP = "Events.cmp";
+	public static final String SAMPLES_BIN = "Samples.bin";
+
 
 	private final Module mod;
 	private final BasicModMixer modMixer;
@@ -178,7 +180,7 @@ public class ModMixer extends BasicMixer
 		modMixer.changeISP(doISP);
 	}
 	/**
-	 * @param doISP The doISP to set.
+	 * @param msBufferSize The buffer size to set.
 	 */
 	public void setBufferSize(int msBufferSize)
 	{
@@ -574,17 +576,19 @@ public class ModMixer extends BasicMixer
 	}
 
 	@Override
-	public void fastExport(String filename) {
+	public void fastExport(String filename, int ratio1, int ratio2) {
 		PrintWriter debugData = null;
 		DataOutputStream sampleData = null;
 		DataOutputStream musicData = null;
 		try {
-			debugData = new PrintWriter(new FileWriter(filename + "ChannelEvents.txt"));
-			sampleData = new DataOutputStream(new FileOutputStream(filename + "Samples.bin"));
+			debugData = new PrintWriter(new FileWriter(filename + CHANNEL_EVENTS_TXT));
+			sampleData = new DataOutputStream(new FileOutputStream(filename + SAMPLES_BIN));
 			musicData = new DataOutputStream(new FileOutputStream(filename + EVENTS_BIN));
 			modMixer.setDebugData(debugData);
 			modMixer.setDebugSampleData(sampleData);
 			modMixer.setDebugMusicData(musicData);
+			modMixer.setSampleRatio1(ratio1);
+			modMixer.setSampleRatio2(ratio2);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -637,6 +641,7 @@ public class ModMixer extends BasicMixer
 			}
 			if (sampleData != null) {
 				sampleData.flush();
+				System.out.println("sampleData length: " + sampleData.size());
 				sampleData.close();
 			}
 			if (musicData != null) {

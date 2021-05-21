@@ -8,10 +8,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 public class CompressData {
-    public static void compressMusicData(String filename) throws IOException {
+    public static int compressMusicData(String filename , int lengthThreshold) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(filename + ModMixer.EVENTS_BIN));
         int [] byteFrequency = new int[256];
-        // Calculate an escape byte
+        // Calculate which escape byte to use by picking the least used byte in the input stream
         for (int i = 0 ; i < bytes.length ; i++) {
             byteFrequency[Byte.toUnsignedInt(bytes[i])]++;
         }
@@ -30,10 +30,11 @@ public class CompressData {
         for (int i = 0; i < bytes.length; ) {
             int bestLen = 0;
             int bestPos = 0;
+            // Look for length data from the current position that has already been output
             if (i > 0) {
-                for (int j = 0; j < i && bestLen < 255; j++) {
+                for (int j = 0; j < i ; j++) {
                     int len = 0;
-                    while ((len < 255) && ((i + len) < bytes.length) && ((j + len) < i) && (bytes[j + len] == bytes[i + len])) {
+                    while ((len < 254) && ((i + len) < bytes.length) && ((j + len) < i) && (bytes[j + len] == bytes[i + len])) {
                         len++;
                     }
                     if (len > bestLen) {
@@ -42,6 +43,24 @@ public class CompressData {
                     }
                 }
             }
+
+            // If there is a good pattern match that will save data, then...
+            if (bestLen > lengthThreshold) {
+//                System.out.println("for " + i + " found bestLen=" + bestLen + " bestPos=" + bestPos);
+                int nextBytesPos = i + bestLen;
+                int afterLength = bytes.length - nextBytesPos;
+                byte[] newBytes = new byte[i + 4 + afterLength];
+                System.arraycopy(bytes,0,newBytes,0,i);
+                newBytes[i++] = escapeByte;
+                newBytes[i++] = (byte)bestLen;  // 0 reserved for output the escape byte
+                newBytes[i++] = (byte)bestPos;
+                newBytes[i++] = (byte)(bestPos>>8);
+                System.arraycopy(bytes, nextBytesPos, newBytes, i, afterLength);
+                bytes = newBytes;
+                continue;
+            }
+
+            // If we encounter an escape byte then encode it
             if (bytes[i] == escapeByte) {
                 System.out.println("escape byte at " + i);
                 // Handle a run of escape bytes?
@@ -57,24 +76,6 @@ public class CompressData {
                 newBytes[i++] = escapeByte;
                 newBytes[i++] = 0;  // 0 reserved for output the escape byte
                 newBytes[i++] = (byte)runLength;
-                if (runLength > 1) {
-                    runLength = runLength;
-                }
-                System.arraycopy(bytes,nextBytesPos,newBytes,i, afterLength);
-                bytes = newBytes;
-                continue;
-            }
-            // If there is a good pattern match that will save data, then...
-            if (bestLen > 6) {
-//				System.out.println("for " + i + " found bestLen=" + bestLen + " bestPos=" + bestPos);
-                int nextBytesPos = i + bestLen;
-                int afterLength = bytes.length - nextBytesPos;
-                byte[] newBytes = new byte[i + 4 + afterLength];
-                System.arraycopy(bytes,0,newBytes,0,i);
-                newBytes[i++] = escapeByte;
-                newBytes[i++] = (byte)bestLen;  // 0 reserved for output the escape byte
-                newBytes[i++] = (byte)bestPos;
-                newBytes[i++] = (byte)(bestPos>>8);
                 System.arraycopy(bytes,nextBytesPos,newBytes,i, afterLength);
                 bytes = newBytes;
                 continue;
@@ -82,6 +83,7 @@ public class CompressData {
             i++;
         }
 
+        System.out.println("output length=" + bytes.length);
         System.out.println("saving=" + (originalLength - bytes.length));
         byte[] headerBytes = new byte[4];
         headerBytes[0] = (byte)originalLength;
@@ -91,5 +93,7 @@ public class CompressData {
 
         Files.write(Paths.get(filename + ModMixer.EVENTS_CMP),headerBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         Files.write(Paths.get(filename + ModMixer.EVENTS_CMP),bytes, StandardOpenOption.APPEND);
+
+        return bytes.length;
     }
 }

@@ -6,24 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Chars.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Chars.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/CompressData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/CompressData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/mixer/Mixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/mixer/Mixer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/ModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/ModMixer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-1-000001.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-1-000001.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-1-000002.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-1-000002.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-1-000003.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-1-000003.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-1-000004.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-1-000004.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-1-000005.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-1-000005.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-1-000006.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-1-000006.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-1-000007.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-1-000007.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-1-000008.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-1-000008.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-1-000009.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-1-000009.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-1-000010.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-1-000010.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-1-000011.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-1-000011.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-1-000012.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-1-000012.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-1-000013.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-1-000013.bmp" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -109,7 +100,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-6">
+  <component name="RunManager" selected="Application.TestRunner --exportmod (2)">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -132,10 +123,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestRunner --exportmod SotB" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\Shadow of the Beast (1)\Beast1_2.mod&quot; &quot;target/exportedMusic&quot; 4 8" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestRunner --exportmod (1)" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
-      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\tiny music\mods\artists\mortimer twang\Mortimer Twang - No Sellout.mod&quot;" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\tiny music\mods\artists\mortimer twang\Mortimer Twang - No Sellout.mod&quot; &quot;target/exportedMusic&quot; 1 1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner --exportmod (2) with ratio" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod&quot; &quot;target/exportedMusic&quot; 2 3" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -143,7 +150,7 @@
     <configuration name="TestRunner --exportmod (2)" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
-      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod&quot;" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod&quot; &quot;target/exportedMusic&quot; 1 1" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -151,7 +158,7 @@
     <configuration name="TestRunner --exportmod (3)" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
-      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\_nice_outfit_.mod&quot;" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\_nice_outfit_.mod&quot; &quot;target/exportedMusic&quot; 1 1" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -159,7 +166,15 @@
     <configuration name="TestRunner --exportmod" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
-      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\tiny music\mods\artists\h0ffman\H0ffman - Freerunner.mod&quot;" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\tiny music\mods\artists\h0ffman\H0ffman - Freerunner.mod&quot; &quot;target/exportedMusic&quot; 1 1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner --playmod" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--playmod &quot;target/exportedMusic&quot;" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -290,6 +305,15 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags @RPG --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/VideoHardware" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner VideoHardware @Turrican_8" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @Turrican_8 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/VideoHardware" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -557,8 +581,11 @@
       <item itemvalue="Application.TestRunner --execVideoTest" />
       <item itemvalue="Application.TestRunner --exportmod (1)" />
       <item itemvalue="Application.TestRunner --exportmod (2)" />
+      <item itemvalue="Application.TestRunner --exportmod (2) with ratio" />
       <item itemvalue="Application.TestRunner --exportmod (3)" />
       <item itemvalue="Application.TestRunner --exportmod" />
+      <item itemvalue="Application.TestRunner --exportmod SotB" />
+      <item itemvalue="Application.TestRunner --playmod" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5" />
@@ -575,6 +602,7 @@
       <item itemvalue="Application.TestRunner UnitialisedMemory.feature" />
       <item itemvalue="Application.TestRunner VideoHardware @BatBall" />
       <item itemvalue="Application.TestRunner VideoHardware @RPG" />
+      <item itemvalue="Application.TestRunner VideoHardware @Turrican_8" />
       <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
       <item itemvalue="Application.TestRunner no parameters" />
       <item itemvalue="Cucumber Java.All features" />
@@ -638,10 +666,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="790" y="374" key="#com.intellij.debugger.actions.ViewTextAction/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615733291203" />
-    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1621065684171">
+    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1621611846012">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621065684171" />
+    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621611846012" />
     <state x="92" y="92" width="1736" height="896" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1616902357793">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -650,66 +678,74 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="710" y="341" key="#com.intellij.fileTypes.FileTypeChooser/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1620477616004" />
-    <state x="765" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1617422794870">
+    <state x="765" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1621585877873">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="220" key="#com.intellij.ide.util.MemberChooser/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1617422794870" />
-    <state x="587" y="88" key="CommitChangelistDialog2" timestamp="1617204264755">
+    <state x="765" y="220" key="#com.intellij.ide.util.MemberChooser/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621585877873" />
+    <state x="587" y="88" key="CommitChangelistDialog2" timestamp="1621572783360">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="587" y="88" key="CommitChangelistDialog2/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1617204264755" />
-    <state width="1877" height="207" key="GridCell.Tab.0.bottom" timestamp="1621073906965">
+    <state x="587" y="88" key="CommitChangelistDialog2/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621572783360" />
+    <state width="1877" height="308" key="GridCell.Tab.0.bottom" timestamp="1621613342010">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="207" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621073906965" />
-    <state width="1877" height="207" key="GridCell.Tab.0.center" timestamp="1621073906964">
+    <state width="1877" height="308" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621613342010" />
+    <state width="1877" height="308" key="GridCell.Tab.0.center" timestamp="1621613342010">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="207" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621073906964" />
-    <state width="1877" height="207" key="GridCell.Tab.0.left" timestamp="1621073906964">
+    <state width="1877" height="308" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621613342010" />
+    <state width="1877" height="308" key="GridCell.Tab.0.left" timestamp="1621613342010">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="207" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621073906964" />
-    <state width="1877" height="207" key="GridCell.Tab.0.right" timestamp="1621073906965">
+    <state width="1877" height="308" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621613342010" />
+    <state width="1877" height="308" key="GridCell.Tab.0.right" timestamp="1621613342010">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="207" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621073906965" />
-    <state width="1877" height="308" key="GridCell.Tab.1.bottom" timestamp="1620480101286">
+    <state width="1877" height="308" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621613342010" />
+    <state width="1877" height="308" key="GridCell.Tab.1.bottom" timestamp="1621613342010">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="308" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1620480101286" />
-    <state width="1877" height="308" key="GridCell.Tab.1.center" timestamp="1620480101286">
+    <state width="1877" height="308" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621613342010" />
+    <state width="1877" height="308" key="GridCell.Tab.1.center" timestamp="1621613342010">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="308" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1620480101286" />
-    <state width="1877" height="308" key="GridCell.Tab.1.left" timestamp="1620480101286">
+    <state width="1877" height="308" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621613342010" />
+    <state width="1877" height="308" key="GridCell.Tab.1.left" timestamp="1621613342010">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="308" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1620480101286" />
-    <state width="1877" height="308" key="GridCell.Tab.1.right" timestamp="1620480101286">
+    <state width="1877" height="308" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621613342010" />
+    <state width="1877" height="308" key="GridCell.Tab.1.right" timestamp="1621613342010">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="308" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1620480101286" />
+    <state width="1877" height="308" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621613342010" />
     <state x="731" y="233" key="com.intellij.testIntegration.createTest.CreateTestDialog" timestamp="1616834372342">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="731" y="233" key="com.intellij.testIntegration.createTest.CreateTestDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616834372342" />
+    <state x="470" y="255" width="980" height="630" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1621587298057">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="470" y="255" width="980" height="630" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621587298057" />
     <state x="794" y="427" key="extract.method.dialog" timestamp="1619579994762">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="794" y="427" key="extract.method.dialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1619579994762" />
-    <state x="498" y="220" width="1239" height="608" key="find.popup" timestamp="1621072169538">
+    <state x="498" y="220" width="1239" height="608" key="find.popup" timestamp="1621609532613">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="498" y="220" width="1239" height="608" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621072169538" />
+    <state x="498" y="220" width="1239" height="608" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621609532613" />
+    <state x="660" y="287" key="refactoring.ChangeSignatureDialog" timestamp="1621572316504">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="660" y="287" key="refactoring.ChangeSignatureDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621572316504" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1616679783451">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="616" y="240" key="run.anything.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616679783451" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1621062876698">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1621613171945">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621062876698" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621613171945" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -718,11 +754,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java</url>
           <line>338</line>
           <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
-          <line>370</line>
-          <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java</url>
@@ -749,6 +780,40 @@
           <line>251</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
+          <line>356</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
+          <line>348</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java</url>
+          <line>1308</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java</url>
+          <line>1317</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java</url>
+          <line>1288</line>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java</url>
+          <line>1286</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.ArrayIndexOutOfBoundsException" package="java.lang" />
+          <option name="timeStamp" value="26" />
+        </breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>

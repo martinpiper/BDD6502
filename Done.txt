@@ -179,7 +179,7 @@ Added: Given I am using C64 processor port options
 * Add kMusicCommandDefineSample with index, then remove duplicate sample data from kMusicCommandPlayNote
 	Currently: "C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod"
 		3 m 20s in 127,487 bytes
-		After writing common sample data withkMusicCommandSetSampleData: 61,766 bytes
+		After writing common sample data with kMusicCommandSetSampleData: 61,766 bytes
 
 		
 		
@@ -279,3 +279,16 @@ Added: Given I am using C64 processor port options
 * APU: Debug display, configurable via syntax (and property) to display
 	Instruction hex, binary flags, text flags
 	PC, registers, and small memory dump for the various address registers
+
+
+
+
+* de.quippy.javamod.multimedia.mod.ModMixer.fastExport add option to scale the samples (and their frequencies) to fit them into a target memory size (like 64K)
+	Will need a lower sample threshold size to avoid shrinking "chip sound" samples
+	de.quippy.javamod.multimedia.mod.mixer.BasicModMixer.exportSample
+	The sample scaling factor can also be calculated in here since exportSample() is called before the first usage of this sample
+		Then kMusicCommandPlayNote can include the scaling factor
+
+
+
+* Improved music data compression with intensive searching
