@@ -1,5 +1,9 @@
 ; TODO items
 
+* Music conversion, just volume change detection needed?
+
+
+
 * APU: Cycle exact stateful emulation may be needed to precisely replicate all combinations, for example where ABBRB1/2 is incremented (or loaded) at the same time as reading a value from RAM and assigning it to an internal register
 
 

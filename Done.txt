@@ -305,6 +305,7 @@ Added: Given I am using C64 processor port options
 
 
 * Various music conversion command lines. File from https://modarchive.org/ :
+	* Volume only?
 	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\cream_of_the_earth.mod" "target/exportedMusic" 65535 100626
 	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\lotus2-title.mod" "target/exportedMusic" 7 8
 	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\intro_01.mod" "target/exportedMusic" 7 8
@@ -313,6 +314,10 @@ Added: Given I am using C64 processor port options
 	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\blood_money_title.mod" "target/exportedMusic" 65535 155920
 		* Fixed: The "aktMemo.newInstrumentSet = true;" needed to be inside the "element.getInstrument()>0" check. Doh!
 	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\speedbal.mod" "target/exportedMusic" 1 3
-	* The first set of notes is bad?
+	* Volume only?
 	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\shadowofthebeast.mod" "target/exportedMusic" 1 1
 	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\outrun_intro.mod" "target/exportedMusic" 1 3
+
+
+
+* Added music conversion detection of frequency change, which vastly improves playback

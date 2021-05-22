@@ -627,6 +627,18 @@ public class TestRunner {
                         audioExpansion.writeData(0x8000 + (AudioExpansion.numVoices * AudioExpansion.voiceSize) + 1, 0x01, channelPlayingMask);
                         break;
                     }
+                    case Helpers.kMusicCommandAdjustNote: {
+                        int channel = getNextByte();
+                        int volume = getNextByte();
+
+                        int sampleFrequency = getNextByte() | (getNextByte() << 8);
+
+                        int voiceAddress = 0x8000 + (channel * AudioExpansion.voiceSize);
+                        audioExpansion.writeData(voiceAddress, 0x01, volume);
+                        audioExpansion.writeData(voiceAddress+5, 0x01, sampleFrequency);
+                        audioExpansion.writeData(voiceAddress+6, 0x01, sampleFrequency>>8);
+                        break;
+                    }
                     case Helpers.kMusicCommandStop: {
                         System.out.println("kMusicCommandStop");
                         doPlay = false;

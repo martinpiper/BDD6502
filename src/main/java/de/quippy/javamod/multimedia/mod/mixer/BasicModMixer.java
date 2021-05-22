@@ -101,6 +101,7 @@ public abstract class BasicModMixer
 		public long nFilter_Y1, nFilter_Y2;
 
 		public boolean newInstrumentSet;
+		int previousRealFrequency;
 
 		public ChannelMemory()
 		{
@@ -153,6 +154,7 @@ public abstract class BasicModMixer
 			patternJumpPatternIndex = jumpLoopPatternRow = jumpLoopRepeatCount = -1;
 
 			newInstrumentSet = false;
+			previousRealFrequency = 0;
 		}
 		/**
 		 * DeepCopy by Reflection - iterate through all fields and copy the values
@@ -919,10 +921,10 @@ public abstract class BasicModMixer
 			else
 				newSample = mod.getInstrumentContainer().getSample(aktMemo.assignedInstrumentIndex-1);
 
-			aktMemo.newInstrumentSet = true;
-
 			if (newSample!=null)
 			{
+				aktMemo.newInstrumentSet = true;
+
 				// If this sample uses panning, set the panning
 				int pan = newSample.panning;
 				if (pan!=-1)
@@ -1324,27 +1326,39 @@ public abstract class BasicModMixer
 					debugMusicData.write(Helpers.kMusicCommandPlayNote);
 					debugMusicData.write(channel);
 
-					int volume = actMemo.currentVolume * 4;
-					if (volume > 255) {
-						volume = 255;
-					}
-					debugMusicData.write(volume);
+					outputVolume(actMemo);
 					debugMusicData.write(sampleIndex);
 
-					// Convert internal frequency to hardware values
-					int frequency = (actMemo.currentTuning * sampleRate) / (1<<Helpers.SHIFT);
-					frequency = applySampleRatioForIndex(frequency , sampleIndex);
-					int realFrequency = AudioExpansion.calculateRateFromFrequency(frequency);
-					debugMusicData.write(realFrequency);
-					debugMusicData.write(realFrequency>>8);
+					outputNote(actMemo, sampleIndex);
 
 					debugMusicData.flush();
 				} catch (IOException e) {
 				}
 
-
 				actMemo.newInstrumentSet = false;
 			}
+			if (actMemo.currentSample != null) {
+				if (getRealFrequency(actMemo, actMemo.currentSample.index) != actMemo.previousRealFrequency) {
+					int sampleIndex = actMemo.currentSample.index;
+					exportSample(actMemo);
+					outputChannelHeader(channel);
+					debugData.println("newNoteSet: " + sampleIndex);
+					debugData.flush();
+
+					outputWaitFrames();
+					try {
+						debugMusicData.write(Helpers.kMusicCommandAdjustNote);
+						debugMusicData.write(channel);
+
+						outputVolume(actMemo);
+						outputNote(actMemo, sampleIndex);
+
+						debugMusicData.flush();
+					} catch (IOException e) {
+					}
+				}
+			}
+
 			previousChannelMemory[channel].deepCopy(actMemo);
 		}
 		for (int i=startIndex; i<endIndex; i++)
@@ -1390,7 +1404,33 @@ public abstract class BasicModMixer
 		}
 	}
 
+	private void outputNote(ChannelMemory actMemo, int sampleIndex) throws IOException {
+		// Convert internal frequency to hardware values
+		int realFrequency = getRealFrequency(actMemo, sampleIndex);
+		debugMusicData.write(realFrequency);
+		debugMusicData.write(realFrequency >> 8);
+		actMemo.previousRealFrequency = realFrequency;
+	}
+
+	private int getRealFrequency(ChannelMemory actMemo, int sampleIndex) {
+		int frequency = (actMemo.currentTuning * sampleRate) / (1 << Helpers.SHIFT);
+		frequency = applySampleRatioForIndex(frequency, sampleIndex);
+		int realFrequency = AudioExpansion.calculateRateFromFrequency(frequency);
+		return realFrequency;
+	}
+
+	private void outputVolume(ChannelMemory actMemo) throws IOException {
+		int volume = actMemo.currentVolume * 4;
+		if (volume > 255) {
+			volume = 255;
+		}
+		debugMusicData.write(volume);
+	}
+
 	int applySampleRatioForIndex(int value , int sampleIndex) {
+		if (sampleFinalRatio2[sampleIndex] == 0) {
+			return 0;
+		}
 		return (value * sampleFinalRatio1[sampleIndex]) / sampleFinalRatio2[sampleIndex];
 	}
 
