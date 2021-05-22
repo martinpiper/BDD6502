@@ -292,3 +292,10 @@ Added: Given I am using C64 processor port options
 
 
 * Improved music data compression with intensive searching
+* com.bdd6502.CompressData add option to search for the best "bestLen > 6" value to use, since there can be better savings when using a longer threshold.
+
+
+
+* Syntax for "add a Chars V4.0 layer" needs to include scrolling registers, tests will need to use new data. Create a larger source image for this and create new output data.
+	Old small screen image conversion: oldbridge char screen with rgbfactor
+	TODO: Need to emulate the bad char definition reads with certain scroll values

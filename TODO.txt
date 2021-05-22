@@ -1,15 +1,5 @@
 ; TODO items
 
-* com.bdd6502.CompressData add option to search for the best "bestLen > 6" value to use, since there can be better savings when using a longer threshold.
-
-
-
-* Syntax for "add a Chars V4.0 layer" needs to include scrolling registers, tests will need to use new data. Create a larger source image for this and create new output data.
-	Old small screen image conversion: oldbridge char screen with rgbfactor
-	TODO: Need to emulate the bad char definition reads with certain scroll values
-
-
-
 * APU: Cycle exact stateful emulation may be needed to precisely replicate all combinations, for example where ABBRB1/2 is incremented (or loaded) at the same time as reading a value from RAM and assigning it to an internal register
 
 
