@@ -566,7 +566,8 @@ public class TestRunner {
             int waitUntil = 0;
             int channelPlayingMask = 0;
             int channelLoopingMask = 0;
-            while (compressedPos < compressedData.length) {
+            boolean doPlay = true;
+            while (compressedPos < compressedData.length && doPlay) {
                 while (System.currentTimeMillis() < (startTime+waitUntil)) {
                     for (int i = 0; i < 50; i++) {
                         audioExpansion.calculateSamples();
@@ -624,6 +625,11 @@ public class TestRunner {
 
                         channelPlayingMask = channelPlayingMask | (1<<channel);
                         audioExpansion.writeData(0x8000 + (AudioExpansion.numVoices * AudioExpansion.voiceSize) + 1, 0x01, channelPlayingMask);
+                        break;
+                    }
+                    case Helpers.kMusicCommandStop: {
+                        System.out.println("kMusicCommandStop");
+                        doPlay = false;
                         break;
                     }
                     default: {

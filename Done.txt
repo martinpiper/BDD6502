@@ -142,6 +142,7 @@ Added: Given I am using C64 processor port options
 			* http://www.javamod.de/
 				http://www.javamod.de/javamod.html
 
+			cd /d C:\Users\Martin Piper\Downloads\javamod.jar
 			java -cp ./javamod.jar de.quippy.javamod.main.CommandLine "C:\Users\Martin Piper\Downloads\tiny music\mods\artists\h0ffman\H0ffman - Freerunner.mod"
 			ProTracker mod with 31 samples and 4 channels using Protracker frequency table
 			Loader code:
@@ -299,3 +300,19 @@ Added: Given I am using C64 processor port options
 * Syntax for "add a Chars V4.0 layer" needs to include scrolling registers, tests will need to use new data. Create a larger source image for this and create new output data.
 	Old small screen image conversion: oldbridge char screen with rgbfactor
 	TODO: Need to emulate the bad char definition reads with certain scroll values
+
+
+
+
+* Various music conversion command lines. File from https://modarchive.org/ :
+	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\cream_of_the_earth.mod" "target/exportedMusic" 65535 100626
+	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\lotus2-title.mod" "target/exportedMusic" 7 8
+	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\intro_01.mod" "target/exportedMusic" 7 8
+	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\turrican.mod" "target/exportedMusic" 1 2
+	* Problems with repeating? Or new note detection? newInstrumentSet
+	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\blood_money_title.mod" "target/exportedMusic" 65535 155920
+		* Fixed: The "aktMemo.newInstrumentSet = true;" needed to be inside the "element.getInstrument()>0" check. Doh!
+	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\speedbal.mod" "target/exportedMusic" 1 3
+	* The first set of notes is bad?
+	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\shadowofthebeast.mod" "target/exportedMusic" 1 1
+	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\outrun_intro.mod" "target/exportedMusic" 1 3

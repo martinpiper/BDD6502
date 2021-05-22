@@ -101,3 +101,13 @@ Or when using an IDE: -Dbdd6502.trace=true
 
 	java -Dcom.replicanet.cukesplus.server.featureEditor -Dcom.replicanet.ACEServer.debug.requests= -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --monochrome --plugin pretty --plugin html:target/cucumber --plugin json:target/report1.json --glue TestGlue features
 
+
+
+
+
+Music conversion
+----------------
+
+* Convert: java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod" "target/exportedMusic" 1 1
+
+* Playback: java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --playmod target\exportedMusic

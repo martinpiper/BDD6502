@@ -898,7 +898,6 @@ public abstract class BasicModMixer
 //	}
 	protected void setNewInstrumentAndPeriod(final ChannelMemory aktMemo)
 	{
-		aktMemo.newInstrumentSet = true;
 		final PatternElement element = aktMemo.currentElement;
 //		if ((element.getPeriod()>0 || element.getNoteIndex()>0) && !isPorta) // New Note Effekt
 //		{
@@ -919,7 +918,9 @@ public abstract class BasicModMixer
 			}
 			else
 				newSample = mod.getInstrumentContainer().getSample(aktMemo.assignedInstrumentIndex-1);
-			
+
+			aktMemo.newInstrumentSet = true;
+
 			if (newSample!=null)
 			{
 				// If this sample uses panning, set the panning
