@@ -7,8 +7,7 @@
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
@@ -96,7 +95,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner --exportmod SotB (1)">
+  <component name="RunManager" selected="Application.TestRunner --playmod">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -140,6 +139,15 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\tiny music\mods\artists\mortimer twang\Mortimer Twang - No Sellout.mod&quot; &quot;target/exportedMusic&quot; 1 1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner --exportmod (2) -Dmusic.volume=1" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod&quot; &quot;target/exportedMusic&quot; 1 1" />
+      <option name="VM_PARAMETERS" value="-Dmusic.volume=1" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -597,6 +605,7 @@
       <item itemvalue="Application.TestRunner --exportmod (1)" />
       <item itemvalue="Application.TestRunner --exportmod (2) with ratio" />
       <item itemvalue="Application.TestRunner --exportmod (2)" />
+      <item itemvalue="Application.TestRunner --exportmod (2) -Dmusic.volume=1" />
       <item itemvalue="Application.TestRunner --exportmod (3)" />
       <item itemvalue="Application.TestRunner --exportmod blood money" />
       <item itemvalue="Application.TestRunner --exportmod" />
@@ -681,10 +690,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="790" y="374" key="#com.intellij.debugger.actions.ViewTextAction/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615733291203" />
-    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1621756445412">
+    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1621772510421">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621756445412" />
+    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621772510421" />
     <state x="92" y="92" width="1736" height="896" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1616902357793">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -701,22 +710,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="587" y="88" key="CommitChangelistDialog2/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621572783360" />
-    <state width="1877" height="217" key="GridCell.Tab.0.bottom" timestamp="1621756823135">
+    <state width="1877" height="217" key="GridCell.Tab.0.bottom" timestamp="1621773874558">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="217" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621756823135" />
-    <state width="1877" height="217" key="GridCell.Tab.0.center" timestamp="1621756823134">
+    <state width="1877" height="217" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621773874558" />
+    <state width="1877" height="217" key="GridCell.Tab.0.center" timestamp="1621773874558">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="217" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621756823134" />
-    <state width="1877" height="217" key="GridCell.Tab.0.left" timestamp="1621756823133">
+    <state width="1877" height="217" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621773874558" />
+    <state width="1877" height="217" key="GridCell.Tab.0.left" timestamp="1621773874557">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="217" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621756823133" />
-    <state width="1877" height="217" key="GridCell.Tab.0.right" timestamp="1621756823135">
+    <state width="1877" height="217" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621773874557" />
+    <state width="1877" height="217" key="GridCell.Tab.0.right" timestamp="1621773874558">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="217" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621756823135" />
+    <state width="1877" height="217" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621773874558" />
     <state width="1877" height="308" key="GridCell.Tab.1.bottom" timestamp="1621756823126">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -749,10 +758,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="794" y="427" key="extract.method.dialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621742554239" />
-    <state x="498" y="220" width="1239" height="608" key="find.popup" timestamp="1621746507984">
+    <state x="498" y="220" width="1239" height="608" key="find.popup" timestamp="1621771770586">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="498" y="220" width="1239" height="608" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621746507984" />
+    <state x="498" y="220" width="1239" height="608" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621771770586" />
     <state x="660" y="287" key="refactoring.ChangeSignatureDialog" timestamp="1621572316504">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -761,10 +770,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="616" y="240" key="run.anything.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621745039334" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1621756453391">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1621772749728">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621756453391" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621772749728" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

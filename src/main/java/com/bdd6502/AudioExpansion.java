@@ -203,6 +203,7 @@ public class AudioExpansion extends MemoryBus implements Runnable {
                     }
 
                     int sample = sampleRAM[address & 0xffff] & 0xff;
+                    sample = sample - 0x80;
                     // HW: This will be implemented with a 0x10000 byte ROM containing a multiply/divide lookup table
                     sample = (sample * voiceVolume[voice]) / 255;
 
@@ -241,8 +242,12 @@ public class AudioExpansion extends MemoryBus implements Runnable {
             // HW: Note voice division is just address line selection
             // HW: There will need to be an overflow and upper clamp applied
             accumulatedSample = accumulatedSample / (numVoices/2);
+            // Convert from s8 to u8 sample
+            accumulatedSample = accumulatedSample + 0x80;
             if (accumulatedSample > 255) {
                 accumulatedSample = 255;
+            } else if (accumulatedSample < 0) {
+                accumulatedSample = 0;
             }
             sampleBuffer[i] = (byte)(accumulatedSample & 0xff);
         }
