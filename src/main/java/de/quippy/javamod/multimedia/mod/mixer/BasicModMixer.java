@@ -102,6 +102,7 @@ public abstract class BasicModMixer
 
 		public boolean newInstrumentSet;
 		int previousRealFrequency;
+		int previousRealVolume;
 
 		public ChannelMemory()
 		{
@@ -155,6 +156,7 @@ public abstract class BasicModMixer
 
 			newInstrumentSet = false;
 			previousRealFrequency = 0;
+			previousRealVolume = 0;
 		}
 		/**
 		 * DeepCopy by Reflection - iterate through all fields and copy the values
@@ -1337,7 +1339,8 @@ public abstract class BasicModMixer
 
 				actMemo.newInstrumentSet = false;
 			}
-			if (actMemo.currentSample != null) {
+
+			if (!actMemo.instrumentFinished) {
 				if (getRealFrequency(actMemo, actMemo.currentSample.index) != actMemo.previousRealFrequency) {
 					int sampleIndex = actMemo.currentSample.index;
 					exportSample(actMemo);
@@ -1357,7 +1360,29 @@ public abstract class BasicModMixer
 					} catch (IOException e) {
 					}
 				}
+/*
+				if (getRealVolume(actMemo) > 0 && getRealVolume(actMemo) != actMemo.previousRealVolume) {
+					int sampleIndex = actMemo.currentSample.index;
+					exportSample(actMemo);
+					outputChannelHeader(channel);
+					debugData.println("newVolumeSet: " + sampleIndex);
+					debugData.flush();
+
+					outputWaitFrames();
+					try {
+						debugMusicData.write(Helpers.kMusicCommandAdjustVolume);
+						debugMusicData.write(channel);
+
+						outputVolume(actMemo);
+
+						debugMusicData.flush();
+					} catch (IOException e) {
+					}
+				}
+*/
+
 			}
+
 
 			previousChannelMemory[channel].deepCopy(actMemo);
 		}
@@ -1420,11 +1445,17 @@ public abstract class BasicModMixer
 	}
 
 	private void outputVolume(ChannelMemory actMemo) throws IOException {
+		int volume = getRealVolume(actMemo);
+		debugMusicData.write(volume);
+		actMemo.previousRealVolume = volume;
+	}
+
+	private int getRealVolume(ChannelMemory actMemo) {
 		int volume = actMemo.currentVolume * 4;
 		if (volume > 255) {
 			volume = 255;
 		}
-		debugMusicData.write(volume);
+		return volume;
 	}
 
 	int applySampleRatioForIndex(int value , int sampleIndex) {

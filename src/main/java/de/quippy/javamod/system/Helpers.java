@@ -1789,4 +1789,5 @@ public class Helpers
 	public static final byte kMusicCommandStop					= 2;
 	public static final byte kMusicCommandPlayNote				= 3;
 	public static final byte kMusicCommandAdjustNote			= 4;
+	public static final byte kMusicCommandAdjustVolume			= 5;
 }

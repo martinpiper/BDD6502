@@ -7,7 +7,6 @@
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/system/Helpers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/system/Helpers.java" afterDir="false" />
@@ -100,7 +99,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner --exportmod">
+  <component name="RunManager" selected="Application.TestRunner --exportmod (2)">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -684,10 +683,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="790" y="374" key="#com.intellij.debugger.actions.ViewTextAction/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1615733291203" />
-    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1621693008134">
+    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1621745219126">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621693008134" />
+    <state x="383" y="49" width="1191" height="691" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621745219126" />
     <state x="92" y="92" width="1736" height="896" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1616902357793">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -704,38 +703,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="587" y="88" key="CommitChangelistDialog2/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621572783360" />
-    <state width="1877" height="308" key="GridCell.Tab.0.bottom" timestamp="1621693264681">
+    <state width="1877" height="308" key="GridCell.Tab.0.bottom" timestamp="1621747411504">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="308" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621693264681" />
-    <state width="1877" height="308" key="GridCell.Tab.0.center" timestamp="1621693264681">
+    <state width="1877" height="308" key="GridCell.Tab.0.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621747411504" />
+    <state width="1877" height="308" key="GridCell.Tab.0.center" timestamp="1621747411503">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="308" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621693264681" />
-    <state width="1877" height="308" key="GridCell.Tab.0.left" timestamp="1621693264681">
+    <state width="1877" height="308" key="GridCell.Tab.0.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621747411503" />
+    <state width="1877" height="308" key="GridCell.Tab.0.left" timestamp="1621747411503">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="308" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621693264681" />
-    <state width="1877" height="308" key="GridCell.Tab.0.right" timestamp="1621693264681">
+    <state width="1877" height="308" key="GridCell.Tab.0.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621747411503" />
+    <state width="1877" height="308" key="GridCell.Tab.0.right" timestamp="1621747411504">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="308" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621693264681" />
-    <state width="1877" height="308" key="GridCell.Tab.1.bottom" timestamp="1621693264682">
+    <state width="1877" height="308" key="GridCell.Tab.0.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621747411504" />
+    <state width="1877" height="308" key="GridCell.Tab.1.bottom" timestamp="1621747411504">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="308" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621693264682" />
-    <state width="1877" height="308" key="GridCell.Tab.1.center" timestamp="1621693264682">
+    <state width="1877" height="308" key="GridCell.Tab.1.bottom/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621747411504" />
+    <state width="1877" height="308" key="GridCell.Tab.1.center" timestamp="1621747411504">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="308" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621693264682" />
-    <state width="1877" height="308" key="GridCell.Tab.1.left" timestamp="1621693264682">
+    <state width="1877" height="308" key="GridCell.Tab.1.center/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621747411504" />
+    <state width="1877" height="308" key="GridCell.Tab.1.left" timestamp="1621747411504">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="308" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621693264682" />
-    <state width="1877" height="308" key="GridCell.Tab.1.right" timestamp="1621693264682">
+    <state width="1877" height="308" key="GridCell.Tab.1.left/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621747411504" />
+    <state width="1877" height="308" key="GridCell.Tab.1.right" timestamp="1621747411504">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="308" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621693264682" />
+    <state width="1877" height="308" key="GridCell.Tab.1.right/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621747411504" />
     <state x="775" y="453" key="ReplaceDuplicatesPrompt" timestamp="1621689471976">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -748,22 +747,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="470" y="255" width="980" height="630" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621587298057" />
-    <state x="794" y="427" key="extract.method.dialog" timestamp="1621689974524">
+    <state x="794" y="427" key="extract.method.dialog" timestamp="1621742554239">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="794" y="427" key="extract.method.dialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621689974524" />
-    <state x="498" y="220" width="1239" height="608" key="find.popup" timestamp="1621690714250">
+    <state x="794" y="427" key="extract.method.dialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621742554239" />
+    <state x="498" y="220" width="1239" height="608" key="find.popup" timestamp="1621746507984">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="498" y="220" width="1239" height="608" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621690714250" />
+    <state x="498" y="220" width="1239" height="608" key="find.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621746507984" />
     <state x="660" y="287" key="refactoring.ChangeSignatureDialog" timestamp="1621572316504">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="660" y="287" key="refactoring.ChangeSignatureDialog/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621572316504" />
-    <state x="616" y="240" key="run.anything.popup" timestamp="1616679783451">
+    <state x="616" y="240" key="run.anything.popup" timestamp="1621745039334">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="616" y="240" key="run.anything.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1616679783451" />
+    <state x="616" y="240" key="run.anything.popup/-1920.-6.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1621745039334" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1621692049860">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -811,6 +810,16 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
           <line>348</line>
           <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java</url>
+          <line>1367</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java</url>
+          <line>1364</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
         <breakpoint enabled="true" type="java-exception">
           <properties class="java.lang.ArrayIndexOutOfBoundsException" package="java.lang" />
