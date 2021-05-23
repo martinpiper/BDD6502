@@ -1360,26 +1360,28 @@ public abstract class BasicModMixer
 					} catch (IOException e) {
 					}
 				}
-/*
-				if (getRealVolume(actMemo) > 0 && getRealVolume(actMemo) != actMemo.previousRealVolume) {
-					int sampleIndex = actMemo.currentSample.index;
-					exportSample(actMemo);
-					outputChannelHeader(channel);
-					debugData.println("newVolumeSet: " + sampleIndex);
-					debugData.flush();
 
-					outputWaitFrames();
-					try {
-						debugMusicData.write(Helpers.kMusicCommandAdjustVolume);
-						debugMusicData.write(channel);
+				if (getRealVolume(actMemo) != actMemo.previousRealVolume) {
+					if (!System.getProperty("music.volume","").isEmpty()) {
+						int sampleIndex = actMemo.currentSample.index;
+						exportSample(actMemo);
+						outputChannelHeader(channel);
+						debugData.println("newVolumeSet: " + sampleIndex);
+						debugData.flush();
 
-						outputVolume(actMemo);
+						outputWaitFrames();
+						try {
+							debugMusicData.write(Helpers.kMusicCommandAdjustVolume);
+							debugMusicData.write(channel);
 
-						debugMusicData.flush();
-					} catch (IOException e) {
+							outputVolume(actMemo);
+
+							debugMusicData.flush();
+						} catch (IOException e) {
+						}
 					}
 				}
-*/
+
 
 			}
 

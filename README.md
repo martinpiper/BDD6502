@@ -109,5 +109,7 @@ Music conversion
 ----------------
 
 * Convert: java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod" "target/exportedMusic" 1 1
+    Use "-Dmusic.volume=1" to include channel volume changes that are not part of frequency changes. This can produce large files, so use only when really needed.
+    
 
 * Playback: java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --playmod target\exportedMusic
