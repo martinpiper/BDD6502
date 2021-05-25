@@ -307,7 +307,7 @@ Added: Given I am using C64 processor port options
 * Various music conversion command lines. File from https://modarchive.org/ :
 	* Volume only? Not for this tune
 	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\cream_of_the_earth.mod" "target/exportedMusic" 65535 100626
-	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\lotus2-title.mod" "target/exportedMusic" 7 8
+	java -Dmusic.volume=1 -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\lotus2-title.mod" "target/exportedMusic" 7 8
 	java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\intro_01.mod" "target/exportedMusic" 7 8
 	java -Dmusic.volume=1 -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\turrican.mod" "target/exportedMusic" 65535 88560
 	* Problems with repeating? Or new note detection? newInstrumentSet
@@ -335,3 +335,4 @@ Added: Given I am using C64 processor port options
 
 
 * Excessive clicking when starting a voice fixed. Funnily enough this wasn't in the hardware, but was a fault of the emulation
+	Validated in hardware and emulation
