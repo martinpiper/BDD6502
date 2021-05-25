@@ -321,3 +321,17 @@ Added: Given I am using C64 processor port options
 
 
 * Added music conversion detection of frequency change, which vastly improves playback
+
+
+
+* Music conversion, just volume change detection needed?
+
+
+
+* Merge event and channel
+	Channel low nybble
+	Event high nybble
+
+
+
+* Excessive clicking when starting a voice fixed. Funnily enough this wasn't in the hardware, but was a fault of the emulation

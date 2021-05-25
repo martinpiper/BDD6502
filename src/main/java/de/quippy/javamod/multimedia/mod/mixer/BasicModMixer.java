@@ -1325,8 +1325,7 @@ public abstract class BasicModMixer
 
 				outputWaitFrames();
 				try {
-					debugMusicData.write(Helpers.kMusicCommandPlayNote);
-					debugMusicData.write(channel);
+					debugMusicData.write(Helpers.kMusicCommandPlayNote | channel);
 
 					outputVolume(actMemo);
 					debugMusicData.write(sampleIndex);
@@ -1350,8 +1349,7 @@ public abstract class BasicModMixer
 
 					outputWaitFrames();
 					try {
-						debugMusicData.write(Helpers.kMusicCommandAdjustNote);
-						debugMusicData.write(channel);
+						debugMusicData.write(Helpers.kMusicCommandAdjustNote | channel);
 
 						outputVolume(actMemo);
 						outputNote(actMemo, sampleIndex);
@@ -1371,8 +1369,7 @@ public abstract class BasicModMixer
 
 						outputWaitFrames();
 						try {
-							debugMusicData.write(Helpers.kMusicCommandAdjustVolume);
-							debugMusicData.write(channel);
+							debugMusicData.write(Helpers.kMusicCommandAdjustVolume | channel);
 
 							outputVolume(actMemo);
 
@@ -1496,7 +1493,9 @@ public abstract class BasicModMixer
 
 		byte[] buffer = new byte[applySampleRatioForIndex(realLength ,sampleIndex)];
 		for (int i = 0; i < realLength ; i++) {
-			int sample = 0x80 + (actMemo.currentSample.sample[i+5] >> 16);
+			int sourceSample = actMemo.currentSample.sample[i+5] >> 16;
+			// Convert 8 bit signed sample data to unsigned 8 bit
+			int sample = 0x80 + sourceSample;
 			if (sample < 0) {
 				sample = 0;
 			}

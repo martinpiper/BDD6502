@@ -1784,10 +1784,12 @@ public class Helpers
 		return 0;
 	}
 
-	public static final byte kMusicCommandWaitFrames			= 0;
-	public static final byte kMusicCommandSetSampleData			= 1;
-	public static final byte kMusicCommandStop					= 2;
-	public static final byte kMusicCommandPlayNote				= 3;
-	public static final byte kMusicCommandAdjustNote			= 4;
-	public static final byte kMusicCommandAdjustVolume			= 5;
+	public static final byte kMusicCommandMask					= (byte) 0xf0;
+	public static final byte kMusicCommandChannelMask			= 0x0f;
+	public static final byte kMusicCommandWaitFrames			= 0x00;
+	public static final byte kMusicCommandSetSampleData			= 0x10;
+	public static final byte kMusicCommandStop					= 0x20;
+	public static final byte kMusicCommandPlayNote				= 0x30;
+	public static final byte kMusicCommandAdjustNote			= 0x40;
+	public static final byte kMusicCommandAdjustVolume			= 0x50;
 }

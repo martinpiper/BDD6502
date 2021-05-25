@@ -575,7 +575,7 @@ public class TestRunner {
                     Thread.sleep(1);
                 }
                 int command = getNextByte();
-                switch (command) {
+                switch (command & Helpers.kMusicCommandMask) {
                     case Helpers.kMusicCommandWaitFrames: {
                         waitUntil += (getNextByte() * (1000 / 60));
                         continue;
@@ -589,7 +589,7 @@ public class TestRunner {
                         continue;
                     }
                     case Helpers.kMusicCommandPlayNote: {
-                        int channel = getNextByte();
+                        int channel = command & Helpers.kMusicCommandChannelMask;
                         int volume = getNextByte();
                         int sampleIndex = getNextByte();
                         int sampleStart = sampleStarts[sampleIndex];
@@ -628,7 +628,7 @@ public class TestRunner {
                         break;
                     }
                     case Helpers.kMusicCommandAdjustNote: {
-                        int channel = getNextByte();
+                        int channel = command & Helpers.kMusicCommandChannelMask;
                         int volume = getNextByte();
 
                         int sampleFrequency = getNextByte() | (getNextByte() << 8);
@@ -640,7 +640,7 @@ public class TestRunner {
                         break;
                     }
                     case Helpers.kMusicCommandAdjustVolume: {
-                        int channel = getNextByte();
+                        int channel = command & Helpers.kMusicCommandChannelMask;
                         int volume = getNextByte();
 
                         int voiceAddress = 0x8000 + (channel * AudioExpansion.voiceSize);

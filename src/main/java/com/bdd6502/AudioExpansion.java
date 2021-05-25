@@ -189,6 +189,7 @@ public class AudioExpansion extends MemoryBus implements Runnable {
         for (int i = offset ; i < sampleBuffer.length ; i+=2) {
             ageContention();
 
+            // Here accumulatedSample is signed, in hardware it is a two byte 16 bit lookup of two internal unsigned 8 bit data channels
             int accumulatedSample = 0;
             for (int index = 0 ; index < (numVoices/2) ; index++) {
                 int voice = (offset * (numVoices/2)) + index;
@@ -235,7 +236,8 @@ public class AudioExpansion extends MemoryBus implements Runnable {
 
                 } else {
                     // HW: Add 0x80 as the middle part of 8 bit unsigned samples for inactive channels
-                    accumulatedSample += 0x80;
+                    // In emulation we do nothing...
+//                    accumulatedSample += 0;
                 }
             }
 
