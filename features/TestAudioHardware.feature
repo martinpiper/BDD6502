@@ -17,7 +17,7 @@ Feature: Tests the video and audio hardware expansion together
     And That does fail on BRK
     And I enable unitialised memory read protection with immediate fail
     Given a user port to 24 bit bus is installed
-    And I enable trace with indent
+#    And I enable trace with indent
     Given show video window
 
 

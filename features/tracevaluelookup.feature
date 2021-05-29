@@ -31,4 +31,4 @@ Feature: Does tests to show the extra trace format
 	And I load labels "test.lbl"
 	And I enable trace with indent
 	When I execute the procedure at 1024 for no more than 5000 instructions
-	
+	And I disable trace

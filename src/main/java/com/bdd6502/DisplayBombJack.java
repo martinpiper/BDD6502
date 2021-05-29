@@ -16,6 +16,7 @@ public class DisplayBombJack extends MemoryBus {
     QuickDrawPanel panel;
 
     ArrayList<DisplayLayer> layers = new ArrayList<>();
+    DisplayLayer layersRaw[];
 
     int frameNumber = 0;
     int displayWidth = 384;
@@ -159,6 +160,8 @@ public class DisplayBombJack extends MemoryBus {
     public void addLayer(DisplayLayer layer) {
         layer.setDisplay(this);
         layers.add(layer);
+        // Profiling shows that layers.size() was taking a significant chunk of time. It shouldn't have been. Instead use this array instead.
+        layersRaw = layers.toArray(new DisplayLayer[layers.size()]);
     }
 
     @Override
@@ -291,7 +294,12 @@ public class DisplayBombJack extends MemoryBus {
                 try {
                     File file = new File(leafFilename + String.format("%06d", frameNumber++) + ".bmp");
                     file.mkdirs();
-                    ImageIO.write(getImage(), "bmp", file);
+                    try {
+                        ImageIO.write(getImage(), "bmp", file);
+                    } catch (Exception e) {
+                        // Try once more before really failing...
+                        ImageIO.write(getImage(), "bmp", file);
+                    }
                 } catch (IOException e) {}
             }
         }
@@ -356,16 +364,16 @@ public class DisplayBombJack extends MemoryBus {
 
         latchedPixel = 0;
         boolean firstLayer = true;
-        if (layers.size() <= 4) {
+        if (layersRaw.length <= 4) {
             int cachedPixel[] = {-1,-1,-1,-1};
             // Go backwards from the furthest plane first
-            for (int i = layers.size()-1 ; i >= 0 ; i--) {
+            for (int i = layersRaw.length-1 ; i >= 0 ; i--) {
                 int theLayer = (displayPriority >> (i*2)) & 0x03;
-                theLayer = (layers.size()-1)-theLayer;
-                if (theLayer >= 0 && theLayer < layers.size()) {
+                theLayer = (layersRaw.length-1)-theLayer;
+                if (theLayer >= 0 && theLayer < layersRaw.length) {
                     // Ensure each layer index is executed once
                     if (cachedPixel[theLayer] < 0) {
-                        DisplayLayer displayLayer = layers.get(theLayer);
+                        DisplayLayer displayLayer = layersRaw[theLayer];
                         int pixel = displayLayer.calculatePixel(displayH, displayV, _hSync, _vSync);
                         if (is16Colours) {
                             if ((pixel & 0x0f) != 0 || firstLayer) {
@@ -382,11 +390,11 @@ public class DisplayBombJack extends MemoryBus {
                 }
             }
             // Age all layers once, regardless of the priority setting
-            for (DisplayLayer layer : layers) {
+            for (DisplayLayer layer : layersRaw) {
                 layer.ageContention();
             }
         } else {
-            for (DisplayLayer layer : layers) {
+            for (DisplayLayer layer : layersRaw) {
                 int pixel = layer.calculatePixel(displayH, displayV, _hSync, _vSync);
                 layer.ageContention();
                 // If there is pixel data in the layer then use it

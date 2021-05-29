@@ -56,3 +56,4 @@ Feature: Tests unitialised memory syntax
     When I execute the procedure at start for no more than 100 instructions
     Then I assert the unitialised memory read flag is clear
     Then I expect register PC equal 0
+    And I disable trace

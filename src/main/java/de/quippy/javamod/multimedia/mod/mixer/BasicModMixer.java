@@ -1461,7 +1461,7 @@ public abstract class BasicModMixer
 		if (sampleFinalRatio2[sampleIndex] == 0) {
 			return 0;
 		}
-		return (value * sampleFinalRatio1[sampleIndex]) / sampleFinalRatio2[sampleIndex];
+		return (int)(((long)value * (long)sampleFinalRatio1[sampleIndex]) / (long)sampleFinalRatio2[sampleIndex]);
 	}
 
 
