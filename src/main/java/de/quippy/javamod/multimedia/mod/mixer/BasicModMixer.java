@@ -1097,7 +1097,9 @@ public abstract class BasicModMixer
 			if (currentFrame > (50 * 60 * 10)) {
 				debugData.println("Aborted file export due to time limit");
 				debugData.flush();
-				System.exit(-1);
+				System.out.println("Very long music detected, aborting");
+//				System.exit(-1);
+				return true;
 			}
 		}
 			// Global Fade Out

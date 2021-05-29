@@ -142,7 +142,7 @@ Added: Given I am using C64 processor port options
 			* http://www.javamod.de/
 				http://www.javamod.de/javamod.html
 
-			cd /d C:\Users\Martin Piper\Downloads\javamod.jar
+			cd /d C:\Users\Martin Piper\Downloads\
 			java -cp ./javamod.jar de.quippy.javamod.main.CommandLine "C:\Users\Martin Piper\Downloads\tiny music\mods\artists\h0ffman\H0ffman - Freerunner.mod"
 			ProTracker mod with 31 samples and 4 channels using Protracker frequency table
 			Loader code:
@@ -337,3 +337,9 @@ Added: Given I am using C64 processor port options
 
 * Excessive clicking when starting a voice fixed. Funnily enough this wasn't in the hardware, but was a fault of the emulation
 	Validated in hardware and emulation
+
+
+
+* Music conversion: "C:\Users\Martin Piper\Downloads\SOTB_Musiques_Amiga\SOTB - TITLE.mod"
+	For some reason it isn't exporting even though this does play:
+		java -cp "C:\Users\Martin Piper\Downloads\javamod.jar" de.quippy.javamod.main.CommandLine "C:\Users\Martin Piper\Downloads\SOTB_Musiques_Amiga\SOTB - TITLE.mod"
