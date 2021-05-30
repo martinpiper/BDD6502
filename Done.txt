@@ -318,7 +318,7 @@ Added: Given I am using C64 processor port options
 	java -Dmusic.volume=1 -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\shadowofthebeast.mod" "target/exportedMusic" 1 1
 	java -Dmusic.volume=1 -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\outrun_intro.mod" "target/exportedMusic" 1 3
 	java -Dmusic.volume=1 -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\Shadow of the Beast (1)\Beast1_2.mod" "target/exportedMusic" 65535 71268
-
+	java -Dmusic.volume=1 -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\xenon2.mod" "target/exportedMusic" 65535 325226
 
 
 * Added music conversion detection of frequency change, which vastly improves playback
