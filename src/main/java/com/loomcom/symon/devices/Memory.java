@@ -115,6 +115,10 @@ public class Memory extends Device {
         return this.mem[address];
     }
 
+    public int safeInvisibleRead(int address) {
+        return this.mem[address & 0xffff];
+    }
+
     public void fill(int val) {
         Arrays.fill(this.mem, val);
     }

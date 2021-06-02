@@ -16,7 +16,7 @@ public class DisplayBombJack extends MemoryBus {
     QuickDrawPanel panel;
 
     ArrayList<DisplayLayer> layers = new ArrayList<>();
-    DisplayLayer layersRaw[];
+    DisplayLayer layersRaw[] = new DisplayLayer[0];
 
     int frameNumber = 0;
     int displayWidth = 384;

@@ -343,3 +343,22 @@ Added: Given I am using C64 processor port options
 * Music conversion: "C:\Users\Martin Piper\Downloads\SOTB_Musiques_Amiga\SOTB - TITLE.mod"
 	For some reason it isn't exporting even though this does play:
 		java -cp "C:\Users\Martin Piper\Downloads\javamod.jar" de.quippy.javamod.main.CommandLine "C:\Users\Martin Piper\Downloads\SOTB_Musiques_Amiga\SOTB - TITLE.mod"
+
+
+
+* Not needed, since layer order register is included in V5.0
+	* To use the VideoHardware debug output, the hardware last two layers need to be swapped.
+		Perhaps add a switch selector for different layer priorities into the layer select to allow runtime configuration?
+		Extra (but disabled and not placed) logic has been added to the video layer
+
+
+
+
+* Remove System.getProp* usage inside time critical routines
+
+
+
+* Create 6502 remote debug TCP interface. Enough for the VICEPDBMonitor to work.
+    When enable remote debugging
+    And wait for debugger connection
+    And wait for debugger go

@@ -1,7 +1,7 @@
 Feature: Tests the video character screen data conversion and sprites
 
   Uses ImageToBitplane config: oldbridge char screen
-  Use ImageToBitplane config to improve clouds conversion as it priortises their colours: oldbridge char screen with rgbfactor
+  >>> Use ImageToBitplane config to improve clouds conversion as it priortises their colours: oldbridge char screen with rgbfactor
   Use ImageToBitplane config to add use of colour 0, since if it is the back most layer then then it can use all 8 colours in the character block: oldbridge char screen with rgbfactor no force colour 0
   Or uses ImageToBitplane config: map_9 - Copy - chars.png char screen
 
@@ -15,7 +15,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given video display refresh window every 32 instructions
     Given video display add joystick to port 2
     Given video display does not save debug BMP images
-    Given property "bdd6502.bus24.trace" is set to string "true"
+#    Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     Given a user port to 24 bit bus is installed
     Given add a StaticColour layer for palette index '0x7f'
@@ -28,6 +28,9 @@ Feature: Tests the video character screen data conversion and sprites
     And I load prg "test.prg"
     And I load labels "test.lbl"
 #    And I enable trace with indent
+
+    When enable remote debugging
+#    And wait for debugger connection
 
 #    When I execute the procedure at start for no more than 99999999 instructions
     When I execute the procedure at DisplayScreen until return

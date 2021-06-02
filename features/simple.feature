@@ -88,3 +88,18 @@ Feature: Simple 6502 code test
     When property "test.foo" is set to string "bar"
     Then property "test.foo" must contain string "a"
     And property "test.foo" must contain string "bar"
+
+
+
+  @ignore @RemoteDebugger
+  Scenario: Check remote debugger syntax
+    Given I have a simple overclocked 6502 system
+    And I enable trace
+    And I start writing memory at $400
+    And I write the following hex bytes
+      | 78 ee 20 d0 4c 01 04 |
+
+    When enable remote debugging
+    And wait for debugger connection
+    And wait for debugger go
+    When I execute the procedure at $400 until return

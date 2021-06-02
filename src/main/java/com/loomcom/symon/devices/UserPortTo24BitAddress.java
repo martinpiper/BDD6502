@@ -47,12 +47,23 @@ public class UserPortTo24BitAddress extends Device {
     int apuWait16 = 0;
     int apuWait24 = 0;
     int apuDataReg[] = new int[5];
-
+    boolean busTrace = false;
 
     public UserPortTo24BitAddress(Scenario scenario) throws MemoryRangeException {
         super(0xdd00, 0xdd0f, "UserPortTo24BitAddress");
         mScenario = scenario;
 
+        propertiesUpdated();
+    }
+
+    @Override
+    public void propertiesUpdated() {
+        busTrace = false;
+        if (System.getProperty("bdd6502.bus24.trace","").toLowerCase().equals("true")) {
+            busTrace = true;
+        }
+
+        apuEnableDebug = false;
         if (System.getProperty("bdd6502.apu.trace","").toLowerCase().equals("true")) {
             apuEnableDebug = true;
         }
@@ -62,12 +73,16 @@ public class UserPortTo24BitAddress extends Device {
         if (device != null) {
             externalDevices.add(device);
         }
+
+        propertiesUpdated();
     }
 
     public void enableDebugData() throws IOException {
         debugData = new PrintWriter(new FileWriter("target/debugDataJustUserPort.txt"));
         debugData.println("; Automatically created by UserPortTo24BitAddress");
         debugData.println("d0");
+
+        propertiesUpdated();
     }
 
     public void setEnableAPU(DisplayBombJack display, APUData data) {
@@ -75,6 +90,8 @@ public class UserPortTo24BitAddress extends Device {
         displayBombJack = display;
         this.apuData = data;
         externalDevices.add(apuData);
+
+        propertiesUpdated();
     }
 
     public void setSimpleMode(boolean simpleMode) {
@@ -83,12 +100,6 @@ public class UserPortTo24BitAddress extends Device {
 
     @Override
     public void write(int address, int data) throws MemoryAccessException {
-        boolean busTrace = false;
-        String trace = System.getProperty("bdd6502.bus24.trace");
-        if (null != trace && trace.indexOf("true") != -1) {
-            busTrace = true;
-        }
-
         int register = address & 0x0f;
         switch (register) {
             case 0:

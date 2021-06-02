@@ -1647,6 +1647,22 @@ public class Cpu implements InstructionTable {
             return sb.toString();
         }
 
+        // Returns a string formatted like Vice debugger
+        public String toDebugger(int stopwatch) {
+            // .C:f6b0  A5 A0       LDA $A0        - A:E7 X:00 Y:0A SP:eb N.-..I..    7233411
+            StringBuilder sb = new StringBuilder(".C:");
+            sb.append(getInstructionByteStatus() + " ");
+            sb.append(String.format("%-13s", disassembleOp()));
+
+            sb.append("A:" + HexUtil.byteToHex(a) + " ");
+            sb.append("X:" + HexUtil.byteToHex(x) + " ");
+            sb.append("Y:" + HexUtil.byteToHex(y) + " ");
+            sb.append("S:" + HexUtil.byteToHex(sp) + " ");
+            sb.append(getProcessorStatusString().substring(1,9) + "    ");
+            sb.append(String.format("%08d", stopwatch));
+            return sb.toString();
+        }
+
         /**
          * @returns The value of the Process Status Register, as a byte.
          */
@@ -1696,6 +1712,25 @@ public class Cpu implements InstructionTable {
             }
         }
 
+        public String getInstructionByteStatusForAddress(int tir , int tpc , int targs0 , int targs1) {
+            switch (Cpu.instructionSizes[tir]) {
+                case 0:
+                case 1:
+                    return HexUtil.wordToHex(tpc) + "  " +
+                            HexUtil.byteToHex(tir) + "      ";
+                case 2:
+                    return HexUtil.wordToHex(tpc) + "  " +
+                            HexUtil.byteToHex(tir) + " " +
+                            HexUtil.byteToHex(targs0) + "   ";
+                case 3:
+                    return HexUtil.wordToHex(tpc) + "  " +
+                            HexUtil.byteToHex(tir) + " " +
+                            HexUtil.byteToHex(targs0) + " " +
+                            HexUtil.byteToHex(targs1);
+                default:
+                    return null;
+            }
+        }
 
         /**
          * Given an opcode and its operands, return a formatted name.
@@ -1748,6 +1783,52 @@ public class Cpu implements InstructionTable {
             return sb.toString();
         }
 
+        public String disassembleOpForAddress(int tir , int tpc , int targs0 , int targs1) {
+            String mnemonic = opcodeNames[tir];
+
+            if (mnemonic == null) {
+                return "???";
+            }
+
+            StringBuilder sb = new StringBuilder(mnemonic);
+
+            switch (instructionModes[tir]) {
+                case ABS:
+                    sb.append(" $" + HexUtil.wordToHex(address(targs0, targs1)));
+                    break;
+                case ABX:
+                    sb.append(" $" + HexUtil.wordToHex(address(targs0, targs1)) + ",X");
+                    break;
+                case ABY:
+                    sb.append(" $" + HexUtil.wordToHex(address(targs0, targs1)) + ",Y");
+                    break;
+                case IMM:
+                    sb.append(" #$" + HexUtil.byteToHex(targs0));
+                    break;
+                case IND:
+                    sb.append(" ($" + HexUtil.wordToHex(address(targs0, targs1)) + ")");
+                    break;
+                case XIN:
+                    sb.append(" ($" + HexUtil.byteToHex(targs0) + ",X)");
+                    break;
+                case INY:
+                    sb.append(" ($" + HexUtil.byteToHex(targs0) + "),Y");
+                    break;
+                case REL:
+                case ZPG:
+                    sb.append(" $" + HexUtil.byteToHex(targs0));
+                    break;
+                case ZPX:
+                    sb.append(" $" + HexUtil.byteToHex(targs0) + ",X");
+                    break;
+                case ZPY:
+                    sb.append(" $" + HexUtil.byteToHex(targs0) + ",Y");
+                    break;
+            }
+
+            return sb.toString();
+        }
+        
         /**
          * Given two bytes, return an address.
          */

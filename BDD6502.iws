@@ -8,9 +8,23 @@
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestAudioHardware.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestAudioHardware.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites full.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites full.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars full.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars full.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/simple.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/simple.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/Device.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/Device.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/Memory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/Memory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/bdd6502/RunCukesTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/bdd6502/RunCukesTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testcmp.prg" beforeDir="false" afterPath="$PROJECT_DIR$/testcmp.prg" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,8 +39,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
-        <option value="Class" />
         <option value="JUnit4 Test Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -66,38 +80,39 @@
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
-    <key name="ExtractSuperBase.RECENT_KEYS">
-      <recent name="com.bdd6502" />
-    </key>
-    <key name="CreateTestDialog.RecentsKey">
+    <key name="CreateClassDialog.RecentsKey">
       <recent name="com.loomcom.symon.devices" />
-      <recent name="TestGlue" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Work\BDD6502\features" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
       <recent name="com.bdd6502.CompressData" />
       <recent name="com.bdd6502.MemoryBus" />
     </key>
-    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
-      <recent name="com.bdd6502" />
-      <recent name="bdd6502" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Work\BDD6502\src\test\resources" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.bdd6502" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Work\BDD6502\features" />
-    </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="com.loomcom.symon.devices" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
     </key>
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="com.loomcom.symon.devices" />
+      <recent name="com.bdd6502" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.bdd6502" />
+      <recent name="bdd6502" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.loomcom.symon.devices" />
+      <recent name="TestGlue" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.bdd6502" />
+    </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner --exportmod SotB title">
+  <component name="RunManager" selected="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -319,6 +334,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestRunner TestVideoHardware.feature" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/TestVideoHardware.feature" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestRunner Tusari2" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
@@ -362,6 +385,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestRunner VideoHardware @ShadowBeastB" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @ShadowBeastB --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/VideoHardware" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestRunner VideoHardware @Turrican_8" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
@@ -383,6 +415,14 @@
     <configuration name="TestRunner no parameters" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner simple.feature @RemoteDebugger" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @RemoteDebugger --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/simple.feature" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -472,6 +512,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="RunCukesTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="BDD6502" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.bdd6502.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.bdd6502" />
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.RunCukesTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="UserPortTo24BitAddressTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="BDD6502" />
       <extension name="coverage">
@@ -503,23 +559,6 @@
       <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea -Dbdd6502.apu.trace=true" />
       <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="UserPortTo24BitAddressTest.checkAPU3" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="BDD6502" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.loomcom.symon.devices.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.loomcom.symon.devices" />
-      <option name="MAIN_CLASS_NAME" value="com.loomcom.symon.devices.UserPortTo24BitAddressTest" />
-      <option name="METHOD_NAME" value="checkAPU3" />
-      <option name="TEST_OBJECT" value="method" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -616,7 +655,9 @@
       <item itemvalue="Application.TestRunner --exportmod Biffe" />
       <item itemvalue="Application.TestRunner --playmod" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
+      <item itemvalue="Application.TestRunner simple.feature @RemoteDebugger" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature @TC-2-0" />
@@ -633,6 +674,7 @@
       <item itemvalue="Application.TestRunner VideoHardware @RPG" />
       <item itemvalue="Application.TestRunner VideoHardware @Turrican_8" />
       <item itemvalue="Application.TestRunner VideoHardware @ShadowBeast" />
+      <item itemvalue="Application.TestRunner VideoHardware @ShadowBeastB" />
       <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
       <item itemvalue="Application.TestRunner no parameters" />
       <item itemvalue="Cucumber Java.All features" />
@@ -642,17 +684,17 @@
       <item itemvalue="JUnit.JUnit all" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest (1)" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
-      <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU3" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU4" />
+      <item itemvalue="JUnit.RunCukesTest" />
       <item itemvalue="Maven.BDD6502 [install]" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Maven.BDD6502 [install]" />
+        <item itemvalue="JUnit.RunCukesTest" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU4" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest (1)" />
-        <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU3" />
       </list>
     </recent_temporary>
   </component>
@@ -695,18 +737,8 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java</url>
-          <line>208</line>
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java</url>
-          <line>206</line>
-          <option name="timeStamp" value="39" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>758</line>
+          <line>825</line>
           <option name="timeStamp" value="42" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -737,6 +769,10 @@
         <watch expression="displayX" />
         <watch expression="displayY" />
         <watch expression="displayHeight-1" />
+        <watch expression="RemoteDebugger.getRemoteDebugger()" language="JAVA" />
+        <watch expression="getProcessorStatusString()" language="JAVA" />
+        <watch expression="getProcessorStatusString().substring(1,8);" language="JAVA" />
+        <watch expression="getInstructionByteStatus()" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

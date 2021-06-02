@@ -136,4 +136,6 @@ public abstract class Device implements Comparable<Device> {
         }
         return getMemoryRange().compareTo(other.getMemoryRange());
     }
+
+    public void propertiesUpdated() {}
 }

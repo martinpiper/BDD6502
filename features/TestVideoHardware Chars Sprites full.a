@@ -1,5 +1,5 @@
 !sal
-!pdb "t.pdb"
+!pdb "target/t.pdb"
 !source "C64/stdlib/stdlib.a"
 !source "BombJack/stdlib/Video_Macros.a"
 
