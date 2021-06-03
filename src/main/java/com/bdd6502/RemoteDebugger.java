@@ -1,6 +1,6 @@
 package com.bdd6502;
 
-import com.loomcom.symon.util.HexUtil;
+import com.loomcom.symon.devices.UserPortTo24BitAddress;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -17,18 +17,19 @@ public class RemoteDebugger implements Runnable {
 
     volatile int numConnections = 0;
 
-    public boolean isReceivedGo() {
-        return receivedGo;
+    public boolean isReceivedCommand() {
+        return receivedCommand;
     }
 
-    volatile boolean receivedGo = false;
+    volatile boolean receivedCommand = false;
 
     public boolean isReceivedNext() {
         if (receivedNext) {
             suspendCPU = true;
             receivedNext = false;
+            return true;
         }
-        return receivedNext;
+        return false;
     }
 
     volatile boolean receivedNext = false;
@@ -86,7 +87,15 @@ public class RemoteDebugger implements Runnable {
 
     volatile boolean receivedDump = false;
 
+    public boolean isReceivedReg() {
+        return receivedReg;
+    }
+
+    volatile boolean receivedReg = false;
+
     public void setReplyReg(int addr, int a , int x , int y , int sp , int mem0 , int mem1 , int st , int lin , int cycle , int stopwatch) {
+        receivedReg = false;
+
         replyReg = "  ADDR A  X  Y  SP 00 01 NV-BDIZC LIN CYC  STOPWATCH\n";
         String hex = String.format("%4s", Integer.toHexString(addr)).replace(' ', '0');
         replyReg +=".;" + hex + " ";
@@ -117,6 +126,12 @@ public class RemoteDebugger implements Runnable {
 
         decimal = String.format("%8d", stopwatch).replace(' ', '0');
         replyReg += decimal + "\n";
+
+        if (UserPortTo24BitAddress.getThisInstance() != null) {
+            if (UserPortTo24BitAddress.getThisInstance().isEnableAPU()) {
+                replyReg += UserPortTo24BitAddress.getThisInstance().getDebugOutputLastState();
+            }
+        }
     }
 
     @Override
@@ -153,13 +168,17 @@ public class RemoteDebugger implements Runnable {
                             }
                             if (sentCommand[0] == 0x01) {
                                 // Dump command
-                                receivedGo = true;
+                                suspendCPU = true;
+                                receivedCommand = true;
 
                                 disassembleStart = sentCommand[1] + (sentCommand[2] << 8);
                                 disassembleEnd = sentCommand[3] + (sentCommand[4] << 8);
 
                                 replyDump = null;
                                 receivedDump = true;
+
+                                System.out.println("RDEBUG: BIN: dump " + disassembleStart + " " + disassembleEnd);
+
                                 while (replyDump == null) {
                                     Thread.sleep(10);
                                 }
@@ -181,15 +200,15 @@ public class RemoteDebugger implements Runnable {
                             nextByte = input.read();
                         } while (!(nextByte == 0x0d || nextByte == 0x0a));
 
-                        receivedGo = false;
                         suspendCPU = true;
+                        receivedCommand = true;
+
+                        line = line.trim();
 
                         System.out.println("RDEBUG: " + line);
 
-                        line = line.trim();
                         if (line.equalsIgnoreCase("exit") || line.equalsIgnoreCase("x") || line.equalsIgnoreCase("goto") || line.equalsIgnoreCase("g")) {
                             suspendCPU = false;
-                            receivedGo = true;
                             continue;
                         }
 
@@ -199,11 +218,19 @@ public class RemoteDebugger implements Runnable {
                             writer.flush();
                             continue;
                         } else if (line.equalsIgnoreCase("reg") || line.equalsIgnoreCase("r")) {
+                            replyReg = null;
+
+                            receivedReg = true;
+
+                            while (replyReg == null) {
+                                Thread.sleep(10);
+                            }
+
                             writer.print(replyReg + currentReplyPrefix);
                             writer.flush();
                             continue;
                         } else if (line.equalsIgnoreCase("next") || line.equalsIgnoreCase("n")) {
-                            receivedGo = true;
+                            receivedCommand = true;
 
                             replyNext = null;
                             receivedNext = true;
@@ -216,8 +243,6 @@ public class RemoteDebugger implements Runnable {
                             suspendCPU = true;
                             continue;
                         } else if (line.startsWith("disass ") || line.startsWith("d ")) {
-                            receivedGo = true;
-
                             String startAddr = line.substring(line.indexOf(' '));
                             startAddr = startAddr.substring(0, startAddr.lastIndexOf(' '));
                             startAddr = startAddr.trim();
@@ -248,7 +273,7 @@ public class RemoteDebugger implements Runnable {
                 // Any broken connection and the state resets itself
                 numConnections--;
                 suspendCPU = false;
-                receivedGo = true;
+                receivedCommand = true;
             }
         } catch (IOException e) {
             e.printStackTrace();

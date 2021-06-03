@@ -361,4 +361,11 @@ Added: Given I am using C64 processor port options
 * Create 6502 remote debug TCP interface. Enough for the VICEPDBMonitor to work.
     When enable remote debugging
     And wait for debugger connection
-    And wait for debugger go
+    And wait for debugger command
+
+
+* Improved remote debug single stepping
+
+
+
+* Added APU register remote debug output, if it's enabled

@@ -10,7 +10,6 @@ import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
-import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -28,7 +27,6 @@ import javax.script.ScriptException;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -400,50 +398,63 @@ public class Glue {
 
     public void internalCPUStep(boolean displayTrace) throws Throwable {
 
+        boolean sendDebuggerUpdate = false;
         RemoteDebugger remoteDebugger = RemoteDebugger.getRemoteDebugger();
         if (remoteDebugger != null) {
-            if(remoteDebugger.getNumConnections() > 0) {
-                while (remoteDebugger.isSuspendCPU()) {
-
-                    if (remoteDebugger.isReceivedDump()) {
-                        int start = remoteDebugger.getDisassembleStart();
-                        int end = remoteDebugger.getDisassembleEnd();
-
-                        byte returnMemory[] = new byte[(end - start) + 1];
-                        int i = 0;
-                        while (start < end) {
-                            returnMemory[i++] = (byte) machine.getRam().safeInvisibleRead(start);
-                            start++;
-                        }
-
-                        remoteDebugger.setReplyDump(returnMemory);
-                        continue;
-                    }
-
-                    if (remoteDebugger.isReceivedDisassemble()) {
-                        int start = remoteDebugger.getDisassembleStart();
-                        int end = remoteDebugger.getDisassembleEnd();
-                        // .C:f6b0  A5 A0       LDA $A0
-                        StringBuilder sb = new StringBuilder();
-                        while (start <= end) {
-                            sb.append(".C:");
-                            int tir = machine.getRam().safeInvisibleRead(start);
-                            int targs0 = machine.getRam().safeInvisibleRead(start + 1);
-                            int targs1 = machine.getRam().safeInvisibleRead(start + 2);
-
-                            sb.append(machine.getCpu().getCpuState().getInstructionByteStatusForAddress(tir, start, targs0, targs1) + " ");
-                            sb.append(String.format("%-13s\n", machine.getCpu().getCpuState().disassembleOpForAddress(tir, start, targs0, targs1)));
-
-                            start += machine.getCpu().instructionSizes[tir];
-                        }
-
-                        remoteDebugger.setReplyDisassemble(sb.toString());
-                        continue;
-                    }
-
-                    Thread.sleep(10);
-                }
+            if (remoteDebugger.isReceivedReg()) {
+                debuggerUpdateRegs(remoteDebugger);
             }
+
+            while (remoteDebugger.isSuspendCPU()) {
+                if (remoteDebugger.isReceivedReg()) {
+                    debuggerUpdateRegs(remoteDebugger);
+                }
+
+                sendDebuggerUpdate = true;
+
+                if (remoteDebugger.isReceivedDump()) {
+                    int start = remoteDebugger.getDisassembleStart();
+                    int end = remoteDebugger.getDisassembleEnd();
+
+                    byte returnMemory[] = new byte[(end - start) + 1];
+                    int i = 0;
+                    while (start < end) {
+                        returnMemory[i++] = (byte) machine.getRam().safeInvisibleRead(start);
+                        start++;
+                    }
+
+                    remoteDebugger.setReplyDump(returnMemory);
+                    continue;
+                }
+
+                if (remoteDebugger.isReceivedDisassemble()) {
+                    int start = remoteDebugger.getDisassembleStart();
+                    int end = remoteDebugger.getDisassembleEnd();
+                    // .C:f6b0  A5 A0       LDA $A0
+                    StringBuilder sb = new StringBuilder();
+                    while (start <= end) {
+                        sb.append(".C:");
+                        int tir = machine.getRam().safeInvisibleRead(start);
+                        int targs0 = machine.getRam().safeInvisibleRead(start + 1);
+                        int targs1 = machine.getRam().safeInvisibleRead(start + 2);
+
+                        sb.append(machine.getCpu().getCpuState().getInstructionByteStatusForAddress(tir, start, targs0, targs1) + " ");
+                        sb.append(String.format("%-13s\n", machine.getCpu().getCpuState().disassembleOpForAddress(tir, start, targs0, targs1)));
+
+                        // Undefined or invalid instructions should still progress the disassembly by 1 byte
+                        start += Math.max(machine.getCpu().instructionSizes[tir] ,1 );
+                    }
+
+                    remoteDebugger.setReplyDisassemble(sb.toString());
+                    continue;
+                }
+
+                Thread.sleep(10);
+            }
+        }
+
+        if (remoteDebugger != null && remoteDebugger.isReceivedNext()) {
+            remoteDebugger.setReplyNext(machine.getCpu().getCpuState().toDebugger(machine.getCpu().getClockCycles()));
         }
 
         Integer addr = machine.getCpu().getCpuState().pc;
@@ -496,19 +507,8 @@ public class Glue {
         });
 
         if (remoteDebugger != null) {
-            if(remoteDebugger.getNumConnections() > 0) {
-                int displayH = 0 , displayV = 0;
-                if (displayBombJack != null) {
-                    displayH = displayBombJack.getDisplayH();
-                    displayV = displayBombJack.getDisplayV();
-                }
-                remoteDebugger.isReceivedNext();
-                remoteDebugger.setReplyNext(machine.getCpu().getCpuState().toDebugger(machine.getCpu().getClockCycles()));
-                remoteDebugger.setReplyReg(machine.getCpu().getCpuState().pc, machine.getCpu().getCpuState().a, machine.getCpu().getCpuState().x, machine.getCpu().getCpuState().y,
-                        machine.getCpu().getCpuState().sp, machine.getRam().read(0, false), machine.getRam().read(1, false),
-                        machine.getCpu().getCpuState().getStatusFlag(), displayV, displayH,
-                        machine.getCpu().getClockCycles());
-
+            if(sendDebuggerUpdate) {
+                debuggerUpdateRegs(remoteDebugger);
             }
         }
 
@@ -526,6 +526,18 @@ public class Glue {
         if ((machine.getCpu().getExtraStatus() & Cpu.Extra_YTest) == Cpu.Extra_YTest) {
             throw new Exception("Y has changed @" + machine.getCpu().getProgramCounter());
         }
+    }
+
+    private void debuggerUpdateRegs(RemoteDebugger remoteDebugger) throws MemoryAccessException {
+        int displayH = 0 , displayV = 0;
+        if (displayBombJack != null) {
+            displayH = displayBombJack.getDisplayH();
+            displayV = displayBombJack.getDisplayV();
+        }
+        remoteDebugger.setReplyReg(machine.getCpu().getCpuState().pc, machine.getCpu().getCpuState().a, machine.getCpu().getCpuState().x, machine.getCpu().getCpuState().y,
+                machine.getCpu().getCpuState().sp, machine.getRam().read(0, false), machine.getRam().read(1, false),
+                machine.getCpu().getCpuState().getStatusFlag(), displayV, displayH,
+                machine.getCpu().getClockCycles());
     }
 
     public String getTraceLine(Integer addr) {
@@ -1693,9 +1705,9 @@ public class Glue {
         }
     }
 
-    @And("^wait for debugger go$")
-    public void waitForDebuggerGo() throws InterruptedException {
-        while (!RemoteDebugger.getRemoteDebugger().isReceivedGo()) {
+    @And("^wait for debugger command$")
+    public void waitForDebuggerCommand() throws InterruptedException {
+        while (!RemoteDebugger.getRemoteDebugger().isReceivedCommand()) {
             Thread.sleep(100);
         }
 

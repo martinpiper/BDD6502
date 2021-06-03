@@ -26,6 +26,11 @@ public class UserPortTo24BitAddress extends Device {
     boolean simpleModeLastMEWR = true;
     boolean simpleModeLastLatchCLK = true;
     PrintWriter debugData = null;
+
+    public boolean isEnableAPU() {
+        return enableAPU;
+    }
+
     boolean enableAPU = false;
     DisplayBombJack displayBombJack = null;
     APUData apuData = null;
@@ -49,11 +54,18 @@ public class UserPortTo24BitAddress extends Device {
     int apuDataReg[] = new int[5];
     boolean busTrace = false;
 
+    public static UserPortTo24BitAddress getThisInstance() {
+        return thisInstance;
+    }
+
+    static UserPortTo24BitAddress thisInstance;
+
     public UserPortTo24BitAddress(Scenario scenario) throws MemoryRangeException {
         super(0xdd00, 0xdd0f, "UserPortTo24BitAddress");
         mScenario = scenario;
 
         propertiesUpdated();
+        thisInstance = this;
     }
 
     @Override
@@ -411,12 +423,27 @@ public class UserPortTo24BitAddress extends Device {
 
         apuHandleLoadPulses(instruction, gotByte);
 
+        last_currentPC = currentPC;
+        last_instruction = instruction;
+        last_originalInstruction = originalInstruction;
+        last_wasSkipped = wasSkipped;
+
         if (apuEnableDebug) {
-            apuEmitDebug(currentPC, instruction, originalInstruction, wasSkipped);
+            String output = getDebugOutputLastState();
+            System.out.println(output);
         }
     }
 
-    private void apuEmitDebug(int currentPC, long instruction, long originalInstruction, boolean wasSkipped) {
+    int last_currentPC;
+    long last_instruction;
+    long last_originalInstruction;
+    boolean last_wasSkipped;
+
+    public String getDebugOutputLastState() {
+        return apuEmitDebug(last_currentPC, last_instruction, last_originalInstruction, last_wasSkipped);
+    }
+
+    private String apuEmitDebug(int currentPC, long instruction, long originalInstruction, boolean wasSkipped) {
         String instructionString = "";
         if (wasSkipped) {
             instructionString += "** Skipped ** ";
@@ -565,14 +592,15 @@ public class UserPortTo24BitAddress extends Device {
                 break;
         }
 
-        System.out.println(kAPUDEBUG + ">> PC: " + Integer.toHexString(currentPC) + " : " + instructionString.trim());
-        System.out.println(kAPUDEBUG + "Wait8: " + Integer.toHexString(apuWait8) + " Wait16: " + Integer.toHexString(apuWait16) + " Wait24: " + Integer.toHexString(apuWait24));
-        System.out.println(kAPUDEBUG + "RH8: " + Integer.toHexString(displayBombJack.getDisplayH() & 0xff) + " RH16: " + Integer.toHexString((displayBombJack.getDisplayH() >> 8) & 0xff) + " RV24: " + Integer.toHexString(displayBombJack.getDisplayV() & 0xff));
-        System.out.println(kAPUDEBUG + selectADDRB1 + "ADDRB1: " + Integer.toHexString(apuADDRB1) + " Contents: " + Integer.toHexString(apuData.getApuData()[(apuADDRB1-1) & 0x1fff] & 0xff) + " >" + Integer.toHexString(apuData.getApuData()[apuADDRB1 & 0x1fff] & 0xff) + "< " + Integer.toHexString(apuData.getApuData()[(apuADDRB1 + 1) & 0x1fff] & 0xff));
-        System.out.println(kAPUDEBUG + selectADDRB2 + "ADDRB2: " + Integer.toHexString(apuADDRB2) + " Contents: " + Integer.toHexString(apuData.getApuData()[(apuADDRB2-1) & 0x1fff] & 0xff) + " >" + Integer.toHexString(apuData.getApuData()[apuADDRB1 & 0x1fff] & 0xff) + "< " + Integer.toHexString(apuData.getApuData()[(apuADDRB2 + 1) & 0x1fff] & 0xff));
-        System.out.println(kAPUDEBUG + ebs1Select + "EBS: " + Integer.toHexString(apuEBS) + " "+ebs1Select+"EADDR: " + Integer.toHexString(apuEADDR) + " "+ebs2Select+"EBS2: " + Integer.toHexString(apuEBS2) + " "+ebs2Select+"EADDR2: " + Integer.toHexString(apuEADDR2));
-        System.out.println(kAPUDEBUG + selectReg0 + "DataReg0: " + Integer.toHexString(apuDataReg[0]) + " " + selectReg1 + "DataReg1: " + Integer.toHexString(apuDataReg[1]) + " " + selectReg2 +"DataReg2: " + Integer.toHexString(apuDataReg[2]) + " " + selectReg3 +"DataReg3: " + Integer.toHexString(apuDataReg[3]) + " " +"DataReg4: " + Integer.toHexString(apuDataReg[4]));
-        System.out.println();
+        String output = "";
+        output += kAPUDEBUG + ">> PC: " + Integer.toHexString(currentPC) + " : " + instructionString.trim() + "\n";
+        output += kAPUDEBUG + "Wait8: " + Integer.toHexString(apuWait8) + " Wait16: " + Integer.toHexString(apuWait16) + " Wait24: " + Integer.toHexString(apuWait24) + " : ";
+        output += "RH8: " + Integer.toHexString(displayBombJack.getDisplayH() & 0xff) + " RH16: " + Integer.toHexString((displayBombJack.getDisplayH() >> 8) & 0xff) + " RV24: " + Integer.toHexString(displayBombJack.getDisplayV() & 0xff) + "\n";
+        output += kAPUDEBUG + selectADDRB1 + "ADDRB1: " + Integer.toHexString(apuADDRB1) + " Contents: " + Integer.toHexString(apuData.getApuData()[(apuADDRB1-1) & 0x1fff] & 0xff) + " >" + Integer.toHexString(apuData.getApuData()[apuADDRB1 & 0x1fff] & 0xff) + "< " + Integer.toHexString(apuData.getApuData()[(apuADDRB1 + 1) & 0x1fff] & 0xff) + " : ";
+        output += selectADDRB2 + "ADDRB2: " + Integer.toHexString(apuADDRB2) + " Contents: " + Integer.toHexString(apuData.getApuData()[(apuADDRB2-1) & 0x1fff] & 0xff) + " >" + Integer.toHexString(apuData.getApuData()[apuADDRB1 & 0x1fff] & 0xff) + "< " + Integer.toHexString(apuData.getApuData()[(apuADDRB2 + 1) & 0x1fff] & 0xff) + "\n";
+        output += kAPUDEBUG + ebs1Select + "EBS: " + Integer.toHexString(apuEBS) + " "+ebs1Select+"EADDR: " + Integer.toHexString(apuEADDR) + " "+ebs2Select+"EBS2: " + Integer.toHexString(apuEBS2) + " "+ebs2Select+"EADDR2: " + Integer.toHexString(apuEADDR2) + "\n";
+        output += kAPUDEBUG + selectReg0 + "DataReg0: " + Integer.toHexString(apuDataReg[0]) + " " + selectReg1 + "DataReg1: " + Integer.toHexString(apuDataReg[1]) + " " + selectReg2 +"DataReg2: " + Integer.toHexString(apuDataReg[2]) + " " + selectReg3 +"DataReg3: " + Integer.toHexString(apuDataReg[3]) + " " +"DataReg4: " + Integer.toHexString(apuDataReg[4]) + "\n";
+        return output;
     }
 
     private void apuHandleLoadPulses(long instruction, int gotByte) {

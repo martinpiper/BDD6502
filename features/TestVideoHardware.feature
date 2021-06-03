@@ -12,6 +12,7 @@ Feature: Tests the video and audio hardware expansion together
     Given video display add joystick to port 1
     Given video display saves debug BMP images to leaf filename "target/frames/TC-1-"
     Given property "bdd6502.bus24.trace" is set to string "true"
+    Given property "bdd6502.apu.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     And That does fail on BRK
     And I enable unitialised memory read protection with immediate fail

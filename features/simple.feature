@@ -101,5 +101,5 @@ Feature: Simple 6502 code test
 
     When enable remote debugging
     And wait for debugger connection
-    And wait for debugger go
+    And wait for debugger command
     When I execute the procedure at $400 until return
