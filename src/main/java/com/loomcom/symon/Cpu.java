@@ -1648,11 +1648,11 @@ public class Cpu implements InstructionTable {
         }
 
         // Returns a string formatted like Vice debugger
-        public String toDebugger(int stopwatch) {
+        public String toDebuggerTrace(int tir , int tpc , int targs0 , int targs1 , int stopwatch) {
             // .C:f6b0  A5 A0       LDA $A0        - A:E7 X:00 Y:0A SP:eb N.-..I..    7233411
             StringBuilder sb = new StringBuilder(".C:");
-            sb.append(getInstructionByteStatus() + " ");
-            sb.append(String.format("%-13s", disassembleOp()));
+            sb.append(getInstructionByteStatusForAddress(tir , tpc , targs0 , targs1) + " ");
+            sb.append(String.format("%-13s", disassembleOpForAddress(tir , tpc , targs0 , targs1)));
 
             sb.append("A:" + HexUtil.byteToHex(a) + " ");
             sb.append("X:" + HexUtil.byteToHex(x) + " ");

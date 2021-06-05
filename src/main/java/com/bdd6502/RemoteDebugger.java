@@ -24,15 +24,26 @@ public class RemoteDebugger implements Runnable {
     volatile boolean receivedCommand = false;
 
     public boolean isReceivedNext() {
-        if (receivedNext) {
-            suspendCPU = true;
-            receivedNext = false;
-            return true;
-        }
-        return false;
+        return receivedNext;
     }
 
     volatile boolean receivedNext = false;
+
+    volatile boolean receivedStep = false;
+
+    public boolean isReceivedStep() {
+        return receivedStep;
+    }
+
+    volatile boolean receivedReturn = false;
+
+    public boolean isReceivedReturn() {
+        return receivedReturn;
+    }
+
+    public void setSuspendCPU(boolean suspendCPU) {
+        this.suspendCPU = suspendCPU;
+    }
 
     public boolean isSuspendCPU() {
         return suspendCPU;
@@ -45,9 +56,24 @@ public class RemoteDebugger implements Runnable {
 
     public void setReplyNext(String replyNext) {
         this.replyNext = replyNext;
+        receivedNext = false;
     }
 
     volatile String replyNext;
+
+    public void setReplyStep(String replyStep) {
+        this.replyStep = replyStep;
+        receivedStep = false;
+    }
+
+    volatile String replyStep;
+
+    public void setReplyReturn(String replyReturn) {
+        this.replyReturn = replyReturn;
+        receivedReturn = false;
+    }
+
+    volatile String replyReturn;
 
     public void setReplyDisassemble(String replyDisassemble) {
         this.replyDisassemble = replyDisassemble;
@@ -73,6 +99,18 @@ public class RemoteDebugger implements Runnable {
     }
 
     int disassembleEnd;
+
+    public int getDumpStart() {
+        return dumpStart;
+    }
+
+    int dumpStart;
+
+    public int getDumpEnd() {
+        return dumpEnd;
+    }
+
+    int dumpEnd;
 
     public void setReplyDump(byte[] replyDump) {
         this.replyDump = replyDump;
@@ -134,6 +172,10 @@ public class RemoteDebugger implements Runnable {
         }
     }
 
+    public void setDisassembleStart(int disassembleStart) {
+        this.disassembleStart = disassembleStart;
+    }
+
     @Override
     public void run() {
         try {
@@ -171,15 +213,18 @@ public class RemoteDebugger implements Runnable {
                                 suspendCPU = true;
                                 receivedCommand = true;
 
-                                disassembleStart = sentCommand[1] + (sentCommand[2] << 8);
-                                disassembleEnd = sentCommand[3] + (sentCommand[4] << 8);
+                                dumpStart = sentCommand[1] + (sentCommand[2] << 8);
+                                dumpEnd = sentCommand[3] + (sentCommand[4] << 8);
 
                                 replyDump = null;
                                 receivedDump = true;
 
-                                System.out.println("RDEBUG: BIN: dump " + disassembleStart + " " + disassembleEnd);
+                                System.out.println("RDEBUG: BIN: dump " + dumpStart + " " + dumpEnd);
 
                                 while (replyDump == null) {
+                                    if (socket.isClosed()) {
+                                        break;
+                                    }
                                     Thread.sleep(10);
                                 }
                                 output.write(0x02);
@@ -196,6 +241,9 @@ public class RemoteDebugger implements Runnable {
                         // No we don't use the buffered input stream reader and read a line because we want to have raw unadulterated bytes
                         String line = "";
                         do {
+                            if (socket.isClosed()) {
+                                break;
+                            }
                             line += (char) nextByte;
                             nextByte = input.read();
                         } while (!(nextByte == 0x0d || nextByte == 0x0a));
@@ -223,6 +271,9 @@ public class RemoteDebugger implements Runnable {
                             receivedReg = true;
 
                             while (replyReg == null) {
+                                if (socket.isClosed()) {
+                                    break;
+                                }
                                 Thread.sleep(10);
                             }
 
@@ -236,26 +287,62 @@ public class RemoteDebugger implements Runnable {
                             receivedNext = true;
                             suspendCPU = false;
                             while (replyNext == null) {
+                                if (socket.isClosed()) {
+                                    break;
+                                }
                                 Thread.sleep(10);
                             }
                             writer.print(replyNext + currentReplyPrefix);
                             writer.flush();
-                            suspendCPU = true;
                             continue;
-                        } else if (line.startsWith("disass ") || line.startsWith("d ")) {
-                            String startAddr = line.substring(line.indexOf(' '));
-                            startAddr = startAddr.substring(0, startAddr.lastIndexOf(' '));
-                            startAddr = startAddr.trim();
-                            String endAddr = line.substring(line.lastIndexOf(' '));
-                            endAddr = endAddr.trim();
+                        } else if (line.equalsIgnoreCase("step") || line.equalsIgnoreCase("z")) {
+                            receivedCommand = true;
 
+                            replyStep = null;
+                            receivedStep = true;
+                            suspendCPU = false;
+                            while (replyStep == null) {
+                                if (socket.isClosed()) {
+                                    break;
+                                }
+                                Thread.sleep(10);
+                            }
+                            writer.print(replyStep + currentReplyPrefix);
+                            writer.flush();
+                            continue;
+                        } else if (line.equalsIgnoreCase("return") || line.equalsIgnoreCase("ret")) {
+                            receivedCommand = true;
+
+                            replyReturn = null;
+                            receivedReturn = true;
+                            suspendCPU = false;
+                            while (replyReturn == null) {
+                                if (socket.isClosed()) {
+                                    break;
+                                }
+                                Thread.sleep(10);
+                            }
+                            writer.print(replyReturn + currentReplyPrefix);
+                            writer.flush();
+                            continue;
+                        } else if (line.startsWith("disass") || line.startsWith("d")) {
                             try {
-                                disassembleStart = Integer.parseInt(startAddr, 16);
-                                disassembleEnd = Integer.parseInt(endAddr, 16);
+                                String[] splits = line.split(" ");
+                                disassembleEnd = disassembleStart + 0x30;
+                                if (splits.length >= 2) {
+                                    disassembleStart = Integer.parseInt(splits[1], 16);
+                                    disassembleEnd = disassembleStart + 0x30;
+                                }
+                                if (splits.length >= 3) {
+                                    disassembleEnd = Integer.parseInt(splits[2], 16);
+                                }
 
                                 replyDisassemble = null;
                                 receivedDisassemble = true;
                                 while (replyDisassemble == null) {
+                                    if (socket.isClosed()) {
+                                        break;
+                                    }
                                     Thread.sleep(10);
                                 }
 
@@ -264,7 +351,6 @@ public class RemoteDebugger implements Runnable {
                                 writer.print(currentReplyPrefix);
                             }
                             writer.flush();
-
                         }
                     }
                 } catch (IOException | InterruptedException e) {

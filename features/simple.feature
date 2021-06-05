@@ -97,7 +97,10 @@ Feature: Simple 6502 code test
     And I enable trace
     And I start writing memory at $400
     And I write the following hex bytes
-      | 78 ee 20 d0 4c 01 04 |
+      | 78 ee 20 d0 20 10 04 4c 01 04 |
+    And I start writing memory at $410
+    And I write the following hex bytes
+      | ee 21 d0 ee 20 d0 60 |
 
     When enable remote debugging
     And wait for debugger connection
