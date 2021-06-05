@@ -398,26 +398,26 @@ public class Glue {
 
     int wantPCSuspendHere = -1;
     boolean wantSuspendNext = false;
-    boolean wantSuspendNextReturn = false;
+    int wantSuspendNextReturn = -1;
+    boolean triggerStatusLineReply = false;
 
     public void internalCPUStep(boolean displayTrace) throws Throwable {
 
-        boolean sendDebuggerUpdate = false;
         RemoteDebugger remoteDebugger = RemoteDebugger.getRemoteDebugger();
         if (remoteDebugger != null) {
 
-            sendDebuggerUpdate = testExecutionBreakPoints(remoteDebugger);
+            testExecutionBreakPoints(remoteDebugger);
 
             if (remoteDebugger.isReceivedReg()) {
                 debuggerUpdateRegs(remoteDebugger);
             }
 
             while (remoteDebugger.isSuspendCPU()) {
+                remoteDebugger.setCurrentPrefix(machine.getCpu().getProgramCounter());
+
                 if (remoteDebugger.isReceivedReg()) {
                     debuggerUpdateRegs(remoteDebugger);
                 }
-
-                sendDebuggerUpdate = true;
 
                 if (remoteDebugger.isReceivedDump()) {
                     int start = remoteDebugger.getDumpStart();
@@ -452,6 +452,8 @@ public class Glue {
                         start += Math.max(machine.getCpu().instructionSizes[tir] ,1 );
                     }
 
+                    // Ready for the next page
+                    remoteDebugger.setDisassembleStart(end);
                     remoteDebugger.setReplyDisassemble(sb.toString());
                     continue;
                 }
@@ -462,19 +464,20 @@ public class Glue {
 
         Integer addr = machine.getCpu().getCpuState().pc;
 
-        if (wantSuspendNextReturn) {
+        if (wantSuspendNextReturn >= 0) {
             int tpc = machine.getCpu().getProgramCounter();
             int tir = machine.getRam().safeInvisibleRead(tpc);
-            if (tir == 0x60 /*rts opcode*/) {
-                wantSuspendNextReturn = false;
+            if (tir == 0x60 /*rts opcode*/ && machine.getCpu().getStackPointer() >= wantSuspendNextReturn) {
+                wantSuspendNextReturn = -1;
                 wantSuspendNext = true;
-                sendDebuggerUpdate = true;
             }
         }
 
         if (remoteDebugger != null && remoteDebugger.isReceivedNext()) {
             int tpc = machine.getCpu().getProgramCounter();
             int tir = machine.getRam().safeInvisibleRead(tpc);
+
+            remoteDebugger.clearStepNextReturn();
 
             if (tir == 0x20 /*jsr opcode*/) {
                 // If jsr is next then calculate the next PC to stop after the jsr
@@ -492,30 +495,18 @@ public class Glue {
             scenario.write(traceLine);
         }
 
-        if (remoteDebugger != null && remoteDebugger.isReceivedNext()) {
-            // This command shows the next instruction from the current PC after it has stepped
-            String debug = getNextInstructionForDebugger();
-            remoteDebugger.setReplyNext(debug);
-        }
-
         if (remoteDebugger != null && remoteDebugger.isReceivedStep()) {
-            // This command shows the next instruction from the current PC after it has stepped
-            String debug = getNextInstructionForDebugger();
-            remoteDebugger.setReplyStep(debug);
-
+            remoteDebugger.clearStepNextReturn();
+            wantSuspendNextReturn = -1;
+            wantPCSuspendHere = -1;
             wantSuspendNext = true;
         }
 
         if (remoteDebugger != null && remoteDebugger.isReceivedReturn()) {
-            // This command shows the next instruction from the current PC after it has stepped
-            String debug = getNextInstructionForDebugger();
-            remoteDebugger.setReplyReturn(debug);
-
-            wantSuspendNextReturn = true;
-        }
-
-        if (remoteDebugger != null) {
-            sendDebuggerUpdate = testExecutionBreakPoints(remoteDebugger);
+            remoteDebugger.clearStepNextReturn();
+            wantSuspendNextReturn = machine.getCpu().getStackPointer();
+            wantPCSuspendHere = -1;
+            wantSuspendNext = false;
         }
 
         traceMapByteUpdate.clear();
@@ -560,10 +551,7 @@ public class Glue {
         });
 
         if (remoteDebugger != null) {
-            if(sendDebuggerUpdate) {
-                remoteDebugger.setDisassembleStart(machine.getCpu().getProgramCounter());
-                debuggerUpdateRegs(remoteDebugger);
-            }
+            remoteDebugger.setDisassembleStart(machine.getCpu().getProgramCounter());
         }
 
         if (machine.getCpu().getFailOnBreak() == true) {
@@ -586,12 +574,18 @@ public class Glue {
         if (machine.getCpu().getProgramCounter() == wantPCSuspendHere) {
             wantPCSuspendHere = -1;
             remoteDebugger.setSuspendCPU(true);
+            remoteDebugger.setCurrentPrefix(machine.getCpu().getProgramCounter());
+            String debug = getNextInstructionForDebugger();
+            remoteDebugger.setReplyNext(debug);
             return true;
         }
 
         if (wantSuspendNext) {
             wantSuspendNext = false;
             remoteDebugger.setSuspendCPU(true);
+            remoteDebugger.setCurrentPrefix(machine.getCpu().getProgramCounter());
+            String debug = getNextInstructionForDebugger();
+            remoteDebugger.setReplyNext(debug);
             return true;
         }
 
@@ -1788,6 +1782,5 @@ public class Glue {
         while (!RemoteDebugger.getRemoteDebugger().isReceivedCommand()) {
             Thread.sleep(100);
         }
-
     }
 }

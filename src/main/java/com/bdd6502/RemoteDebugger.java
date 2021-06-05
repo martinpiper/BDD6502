@@ -41,6 +41,12 @@ public class RemoteDebugger implements Runnable {
         return receivedReturn;
     }
 
+    public void clearStepNextReturn() {
+        receivedNext = false;
+        receivedStep = false;
+        receivedReturn = false;
+    }
+
     public void setSuspendCPU(boolean suspendCPU) {
         this.suspendCPU = suspendCPU;
     }
@@ -51,29 +57,15 @@ public class RemoteDebugger implements Runnable {
 
     volatile  boolean suspendCPU = false;
 
-    volatile String replyReg;
-    volatile String currentReplyPrefix;
+    volatile String replyReg = "<undefined>";
+    volatile String currentReplyPrefix = "<undefined>";
 
     public void setReplyNext(String replyNext) {
         this.replyNext = replyNext;
-        receivedNext = false;
+        clearStepNextReturn();
     }
 
     volatile String replyNext;
-
-    public void setReplyStep(String replyStep) {
-        this.replyStep = replyStep;
-        receivedStep = false;
-    }
-
-    volatile String replyStep;
-
-    public void setReplyReturn(String replyReturn) {
-        this.replyReturn = replyReturn;
-        receivedReturn = false;
-    }
-
-    volatile String replyReturn;
 
     public void setReplyDisassemble(String replyDisassemble) {
         this.replyDisassemble = replyDisassemble;
@@ -132,44 +124,51 @@ public class RemoteDebugger implements Runnable {
     volatile boolean receivedReg = false;
 
     public void setReplyReg(int addr, int a , int x , int y , int sp , int mem0 , int mem1 , int st , int lin , int cycle , int stopwatch) {
+        setCurrentPrefix(addr);
         receivedReg = false;
 
-        replyReg = "  ADDR A  X  Y  SP 00 01 NV-BDIZC LIN CYC  STOPWATCH\n";
+        String newReplyReg = "  ADDR A  X  Y  SP 00 01 NV-BDIZC LIN CYC  STOPWATCH\n";
         String hex = String.format("%4s", Integer.toHexString(addr)).replace(' ', '0');
-        replyReg +=".;" + hex + " ";
-        currentReplyPrefix = "(C:$" + hex + ") ";
+        newReplyReg +=".;" + hex + " ";
 
         hex = String.format("%2s", Integer.toHexString(a)).replace(' ', '0');
-        replyReg += hex + " ";
+        newReplyReg += hex + " ";
         hex = String.format("%2s", Integer.toHexString(x)).replace(' ', '0');
-        replyReg += hex + " ";
+        newReplyReg += hex + " ";
         hex = String.format("%2s", Integer.toHexString(y)).replace(' ', '0');
-        replyReg += hex + " ";
+        newReplyReg += hex + " ";
 
         hex = String.format("%2s", Integer.toHexString(sp)).replace(' ', '0');
-        replyReg += hex + " ";
+        newReplyReg += hex + " ";
 
         hex = String.format("%2s", Integer.toHexString(mem0)).replace(' ', '0');
-        replyReg += hex + " ";
+        newReplyReg += hex + " ";
         hex = String.format("%2s", Integer.toHexString(mem1)).replace(' ', '0');
-        replyReg += hex + " ";
+        newReplyReg += hex + " ";
 
         String binary = String.format("%8s", Integer.toBinaryString(st)).replace(' ', '0');
-        replyReg += binary + " ";
+        newReplyReg += binary + " ";
 
         String decimal = String.format("%3d", lin).replace(' ', '0');
-        replyReg += decimal + " ";
+        newReplyReg += decimal + " ";
         decimal = String.format("%3d", cycle).replace(' ', '0');
-        replyReg += decimal + "   ";
+        newReplyReg += decimal + "   ";
 
         decimal = String.format("%8d", stopwatch).replace(' ', '0');
-        replyReg += decimal + "\n";
+        newReplyReg += decimal + "\n";
 
         if (UserPortTo24BitAddress.getThisInstance() != null) {
             if (UserPortTo24BitAddress.getThisInstance().isEnableAPU()) {
-                replyReg += UserPortTo24BitAddress.getThisInstance().getDebugOutputLastState();
+                newReplyReg += UserPortTo24BitAddress.getThisInstance().getDebugOutputLastState();
             }
         }
+        
+        this.replyReg = newReplyReg;
+    }
+
+    public void setCurrentPrefix(int addr) {
+        String hex = String.format("%4s", Integer.toHexString(addr)).replace(' ', '0');
+        currentReplyPrefix = "(C:$" + hex + ") ";
     }
 
     public void setDisassembleStart(int disassembleStart) {
@@ -191,6 +190,7 @@ public class RemoteDebugger implements Runnable {
                 try {
                     String potentialLine = "";
                     while (!socket.isClosed()) {
+                        handleReplies(output, writer);
 
                         if (input.available() <= 0) {
                             Thread.sleep(10);
@@ -220,40 +220,32 @@ public class RemoteDebugger implements Runnable {
                                 receivedDump = true;
 
                                 System.out.println("RDEBUG: BIN: dump " + dumpStart + " " + dumpEnd);
-
-                                while (replyDump == null) {
-                                    if (socket.isClosed()) {
-                                        break;
-                                    }
-                                    Thread.sleep(10);
-                                }
-                                output.write(0x02);
-                                output.write(replyDump.length);
-                                output.write(replyDump.length >> 8);
-                                output.write(replyDump.length >> 16);
-                                output.write(replyDump.length >> 24);
-                                output.write(0x00);
-                                output.write(replyDump);
-                                output.flush();
                             }
                             continue;
                         }
                         // No we don't use the buffered input stream reader and read a line because we want to have raw unadulterated bytes
                         String line = "";
                         do {
+                            handleReplies(output, writer);
                             if (socket.isClosed()) {
                                 break;
+                            }
+                            if (input.available() <= 0) {
+                                Thread.sleep(10);
+                                continue;
                             }
                             line += (char) nextByte;
                             nextByte = input.read();
                         } while (!(nextByte == 0x0d || nextByte == 0x0a));
 
-                        suspendCPU = true;
                         receivedCommand = true;
 
                         line = line.trim();
 
-                        System.out.println("RDEBUG: " + line);
+                        System.out.println("RDEBUG: '" + line + "'");
+                        if (line.isEmpty()) {
+                            continue;
+                        }
 
                         if (line.equalsIgnoreCase("exit") || line.equalsIgnoreCase("x") || line.equalsIgnoreCase("goto") || line.equalsIgnoreCase("g")) {
                             suspendCPU = false;
@@ -261,69 +253,30 @@ public class RemoteDebugger implements Runnable {
                         }
 
                         if (line.equalsIgnoreCase("break") || line.equalsIgnoreCase("bk")) {
+                            suspendCPU = true;
                             // TODO: Respond with current break points
                             writer.print("No breakpoints are set\n" + currentReplyPrefix);
                             writer.flush();
                             continue;
                         } else if (line.equalsIgnoreCase("reg") || line.equalsIgnoreCase("r")) {
+                            suspendCPU = true;
                             replyReg = null;
-
                             receivedReg = true;
-
-                            while (replyReg == null) {
-                                if (socket.isClosed()) {
-                                    break;
-                                }
-                                Thread.sleep(10);
-                            }
-
-                            writer.print(replyReg + currentReplyPrefix);
-                            writer.flush();
                             continue;
                         } else if (line.equalsIgnoreCase("next") || line.equalsIgnoreCase("n")) {
-                            receivedCommand = true;
-
                             replyNext = null;
                             receivedNext = true;
                             suspendCPU = false;
-                            while (replyNext == null) {
-                                if (socket.isClosed()) {
-                                    break;
-                                }
-                                Thread.sleep(10);
-                            }
-                            writer.print(replyNext + currentReplyPrefix);
-                            writer.flush();
                             continue;
                         } else if (line.equalsIgnoreCase("step") || line.equalsIgnoreCase("z")) {
-                            receivedCommand = true;
-
-                            replyStep = null;
+                            replyNext = null;
                             receivedStep = true;
                             suspendCPU = false;
-                            while (replyStep == null) {
-                                if (socket.isClosed()) {
-                                    break;
-                                }
-                                Thread.sleep(10);
-                            }
-                            writer.print(replyStep + currentReplyPrefix);
-                            writer.flush();
                             continue;
                         } else if (line.equalsIgnoreCase("return") || line.equalsIgnoreCase("ret")) {
-                            receivedCommand = true;
-
-                            replyReturn = null;
+                            replyNext = null;
                             receivedReturn = true;
                             suspendCPU = false;
-                            while (replyReturn == null) {
-                                if (socket.isClosed()) {
-                                    break;
-                                }
-                                Thread.sleep(10);
-                            }
-                            writer.print(replyReturn + currentReplyPrefix);
-                            writer.flush();
                             continue;
                         } else if (line.startsWith("disass") || line.startsWith("d")) {
                             try {
@@ -337,16 +290,9 @@ public class RemoteDebugger implements Runnable {
                                     disassembleEnd = Integer.parseInt(splits[2], 16);
                                 }
 
+                                suspendCPU = true;
                                 replyDisassemble = null;
                                 receivedDisassemble = true;
-                                while (replyDisassemble == null) {
-                                    if (socket.isClosed()) {
-                                        break;
-                                    }
-                                    Thread.sleep(10);
-                                }
-
-                                writer.print(replyDisassemble + currentReplyPrefix);
                             } catch (Exception e2) {
                                 writer.print(currentReplyPrefix);
                             }
@@ -359,10 +305,39 @@ public class RemoteDebugger implements Runnable {
                 // Any broken connection and the state resets itself
                 numConnections--;
                 suspendCPU = false;
-                receivedCommand = true;
+                receivedCommand = false;
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void handleReplies(OutputStream output, PrintWriter writer) throws IOException {
+        if (replyReg != null) {
+            writer.print(replyReg + currentReplyPrefix);
+            writer.flush();
+            replyReg = null;
+        }
+        if (replyNext != null) {
+            writer.print(replyNext + currentReplyPrefix);
+            writer.flush();
+            replyNext = null;
+        }
+        if (replyDisassemble != null) {
+            writer.print(replyDisassemble + currentReplyPrefix);
+            writer.flush();
+            replyDisassemble = null;
+        }
+        if (replyDump != null) {
+            output.write(0x02);
+            output.write(replyDump.length);
+            output.write(replyDump.length >> 8);
+            output.write(replyDump.length >> 16);
+            output.write(replyDump.length >> 24);
+            output.write(0x00);
+            output.write(replyDump);
+            output.flush();
+            replyDump = null;
         }
     }
 

@@ -369,3 +369,8 @@ Added: Given I am using C64 processor port options
 
 
 * Added APU register remote debug output, if it's enabled
+
+
+
+* Remote debugger commands like next / step / return do not need to wait for the textual reply before completing the command
+	The replies happen when the CPU next stops when sendDebuggerUpdate is true
