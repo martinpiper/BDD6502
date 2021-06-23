@@ -374,3 +374,9 @@ Added: Given I am using C64 processor port options
 
 * Remote debugger commands like next / step / return do not need to wait for the textual reply before completing the command
 	The replies happen when the CPU next stops when sendDebuggerUpdate is true
+
+
+
+
+* kAPU_SkipIfEQ needs to check the data select is stable from the previous cycle to ensure the logic operates on a stable value
+

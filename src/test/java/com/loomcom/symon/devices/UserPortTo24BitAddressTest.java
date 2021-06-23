@@ -9,7 +9,9 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
 import javafx.util.Pair;
 import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -286,6 +288,32 @@ public class UserPortTo24BitAddressTest {
                 fromAddrValue(0x9c06,0x01,0x99) ,
                 fromAddrValue(0x9c07,0x01,0xef)
         ));
+
+    }
+
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none();
+
+    @Test
+    public void checkAPU5() throws Exception {
+
+        DisplayBombJack display = getDisplayBombJack();
+
+        addAPUCodeData("features/checkAPU5.a");
+
+        display.calculateAFrame();
+
+        assertThat(memoryAddressByteSequence, is(empty()));
+
+        // No APU reset
+        apu.apuData.writeData(0x2000, 0x02, 0x01);
+        apu.apuData.writeData(0x2000, 0x02, 0x03);
+
+        exceptionRule.expect(AssertionError.class);
+        exceptionRule.expectMessage("kAPU_SkipIfEQ needs kAPU_IDataSelect* to be the same for the current and previous instruction");
+        display.calculatePixelsUntil(0, 0);
+
+        assertThat(memoryAddressByteSequence, is(empty()));
 
     }
 }

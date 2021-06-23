@@ -13,6 +13,9 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 public class UserPortTo24BitAddress extends Device {
     public static final String kAPUDEBUG = "APUDebug: ";
     private Scenario mScenario = null;
@@ -38,6 +41,7 @@ public class UserPortTo24BitAddress extends Device {
     int apuInstuctionSchedule = 0;
     boolean apuIntercepting = false;
     int apuPreviousGotByte = 0;
+    long apuPreviousGotIDataSelect = 0;
 
     // All of these are reset by _RESET
     boolean apuHitWait = true;
@@ -279,7 +283,6 @@ public class UserPortTo24BitAddress extends Device {
     final long kAPU_Reset_PC			= 0b00000000000000000000000000000010;
 ;    final long kAPU_InterceptBus		= 0b00000000000000000000000000000100;
     final long kAPU_WaitForEqualsHV	= 0b00000000000000000000000000001000;
-;    final long kAPU_Reset_EBSEADDR  	= 0b00000000000000000000000000010000;
     final long kAPU_Incr_ADDRB1		= 0b00000000000000000000000000100000;
     final long kAPU_Incr_EADDR		= 0b00000000000000000000000001000000;
     final long kAPU_ExternalMEWR		= 0b00000000000000000000000010000000;		// ; This is timed to pulse low on the PCINCR (cycle 3)
@@ -376,6 +379,7 @@ public class UserPortTo24BitAddress extends Device {
         long originalInstruction = instruction;
         boolean wasSkipped = false;
         if (MemoryBus.addressActive(instruction , kAPU_SkipIfEQ)) {
+            assertThat("kAPU_SkipIfEQ needs kAPU_IDataSelect* to be the same for the current and previous instruction" , apuPreviousGotIDataSelect , is(equalTo(instruction & kAPU_IDataSelectMask)));
             // The test in the schematic uses the pre-latch signal, so this occurs first
             if (apuPreviousGotByte == 0) {
                 instruction = 0;
@@ -726,6 +730,7 @@ public class UserPortTo24BitAddress extends Device {
                 break;
         }
         apuPreviousGotByte = gotByte;
+        apuPreviousGotIDataSelect = iDataSelect;
         return gotByte;
     }
 

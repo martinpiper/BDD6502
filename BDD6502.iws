@@ -6,11 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/RemoteDebugger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/RemoteDebugger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/checkAPU3.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/checkAPU3.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testcmp.prg" beforeDir="false" afterPath="$PROJECT_DIR$/testcmp.prg" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -57,7 +59,7 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit4" value="" />
     <property name="dynamic.classpath" value="false" />
     <property name="extract.method.default.visibility" value="public" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/jprofiler_windows-x64_12_0_2/jprofiler12.0.2/bin/jprofiler.exe" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/features" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -98,7 +100,7 @@
       <recent name="com.bdd6502" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner simple.feature @RemoteDebugger">
+  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -514,22 +516,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserPortTo24BitAddressTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="BDD6502" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.loomcom.symon.devices.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.loomcom.symon.devices" />
-      <option name="MAIN_CLASS_NAME" value="com.loomcom.symon.devices.UserPortTo24BitAddressTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="UserPortTo24BitAddressTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="BDD6502" />
       <useClassPathOnly />
@@ -561,6 +547,23 @@
       <option name="PACKAGE_NAME" value="com.loomcom.symon.devices" />
       <option name="MAIN_CLASS_NAME" value="com.loomcom.symon.devices.UserPortTo24BitAddressTest" />
       <option name="METHOD_NAME" value="checkAPU4" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserPortTo24BitAddressTest.checkAPU5" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="BDD6502" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.loomcom.symon.devices.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.loomcom.symon.devices" />
+      <option name="MAIN_CLASS_NAME" value="com.loomcom.symon.devices.UserPortTo24BitAddressTest" />
+      <option name="METHOD_NAME" value="checkAPU5" />
       <option name="TEST_OBJECT" value="method" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
       <method v="2">
@@ -628,22 +631,20 @@
     <list>
       <item itemvalue="Application.TestRunner --execAudioTest" />
       <item itemvalue="Application.TestRunner --execVideoTest" />
+      <item itemvalue="Application.TestRunner --exportmod Biffe" />
       <item itemvalue="Application.TestRunner --exportmod SotB (1)" />
+      <item itemvalue="Application.TestRunner --exportmod SotB title" />
       <item itemvalue="Application.TestRunner --exportmod (1)" />
       <item itemvalue="Application.TestRunner --exportmod (2) -Dmusic.volume=1" />
-      <item itemvalue="Application.TestRunner --exportmod SotB title" />
-      <item itemvalue="Application.TestRunner -CotE" />
       <item itemvalue="Application.TestRunner --exportmod (2) with ratio" />
       <item itemvalue="Application.TestRunner --exportmod (2)" />
       <item itemvalue="Application.TestRunner --exportmod (3)" />
       <item itemvalue="Application.TestRunner --exportmod blood money" />
       <item itemvalue="Application.TestRunner --exportmod" />
-      <item itemvalue="Application.TestRunner --exportmod Biffe" />
       <item itemvalue="Application.TestRunner --playmod" />
+      <item itemvalue="Application.TestRunner -CotE" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
-      <item itemvalue="Application.TestRunner simple.feature @RemoteDebugger" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
-      <item itemvalue="Application.TestRunner TestVideoHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature @TC-2-0" />
@@ -654,33 +655,35 @@
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-1" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-6" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature" />
       <item itemvalue="Application.TestRunner Tusari2" />
       <item itemvalue="Application.TestRunner UnitialisedMemory.feature" />
       <item itemvalue="Application.TestRunner VideoHardware @BatBall" />
       <item itemvalue="Application.TestRunner VideoHardware @RPG" />
-      <item itemvalue="Application.TestRunner VideoHardware @Turrican_8" />
-      <item itemvalue="Application.TestRunner VideoHardware @ShadowBeast" />
       <item itemvalue="Application.TestRunner VideoHardware @ShadowBeastB" />
+      <item itemvalue="Application.TestRunner VideoHardware @ShadowBeast" />
+      <item itemvalue="Application.TestRunner VideoHardware @Turrican_8" />
       <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
       <item itemvalue="Application.TestRunner no parameters" />
+      <item itemvalue="Application.TestRunner simple.feature @RemoteDebugger" />
       <item itemvalue="Cucumber Java.All features" />
       <item itemvalue="Cucumber Java.Compare Test" />
       <item itemvalue="Cucumber Java.Simple ALL" />
       <item itemvalue="Cucumber Java.Trace Test" />
       <item itemvalue="JUnit.JUnit all" />
-      <item itemvalue="JUnit.UserPortTo24BitAddressTest (1)" />
+      <item itemvalue="JUnit.RunCukesTest" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU4" />
-      <item itemvalue="JUnit.RunCukesTest" />
+      <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU5" />
       <item itemvalue="Maven.BDD6502 [install]" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Maven.BDD6502 [install]" />
-        <item itemvalue="JUnit.RunCukesTest" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
+        <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU5" />
+        <item itemvalue="JUnit.RunCukesTest" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU4" />
-        <item itemvalue="JUnit.UserPortTo24BitAddressTest (1)" />
       </list>
     </recent_temporary>
   </component>
