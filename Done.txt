@@ -380,3 +380,6 @@ Added: Given I am using C64 processor port options
 
 * kAPU_SkipIfEQ needs to check the data select is stable from the previous cycle to ensure the logic operates on a stable value
 
+
+
+* Need kAPU_InternalMEWR in BDD6502

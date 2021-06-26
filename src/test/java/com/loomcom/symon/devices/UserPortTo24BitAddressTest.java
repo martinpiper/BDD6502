@@ -316,4 +316,91 @@ public class UserPortTo24BitAddressTest {
         assertThat(memoryAddressByteSequence, is(empty()));
 
     }
+
+    @Test
+    public void checkAPU6() throws Exception {
+
+        DisplayBombJack display = getDisplayBombJack();
+
+        addAPUCodeData("features/checkAPU6.a");
+
+        assertThat(apu.apuData.getApuData()[0] , is(equalTo((byte)0x10)));
+        assertThat(apu.apuData.getApuData()[1] , is(equalTo((byte)0x11)));
+        assertThat(apu.apuData.getApuData()[2] , is(equalTo((byte)0x12)));
+        assertThat(apu.apuData.getApuData()[3] , is(equalTo((byte)0x13)));
+        assertThat(apu.apuData.getApuData()[4] , is(equalTo((byte)0x14)));
+
+        assertThat(apu.apuData.getApuData()[9] , is(equalTo((byte)0x00)));
+        assertThat(apu.apuData.getApuData()[10] , is(equalTo((byte)0x00)));
+
+        display.calculateAFrame();
+
+        assertThat(memoryAddressByteSequence, is(empty()));
+
+        // No APU reset
+        apu.apuData.writeData(0x2000, 0x02, 0x01);
+        apu.apuData.writeData(0x2000, 0x02, 0x03);
+
+        display.calculatePixelsUntil(0, 0);
+
+        assertThat(memoryAddressByteSequence, is(empty()));
+
+        assertThat(apu.apuData.getApuData()[0] , is(equalTo((byte)0x10)));
+        assertThat(apu.apuData.getApuData()[1] , is(equalTo((byte)0x10)));
+        assertThat(apu.apuData.getApuData()[2] , is(equalTo((byte)0x11)));
+        assertThat(apu.apuData.getApuData()[3] , is(equalTo((byte)0x12)));
+        assertThat(apu.apuData.getApuData()[4] , is(equalTo((byte)0x13)));
+        assertThat(apu.apuData.getApuData()[5] , is(equalTo((byte)0x00)));
+
+        assertThat(apu.apuData.getApuData()[9] , is(equalTo((byte)0x00)));
+        assertThat(apu.apuData.getApuData()[10] , is(equalTo((byte)0x10)));
+        assertThat(apu.apuData.getApuData()[11] , is(equalTo((byte)0x11)));
+        assertThat(apu.apuData.getApuData()[12] , is(equalTo((byte)0x12)));
+        assertThat(apu.apuData.getApuData()[13] , is(equalTo((byte)0x13)));
+        assertThat(apu.apuData.getApuData()[14] , is(equalTo((byte)0x00)));
+    }
+
+    @Test
+    public void checkAPU7() throws Exception {
+
+        DisplayBombJack display = getDisplayBombJack();
+
+        addAPUCodeData("features/checkAPU7.a");
+
+        display.calculateAFrame();
+
+        assertThat(memoryAddressByteSequence, is(empty()));
+
+        // No APU reset
+        apu.apuData.writeData(0x2000, 0x02, 0x01);
+        apu.apuData.writeData(0x2000, 0x02, 0x03);
+
+        exceptionRule.expect(AssertionError.class);
+        exceptionRule.expectMessage("kAPU_InternalMEWR needs kAPU_IDataSelect* to be the same for the current and previous instruction");
+        display.calculatePixelsUntil(0, 0);
+
+        assertThat(memoryAddressByteSequence, is(empty()));
+    }
+
+    @Test
+    public void checkAPU8() throws Exception {
+
+        DisplayBombJack display = getDisplayBombJack();
+
+        addAPUCodeData("features/checkAPU8.a");
+
+        display.calculateAFrame();
+
+        assertThat(memoryAddressByteSequence, is(empty()));
+
+        // No APU reset
+        apu.apuData.writeData(0x2000, 0x02, 0x01);
+        apu.apuData.writeData(0x2000, 0x02, 0x03);
+
+        exceptionRule.expect(AssertionError.class);
+        exceptionRule.expectMessage("kAPU_InternalMEWR should not select internal memory with kAPU_IDataSelectRAM while writing internal memory");
+        display.calculatePixelsUntil(0, 0);
+
+        assertThat(memoryAddressByteSequence, is(empty()));
+    }
 }

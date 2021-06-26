@@ -1,0 +1,20 @@
+!source "C64/stdlib/stdlib.a"
+!source "BombJack/stdlib/APU_Macros.a"
+
+* = 0
+
+APUCode_Start
+	+MAPU
+	+MAPU kAPU_Reset_ADDRB1
+
+	; Should trigger an error about kAPU_IDataSelect not being stable
+	+MAPU kAPU_IDataSelectReg0 | kAPU_InternalMEWR
+
+	+MAPU
+APUCode_Size = *-APUCode_Start
+
+
+APUData_Start
+	!by $10
+
+APUData_Size = * -APUData_Start

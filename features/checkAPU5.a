@@ -6,7 +6,7 @@ APUCode_Start
 	+MAPU
 	+MAPU kAPU_Reset_ADDRB1
 
-	; Tthis inconsistent kAPU_IDataSelect* should trigger a runtime check during kAPU_SkipIfEQ
+	; This inconsistent kAPU_IDataSelect* should trigger a runtime check during kAPU_SkipIfEQ
 	+MAPU kAPU_IDataSelectReg1
 	+MAPU kAPU_PCLoad16 | kAPU_SkipIfEQ
 

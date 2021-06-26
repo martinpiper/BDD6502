@@ -281,25 +281,25 @@ public class UserPortTo24BitAddress extends Device {
     // ; Instructions, can be combined
     final long kAPU_Reset_ADDRB1		= 0b00000000000000000000000000000001;
     final long kAPU_Reset_PC			= 0b00000000000000000000000000000010;
-;    final long kAPU_InterceptBus		= 0b00000000000000000000000000000100;
-    final long kAPU_WaitForEqualsHV	= 0b00000000000000000000000000001000;
-    final long kAPU_Incr_ADDRB1		= 0b00000000000000000000000000100000;
-    final long kAPU_Incr_EADDR		= 0b00000000000000000000000001000000;
+    final long kAPU_InternalMEWR		= 0b00000000000000000000000000000100;
+    final long kAPU_WaitForEqualsHV 	= 0b00000000000000000000000000001000;
+    final long kAPU_Incr_ADDRB1			= 0b00000000000000000000000000100000;
+    final long kAPU_Incr_EADDR			= 0b00000000000000000000000001000000;
     final long kAPU_ExternalMEWR		= 0b00000000000000000000000010000000;		// ; This is timed to pulse low on the PCINCR (cycle 3)
     final long kAPU_Load_EBS			= 0b00000000000000000000000100000000;
     final long kAPU_Load_EADDRLo		= 0b00000000000000000000001000000000;
     final long kAPU_Load_EADDRHi		= 0b00000000000000000000010000000000;
-    final long kAPU_Load_Wait24		= 0b00000000000000000000100000000000;
-    final long kAPU_Load_Wait16		= 0b00000000000000000001000000000000;
-    final long kAPU_Load_Wait8		= 0b00000000000000000010000000000000;
+    final long kAPU_Load_Wait24			= 0b00000000000000000000100000000000;
+    final long kAPU_Load_Wait16			= 0b00000000000000000001000000000000;
+    final long kAPU_Load_Wait8			= 0b00000000000000000010000000000000;
 
     // ; New instructions
     final long kAPU_SelectEBS2EADDR2	= 0b00000000000000000100000000000000;
-    final long kAPU_Load_EBS2		= 0b00000000000000001000000000000000;
+    final long kAPU_Load_EBS2			= 0b00000000000000001000000000000000;
     // ; 16th bit
-    final long kAPU_Load_EADDR2Lo	= 0b00000000000000010000000000000000;
-    final long kAPU_Load_EADDR2Hi	= 0b00000000000000100000000000000000;
-    final long kAPU_Incr_EADDR2		= 0b00000000000001000000000000000000;
+    final long kAPU_Load_EADDR2Lo		= 0b00000000000000010000000000000000;
+    final long kAPU_Load_EADDR2Hi		= 0b00000000000000100000000000000000;
+    final long kAPU_Incr_EADDR2			= 0b00000000000001000000000000000000;
 
     // ; Do not combine these IDataSelect values
     final int kAPU_IDataSelectRAM	        = 0b00000000000000000000000000000000;
@@ -378,6 +378,12 @@ public class UserPortTo24BitAddress extends Device {
         long instruction = (apuData.getApuInstructions()[apuPC*4] & 0xff) | ((apuData.getApuInstructions()[(apuPC*4)+1] & 0xff) << 8) | ((apuData.getApuInstructions()[(apuPC*4)+2] & 0xff) << 16) | ((apuData.getApuInstructions()[(apuPC*4)+3] & 0xff) << 24);
         long originalInstruction = instruction;
         boolean wasSkipped = false;
+
+        if (MemoryBus.addressActive(instruction , kAPU_InternalMEWR)) {
+            assertThat("kAPU_InternalMEWR needs kAPU_IDataSelect* to be the same for the current and previous instruction" , apuPreviousGotIDataSelect , is(equalTo(instruction & kAPU_IDataSelectMask)));
+            assertThat("kAPU_InternalMEWR should not select internal memory with kAPU_IDataSelectRAM while writing internal memory" , (int)(instruction & kAPU_IDataSelectMask), is(not(equalTo(kAPU_IDataSelectRAM))));
+        }
+
         if (MemoryBus.addressActive(instruction , kAPU_SkipIfEQ)) {
             assertThat("kAPU_SkipIfEQ needs kAPU_IDataSelect* to be the same for the current and previous instruction" , apuPreviousGotIDataSelect , is(equalTo(instruction & kAPU_IDataSelectMask)));
             // The test in the schematic uses the pre-latch signal, so this occurs first
@@ -387,9 +393,9 @@ public class UserPortTo24BitAddress extends Device {
             }
         }
 
+
         apuPC++;
         apuPC &= 0x07ff;
-
 
         if (MemoryBus.addressActive(instruction , kAPU_Reset_ADDRB1)) {
             apuADDRB1 = 0;
@@ -457,6 +463,10 @@ public class UserPortTo24BitAddress extends Device {
         }
         if (MemoryBus.addressActive(originalInstruction, kAPU_Reset_PC)) {
             instructionString += "Reset_PC ";
+        }
+
+        if (MemoryBus.addressActive(originalInstruction, kAPU_InternalMEWR)) {
+            instructionString += "InternalMEWR ";
         }
 
         if (MemoryBus.addressActive(originalInstruction, kAPU_WaitForEqualsHV)) {
@@ -688,6 +698,15 @@ public class UserPortTo24BitAddress extends Device {
                 }
             }
         }
+
+        if (MemoryBus.addressActive(instruction, kAPU_InternalMEWR)) {
+            if (MemoryBus.addressActive(instruction, kAPU_ADDRB2Select)) {
+                apuData.getApuData()[apuADDRB2] = (byte) gotByte;
+            } else {
+                apuData.getApuData()[apuADDRB1] = (byte) gotByte;
+            }
+        }
+
     }
 
     private int apuGetCurrentSelectedByte(long instruction) {

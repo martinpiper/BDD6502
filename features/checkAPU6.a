@@ -1,0 +1,85 @@
+!source "C64/stdlib/stdlib.a"
+!source "BombJack/stdlib/APU_Macros.a"
+
+* = 0
+
+APUCode_Start
+	+MAPU
+	+MAPU kAPU_Reset_ADDRB1
+
+	+MAPU kAPU_IDataRegLoad0
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataRegLoad1
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataRegLoad2
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataRegLoad3
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataRegLoad4
+
+	+MAPU
+	+MAPU kAPU_Reset_ADDRB1
+
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB1
+
+	+MAPU kAPU_IDataSelectReg0
+	+MAPU kAPU_IDataSelectReg0 | kAPU_InternalMEWR
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataSelectReg1
+	+MAPU kAPU_IDataSelectReg1 | kAPU_InternalMEWR
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataSelectReg2
+	+MAPU kAPU_IDataSelectReg2 | kAPU_InternalMEWR
+	+MAPU kAPU_Incr_ADDRB1
+	+MAPU kAPU_IDataSelectReg3
+	+MAPU kAPU_IDataSelectReg3 | kAPU_InternalMEWR
+	+MAPU kAPU_Incr_ADDRB1
+;	+MAPU kAPU_IDataSelectReg4
+;	+MAPU kAPU_IDataSelectReg4 | kAPU_InternalMEWR
+
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU
+
+	+MAPU kAPU_ADDRB2Select | kAPU_IDataSelectReg0
+	+MAPU kAPU_ADDRB2Select | kAPU_IDataSelectReg0 | kAPU_InternalMEWR
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU kAPU_ADDRB2Select | kAPU_IDataSelectReg1
+	+MAPU kAPU_ADDRB2Select | kAPU_IDataSelectReg1 | kAPU_InternalMEWR
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU kAPU_ADDRB2Select | kAPU_IDataSelectReg2
+	+MAPU kAPU_ADDRB2Select | kAPU_IDataSelectReg2 | kAPU_InternalMEWR
+	+MAPU kAPU_Incr_ADDRB2
+	+MAPU kAPU_ADDRB2Select | kAPU_IDataSelectReg3
+	+MAPU kAPU_ADDRB2Select | kAPU_IDataSelectReg3 | kAPU_InternalMEWR
+	+MAPU kAPU_Incr_ADDRB2
+;	+MAPU kAPU_ADDRB2Select | kAPU_IDataSelectReg4
+;	+MAPU kAPU_ADDRB2Select | kAPU_IDataSelectReg4 | kAPU_InternalMEWR
+
+	+MAPU
+APUCode_Size = *-APUCode_Start
+
+
+APUData_Start
+	!by $10 , $11 , $12 , $13 , $14
+
+APUData_Size = * -APUData_Start

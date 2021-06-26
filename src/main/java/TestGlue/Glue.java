@@ -1091,7 +1091,6 @@ public class Glue {
                     }
 
                     reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-                    sb = new StringBuffer();
                     while ((line = reader.readLine()) != null) {
                         sb.append(line + "\n");
                     }

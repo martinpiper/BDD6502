@@ -1,0 +1,21 @@
+!source "C64/stdlib/stdlib.a"
+!source "BombJack/stdlib/APU_Macros.a"
+
+* = 0
+
+APUCode_Start
+	+MAPU
+	+MAPU kAPU_Reset_ADDRB1
+
+	+MAPU kAPU_IDataSelectRAM
+	; Should trigger an error about not using kAPU_IDataSelectRAM
+	+MAPU kAPU_IDataSelectRAM | kAPU_InternalMEWR
+
+	+MAPU
+APUCode_Size = *-APUCode_Start
+
+
+APUData_Start
+	!by $10
+
+APUData_Size = * -APUData_Start
