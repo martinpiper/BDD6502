@@ -47,15 +47,28 @@ public class RemoteDebugger implements Runnable {
         receivedReturn = false;
     }
 
-    public void setSuspendCPU(boolean suspendCPU) {
-        this.suspendCPU = suspendCPU;
+    public void signalSuspendDevice(int deviceFlags) {
+        this.suspendCPU |= deviceFlags;
     }
 
-    public boolean isSuspendCPU() {
-        return suspendCPU;
+    public void clearSuspendDevice(int deviceFlags) {
+        this.suspendCPU &= ~deviceFlags;
     }
 
-    volatile  boolean suspendCPU = false;
+    public static final int kDeviceFlags_CPU = 0b01;
+    public static final int kDeviceFlags_APU = 0b10;
+
+    int currentDevice = kDeviceFlags_CPU;
+
+    public boolean isCurrentDevice(int device) {
+        return currentDevice == device;
+    }
+
+    public boolean isSuspendDevice(int flags) {
+        return (suspendCPU & flags) != 0;
+    }
+
+    volatile int suspendCPU = 0;
 
     volatile String replyReg = "<undefined>";
     volatile String currentReplyPrefix = "<undefined>";
@@ -210,7 +223,7 @@ public class RemoteDebugger implements Runnable {
                             }
                             if (sentCommand[0] == 0x01) {
                                 // Dump command
-                                suspendCPU = true;
+                                suspendCPU |= kDeviceFlags_CPU;
                                 receivedCommand = true;
 
                                 dumpStart = sentCommand[1] + (sentCommand[2] << 8);
@@ -248,35 +261,35 @@ public class RemoteDebugger implements Runnable {
                         }
 
                         if (line.equalsIgnoreCase("exit") || line.equalsIgnoreCase("x") || line.equalsIgnoreCase("goto") || line.equalsIgnoreCase("g")) {
-                            suspendCPU = false;
+                            suspendCPU = 0;
                             continue;
                         }
 
                         if (line.equalsIgnoreCase("break") || line.equalsIgnoreCase("bk")) {
-                            suspendCPU = true;
+                            suspendCPU |= kDeviceFlags_CPU;
                             // TODO: Respond with current break points
                             writer.print("No breakpoints are set\n" + currentReplyPrefix);
                             writer.flush();
                             continue;
                         } else if (line.equalsIgnoreCase("reg") || line.equalsIgnoreCase("r")) {
-                            suspendCPU = true;
+                            suspendCPU |= kDeviceFlags_CPU;
                             replyReg = null;
                             receivedReg = true;
                             continue;
                         } else if (line.equalsIgnoreCase("next") || line.equalsIgnoreCase("n")) {
                             replyNext = null;
                             receivedNext = true;
-                            suspendCPU = false;
+                            suspendCPU = 0;
                             continue;
                         } else if (line.equalsIgnoreCase("step") || line.equalsIgnoreCase("z")) {
                             replyNext = null;
                             receivedStep = true;
-                            suspendCPU = false;
+                            suspendCPU = 0;
                             continue;
                         } else if (line.equalsIgnoreCase("return") || line.equalsIgnoreCase("ret")) {
                             replyNext = null;
                             receivedReturn = true;
-                            suspendCPU = false;
+                            suspendCPU = 0;
                             continue;
                         } else if (line.startsWith("disass") || line.startsWith("d")) {
                             try {
@@ -290,7 +303,7 @@ public class RemoteDebugger implements Runnable {
                                     disassembleEnd = Integer.parseInt(splits[2], 16);
                                 }
 
-                                suspendCPU = true;
+                                suspendCPU |= kDeviceFlags_CPU;
                                 replyDisassemble = null;
                                 receivedDisassemble = true;
                             } catch (Exception e2) {
@@ -304,7 +317,7 @@ public class RemoteDebugger implements Runnable {
                 }
                 // Any broken connection and the state resets itself
                 numConnections--;
-                suspendCPU = false;
+                suspendCPU = 0;
                 receivedCommand = false;
             }
         } catch (IOException e) {

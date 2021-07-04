@@ -396,10 +396,9 @@ public class Glue {
         lastStackValue = -1;
     }
 
-    int wantPCSuspendHere = -1;
-    boolean wantSuspendNext = false;
-    int wantSuspendNextReturn = -1;
-    boolean triggerStatusLineReply = false;
+    int wantCPUPCSuspendHere = -1;
+    boolean wantCPUSuspendNext = false;
+    int wantCPUSuspendNextReturn = -1;
 
     public void internalCPUStep(boolean displayTrace) throws Throwable {
 
@@ -412,68 +411,21 @@ public class Glue {
                 debuggerUpdateRegs(remoteDebugger);
             }
 
-            while (remoteDebugger.isSuspendCPU()) {
-                remoteDebugger.setCurrentPrefix(machine.getCpu().getProgramCounter());
-
-                if (remoteDebugger.isReceivedReg()) {
-                    debuggerUpdateRegs(remoteDebugger);
-                }
-
-                if (remoteDebugger.isReceivedDump()) {
-                    int start = remoteDebugger.getDumpStart();
-                    int end = remoteDebugger.getDumpEnd();
-
-                    byte returnMemory[] = new byte[(end - start) + 1];
-                    int i = 0;
-                    while (start < end) {
-                        returnMemory[i++] = (byte) machine.getRam().safeInvisibleRead(start);
-                        start++;
-                    }
-
-                    remoteDebugger.setReplyDump(returnMemory);
-                    continue;
-                }
-
-                if (remoteDebugger.isReceivedDisassemble()) {
-                    int start = remoteDebugger.getDisassembleStart();
-                    int end = remoteDebugger.getDisassembleEnd();
-                    // .C:f6b0  A5 A0       LDA $A0
-                    StringBuilder sb = new StringBuilder();
-                    while (start <= end) {
-                        sb.append(".C:");
-                        int tir = machine.getRam().safeInvisibleRead(start);
-                        int targs0 = machine.getRam().safeInvisibleRead(start + 1);
-                        int targs1 = machine.getRam().safeInvisibleRead(start + 2);
-
-                        sb.append(machine.getCpu().getCpuState().getInstructionByteStatusForAddress(tir, start, targs0, targs1) + " ");
-                        sb.append(String.format("%-13s\n", machine.getCpu().getCpuState().disassembleOpForAddress(tir, start, targs0, targs1)));
-
-                        // Undefined or invalid instructions should still progress the disassembly by 1 byte
-                        start += Math.max(machine.getCpu().instructionSizes[tir] ,1 );
-                    }
-
-                    // Ready for the next page
-                    remoteDebugger.setDisassembleStart(end);
-                    remoteDebugger.setReplyDisassemble(sb.toString());
-                    continue;
-                }
-
-                Thread.sleep(10);
-            }
+            handleSuspendLoop(remoteDebugger , RemoteDebugger.kDeviceFlags_CPU);
         }
 
         Integer addr = machine.getCpu().getCpuState().pc;
 
-        if (wantSuspendNextReturn >= 0) {
+        if (wantCPUSuspendNextReturn >= 0) {
             int tpc = machine.getCpu().getProgramCounter();
             int tir = machine.getRam().safeInvisibleRead(tpc);
-            if (tir == 0x60 /*rts opcode*/ && machine.getCpu().getStackPointer() >= wantSuspendNextReturn) {
-                wantSuspendNextReturn = -1;
-                wantSuspendNext = true;
+            if (tir == 0x60 /*rts opcode*/ && machine.getCpu().getStackPointer() >= wantCPUSuspendNextReturn) {
+                wantCPUSuspendNextReturn = -1;
+                wantCPUSuspendNext = true;
             }
         }
 
-        if (remoteDebugger != null && remoteDebugger.isReceivedNext()) {
+        if (remoteDebugger != null && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU) && remoteDebugger.isReceivedNext()) {
             int tpc = machine.getCpu().getProgramCounter();
             int tir = machine.getRam().safeInvisibleRead(tpc);
 
@@ -482,9 +434,9 @@ public class Glue {
             if (tir == 0x20 /*jsr opcode*/) {
                 // If jsr is next then calculate the next PC to stop after the jsr
                 tpc += 3; // Skip the opcode
-                wantPCSuspendHere = tpc;
+                wantCPUPCSuspendHere = tpc;
             } else {
-                wantSuspendNext = true;
+                wantCPUSuspendNext = true;
             }
         }
 
@@ -495,18 +447,18 @@ public class Glue {
             scenario.write(traceLine);
         }
 
-        if (remoteDebugger != null && remoteDebugger.isReceivedStep()) {
+        if (remoteDebugger != null && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU) && remoteDebugger.isReceivedStep()) {
             remoteDebugger.clearStepNextReturn();
-            wantSuspendNextReturn = -1;
-            wantPCSuspendHere = -1;
-            wantSuspendNext = true;
+            wantCPUSuspendNextReturn = -1;
+            wantCPUPCSuspendHere = -1;
+            wantCPUSuspendNext = true;
         }
 
-        if (remoteDebugger != null && remoteDebugger.isReceivedReturn()) {
+        if (remoteDebugger != null && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU) && remoteDebugger.isReceivedReturn()) {
             remoteDebugger.clearStepNextReturn();
-            wantSuspendNextReturn = machine.getCpu().getStackPointer();
-            wantPCSuspendHere = -1;
-            wantSuspendNext = false;
+            wantCPUSuspendNextReturn = machine.getCpu().getStackPointer();
+            wantCPUPCSuspendHere = -1;
+            wantCPUSuspendNext = false;
         }
 
         traceMapByteUpdate.clear();
@@ -570,19 +522,70 @@ public class Glue {
         }
     }
 
+    private void handleSuspendLoop(RemoteDebugger remoteDebugger, int deviceFlags) throws MemoryAccessException, InterruptedException {
+        while (remoteDebugger.isSuspendDevice(deviceFlags)) {
+            remoteDebugger.setCurrentPrefix(machine.getCpu().getProgramCounter());
+
+            if (remoteDebugger.isReceivedReg()) {
+                debuggerUpdateRegs(remoteDebugger);
+            }
+
+            if (remoteDebugger.isReceivedDump()) {
+                int start = remoteDebugger.getDumpStart();
+                int end = remoteDebugger.getDumpEnd();
+
+                byte returnMemory[] = new byte[(end - start) + 1];
+                int i = 0;
+                while (start < end) {
+                    returnMemory[i++] = (byte) machine.getRam().safeInvisibleRead(start);
+                    start++;
+                }
+
+                remoteDebugger.setReplyDump(returnMemory);
+                continue;
+            }
+
+            if (remoteDebugger.isReceivedDisassemble()) {
+                int start = remoteDebugger.getDisassembleStart();
+                int end = remoteDebugger.getDisassembleEnd();
+                // .C:f6b0  A5 A0       LDA $A0
+                StringBuilder sb = new StringBuilder();
+                while (start <= end) {
+                    sb.append(".C:");
+                    int tir = machine.getRam().safeInvisibleRead(start);
+                    int targs0 = machine.getRam().safeInvisibleRead(start + 1);
+                    int targs1 = machine.getRam().safeInvisibleRead(start + 2);
+
+                    sb.append(machine.getCpu().getCpuState().getInstructionByteStatusForAddress(tir, start, targs0, targs1) + " ");
+                    sb.append(String.format("%-13s\n", machine.getCpu().getCpuState().disassembleOpForAddress(tir, start, targs0, targs1)));
+
+                    // Undefined or invalid instructions should still progress the disassembly by 1 byte
+                    start += Math.max(machine.getCpu().instructionSizes[tir] ,1 );
+                }
+
+                // Ready for the next page
+                remoteDebugger.setDisassembleStart(end);
+                remoteDebugger.setReplyDisassemble(sb.toString());
+                continue;
+            }
+
+            Thread.sleep(10);
+        }
+    }
+
     private boolean testExecutionBreakPoints(RemoteDebugger remoteDebugger) {
-        if (machine.getCpu().getProgramCounter() == wantPCSuspendHere) {
-            wantPCSuspendHere = -1;
-            remoteDebugger.setSuspendCPU(true);
+        if (machine.getCpu().getProgramCounter() == wantCPUPCSuspendHere) {
+            wantCPUPCSuspendHere = -1;
+            remoteDebugger.signalSuspendDevice(RemoteDebugger.kDeviceFlags_CPU);
             remoteDebugger.setCurrentPrefix(machine.getCpu().getProgramCounter());
             String debug = getNextInstructionForDebugger();
             remoteDebugger.setReplyNext(debug);
             return true;
         }
 
-        if (wantSuspendNext) {
-            wantSuspendNext = false;
-            remoteDebugger.setSuspendCPU(true);
+        if (wantCPUSuspendNext) {
+            wantCPUSuspendNext = false;
+            remoteDebugger.signalSuspendDevice(RemoteDebugger.kDeviceFlags_CPU);
             remoteDebugger.setCurrentPrefix(machine.getCpu().getProgramCounter());
             String debug = getNextInstructionForDebugger();
             remoteDebugger.setReplyNext(debug);
