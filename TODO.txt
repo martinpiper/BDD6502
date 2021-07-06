@@ -1,14 +1,5 @@
 ; TODO items
 
-* Add remote debugger single step option for APU
-	Perhaps a command to switch between 6510 CPU and APU for the debugger next/step/etc commands
-	Code reorganised "handleSuspendLoop(remoteDebugger , RemoteDebugger.kDeviceFlags_CPU);" to allow kDeviceFlags_CPU and kDeviceFlags_APU to suspend execution
-	* This will allow the APU to have "step out" to run until the next matching waitHV
-	* "Step over" and "step in" are basically the same as there are no JSR equivalent instructions
-	Note in the glue code "remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU)", using kDeviceFlags_APU will let the APU detect when a command is intended for it instead of the CPU
-
-
-
 * Reset frame catch up times while debugging
   Disable sound output
 

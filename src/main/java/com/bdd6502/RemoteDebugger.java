@@ -68,6 +68,8 @@ public class RemoteDebugger implements Runnable {
         return (suspendCPU & flags) != 0;
     }
 
+    public void suspendCurrentDevice() { suspendCPU |= currentDevice; }
+
     volatile int suspendCPU = 0;
 
     volatile String replyReg = "<undefined>";
@@ -223,7 +225,7 @@ public class RemoteDebugger implements Runnable {
                             }
                             if (sentCommand[0] == 0x01) {
                                 // Dump command
-                                suspendCPU |= kDeviceFlags_CPU;
+                                suspendCurrentDevice();
                                 receivedCommand = true;
 
                                 dumpStart = sentCommand[1] + (sentCommand[2] << 8);
@@ -266,13 +268,13 @@ public class RemoteDebugger implements Runnable {
                         }
 
                         if (line.equalsIgnoreCase("break") || line.equalsIgnoreCase("bk")) {
-                            suspendCPU |= kDeviceFlags_CPU;
+                            suspendCurrentDevice();
                             // TODO: Respond with current break points
                             writer.print("No breakpoints are set\n" + currentReplyPrefix);
                             writer.flush();
                             continue;
                         } else if (line.equalsIgnoreCase("reg") || line.equalsIgnoreCase("r")) {
-                            suspendCPU |= kDeviceFlags_CPU;
+                            suspendCurrentDevice();
                             replyReg = null;
                             receivedReg = true;
                             continue;
@@ -303,9 +305,28 @@ public class RemoteDebugger implements Runnable {
                                     disassembleEnd = Integer.parseInt(splits[2], 16);
                                 }
 
-                                suspendCPU |= kDeviceFlags_CPU;
+                                suspendCurrentDevice();
                                 replyDisassemble = null;
                                 receivedDisassemble = true;
+                            } catch (Exception e2) {
+                                writer.print(currentReplyPrefix);
+                            }
+                            writer.flush();
+                        } else if (line.startsWith("cpu")) {
+                            try {
+                                String[] splits = line.split(" ");
+
+                                if (splits.length >= 2) {
+                                    if (splits[1].compareToIgnoreCase("6502") == 0) {
+                                        currentDevice = kDeviceFlags_CPU;
+                                        writer.print(currentReplyPrefix);
+                                    } else if (splits[1].compareToIgnoreCase("apu") == 0) {
+                                        currentDevice = kDeviceFlags_APU;
+                                        writer.print(currentReplyPrefix);
+                                    } else {
+                                        writer.print("This device (Computer) supports the following CPU types: 6502 apu\n" + currentReplyPrefix);
+                                    }
+                                }
                             } catch (Exception e2) {
                                 writer.print(currentReplyPrefix);
                             }

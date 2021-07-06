@@ -399,6 +399,7 @@ public class Glue {
     int wantCPUPCSuspendHere = -1;
     boolean wantCPUSuspendNext = false;
     int wantCPUSuspendNextReturn = -1;
+    boolean wantAPUStep = false;
 
     public void internalCPUStep(boolean displayTrace) throws Throwable {
 
@@ -825,6 +826,37 @@ public class Glue {
                 if (displayLimitFPS == 0 || frameDelta > 0) {
                     for (int i = 0; i < pixelsPerInstruction; i++) {
                         displayBombJack.calculatePixel();
+
+                        if (UserPortTo24BitAddress.apuInstructionExecuted) {
+                            userPort24BitAddress.apuInstructionExecuted = false;
+                            RemoteDebugger remoteDebugger = RemoteDebugger.getRemoteDebugger();
+                            if (remoteDebugger != null) {
+                                if (wantAPUStep) {
+                                    wantAPUStep = false;
+                                    remoteDebugger.signalSuspendDevice(RemoteDebugger.kDeviceFlags_APU);
+                                    remoteDebugger.setCurrentPrefix(machine.getCpu().getProgramCounter());
+//                                    String debug = getNextInstructionForDebugger();
+                                    String debug = "APU step";
+                                    remoteDebugger.setReplyNext(debug);
+                                }
+                                handleSuspendLoop(remoteDebugger , RemoteDebugger.kDeviceFlags_APU);
+                            }
+
+                            if (remoteDebugger != null && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_APU) && remoteDebugger.isReceivedNext()) {
+                                remoteDebugger.clearStepNextReturn();
+                                wantAPUStep = true;
+                            }
+
+                            if (remoteDebugger != null && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_APU) && remoteDebugger.isReceivedStep()) {
+                                remoteDebugger.clearStepNextReturn();
+                                wantAPUStep = true;
+                            }
+
+                            if (remoteDebugger != null && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_APU) && remoteDebugger.isReceivedReturn()) {
+                                remoteDebugger.clearStepNextReturn();
+                                wantAPUStep = true;
+                            }
+                        }
                     }
                     // If we are limiting FPS then the frame update logic changes
                     if (displayLimitFPS > 0) {

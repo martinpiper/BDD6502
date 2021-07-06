@@ -373,7 +373,10 @@ public class UserPortTo24BitAddress extends Device {
         }
     }
 
+    static public volatile boolean apuInstructionExecuted = false;
+
     private void apuHandleInstructionSchedule4() {
+        apuInstructionExecuted = true;
         int currentPC = apuPC;
         long instruction = (apuData.getApuInstructions()[apuPC*4] & 0xff) | ((apuData.getApuInstructions()[(apuPC*4)+1] & 0xff) << 8) | ((apuData.getApuInstructions()[(apuPC*4)+2] & 0xff) << 16) | ((apuData.getApuInstructions()[(apuPC*4)+3] & 0xff) << 24);
         long originalInstruction = instruction;
