@@ -258,12 +258,20 @@ public class AudioExpansion extends MemoryBus implements Runnable {
     @Override
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
-            while (calculateSamples() ) {}
+            if (!mute) {
+                while (calculateSamples()) {
+                }
+            }
             try {
                 Thread.sleep(5);
             } catch (InterruptedException e) {
                 break;
             }
         }
+    }
+
+    volatile boolean mute = false;
+    public void setMute(boolean mute) {
+        this.mute = mute;
     }
 }

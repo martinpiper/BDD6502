@@ -1,10 +1,5 @@
 ; TODO items
 
-* Reset frame catch up times while debugging
-  Disable sound output
-
-
-
 * When disassembling, or dumping, take into account the current device and provide APU information when needed
 
 

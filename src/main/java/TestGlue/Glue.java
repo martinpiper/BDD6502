@@ -524,7 +524,14 @@ public class Glue {
     }
 
     private void handleSuspendLoop(RemoteDebugger remoteDebugger, int deviceFlags) throws MemoryAccessException, InterruptedException {
+        boolean wasSuspended = false;
         while (remoteDebugger.isSuspendDevice(deviceFlags)) {
+            if (!wasSuspended) {
+                if (audioExpansion != null) {
+                    audioExpansion.setMute(true);
+                }
+                wasSuspended = true;
+            }
             remoteDebugger.setCurrentPrefix(machine.getCpu().getProgramCounter());
 
             if (remoteDebugger.isReceivedReg()) {
@@ -571,6 +578,18 @@ public class Glue {
             }
 
             Thread.sleep(10);
+        }
+
+        if (wasSuspended) {
+            // Reset any frame rate compensation
+            if (audioExpansion != null) {
+                audioExpansion.setMute(false);
+            }
+
+            timeSinceLastDebugDisplayTimes = System.currentTimeMillis();
+            displaySyncFrame = displayBombJack.getFrameNumberForSync();
+            lastFramesCount = displaySyncFrame;
+            startTime = System.currentTimeMillis() - (1000/60);
         }
     }
 

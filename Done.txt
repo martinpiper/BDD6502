@@ -395,3 +395,9 @@ Added: Given I am using C64 processor port options
 	Commands to switch APU and 6510:
 		cpu apu
 		cpu 6502
+
+
+
+
+* Reset frame catch up times while debugging
+  Disable sound output
