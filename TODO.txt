@@ -5,6 +5,10 @@
 
 
 
+* When disassembling, or dumping, take into account the current device and provide APU information when needed
+
+
+
 * Make target/debugchannel.pcmu8 optional
 
 
