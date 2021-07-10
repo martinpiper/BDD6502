@@ -5,6 +5,7 @@ import com.bdd6502.DisplayBombJack;
 import com.bdd6502.MemoryBus;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
+import com.loomcom.symon.util.HexUtil;
 import cucumber.api.Scenario;
 
 import java.io.FileWriter;
@@ -378,7 +379,7 @@ public class UserPortTo24BitAddress extends Device {
     private void apuHandleInstructionSchedule4() {
         apuInstructionExecuted = true;
         int currentPC = apuPC;
-        long instruction = (apuData.getApuInstructions()[apuPC*4] & 0xff) | ((apuData.getApuInstructions()[(apuPC*4)+1] & 0xff) << 8) | ((apuData.getApuInstructions()[(apuPC*4)+2] & 0xff) << 16) | ((apuData.getApuInstructions()[(apuPC*4)+3] & 0xff) << 24);
+        long instruction = getAPUInstruction(apuPC);
         long originalInstruction = instruction;
         boolean wasSkipped = false;
 
@@ -447,6 +448,10 @@ public class UserPortTo24BitAddress extends Device {
         }
     }
 
+    private int getAPUInstruction(int thePC) {
+        return (apuData.getApuInstructions()[thePC * 4] & 0xff) | ((apuData.getApuInstructions()[(thePC * 4) + 1] & 0xff) << 8) | ((apuData.getApuInstructions()[(thePC * 4) + 2] & 0xff) << 16) | ((apuData.getApuInstructions()[(thePC * 4) + 3] & 0xff) << 24);
+    }
+
     int last_currentPC;
     long last_instruction;
     long last_originalInstruction;
@@ -456,110 +461,23 @@ public class UserPortTo24BitAddress extends Device {
         return apuEmitDebug(last_currentPC, last_instruction, last_originalInstruction, last_wasSkipped);
     }
 
+    public String disassembleAPUInstructionAt(int currentPC) {
+        long instruction = getAPUInstruction(currentPC);
+        String instructionString = disassembleAPUInstruction(instruction, false);
+        return HexUtil.intToHexSpaces((int) instruction) + "    " + instructionString;
+    }
+
     private String apuEmitDebug(int currentPC, long instruction, long originalInstruction, boolean wasSkipped) {
-        String instructionString = "";
-        if (wasSkipped) {
-            instructionString += "** Skipped ** ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Reset_ADDRB1)) {
-            instructionString += "Reset_ADDRB1 ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Reset_PC)) {
-            instructionString += "Reset_PC ";
-        }
+        String instructionString = disassembleAPUInstruction(originalInstruction, wasSkipped);
 
-        if (MemoryBus.addressActive(originalInstruction, kAPU_InternalMEWR)) {
-            instructionString += "InternalMEWR ";
-        }
-
-        if (MemoryBus.addressActive(originalInstruction, kAPU_WaitForEqualsHV)) {
-            instructionString += "WaitForEqualsHV ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Incr_ADDRB1)) {
-            instructionString += "Incr_ADDRB1 ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Incr_EADDR)) {
-            instructionString += "Incr_EADDR ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_ExternalMEWR)) {
-            instructionString += "ExternalMEWR ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_EBS)) {
-            instructionString += "Load_EBS ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_EADDRLo)) {
-            instructionString += "Load_EADDRLo ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_EADDRHi)) {
-            instructionString += "Load_EADDRHi ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_Wait24)) {
-            instructionString += "Load_Wait24 ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_Wait16)) {
-            instructionString += "Load_Wait16 ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_Wait8)) {
-            instructionString += "Load_Wait8 ";
-        }
         String ebs1Select = "";
         String ebs2Select = "";
         if (MemoryBus.addressActive(originalInstruction, kAPU_SelectEBS2EADDR2)) {
-            instructionString += "SelectEBS2EADDR2 ";
             ebs1Select = "";
             ebs2Select = "*";
         } else {
             ebs1Select = "*";
             ebs2Select = "";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_EBS2)) {
-            instructionString += "Load_EBS2 ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_EADDR2Lo)) {
-            instructionString += "Load_EADDR2Lo ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_EADDR2Hi)) {
-            instructionString += "Load_EADDR2Hi ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Incr_EADDR2)) {
-            instructionString += "Incr_EADDR2 ";
-        }
-
-        if (MemoryBus.addressActive(originalInstruction, kAPU_IDataRegLoad0)) {
-            instructionString += "IDataRegLoad0 ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_IDataRegLoad1)) {
-            instructionString += "IDataRegLoad1 ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_IDataRegLoad2)) {
-            instructionString += "IDataRegLoad2 ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_IDataRegLoad3)) {
-            instructionString += "IDataRegLoad3 ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_IDataRegLoad4)) {
-            instructionString += "IDataRegLoad4 ";
-        }
-
-
-        if (MemoryBus.addressActive(originalInstruction, kAPU_ADDRB2Select)) {
-            instructionString += "ADDRB2Select ";
-        } else {
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_Incr_ADDRB2)) {
-            instructionString += "Incr_ADDRB2 ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_ADDRB1Load16)) {
-            instructionString += "ADDRB1Load16 ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_ADDRB2Load16)) {
-            instructionString += "ADDRB2Load16 ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_PCLoad16)) {
-            instructionString += "PCLoad16 ";
-        }
-        if (MemoryBus.addressActive(originalInstruction, kAPU_SkipIfEQ)) {
-            instructionString += "kAPU_SkipIfEQ ";
         }
 
         String selectADDRB1 = "";
@@ -618,6 +536,107 @@ public class UserPortTo24BitAddress extends Device {
         output += kAPUDEBUG + ebs1Select + "EBS: " + Integer.toHexString(apuEBS) + " "+ebs1Select+"EADDR: " + Integer.toHexString(apuEADDR) + " "+ebs2Select+"EBS2: " + Integer.toHexString(apuEBS2) + " "+ebs2Select+"EADDR2: " + Integer.toHexString(apuEADDR2) + "\n";
         output += kAPUDEBUG + selectReg0 + "DataReg0: " + Integer.toHexString(apuDataReg[0]) + " " + selectReg1 + "DataReg1: " + Integer.toHexString(apuDataReg[1]) + " " + selectReg2 +"DataReg2: " + Integer.toHexString(apuDataReg[2]) + " " + selectReg3 +"DataReg3: " + Integer.toHexString(apuDataReg[3]) + " " +"DataReg4: " + Integer.toHexString(apuDataReg[4]) + "\n";
         return output;
+    }
+
+    private String disassembleAPUInstruction(long originalInstruction, boolean wasSkipped) {
+        String instructionString = "";
+        if (wasSkipped) {
+            instructionString += "** Skipped ** ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Reset_ADDRB1)) {
+            instructionString += "Reset_ADDRB1 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Reset_PC)) {
+            instructionString += "Reset_PC ";
+        }
+
+        if (MemoryBus.addressActive(originalInstruction, kAPU_InternalMEWR)) {
+            instructionString += "InternalMEWR ";
+        }
+
+        if (MemoryBus.addressActive(originalInstruction, kAPU_WaitForEqualsHV)) {
+            instructionString += "WaitForEqualsHV ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Incr_ADDRB1)) {
+            instructionString += "Incr_ADDRB1 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Incr_EADDR)) {
+            instructionString += "Incr_EADDR ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_ExternalMEWR)) {
+            instructionString += "ExternalMEWR ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_EBS)) {
+            instructionString += "Load_EBS ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_EADDRLo)) {
+            instructionString += "Load_EADDRLo ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_EADDRHi)) {
+            instructionString += "Load_EADDRHi ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_Wait24)) {
+            instructionString += "Load_Wait24 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_Wait16)) {
+            instructionString += "Load_Wait16 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_Wait8)) {
+            instructionString += "Load_Wait8 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_SelectEBS2EADDR2)) {
+            instructionString += "SelectEBS2EADDR2 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_EBS2)) {
+            instructionString += "Load_EBS2 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_EADDR2Lo)) {
+            instructionString += "Load_EADDR2Lo ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Load_EADDR2Hi)) {
+            instructionString += "Load_EADDR2Hi ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Incr_EADDR2)) {
+            instructionString += "Incr_EADDR2 ";
+        }
+
+        if (MemoryBus.addressActive(originalInstruction, kAPU_IDataRegLoad0)) {
+            instructionString += "IDataRegLoad0 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_IDataRegLoad1)) {
+            instructionString += "IDataRegLoad1 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_IDataRegLoad2)) {
+            instructionString += "IDataRegLoad2 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_IDataRegLoad3)) {
+            instructionString += "IDataRegLoad3 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_IDataRegLoad4)) {
+            instructionString += "IDataRegLoad4 ";
+        }
+
+
+        if (MemoryBus.addressActive(originalInstruction, kAPU_ADDRB2Select)) {
+            instructionString += "ADDRB2Select ";
+        } else {
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_Incr_ADDRB2)) {
+            instructionString += "Incr_ADDRB2 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_ADDRB1Load16)) {
+            instructionString += "ADDRB1Load16 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_ADDRB2Load16)) {
+            instructionString += "ADDRB2Load16 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_PCLoad16)) {
+            instructionString += "PCLoad16 ";
+        }
+        if (MemoryBus.addressActive(originalInstruction, kAPU_SkipIfEQ)) {
+            instructionString += "kAPU_SkipIfEQ ";
+        }
+        return instructionString;
     }
 
     private void apuHandleLoadPulses(long instruction, int gotByte) {

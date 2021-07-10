@@ -61,7 +61,7 @@ public class RemoteDebugger implements Runnable {
     int currentDevice = kDeviceFlags_CPU;
 
     public boolean isCurrentDevice(int device) {
-        return currentDevice == device;
+        return (currentDevice & device) == device;
     }
 
     public boolean isSuspendDevice(int flags) {

@@ -10,6 +10,7 @@ import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
+import com.loomcom.symon.util.HexUtil;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -559,21 +560,30 @@ public class Glue {
             if (remoteDebugger.isReceivedDisassemble()) {
                 int start = remoteDebugger.getDisassembleStart();
                 int end = remoteDebugger.getDisassembleEnd();
-                // .C:f6b0  A5 A0       LDA $A0
                 StringBuilder sb = new StringBuilder();
-                while (start <= end) {
-                    sb.append(".C:");
-                    int tir = machine.getRam().safeInvisibleRead(start);
-                    int targs0 = machine.getRam().safeInvisibleRead(start + 1);
-                    int targs1 = machine.getRam().safeInvisibleRead(start + 2);
+                if (remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU)) {
+                    // .C:f6b0  A5 A0       LDA $A0
+                    while (start <= end) {
+                        sb.append(".C:");
+                        int tir = machine.getRam().safeInvisibleRead(start);
+                        int targs0 = machine.getRam().safeInvisibleRead(start + 1);
+                        int targs1 = machine.getRam().safeInvisibleRead(start + 2);
 
-                    sb.append(machine.getCpu().getCpuState().getInstructionByteStatusForAddress(tir, start, targs0, targs1) + " ");
-                    sb.append(String.format("%-13s\n", machine.getCpu().getCpuState().disassembleOpForAddress(tir, start, targs0, targs1)));
+                        sb.append(machine.getCpu().getCpuState().getInstructionByteStatusForAddress(tir, start, targs0, targs1) + " ");
+                        sb.append(String.format("%-13s\n", machine.getCpu().getCpuState().disassembleOpForAddress(tir, start, targs0, targs1)));
 
-                    // Undefined or invalid instructions should still progress the disassembly by 1 byte
-                    start += Math.max(machine.getCpu().instructionSizes[tir] ,1 );
+                        // Undefined or invalid instructions should still progress the disassembly by 1 byte
+                        start += Math.max(machine.getCpu().instructionSizes[tir], 1);
+                    }
                 }
-
+                if (userPort24BitAddress.isEnableAPU() && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_APU)) {
+                    while (start <= end) {
+                        sb.append(".C:");
+                        String line = userPort24BitAddress.disassembleAPUInstructionAt(start);
+                        sb.append(HexUtil.wordToHex(start) + "  " + line + "\n");
+                        start += 1;
+                    }
+                }
                 // Ready for the next page
                 remoteDebugger.setDisassembleStart(end);
                 remoteDebugger.setReplyDisassemble(sb.toString());
