@@ -401,7 +401,7 @@ public class Glue {
     boolean wantCPUSuspendNext = false;
     int wantCPUSuspendNextReturn = -1;
     boolean wantAPUStep = false;
-    boolean wantAPUBreakOnWaitOrPC0 = true;
+    boolean wantAPUBreakOnWaitOrPC0 = false;
 
     public void internalCPUStep(boolean displayTrace) throws Throwable {
 
