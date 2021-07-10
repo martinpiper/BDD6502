@@ -254,6 +254,40 @@ public class DisplayBombJack extends MemoryBus {
         return displayWidth*displayHeight;
     }
 
+    public void displayClearAhead()
+    {
+        int grey = Color.gray.getRGB();
+        int tempx = displayBitmapX + 1;
+        int tempy = displayBitmapY;
+        while (tempy < panel.fastGetHeight()) {
+            while (tempx < panel.fastGetWidth()) {
+                if (tempy >= 0 && tempx >= 0) {
+                    panel.fastSetRGB(tempx, tempy, grey);
+                }
+                tempx++;
+            }
+            tempx = 0;
+            tempy++;
+        }
+    }
+
+    public void displayClear()
+    {
+        int grey = Color.gray.getRGB();
+        int tempx = 0;
+        int tempy = 0;
+        while (tempy < panel.fastGetHeight()) {
+            while (tempx < panel.fastGetWidth()) {
+                if (tempy >= 0 && tempx >= 0) {
+                    panel.fastSetRGB(tempx, tempy, grey);
+                }
+                tempx++;
+            }
+            tempx = 0;
+            tempy++;
+        }
+    }
+
     public void calculatePixel() {
         pixelsSinceLastDebugWrite++;
         _hSync = true;

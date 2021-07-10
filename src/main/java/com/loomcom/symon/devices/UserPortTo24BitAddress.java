@@ -467,6 +467,17 @@ public class UserPortTo24BitAddress extends Device {
         return HexUtil.intToHexSpaces((int) instruction) + "    " + instructionString;
     }
 
+    public boolean isWaitState() {
+        if (apuPC == 0) {
+            return true;
+        }
+        long instruction = getAPUInstruction(apuPC);
+        if (MemoryBus.addressActive(instruction, kAPU_WaitForEqualsHV)) {
+            return true;
+        }
+        return false;
+    }
+
     private String apuEmitDebug(int currentPC, long instruction, long originalInstruction, boolean wasSkipped) {
         String instructionString = disassembleAPUInstruction(originalInstruction, wasSkipped);
 

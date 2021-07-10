@@ -47,6 +47,21 @@ public class RemoteDebugger implements Runnable {
         receivedReturn = false;
     }
 
+    public enum DisplayType {kDisplay_Full , kDisplay_Clear , kDisplay_Ahead};
+
+    public DisplayType getDebuggerDisplay() {
+        return debuggerDisplay;
+    }
+
+    public boolean isDebuggerDisplayChanged() {
+        boolean ret = debuggerDisplayChanged;
+        debuggerDisplayChanged = false;
+        return ret;
+    }
+
+    boolean debuggerDisplayChanged = false;
+    public DisplayType debuggerDisplay = DisplayType.kDisplay_Full;
+
     public void signalSuspendDevice(int deviceFlags) {
         this.suspendCPU |= deviceFlags;
     }
@@ -267,7 +282,32 @@ public class RemoteDebugger implements Runnable {
                             continue;
                         }
 
-                        if (line.equalsIgnoreCase("break") || line.equalsIgnoreCase("bk")) {
+                        if (line.startsWith("display")) {
+                            try {
+                                String[] splits = line.split(" ");
+
+                                if (splits.length >= 2) {
+                                    if (splits[1].compareToIgnoreCase("full") == 0) {
+                                        debuggerDisplay = DisplayType.kDisplay_Full;
+                                        debuggerDisplayChanged = true;
+                                        writer.print(currentReplyPrefix);
+                                    } else if (splits[1].compareToIgnoreCase("cls") == 0) {
+                                        debuggerDisplay = DisplayType.kDisplay_Clear;
+                                        debuggerDisplayChanged = true;
+                                        writer.print(currentReplyPrefix);
+                                    } else if (splits[1].compareToIgnoreCase("ahead") == 0) {
+                                        debuggerDisplay = DisplayType.kDisplay_Ahead;
+                                        debuggerDisplayChanged = true;
+                                        writer.print(currentReplyPrefix);
+                                    }
+                                } else {
+                                    writer.print("display <full> <cls> <ahead>\n" + currentReplyPrefix);
+                                }
+                            } catch (Exception e2) {
+                                writer.print(currentReplyPrefix);
+                            }
+                            writer.flush();
+                        } else if (line.equalsIgnoreCase("break") || line.equalsIgnoreCase("bk")) {
                             suspendCurrentDevice();
                             // TODO: Respond with current break points
                             writer.print("No breakpoints are set\n" + currentReplyPrefix);
@@ -293,7 +333,7 @@ public class RemoteDebugger implements Runnable {
                             receivedReturn = true;
                             suspendCPU = 0;
                             continue;
-                        } else if (line.startsWith("disass") || line.startsWith("d")) {
+                        } else if (line.startsWith("disass") || line.startsWith("d ") || line.equalsIgnoreCase("d")) {
                             try {
                                 String[] splits = line.split(" ");
                                 disassembleEnd = disassembleStart + 0x30;
@@ -323,13 +363,17 @@ public class RemoteDebugger implements Runnable {
                                     } else if (splits[1].compareToIgnoreCase("apu") == 0) {
                                         currentDevice = kDeviceFlags_APU;
                                         writer.print(currentReplyPrefix);
-                                    } else {
-                                        writer.print("This device (Computer) supports the following CPU types: 6502 apu\n" + currentReplyPrefix);
                                     }
+                                } else {
+                                    writer.print("This device (Computer) supports the following CPU types: 6502 apu\n" + currentReplyPrefix);
                                 }
                             } catch (Exception e2) {
                                 writer.print(currentReplyPrefix);
                             }
+                            writer.flush();
+                        } else {
+                            // Always the last case
+                            writer.print("Unknown command: " + line + "\n" + currentReplyPrefix);
                             writer.flush();
                         }
                     }

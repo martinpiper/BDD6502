@@ -401,6 +401,7 @@ public class Glue {
     boolean wantCPUSuspendNext = false;
     int wantCPUSuspendNextReturn = -1;
     boolean wantAPUStep = false;
+    boolean wantAPUBreakOnWaitOrPC0 = true;
 
     public void internalCPUStep(boolean displayTrace) throws Throwable {
 
@@ -528,15 +529,17 @@ public class Glue {
         boolean wasSuspended = false;
         while (remoteDebugger.isSuspendDevice(deviceFlags)) {
             if (!wasSuspended) {
-                if (displayBombJack.isVisible()) {
-                    displayBombJack.RepaintWindow();
-                }
+                handleDisplayEvents(remoteDebugger);
                 if (audioExpansion != null) {
                     audioExpansion.setMute(true);
                 }
                 wasSuspended = true;
             }
             remoteDebugger.setCurrentPrefix(machine.getCpu().getProgramCounter());
+
+            if (remoteDebugger.isDebuggerDisplayChanged()) {
+                handleDisplayEvents(remoteDebugger);
+            }
 
             if (remoteDebugger.isReceivedReg()) {
                 debuggerUpdateRegs(remoteDebugger);
@@ -603,6 +606,17 @@ public class Glue {
             displaySyncFrame = displayBombJack.getFrameNumberForSync();
             lastFramesCount = displaySyncFrame;
             startTime = System.currentTimeMillis() - (1000/60);
+        }
+    }
+
+    private void handleDisplayEvents(RemoteDebugger remoteDebugger) {
+        if (displayBombJack.isVisible()) {
+            if (remoteDebugger.getDebuggerDisplay() == RemoteDebugger.DisplayType.kDisplay_Clear) {
+                displayBombJack.displayClear();
+            } else if (remoteDebugger.getDebuggerDisplay() == RemoteDebugger.DisplayType.kDisplay_Ahead) {
+                displayBombJack.displayClearAhead();
+            }
+            displayBombJack.RepaintWindow();
         }
     }
 
@@ -871,7 +885,15 @@ public class Glue {
                                     String debug = "APU step";
                                     remoteDebugger.setReplyNext(debug);
                                 }
+
                                 handleSuspendLoop(remoteDebugger , RemoteDebugger.kDeviceFlags_APU);
+
+                                if (wantAPUBreakOnWaitOrPC0) {
+                                    if (userPort24BitAddress.isWaitState()) {
+                                        wantAPUBreakOnWaitOrPC0 = false;
+                                        wantAPUStep = true;
+                                    }
+                                }
                             }
 
                             if (remoteDebugger != null && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_APU) && remoteDebugger.isReceivedNext()) {
@@ -886,7 +908,7 @@ public class Glue {
 
                             if (remoteDebugger != null && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_APU) && remoteDebugger.isReceivedReturn()) {
                                 remoteDebugger.clearStepNextReturn();
-                                wantAPUStep = true;
+                                wantAPUBreakOnWaitOrPC0 = true;
                             }
                         }
                     }
