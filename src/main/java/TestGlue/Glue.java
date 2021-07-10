@@ -527,6 +527,9 @@ public class Glue {
         boolean wasSuspended = false;
         while (remoteDebugger.isSuspendDevice(deviceFlags)) {
             if (!wasSuspended) {
+                if (displayBombJack.isVisible()) {
+                    displayBombJack.RepaintWindow();
+                }
                 if (audioExpansion != null) {
                     audioExpansion.setMute(true);
                 }

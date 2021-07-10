@@ -3,7 +3,7 @@
 * While debugging with steps have the option of clearing the screen data from the current pixel position to show the newly rendered data in the display
 	Or highlight the current position in the window with the previous frame data
 	Or clear the entire display data
-	Hitting the next step (or break) force redraws the window, basically
+	Done - Hitting the next step (or break) force redraws the window, basically
 	
 	
 
