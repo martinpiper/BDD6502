@@ -497,6 +497,7 @@ public class UserPortTo24BitAddress extends Device {
         String selectReg1 = "";
         String selectReg2 = "";
         String selectReg3 = "";
+        String selectReg4 = "";
 
         // Switch doesn't work with long... sigh...
         int iDataSelectDebug = (int) instruction & kAPU_IDataSelectMask;
@@ -508,33 +509,29 @@ public class UserPortTo24BitAddress extends Device {
                 } else {
                     selectADDRB1 = "*";
                 }
-                // Can be empty, since it's the default option
-//                        instructionString += "IDataSelectRAM ";
                 break;
             case kAPU_IDataSelectReg0:
                 selectReg0 = "*";
-                instructionString += "IDataSelectReg0 ";
                 break;
             case kAPU_IDataSelectReg1:
                 selectReg1 = "*";
-                instructionString += "IDataSelectReg1 ";
                 break;
             case kAPU_IDataSelectReg2:
                 selectReg2 = "*";
-                instructionString += "IDataSelectReg2 ";
                 break;
             case kAPU_IDataSelectReg3:
                 selectReg3 = "*";
-                instructionString += "IDataSelectReg3 ";
                 break;
             case kAPU_IDataSelectMemAddReg3:
-                instructionString += "IDataSelectMemAddReg3 ";
+                selectReg3 = "*";
                 break;
             case kAPU_IDataSelectReg3AddReg4:
-                instructionString += "IDataSelectReg3AddReg4 ";
+                selectReg3 = "*";
+                selectReg4 = "*";
                 break;
             case kAPU_IDataSelectReg3SubReg4:
-                instructionString += "IDataSelectReg3SubReg4 ";
+                selectReg3 = "*";
+                selectReg4 = "*";
                 break;
         }
 
@@ -545,7 +542,7 @@ public class UserPortTo24BitAddress extends Device {
         output += kAPUDEBUG + selectADDRB1 + "ADDRB1: " + Integer.toHexString(apuADDRB1) + " Contents: " + Integer.toHexString(apuData.getApuData()[(apuADDRB1-1) & 0x1fff] & 0xff) + " >" + Integer.toHexString(apuData.getApuData()[apuADDRB1 & 0x1fff] & 0xff) + "< " + Integer.toHexString(apuData.getApuData()[(apuADDRB1 + 1) & 0x1fff] & 0xff) + " : ";
         output += selectADDRB2 + "ADDRB2: " + Integer.toHexString(apuADDRB2) + " Contents: " + Integer.toHexString(apuData.getApuData()[(apuADDRB2-1) & 0x1fff] & 0xff) + " >" + Integer.toHexString(apuData.getApuData()[apuADDRB1 & 0x1fff] & 0xff) + "< " + Integer.toHexString(apuData.getApuData()[(apuADDRB2 + 1) & 0x1fff] & 0xff) + "\n";
         output += kAPUDEBUG + ebs1Select + "EBS: " + Integer.toHexString(apuEBS) + " "+ebs1Select+"EADDR: " + Integer.toHexString(apuEADDR) + " "+ebs2Select+"EBS2: " + Integer.toHexString(apuEBS2) + " "+ebs2Select+"EADDR2: " + Integer.toHexString(apuEADDR2) + "\n";
-        output += kAPUDEBUG + selectReg0 + "DataReg0: " + Integer.toHexString(apuDataReg[0]) + " " + selectReg1 + "DataReg1: " + Integer.toHexString(apuDataReg[1]) + " " + selectReg2 +"DataReg2: " + Integer.toHexString(apuDataReg[2]) + " " + selectReg3 +"DataReg3: " + Integer.toHexString(apuDataReg[3]) + " " +"DataReg4: " + Integer.toHexString(apuDataReg[4]) + "\n";
+        output += kAPUDEBUG + selectReg0 + "DataReg0: " + Integer.toHexString(apuDataReg[0]) + " " + selectReg1 + "DataReg1: " + Integer.toHexString(apuDataReg[1]) + " " + selectReg2 +"DataReg2: " + Integer.toHexString(apuDataReg[2]) + " " + selectReg3 +"DataReg3: " + Integer.toHexString(apuDataReg[3]) + " " + selectReg4 + "DataReg4: " + Integer.toHexString(apuDataReg[4]) + "\n";
         return output;
     }
 
@@ -630,7 +627,6 @@ public class UserPortTo24BitAddress extends Device {
 
         if (MemoryBus.addressActive(originalInstruction, kAPU_ADDRB2Select)) {
             instructionString += "ADDRB2Select ";
-        } else {
         }
         if (MemoryBus.addressActive(originalInstruction, kAPU_Incr_ADDRB2)) {
             instructionString += "Incr_ADDRB2 ";
@@ -647,6 +643,39 @@ public class UserPortTo24BitAddress extends Device {
         if (MemoryBus.addressActive(originalInstruction, kAPU_SkipIfEQ)) {
             instructionString += "kAPU_SkipIfEQ ";
         }
+
+
+        // Switch doesn't work with long... sigh...
+        int iDataSelectDebug = (int) originalInstruction & kAPU_IDataSelectMask;
+        switch (iDataSelectDebug) {
+            default:
+            case kAPU_IDataSelectRAM:
+                // Default option, can be left silent
+//                instructionString += "IDataSelectRAM ";
+                break;
+            case kAPU_IDataSelectReg0:
+                instructionString += "IDataSelectReg0 ";
+                break;
+            case kAPU_IDataSelectReg1:
+                instructionString += "IDataSelectReg1 ";
+                break;
+            case kAPU_IDataSelectReg2:
+                instructionString += "IDataSelectReg2 ";
+                break;
+            case kAPU_IDataSelectReg3:
+                instructionString += "IDataSelectReg3 ";
+                break;
+            case kAPU_IDataSelectMemAddReg3:
+                instructionString += "IDataSelectMemAddReg3 ";
+                break;
+            case kAPU_IDataSelectReg3AddReg4:
+                instructionString += "IDataSelectReg3AddReg4 ";
+                break;
+            case kAPU_IDataSelectReg3SubReg4:
+                instructionString += "IDataSelectReg3SubReg4 ";
+                break;
+        }
+
         return instructionString;
     }
 
