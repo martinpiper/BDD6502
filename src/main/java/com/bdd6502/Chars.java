@@ -206,7 +206,7 @@ public class Chars extends DisplayLayer {
         theChar |= (theColour & 0x30) << 4;
         displayH &= 0x07;
         displayH = 7 - displayH;
-        int latchedDisplayV2 = latchedDisplayV;
+        int latchedDisplayV2 = useDisplayV;
         latchedDisplayV2 &= 0x07;
         // Include flips
         if ((theColour & 0x40) > 0) {
