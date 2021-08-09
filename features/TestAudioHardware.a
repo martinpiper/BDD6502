@@ -12,13 +12,13 @@ start
 
 	jsr Bus24Bit_Init
 
-	jsr Bus24Bit_DisableDisplay
+	jsr Video_DisableDisplay
 	lda #$30
-	jsr Bus24Bit_EnableDisplay
-;	jsr Bus24Bit_WaitVBlank
+	jsr Video_EnableDisplay
+;	jsr Video_WaitVBlank
 
 	; Setup a background colour that is visible
-	jsr Bus24Bit_SetAddressPalette
+	jsr Video_SetAddressPalette
 	lda #$21
 	sta CIA2PortBRS232
 	sta CIA2PortBRS232
@@ -76,7 +76,7 @@ PlaySample
 !zn
 .counter !by 0,3
 MusicPlay
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 	jsr MusicPoll
 	dec .counter
 	bne MusicPlay

@@ -17,7 +17,7 @@ mainLoop
 	lda #8
 	lda #16	; This larger value will show a raster bar effect near the top of the screen (in real hardware)
 	sta Bus24Bit_WriteMakeSafeReset
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 	jsr CopyScreen
 
 !if 1 {
@@ -36,9 +36,9 @@ mainLoop
 DisplayScreen
 	jsr Bus24Bit_Init
 
-	jsr Bus24Bit_DisableDisplay
+	jsr Video_DisableDisplay
 	lda #$30
-	jsr Bus24Bit_EnableDisplay
+	jsr Video_EnableDisplay
 	inc VIC2BorderColour
 
 	lda #1

@@ -12,33 +12,33 @@ start
 
 	jsr Bus24Bit_Init
 	jsr APU_ResetDisable
-	jsr Bus24Bit_DisableDisplay
+	jsr Video_DisableDisplay
 
-	jsr Bus24Bit_SetAddressAPUInstructions
+	jsr APU_SetAddressAPUInstructions
 	+MWordValueTo_AX APUCode_Start
 	ldy #<APUCode_Size
 	jsr Bus24Bit_CopySmallData
 	ldx #>APUCode_Size
 	jsr Bus24Bit_CopySmallDataRepeatForX
 
-	jsr Bus24Bit_SetAddressAPUData
+	jsr APU_SetAddressAPUData
 	+MWordValueTo_AX APUData_Start
 	ldy #APUData_Size
 	jsr Bus24Bit_CopySmallData
 	jsr APU_Enable
 
 	lda #$30
-	jsr Bus24Bit_EnableDisplay
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_EnableDisplay
+	jsr Video_WaitVBlank
 
 	; Setup a background colour that is visible
-	jsr Bus24Bit_SetAddressPalette
+	jsr Video_SetAddressPalette
 	lda #$21
 	sta CIA2PortBRS232
 	sta CIA2PortBRS232
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 
-	jsr Bus24Bit_SetAddressSpritesControl
+	jsr Video_SetAddressSpritesControl
 	lda #$10
 	sta CIA2PortBRS232
 	lda #$00
@@ -48,26 +48,26 @@ start
 	; This also visually demonstrates how the 24 bit memory bus auto-increments the address after each write
 	+MWordValueTo_AX SpriteFrame0
 	ldy #SpriteFrame0Size
-	jsr Bus24Bit_SpriteDataCopy
+	jsr Video_SpriteDataCopy
 
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 
 	; Move sprites into corners
 	+MWordValueTo_AX SpriteFrame1
 	ldy #SpriteFrame1Size
-	jsr Bus24Bit_SpriteDataCopy
+	jsr Video_SpriteDataCopy
 
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 	
 	; Shrink x&y borders
 	lda #$f0
-	jsr Bus24Bit_EnableDisplay
+	jsr Video_EnableDisplay
 
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 
 	; Full borders again
 	lda #$30
-	jsr Bus24Bit_EnableDisplay
+	jsr Video_EnableDisplay
 
 !if 1 {
 	; Demonstrate video bus and palette bus contention handling by updating sprite registers during the visible portion of the screen
@@ -76,8 +76,8 @@ start
 .do1
 	+MWordValueTo_AX SpriteFrame1
 	ldy #SpriteFrame1Size
-	jsr Bus24Bit_SpriteDataCopy
-	jsr Bus24Bit_SetAddressPalette
+	jsr Video_SpriteDataCopy
+	jsr Video_SetAddressPalette
 	ldx #$10
 	lda #$11
 	clc
@@ -105,7 +105,7 @@ start
 	lda #$1f
 	sta CIA2PortBRS232
 
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 
 	rts
 .counter1 !by 32
@@ -116,10 +116,10 @@ start2
 ;	ldx #$ff
 ;	txs
 	
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 	; Full borders again
 	lda #$30
-	jsr Bus24Bit_EnableDisplay
+	jsr Video_EnableDisplay
 
 	; Setup some characters at known positions
 	lda #$01
@@ -154,14 +154,14 @@ start2
 	lda #$45
 	sta CIA2PortBRS232
 	
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 
 	; Move sprites slightly in to reveal more of the characters
 	+MWordValueTo_AX SpriteFrame2
 	ldy #SpriteFrame2Size
-	jsr Bus24Bit_SpriteDataCopy
+	jsr Video_SpriteDataCopy
 
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 
 	; Setup some characters with known flips, colours, and extended chars
 	lda #$01
@@ -196,7 +196,7 @@ start2
 	lda #$c3
 	sta CIA2PortBRS232
 	
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 
 	rts
 
@@ -206,21 +206,21 @@ start3
 ;	ldx #$ff
 ;	txs
 	
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 	; Shrink borderX
 	lda #$70
-	jsr Bus24Bit_EnableDisplay
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_EnableDisplay
+	jsr Video_WaitVBlank
 
 	; Shrink borderY
 	lda #$b0
-	jsr Bus24Bit_EnableDisplay
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_EnableDisplay
+	jsr Video_WaitVBlank
 
 	; Shrink borderX+Y
 	lda #$f0
-	jsr Bus24Bit_EnableDisplay
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_EnableDisplay
+	jsr Video_WaitVBlank
 
 	rts
 
@@ -230,7 +230,7 @@ start4
 ;	ldx #$ff
 ;	txs
 
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 
 	lda #$01
 	+MWordValueTo_XY $a000
@@ -240,7 +240,7 @@ start4
 	ldy #Mode7Regs1Size
 	jsr Bus24Bit_CopySmallData
 	
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 
 
 	lda #$01
@@ -251,7 +251,7 @@ start4
 	ldy #Mode7Regs3Size
 	jsr Bus24Bit_CopySmallData
 	
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 
 
 	lda #$01
@@ -262,7 +262,7 @@ start4
 	ldy #Mode7Regs2Size
 	jsr Bus24Bit_CopySmallData
 	
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 	rts
 
 
@@ -272,7 +272,7 @@ start5
 ;	ldx #$ff
 ;	txs
 
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 
 .l1
 	; This is very fast movement
@@ -299,7 +299,7 @@ start5
 	ldy #Mode7Regs3TranslationSize
 	jsr Bus24Bit_CopySmallData
 
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 	
 	dec Mode7Regs3TranslationCount
 	bne .l1
@@ -313,10 +313,10 @@ start6
 ;	ldx #$ff
 ;	txs
 	
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 	; Shrink borderX+Y
 	lda #$f0
-	jsr Bus24Bit_EnableDisplay
+	jsr Video_EnableDisplay
 
 	; Setup some tiles at known positions
 	lda #$80
@@ -351,12 +351,12 @@ start6
 	lda #$45
 	sta CIA2PortBRS232
 	
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 	; Full borders again
 	lda #$30
-	jsr Bus24Bit_EnableDisplay
+	jsr Video_EnableDisplay
 
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 
 	; Setup some tiles with known flips and colours
 	lda #$80
@@ -391,7 +391,7 @@ start6
 	lda #$c3
 	sta CIA2PortBRS232
 	
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 
 	rts
 

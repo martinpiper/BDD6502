@@ -15,7 +15,7 @@ start
 mainLoop
 	lda #50
 	sta Bus24Bit_WriteMakeSafeReset
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 	jsr CopyScreen
 
 	+WaitForFireB_A
@@ -24,7 +24,7 @@ mainLoop2
 	; Test for screen/colour RAM write sync to vblank
 ;	lda #50
 ;	sta Bus24Bit_WriteMakeSafeReset
-	jsr Bus24Bit_WaitVBlank
+	jsr Video_WaitVBlank
 ;	jsr CopyScreen
 	jsr CopySprites
 !for .i , 24 {
@@ -59,12 +59,12 @@ mainLoop2
 DisplayScreen
 	jsr Bus24Bit_Init
 
-	jsr Bus24Bit_DisableDisplay
+	jsr Video_DisableDisplay
 	lda #$30
-	jsr Bus24Bit_EnableDisplay
+	jsr Video_EnableDisplay
 	inc VIC2BorderColour
 
-	jsr Bus24Bit_SetAddressSpritesControl
+	jsr Video_SetAddressSpritesControl
 	lda #$10
 	sta CIA2PortBRS232
 	lda #$08
@@ -207,7 +207,7 @@ SpriteFrame0
 SpriteFrame0Size = * - SpriteFrame0
 
 CopySprites
-	jsr Bus24Bit_SetAddressSprites
+	jsr Video_SetAddressSprites
 	; Very optimised unrolled loop to copy sprite data in the vblank
 !for .i , 24 * 4 {
 	lda SpriteFrame0 + (.i-1)

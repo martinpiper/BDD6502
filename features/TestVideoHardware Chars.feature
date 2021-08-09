@@ -54,7 +54,7 @@ Feature: Tests the video character screen data conversion
     Given a simple user port to 24 bit bus is installed
     Given add a StaticColour layer for palette index '0x7f'
     Given add a Chars layer with registers at '0x9000' and addressEx '0x20'
-    # Enable display, since the Bus24Bit_EnableDisplay code dos not properly use the simple bus, however it is deprecated
+    # Enable display, since the Video_EnableDisplay code dos not properly use the simple bus, however it is deprecated
     Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
     Given show video window
 
