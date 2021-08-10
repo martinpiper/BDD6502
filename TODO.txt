@@ -23,6 +23,7 @@
 * Simulation of the test data from the chars + sprites test shows char screen/colour uploaded during the screen display have "random" data contention issues.
 	This is because the V3.0 hardware prioritises the video address fetch setup over the memory write setup
 	This behaviour is observed in the hardware with full user port interface.
+	* Not needed for chars with V5.0 hardware. Removed Bus24Bit_WriteMakeSafeReset from demos.
 
 
 
