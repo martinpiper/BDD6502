@@ -286,7 +286,7 @@ public class UserPortTo24BitAddress extends Device {
     final long kAPU_WaitForEqualsHV 	= 0b00000000000000000000000000001000;
     final long kAPU_Incr_ADDRB1			= 0b00000000000000000000000000100000;
     final long kAPU_Incr_EADDR			= 0b00000000000000000000000001000000;
-    final long kAPU_ExternalMEWR		= 0b00000000000000000000000010000000;		// ; This is timed to pulse low on the PCINCR (cycle 3)
+    final long kAPU_ExternalMEWR		= 0b00000000000000000000000010000000;		// ; This is timed to pulse low on the PCINCR (cycle 5)
     final long kAPU_Load_EBS			= 0b00000000000000000000000100000000;
     final long kAPU_Load_EADDRLo		= 0b00000000000000000000001000000000;
     final long kAPU_Load_EADDRHi		= 0b00000000000000000000010000000000;
@@ -397,6 +397,24 @@ public class UserPortTo24BitAddress extends Device {
             }
         }
 
+        // Due to "Any Incr is timed at cycle 6+3" the increment is handled after the write and load pulses
+        // Here we test the last_instruction and current instruction before the instruction is going to be executed
+        if (MemoryBus.addressActive(last_instruction , kAPU_Incr_ADDRB1) && !MemoryBus.addressActive(instruction , kAPU_Incr_ADDRB1)) {
+            apuADDRB1++;
+            apuADDRB1 &= 0x3fff;
+        }
+        if (MemoryBus.addressActive(last_instruction , kAPU_Incr_ADDRB2) && !MemoryBus.addressActive(instruction , kAPU_Incr_ADDRB2)) {
+            apuADDRB2++;
+            apuADDRB2 &= 0x3fff;
+        }
+
+        if (MemoryBus.addressActive(last_instruction , kAPU_Incr_EADDR) && !MemoryBus.addressActive(instruction , kAPU_Incr_EADDR)) {
+            apuEADDR++;
+        }
+
+        if (MemoryBus.addressActive(last_instruction , kAPU_Incr_EADDR2) && !MemoryBus.addressActive(instruction , kAPU_Incr_EADDR2)) {
+            apuEADDR2++;
+        }
 
         apuPC++;
         apuPC &= 0x07ff;
@@ -411,23 +429,6 @@ public class UserPortTo24BitAddress extends Device {
 
         if (MemoryBus.addressActive(instruction , kAPU_WaitForEqualsHV)) {
             apuHitWait = false;
-        }
-
-        if (MemoryBus.addressActive(instruction , kAPU_Incr_ADDRB1)) {
-            apuADDRB1++;
-            apuADDRB1 &= 0x3fff;
-        }
-        if (MemoryBus.addressActive(instruction , kAPU_Incr_ADDRB2)) {
-            apuADDRB2++;
-            apuADDRB2 &= 0x3fff;
-        }
-
-        if (MemoryBus.addressActive(instruction , kAPU_Incr_EADDR)) {
-            apuEADDR++;
-        }
-
-        if (MemoryBus.addressActive(instruction , kAPU_Incr_EADDR2)) {
-            apuEADDR2++;
         }
 
         int gotByte;
