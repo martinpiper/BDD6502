@@ -408,3 +408,12 @@ Added: Given I am using C64 processor port options
 	Or highlight the current position in the window with the previous frame data
 	Or clear the entire display data
 	Done - Hitting the next step (or break) force redraws the window, basically
+
+
+
+* When disassembling, or dumping, take into account the current device and provide APU information when needed
+	Done APU disassembly
+	Done: Disassembly address in APU mode needs to use the APU PC, not the 6502 PC
+		Note the "before address" fetched can be smaller that for 6502
+		Also the source disassembly can use the label APUData_Start as an offset if it is available. Filter by the label's zone when in APU mode?
+			Allow an optional offset in the debugger to support multiple chunks of APU code as source, or filter by the label's zone?

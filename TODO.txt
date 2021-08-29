@@ -1,10 +1,11 @@
 ; TODO items
 
-* When disassembling, or dumping, take into account the current device and provide APU information when needed
-	Done APU disassembly
-	TODO: Disassembly address in APU mode needs to use the APU PC, not the 6502 PC
-		Note the "before address" fetched can be smaller that for 6502
-		Also the source disassembly can use the label APUData_Start as an offset if it is available
+* APU Source debugging works, however the APU instructions are all implemented as macros, so the macro source is shown. Doh. :)
+	ACME will need to be improved to output the debug source hierarchy in the PDB, i.e. which file include which file
+	Or ACME parses APU code directly without macros
+	Then AddrInfo can be updated to include the source file levels after the primary level...
+			
+
 
 
 
