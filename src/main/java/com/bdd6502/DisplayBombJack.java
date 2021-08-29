@@ -315,6 +315,8 @@ public class DisplayBombJack extends MemoryBus {
         }
 
         if (callbackAPU != null) {
+            // Each pixel by default, has two VIDCLK transitions, so the APU needs two ticks
+            callbackAPU.calculatePixel();
             callbackAPU.calculatePixel();
         }
 

@@ -38,7 +38,7 @@ public class UserPortTo24BitAddress extends Device {
     boolean enableAPU = false;
     DisplayBombJack displayBombJack = null;
     APUData apuData = null;
-    final int kPixelsPerInstruction = 6;
+    final int kCyclesPerInstruction = 7;
     int apuInstuctionSchedule = 0;
     boolean apuIntercepting = false;
     int apuPreviousGotByte = 0;
@@ -368,7 +368,7 @@ public class UserPortTo24BitAddress extends Device {
 
         apuInstuctionSchedule++;
 
-        if (apuInstuctionSchedule >= kPixelsPerInstruction) {
+        if (apuInstuctionSchedule >= kCyclesPerInstruction) {
             // Start whatever is the next instruction
             apuInstuctionSchedule = 0;
         }

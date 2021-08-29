@@ -113,3 +113,16 @@ Music conversion
     
 
 * Playback: java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --playmod target\exportedMusic
+
+
+
+
+Remote debugger commands
+------------------------
+
+cpu 6502
+cpu apu
+
+display full
+display cls
+display ahead
