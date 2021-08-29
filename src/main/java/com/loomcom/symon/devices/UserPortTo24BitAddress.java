@@ -397,6 +397,11 @@ public class UserPortTo24BitAddress extends Device {
             }
         }
 
+        assertThat("kAPU_Incr_ADDRB1 should not be held high for more than one instruction", !(MemoryBus.addressActive(last_instruction , kAPU_Incr_ADDRB1) && MemoryBus.addressActive(instruction , kAPU_Incr_ADDRB1)));
+        assertThat("kAPU_Incr_ADDRB2 should not be held high for more than one instruction", !(MemoryBus.addressActive(last_instruction , kAPU_Incr_ADDRB2) && MemoryBus.addressActive(instruction , kAPU_Incr_ADDRB2)));
+        assertThat("kAPU_Incr_EADDR should not be held high for more than one instruction", !(MemoryBus.addressActive(last_instruction , kAPU_Incr_EADDR) && MemoryBus.addressActive(instruction , kAPU_Incr_EADDR)));
+        assertThat("kAPU_Incr_EADDR2 should not be held high for more than one instruction", !(MemoryBus.addressActive(last_instruction , kAPU_Incr_EADDR2) && MemoryBus.addressActive(instruction , kAPU_Incr_EADDR2)));
+
         // Due to "Any Incr is timed at cycle 6+3" the increment is handled after the write and load pulses
         // Here we test the last_instruction and current instruction before the instruction is going to be executed
         if (MemoryBus.addressActive(last_instruction , kAPU_Incr_ADDRB1) && !MemoryBus.addressActive(instruction , kAPU_Incr_ADDRB1)) {
