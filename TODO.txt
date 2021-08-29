@@ -2,6 +2,9 @@
 
 * When disassembling, or dumping, take into account the current device and provide APU information when needed
 	Done APU disassembly
+	TODO: Disassembly address in APU mode needs to use the APU PC, not the 6502 PC
+		Note the "before address" fetched can be smaller that for 6502
+		Also the source disassembly can use the label APUData_Start as an offset if it is available
 
 
 

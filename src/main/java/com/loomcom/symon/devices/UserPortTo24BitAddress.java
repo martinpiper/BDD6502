@@ -455,6 +455,7 @@ public class UserPortTo24BitAddress extends Device {
     }
 
     private int getAPUInstruction(int thePC) {
+        thePC = thePC & 0x7ff;
         return (apuData.getApuInstructions()[thePC * 4] & 0xff) | ((apuData.getApuInstructions()[(thePC * 4) + 1] & 0xff) << 8) | ((apuData.getApuInstructions()[(thePC * 4) + 2] & 0xff) << 16) | ((apuData.getApuInstructions()[(thePC * 4) + 3] & 0xff) << 24);
     }
 
