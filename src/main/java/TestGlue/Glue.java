@@ -11,6 +11,7 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 import com.loomcom.symon.util.HexUtil;
+import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -1870,5 +1871,28 @@ public class Glue {
         while (!RemoteDebugger.getRemoteDebugger().isReceivedCommand()) {
             Thread.sleep(100);
         }
+    }
+
+    BufferedReader fileReading;
+    @Given("^open file \"([^\"]*)\" for reading$")
+    public void open_file_for_reading(String filePath) throws FileNotFoundException {
+        fileReading = new BufferedReader(new FileReader(filePath));
+    }
+
+    String currentLineRead;
+    @Then("^expect the next line to contain \"([^\"]*)\"$")
+    public void expect_the_next_line_to_contain(String subString) throws IOException {
+        currentLineRead = fileReading.readLine();
+        expectTheLineToContain(subString);
+    }
+
+    @And("^skip line$")
+    public void skipLine() throws IOException {
+        currentLineRead = fileReading.readLine();
+    }
+
+    @Then("^expect the line to contain \"([^\"]*)\"$")
+    public void expectTheLineToContain(String subString) {
+        assertThat(currentLineRead, containsString(subString));
     }
 }

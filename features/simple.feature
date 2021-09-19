@@ -106,3 +106,11 @@ Feature: Simple 6502 code test
     And wait for debugger connection
     And wait for debugger command
     When I execute the procedure at $400 until return
+
+
+  Scenario: Validates expected file data
+    Given open file "Done.txt" for reading
+    Then expect the next line to contain "; Done items"
+    And skip line
+    Then expect the next line to contain "Given I am using C64 processor port options"
+    Then expect the line to contain "Added: "

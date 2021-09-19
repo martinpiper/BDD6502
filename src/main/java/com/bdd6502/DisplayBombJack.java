@@ -173,7 +173,7 @@ public class DisplayBombJack extends MemoryBus {
             // This is true, as long as mode7 writes (due to resetting the internal values on _VSYNC) are completed before the end of the _VSYNC which starts later and shorter than the VBLANK
             if (enableDisplay && !vBlank && debugData != null) {
                 debugData.println("d$0");
-                debugData.printf("w$ff01ff00,$%02x%02x%02x00\n", displayV & 0xff , (displayH >> 8) & 0x01 , displayH & 0xff );
+                debugData.printf("w$ff03ff00,$%02x%02x%02x00\n", displayV & 0xff , (displayH >> 8) & 0x01 , displayH & 0xff );
                 debugData.println("d$0");
             }
         }
@@ -316,8 +316,8 @@ public class DisplayBombJack extends MemoryBus {
 
         if (callbackAPU != null) {
             // Each pixel by default, has two VIDCLK transitions, so the APU needs two ticks
-            // callbackAPU.calculatePixel();
-            // When using APU JP11 (which is VIDCLK/2) instead of JP10 (VIDCLK) then the InterceptBus to _MEWR = 175ns and lo pulse time = 160ns, which seems to be adequate
+            // Using JP10
+            callbackAPU.calculatePixel();
             callbackAPU.calculatePixel();
         }
 

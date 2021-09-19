@@ -854,7 +854,8 @@ public class UserPortTo24BitAddress extends Device {
     private void apuCheckTriggers() {
         int displayH = displayBombJack.getDisplayH();
         int displayV = displayBombJack.getDisplayV();
-        if (apuWait24 == displayV && apuWait16 == (displayH & 0x100)>>8 && apuWait8 == (displayH & 0xff)) {
+        // Note:  For apuWait16 filter out _VIDCLK lo/hi values from just after RH8
+        if (apuWait24 == displayV && (apuWait16 & 0x01) == (displayH & 0x100)>>8 && apuWait8 == (displayH & 0xff)) {
             apuHitWait = true;
         }
     }
