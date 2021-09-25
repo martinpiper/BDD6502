@@ -163,23 +163,34 @@ public class Sprites2 extends DisplayLayer {
         // Reading Y first gives time to calculate vertical extent and skip the sprite before drawing the span
         switch (drawingSpriteState) {
             case 0:
+            case 2:
+            case 4:
+            case 6:
+            case 8:
+            case 10:
+            case 12:
+            case 14:
             default:
+                drawingSpriteState++;
+                break;
+
+            case 1:
                 // Palette bits also used for X&Y MSB
                 currentSpritePalette = spritePalette[drawingSpriteIndex];
                 drawingSpriteState++;
                 break;
 
-            case 1:
+            case 3:
                 currentSpriteY = spriteY[drawingSpriteIndex] | ((currentSpritePalette & 0x10) << 4);
                 drawingSpriteState++;
                 break;
 
-            case 2:
+            case 5:
                 currentSpriteScaleY = spriteSizeY[drawingSpriteIndex];
                 drawingSpriteState++;
                 break;
 
-            case 3:
+            case 7:
                 // Perform Y extent check, the wait is for the calculation to succeed due to multiply 16 (shift 4!!) lookup and add, and advance drawingSpriteIndex if it isn't going to be drawn
                 insideHeight = (displayV - currentSpriteY);
                 // Note, unsigned comparison with low bits
@@ -193,18 +204,18 @@ public class Sprites2 extends DisplayLayer {
                 drawingSpriteState++;
                 break;
 
-            case 4:
+            case 9:
                 currentSpriteScaleX = spriteScaleExtentX[drawingSpriteIndex];
                 drawingSpriteState++;
                 break;
 
 
-            case 5:
+            case 11:
                 currentSpriteScaleYInv = spriteScaleYInv[drawingSpriteIndex];
                 drawingSpriteState++;
                 break;
 
-            case 6:
+            case 13:
                 // Lookup table calculation
                 currentSpriteYPixel = (currentSpriteScaleYInv/2) + (insideHeight * currentSpriteScaleYInv);
 
@@ -213,12 +224,12 @@ public class Sprites2 extends DisplayLayer {
                 drawingSpriteState++;
                 break;
 
-            case 7:
+            case 15:
                 currentSpriteFrame = spriteFrame[drawingSpriteIndex];
                 drawingSpriteState++;
                 break;
 
-            case 8:
+            case 16:
                 int pixelX = (currentSpriteXPixel >> 4) & 0x0f;
                 int pixelY = (currentSpriteYPixel >> 4) & 0x0f;
                 if ((currentSpritePalette & 0x80) > 0) {
