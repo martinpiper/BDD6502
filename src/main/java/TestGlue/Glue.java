@@ -1605,6 +1605,11 @@ public class Glue {
         displayBombJack.addLayer(new Sprites(valueToInt(addressRegisters), valueToInt(addressEx)));
     }
 
+    @Given("^add a Sprites2 layer with registers at '(.*)' and addressEx '(.*)'$")
+    public void addASprites2LayerWithRegistersAtXAndAddressExX(String addressRegisters, String addressEx) throws ScriptException {
+        displayBombJack.addLayer(new Sprites2(valueToInt(addressRegisters), valueToInt(addressEx)));
+    }
+
     @Given("^the layer has 16 colours$")
     public void make16Colours() throws ScriptException {
         displayBombJack.getLastLayer().make16Colours();

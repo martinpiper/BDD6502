@@ -6,16 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/simple.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/simple.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testcmp.prg" beforeDir="false" afterPath="$PROJECT_DIR$/testcmp.prg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000001.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000001.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000006.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000006.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-2-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-000000.bmp" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -103,7 +95,7 @@
       <recent name="com.bdd6502" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner no parameters">
+  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-7">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -330,6 +322,14 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags @TC-6 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/TestVideoHardware.feature" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner TestVideoHardware.feature  @TC-7" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @TC-7 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -682,6 +682,7 @@
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-1" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-6" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-7" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature" />
       <item itemvalue="Application.TestRunner Tusari2" />
       <item itemvalue="Application.TestRunner UnitialisedMemory.feature" />
@@ -755,10 +756,24 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
+        <breakpoint type="java-exception">
+          <properties class="java.lang.ArrayIndexOutOfBoundsException" package="java.lang" />
+          <option name="timeStamp" value="13" />
+        </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
-          <line>367</line>
-          <option name="timeStamp" value="12" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites2.java</url>
+          <line>221</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites2.java</url>
+          <line>267</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites2.java</url>
+          <line>158</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -772,8 +787,9 @@
         <watch expression="kAPU_IDataSelectRAM" language="JAVA" />
       </configuration>
       <configuration name="Application">
-        <watch expression="displayX" language="JAVA" />
-        <watch expression="displayY" language="JAVA" />
+        <watch expression="currentSpritePalette" />
+        <watch expression="currentSpriteY" />
+        <watch expression="currentSpriteScaleY" />
       </configuration>
     </watches-manager>
   </component>
