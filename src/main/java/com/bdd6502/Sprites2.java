@@ -24,7 +24,7 @@ public class Sprites2 extends DisplayLayer {
     int spriteFrame[] = new int[kNumSprites];
     int spritePalette[] = new int[kNumSprites];
 
-    boolean _hSyncPrev = false;
+    boolean prevMSBH = false;
 
     int drawingSpriteIndex = 0;
     int drawingSpriteState = 0;
@@ -132,25 +132,24 @@ public class Sprites2 extends DisplayLayer {
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
-        if (!spriteEnable || (_hSyncPrev && !_hSync)) {
+        // Time to the rising edge of the MSB, displayV is stable for the whole scan line at this point.
+        // Otherwise for any other position the hardware would need to latch and alternate, which actually is another option...
+        boolean msbH = (displayH & 0x100) == 0x100;
+        if (!spriteEnable || (!prevMSBH && msbH)) {
             fetchingPixel = 0;
-            onScreen = displayV & 1;
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
         }
-        _hSyncPrev = _hSync;
+        prevMSBH = msbH;
+        onScreen = displayV & 1;
 
         handleSpriteSchedule(displayH, displayV);
 
         // Output calculated data
-        if (!_hSync) {
-            return 0;
-        }
         int finalPixel = calculatedRasters[onScreen][fetchingPixel];
         // And progressively clear the output pixel, like the hardware does
         calculatedRasters[onScreen][fetchingPixel++] = 0;
 
-//        finalPixel = fetchingPixel & 0x0f;
         return finalPixel;
     }
 
@@ -194,7 +193,7 @@ public class Sprites2 extends DisplayLayer {
                 // Perform Y extent check, the wait is for the calculation to succeed due to multiply 16 (shift 4!!) lookup and add, and advance drawingSpriteIndex if it isn't going to be drawn
                 insideHeight = (displayV - currentSpriteY);
                 // Note, unsigned comparison with low bits
-                insideHeight &= 0xff;
+                insideHeight &= 0x1ff;
                 if (insideHeight >= currentSpriteScaleY) {
                     drawingSpriteState = 0;
                     drawingSpriteIndex++;
