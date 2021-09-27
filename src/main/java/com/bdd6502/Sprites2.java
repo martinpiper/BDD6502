@@ -243,7 +243,7 @@ public class Sprites2 extends DisplayLayer {
                 // Drawing pixels...
                 int theColour = 0;
                 // Selector
-                int internalFrame = currentSpriteFrame & 0x1f;
+                int internalFrame = (currentSpriteFrame & 0x3f)>>1;
                 int internalAddress = (internalFrame * 0x100) + pixelX + (pixelY << 4);
                 switch (currentSpriteFrame & 0xc0) {
                     case 0x00:
@@ -261,7 +261,7 @@ public class Sprites2 extends DisplayLayer {
                         break;
                 }
                 // Selector
-                if ((currentSpriteFrame & 0x20) > 0) {
+                if ((currentSpriteFrame & 0x01) > 0) {
                     theColour >>= 4;
                 }
                 theColour &= 0x0f;
