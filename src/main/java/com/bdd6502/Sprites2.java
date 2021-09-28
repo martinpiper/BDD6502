@@ -229,34 +229,34 @@ public class Sprites2 extends DisplayLayer {
                 break;
 
             case 16:
-                int pixelX = (currentSpriteXPixel >> 4) & 0x0f;
-                int pixelY = (currentSpriteYPixel >> 4) & 0x0f;
+                int pixelX = (currentSpriteXPixel >> 4) & 0x1f;
+                int pixelY = (currentSpriteYPixel >> 4) & 0x1f;
                 if ((currentSpritePalette & 0x80) > 0) {
-                    pixelX = 15 - pixelX;
+                    pixelX = 31 - pixelX;
                 }
                 if ((currentSpritePalette & 0x40) > 0) {
-                    pixelY = 15 - pixelY;
+                    pixelY = 31 - pixelY;
                 }
-                pixelX &= 0x0f;
-                pixelY &= 0x0f;
+                pixelX &= 0x1f;
+                pixelY &= 0x1f;
                 currentSpriteX = currentSpriteX & 0x1ff;
                 // Drawing pixels...
                 int theColour = 0;
                 // Selector
-                int internalFrame = (currentSpriteFrame & 0x3f)>>1;
-                int internalAddress = (internalFrame * 0x100) + pixelX + (pixelY << 4);
-                switch (currentSpriteFrame & 0xc0) {
+                int internalFrame = (currentSpriteFrame & 0x0f)>>1;
+                int internalAddress = (internalFrame * 0x400) + pixelX + (pixelY << 5);
+                switch (currentSpriteFrame & 0x30) {
                     case 0x00:
                     default:
                         theColour = plane0[internalAddress];
                         break;
-                    case 0x40:
+                    case 0x10:
                         theColour = plane1[internalAddress];
                     break;
-                    case 0x80:
+                    case 0x20:
                         theColour = plane2[internalAddress];
                         break;
-                    case 0xc0:
+                    case 0x30:
                         theColour = plane3[internalAddress];
                         break;
                 }
