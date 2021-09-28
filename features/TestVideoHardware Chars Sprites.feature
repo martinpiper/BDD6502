@@ -57,23 +57,27 @@ Feature: Tests the video character screen data conversion and sprites
     Given a user port to 24 bit bus is installed
     Given add a StaticColour layer for palette index '0x07'
     And the layer has 16 colours
-#    Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
-#    And the layer has 16 colours
+    Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
+    And the layer has 16 colours
     Given add a Sprites2 layer with registers at '0x9000' and addressEx '0x10'
     And the layer has 16 colours
     Given show video window
 
     # Palette
-    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledPaletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars512_paletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledPaletteData.bin" to 24bit bus at '0x9d60' and addressEx '0x01'
+    Given write data from file "C:\Work\ImageToBitplane\target\testconcat4PaletteData.bin" to 24bit bus at '0x9d80' and addressEx '0x01'
+
 
     # Sprites2 data
     # Turrican Scaled: --rgbshift 4 4 4 --newpalettes --palettesize 16 --forcergb 255 0 255 --image "Turrican/player.png" --tilewh 32 32 --imagequantize 16 --palettequantize 16 --nostacking --outputscaled ../tmp/TurricanScaledSprites --outputsprites ../tmp/TurricanScaledSpritesSheet.txt --outputpalettes ../tmp/TurricanScaledPaletteData.bin --convertwritepass
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledSprites0.bin" to 24bit bus at '0x2000' and addressEx '0x10'
     Given write data from file "C:\work\C64\VideoHardware\tmp\TurricanScaledSprites1.bin" to 24bit bus at '0x4000' and addressEx '0x10'
     Given write data from file "C:\work\C64\VideoHardware\tmp\TurricanClouds_tiles.bin2" to 24bit bus at '0x8000' and addressEx '0x10'
-    Given write data from file "C:\work\BombJack\Mode7.bin" to 24bit bus at '0x0000' and addressEx '0x10'
+    Given write data from file "C:\Work\ImageToBitplane\target\testconcat4ScaledSprites0.bin" to 24bit bus at '0x0000' and addressEx '0x10'
 
     # Chars
+    # oldbridge char screen with rgbfactor 512
     Given write data from file "C:\Work\ImageToBitplane\target\chars512_plane0.bin" to 24bit bus at '0x2000' and addressEx '0x20'
     Given write data from file "C:\Work\ImageToBitplane\target\chars512_plane1.bin" to 24bit bus at '0x4000' and addressEx '0x20'
     Given write data from file "C:\Work\ImageToBitplane\target\chars512_plane2.bin" to 24bit bus at '0x8000' and addressEx '0x20'
@@ -91,6 +95,10 @@ Feature: Tests the video character screen data conversion and sprites
     # Enable sprites2
     Given write data byte '0x01' to 24bit bus at '0x9100' and addressEx '0x01'
 
+    # Disable chars
+    Given write data byte '0x02' to 24bit bus at '0x9000' and addressEx '0x01'
+
+
     # Sprites2 registers
     # Sprites support X and Y flips with X & Y repeating patterns
     # Palette | 0x10 =MSBY | 0x20 = MSBX | 0x40 = flipY | 0x80 = flipX
@@ -101,7 +109,7 @@ Feature: Tests the video character screen data conversion and sprites
     # Y inv scale
     # X inv scale
     # Frame
-    Given write data byte '0x00' to 24bit bus at '0x9200' and addressEx '0x01'
+    Given write data byte '0x0b' to 24bit bus at '0x9200' and addressEx '0x01'
     Given write data byte '0x40' to 24bit bus at '0x9201' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x9202' and addressEx '0x01'
     Given write data byte '0xf8' to 24bit bus at '0x9203' and addressEx '0x01'
@@ -110,7 +118,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x10' to 24bit bus at '0x9206' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x9207' and addressEx '0x01'
 
-    Given write data byte '0x00' to 24bit bus at '0x9208' and addressEx '0x01'
+    Given write data byte '0x0b' to 24bit bus at '0x9208' and addressEx '0x01'
     Given write data byte '0x80' to 24bit bus at '0x9209' and addressEx '0x01'
     Given write data byte '0x30' to 24bit bus at '0x920a' and addressEx '0x01'
     Given write data byte '0xf0' to 24bit bus at '0x920b' and addressEx '0x01'
@@ -120,7 +128,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x04' to 24bit bus at '0x920f' and addressEx '0x01'
 
     # Use MSB X test
-    Given write data byte '0xe0' to 24bit bus at '0x9210' and addressEx '0x01'
+    Given write data byte '0xeb' to 24bit bus at '0x9210' and addressEx '0x01'
     Given write data byte '0xc0' to 24bit bus at '0x9211' and addressEx '0x01'
     Given write data byte '0x80' to 24bit bus at '0x9212' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x9213' and addressEx '0x01'
@@ -130,7 +138,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x00' to 24bit bus at '0x9217' and addressEx '0x01'
 
     # Use MSB Y test
-    Given write data byte '0x10' to 24bit bus at '0x9218' and addressEx '0x01'
+    Given write data byte '0x1b' to 24bit bus at '0x9218' and addressEx '0x01'
     Given write data byte '0xf0' to 24bit bus at '0x9219' and addressEx '0x01'
     Given write data byte '0x68' to 24bit bus at '0x921a' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x921b' and addressEx '0x01'
@@ -140,15 +148,78 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x02' to 24bit bus at '0x921f' and addressEx '0x01'
 
     # /2
-    Given write data byte '0x00' to 24bit bus at '0x9220' and addressEx '0x01'
+    Given write data byte '0x0c' to 24bit bus at '0x9220' and addressEx '0x01'
     Given write data byte '0x80' to 24bit bus at '0x9221' and addressEx '0x01'
     Given write data byte '0x10' to 24bit bus at '0x9222' and addressEx '0x01'
-    Given write data byte '0xa0' to 24bit bus at '0x9223' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0x9223' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x9224' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x9225' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x9226' and addressEx '0x01'
-    Given write data byte '0x20' to 24bit bus at '0x9227' and addressEx '0x01'
+    Given write data byte '0x30' to 24bit bus at '0x9227' and addressEx '0x01'
 
+    Given write data byte '0x0c' to 24bit bus at '0x9228' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x9229' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x922a' and addressEx '0x01'
+    Given write data byte '0xa0' to 24bit bus at '0x922b' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x922c' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x922d' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x922e' and addressEx '0x01'
+    Given write data byte '0x31' to 24bit bus at '0x922f' and addressEx '0x01'
+
+    Given write data byte '0x0c' to 24bit bus at '0x9230' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0x9231' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x9232' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0x9233' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x9234' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x9235' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x9236' and addressEx '0x01'
+    Given write data byte '0x32' to 24bit bus at '0x9237' and addressEx '0x01'
+
+    Given write data byte '0x0c' to 24bit bus at '0x9238' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0x9239' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x923a' and addressEx '0x01'
+    Given write data byte '0xa0' to 24bit bus at '0x923b' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x923c' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x923d' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x923e' and addressEx '0x01'
+    Given write data byte '0x33' to 24bit bus at '0x923f' and addressEx '0x01'
+
+    # *2
+    Given write data byte '0x0c' to 24bit bus at '0x9240' and addressEx '0x01'
+    Given write data byte '0xa0' to 24bit bus at '0x9241' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x9242' and addressEx '0x01'
+    Given write data byte '0xb0' to 24bit bus at '0x9243' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x9244' and addressEx '0x01'
+    Given write data byte '0x08' to 24bit bus at '0x9245' and addressEx '0x01'
+    Given write data byte '0x08' to 24bit bus at '0x9246' and addressEx '0x01'
+    Given write data byte '0x30' to 24bit bus at '0x9247' and addressEx '0x01'
+
+    Given write data byte '0x0c' to 24bit bus at '0x9248' and addressEx '0x01'
+    Given write data byte '0xa0' to 24bit bus at '0x9249' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x924a' and addressEx '0x01'
+    Given write data byte '0xf0' to 24bit bus at '0x924b' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x924c' and addressEx '0x01'
+    Given write data byte '0x08' to 24bit bus at '0x924d' and addressEx '0x01'
+    Given write data byte '0x08' to 24bit bus at '0x924e' and addressEx '0x01'
+    Given write data byte '0x31' to 24bit bus at '0x924f' and addressEx '0x01'
+
+    Given write data byte '0x0c' to 24bit bus at '0x9250' and addressEx '0x01'
+    Given write data byte '0xe0' to 24bit bus at '0x9251' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x9252' and addressEx '0x01'
+    Given write data byte '0xb0' to 24bit bus at '0x9253' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x9254' and addressEx '0x01'
+    Given write data byte '0x08' to 24bit bus at '0x9255' and addressEx '0x01'
+    Given write data byte '0x08' to 24bit bus at '0x9256' and addressEx '0x01'
+    Given write data byte '0x32' to 24bit bus at '0x9257' and addressEx '0x01'
+
+    Given write data byte '0x0c' to 24bit bus at '0x9258' and addressEx '0x01'
+    Given write data byte '0xe0' to 24bit bus at '0x9259' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x925a' and addressEx '0x01'
+    Given write data byte '0xf0' to 24bit bus at '0x925b' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x925c' and addressEx '0x01'
+    Given write data byte '0x08' to 24bit bus at '0x925d' and addressEx '0x01'
+    Given write data byte '0x08' to 24bit bus at '0x925e' and addressEx '0x01'
+    Given write data byte '0x33' to 24bit bus at '0x925f' and addressEx '0x01'
 
     Given render a video display frame
     When rendering the video until window closed
