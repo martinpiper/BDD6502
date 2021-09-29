@@ -307,12 +307,14 @@ public class DisplayBombJack extends MemoryBus {
             displayBitmapY++;
         }
 
-        if (displayY >= 0 && displayY < 0x08) {
-            displayV = 0xf8 + displayY;
-            _vSync = false;
-        } else {
-            displayV = displayY - 0x08;
-        }
+//        if (displayH == 0x180) {
+            if (displayY >= 0 && displayY < 0x08) {
+                displayV = 0xf8 + displayY;
+                _vSync = false;
+            } else {
+                displayV = displayY - 0x08;
+            }
+//        }
 
         if (callbackAPU != null) {
             // Each pixel by default, has two VIDCLK transitions, so the APU needs two ticks

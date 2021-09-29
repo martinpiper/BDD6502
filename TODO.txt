@@ -1,5 +1,12 @@
 ; TODO items
 
+* displayV changes in simulation at displayH=0x180
+	* This is also at MSB displayH, of course
+	* Fix emulation to reflect this (it changes at 0x188 currently)
+		* Look for "//        if (displayH == 0x180) {"
+	* Fix Sprite2 logic
+
+
 * APU Source debugging works, however the APU instructions are all implemented as macros, so the macro source is shown. Doh. :)
 	ACME will need to be improved to output the debug source hierarchy in the PDB, i.e. which file include which file
 	Or ACME parses APU code directly without macros
