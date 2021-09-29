@@ -29,7 +29,7 @@ public class Sprites2 extends DisplayLayer {
     int drawingSpriteIndex = 0;
     int drawingSpriteState = 0;
     int currentSpriteX = 0 , currentSpriteY = 0 , currentSpriteFrame = 0 , currentSpritePalette = 0;
-    int currentSpriteScaleX = 0 , currentSpriteScaleY = 0;
+    int currentSpriteScaleX = 0 , currentSpriteSizeY = 0;
     int currentSpriteScaleXInv = 0 , currentSpriteScaleYInv = 0;
     int currentSpriteXPixel = 0;
     int currentSpriteYPixel = 0;
@@ -132,6 +132,8 @@ public class Sprites2 extends DisplayLayer {
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
+/*
+        // But in emulation the last 8 pixels are out of sync
         // Time to the rising edge of the MSB, displayV is stable for the whole scan line at this point.
         // Otherwise for any other position the hardware would need to latch and alternate, which actually is another option...
         boolean msbH = (displayH & 0x100) == 0x100;
@@ -142,6 +144,14 @@ public class Sprites2 extends DisplayLayer {
         }
         prevMSBH = msbH;
         onScreen = displayV & 1;
+*/
+        // Trigger on this displayH value instead
+        if (!spriteEnable || (displayH == 0x188)) {
+            fetchingPixel = 0;
+            onScreen = displayV & 1;
+            drawingSpriteIndex = 0;
+            drawingSpriteState = 0;
+        }
 
         handleSpriteSchedule(displayH, displayV);
 
@@ -185,7 +195,7 @@ public class Sprites2 extends DisplayLayer {
                 break;
 
             case 5:
-                currentSpriteScaleY = spriteSizeY[drawingSpriteIndex];
+                currentSpriteSizeY = spriteSizeY[drawingSpriteIndex];
                 drawingSpriteState++;
                 break;
 
@@ -194,7 +204,7 @@ public class Sprites2 extends DisplayLayer {
                 insideHeight = (displayV - currentSpriteY);
                 // Note, unsigned comparison with low bits
                 insideHeight &= 0x1ff;
-                if (insideHeight >= currentSpriteScaleY) {
+                if (insideHeight >= currentSpriteSizeY) {
                     drawingSpriteState = 0;
                     drawingSpriteIndex++;
                     return;
@@ -215,10 +225,12 @@ public class Sprites2 extends DisplayLayer {
                 break;
 
             case 13:
-                // Lookup table calculation
-                currentSpriteYPixel = (currentSpriteScaleYInv/2) + (insideHeight * currentSpriteScaleYInv);
+                // Lookup table calculation "(insideHeight * currentSpriteScaleYInv)", updated for each raster drawn
+                // TODO: There is a use case where "(currentSpriteScaleYInv/2)" is loaded from a value, instead of half the step value
+                currentSpriteYPixel = (currentSpriteScaleYInv/2) + ((insideHeight & 0xff) * currentSpriteScaleYInv);
 
                 currentSpriteScaleXInv = spriteScaleXInv[drawingSpriteIndex];
+                // TODO: There is a use case where this is loaded from a value, instead of half the step value
                 currentSpriteXPixel = currentSpriteScaleXInv / 2;
                 drawingSpriteState++;
                 break;
@@ -261,7 +273,7 @@ public class Sprites2 extends DisplayLayer {
                         break;
                 }
                 // Selector
-                if ((currentSpriteFrame & 0x01) > 0) {
+                if ((currentSpriteFrame & 0x01) != 0) {
                     theColour >>= 4;
                 }
                 theColour &= 0x0f;

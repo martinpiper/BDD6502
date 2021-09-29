@@ -62,6 +62,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given add a Sprites2 layer with registers at '0x9000' and addressEx '0x10'
     And the layer has 16 colours
     Given show video window
+    Given limit video display to 60 fps
 
     # Palette
     Given write data from file "C:\Work\ImageToBitplane\target\chars512_paletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
@@ -222,4 +223,18 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x33' to 24bit bus at '0x925f' and addressEx '0x01'
 
     Given render a video display frame
+
+
+    And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Sprites2.a"
+    And I run the command line: ..\C64\bin\LZMPi.exe -c64mbe test.prg testcmp.prg $200
+    And I load prg "test.prg"
+    And I load labels "test.lbl"
+#    And I enable trace with indent
+
+    When enable remote debugging
+#    And wait for debugger connection
+
+    When I execute the procedure at DisplayScreen until return
+    When I execute the procedure at mainLoop until return
+
     When rendering the video until window closed

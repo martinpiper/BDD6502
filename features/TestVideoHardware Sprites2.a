@@ -1,0 +1,269 @@
+!sal
+!pdb "target/t.pdb"
+!source "C64/stdlib/stdlib.a"
+!source "BombJack/stdlib/Video_Macros.a"
+!source "BombJack/stdlib/Bus24Bit_Macros.a"
+
+*=$200
+!zn
+DisplayScreen
+	jsr Bus24Bit_Init
+
+;	jsr Video_DisableDisplay
+;	lda #$30
+;	jsr Video_EnableDisplay
+
+
+	jsr Bus24Bit_Reset
+
+	+WaitForFireB_A
+
+	rts
+
+mainLoop
+
+	; Road sprite
+	lda sprite4Road
+	and #$7f
+	asl
+	tax
+
+!macro DoScaledSpriteWith .i , .tableX , .tableY {
+	lda tabRoadScaleYSize,x
+	sta Sprite2_data + 5 + (.i*8)
+	sta Sprite2_data + 6 + (.i*8)
+
+	; Remove any X/Y MSB
+	lda Sprite2_data + 0 + (.i*8)
+	and #$cf
+	sta Sprite2_data + 0 + (.i*8)
+
+	; Setup the Y extent
+	lda tabRoadScaleYSize+1,x
+	sta Sprite2_data + 2 + (.i*8)
+
+	lda #0
+	sta .smtheSwing+1
+
+	ldy swingX
+	beq .noSwing
+	bpl .isPlus
+	lda #0
+	sec
+	sbc swingX
+	tay
+.isPlus
+	lda tabRoadPerspectiveTabLo-1,y
+	sta .smSwing+1
+	lda tabRoadPerspectiveTabHi-1,y
+	sta .smSwing+2
+	txa
+	lsr
+	tay
+.smSwing lda $1234,y
+	sta .smtheSwing+1
+
+.noSwing
+
+	ldy swingX
+	bpl .isPlus2
+
+	; Setup X position
+	lda .tableX,x
+	sec
+	sbc .smtheSwing+1
+	sta Sprite2_data + 3 + (.i*8)
+
+	lda .tableX+1,x
+	sbc #0
+	jmp .commonCompare
+
+.isPlus2
+	; Setup X position
+	lda .tableX,x
+	clc
+.smtheSwing	adc #0
+	sta Sprite2_data + 3 + (.i*8)
+
+	lda .tableX+1,x
+	adc #0
+
+.commonCompare
+	beq .is0
+
+	cmp #2
+	bcs .removeSprite
+
+	; Is 0x1**
+	; It is visible inside far right edge?
+	lda Sprite2_data + 3 + (.i*8)
+	cmp #128
+	bcc .addMSB
+	jmp .removeSprite
+
+.is0
+	; Is 0x0**
+	lda #128
+	sec
+	sbc Sprite2_data + 2 + (.i*8)
+	; Reverse compare
+	cmp Sprite2_data + 3 + (.i*8)
+	bcs .removeSprite
+	jmp .noXMSB
+
+.removeSprite
+	; Remove sprite
+	lda #0
+	sta Sprite2_data + 1 + (.i*8)
+	sta Sprite2_data + 2 + (.i*8)
+	jmp .over
+
+.addMSB
+	lda #$20
+	ora Sprite2_data + 0 + (.i*8)
+	sta Sprite2_data + 0 + (.i*8)
+.noXMSB
+
+	lda .tableY,x
+	sta Sprite2_data + 1 + (.i*8)
+.over
+}
+
+	+DoScaledSpriteWith 0 , tabRoadPosRight , tabRoadPosY
+	+DoScaledSpriteWith 1 , tabRoadPosRight , tabRoadPosY_1
+	+DoScaledSpriteWith 2 , tabRoadPosLeft , tabRoadPosY
+	+DoScaledSpriteWith 3 , tabRoadPosLeft , tabRoadPosY_1
+
+	lda sprite4Road
+	clc
+	adc #50
+	and #$7f
+	asl
+	tax
+	+DoScaledSpriteWith 4 , tabRoadPosRight , tabRoadPosY
+	+DoScaledSpriteWith 5 , tabRoadPosRight , tabRoadPosY_1
+	+DoScaledSpriteWith 6 , tabRoadPosLeft , tabRoadPosY
+	+DoScaledSpriteWith 7 , tabRoadPosLeft , tabRoadPosY_1
+
+	inc sprite4Road
+
+	lda #JoystickBits_Left
+	bit CIA1KeyboardRowsJoystickB
+	bne .notLeft
+	inc swingX
+	lda swingX
+	cmp #kMaxSwing
+	bne .notLeft
+	lda #kMaxSwing-1
+	sta swingX
+.notLeft
+
+	lda #JoystickBits_Right
+	bit CIA1KeyboardRowsJoystickB
+	bne .notRight
+	dec swingX
+	lda swingX
+	cmp #-kMaxSwing
+	bne .notRight
+	lda #-(kMaxSwing-1)
+	sta swingX
+.notRight
+
+
+	+WaitForFireRelease2_A
+
+	jsr Video_WaitVBlank
+	+MBus24Bit_SetAddress_AXY $01 , $9200
+	+MWordValueTo_AX Sprite2_data
+	ldy #10 * 8
+	jsr Bus24Bit_FastCopySmallData
+
+;	+WaitForFireB_A
+
+	jmp mainLoop
+
+sprite4Road !by 127
+
+Sprite2_data
+	!by 0x0c , 0x00 , 0x00 , 0x00 , 0x20 , 0x00 , 0x00 , 0x32
+	!by 0x0c , 0x00 , 0x00 , 0x00 , 0x20 , 0x00 , 0x00 , 0x30
+	!by 0x0c , 0x00 , 0x00 , 0x00 , 0x20 , 0x00 , 0x00 , 0x33
+	!by 0x0c , 0x00 , 0x00 , 0x00 , 0x20 , 0x00 , 0x00 , 0x31
+
+	!by 0x0c , 0x00 , 0x00 , 0x00 , 0x20 , 0x00 , 0x00 , 0x36
+	!by 0x0c , 0x00 , 0x00 , 0x00 , 0x20 , 0x00 , 0x00 , 0x34
+	!by 0x0c , 0x00 , 0x00 , 0x00 , 0x20 , 0x00 , 0x00 , 0x37
+	!by 0x0c , 0x00 , 0x00 , 0x00 , 0x20 , 0x00 , 0x00 , 0x35
+
+!fill 256 , 0
+
+kEntries = 128
+kFarPoint = 0
+kNearPoint = 128
+kMaxSwing = 64
+
+swingX !by 0
+
+tabRoadPerspectiveTabLo
+!for .i , kMaxSwing {
+	!by < (tabRoadPerspective + ((.i-1)*kEntries))
+}
+tabRoadPerspectiveTabHi
+!for .i , kMaxSwing {
+	!by > (tabRoadPerspective + ((.i-1)*kEntries))
+}
+!align 255 , 0
+tabRoadPerspective
+!for .i , kMaxSwing {
+!for .zz , kEntries {
+!set .z = kNearPoint - (.zz-1 + kFarPoint)
+	!by ((255 * .i) / kMaxSwing) / .z
+}
+}
+
+tabRoadPosRight
+!for .zz , kEntries {
+!set .z = kNearPoint - (.zz-1 + kFarPoint)
+	+MLittleEndian16Bit 252 + (140 / .z)
+}
+tabRoadPosLeft
+!for .zz , kEntries {
+!set .z = kNearPoint - (.zz-1 + kFarPoint)
+!set .size = 96 / .z
+	+MLittleEndian16Bit 252 - (140 / .z) - .size
+}
+
+tabRoadPosY
+!for .zz , kEntries {
+!set .z = kNearPoint - (.zz-1 + kFarPoint)
+!set .size = 96 / .z
+	+MLittleEndian16Bit 128 + (120 / .z) - .size
+}
+tabRoadPosY_1
+!for .zz , kEntries {
+!set .z = kNearPoint - (.zz-1 + kFarPoint)
+!set .size = 96 / .z
+	+MLittleEndian16Bit 128 + (120 / .z) - .size - .size
+}
+
+tabRoadScaleYSize
+!for .zz , kEntries {
+!set .z = kNearPoint - (.zz-1 + kFarPoint)
+!set .size = 96 / .z
+!if .size <= 0 {
+!set .size = 1
+}
+!set .invscale = (16 * 32) / .size
+!if .invscale <= 1 {
+!set .invscale = 1
+}
+!if .invscale >= 255 {
+!set .invscale = 255
+}
+	!by .invscale
+	!by .size
+}
+
+
+!source "BombJack/stdlib/Bus24Bit.a"
+!source "BombJack/stdlib/Video.a"
