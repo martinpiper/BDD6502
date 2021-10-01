@@ -279,7 +279,8 @@ public class Sprites2 extends DisplayLayer {
                 theColour &= 0x0f;
                 theColour |= ((currentSpritePalette & 0x0f) << 4);
 
-                if ((theColour & 0x0f) != 0) {
+                if ((calculatedRasters[offScreen][currentSpriteX] & 0x0f) == 0) {
+//                if ((theColour & 0x0f) != 0) {
                     calculatedRasters[offScreen][currentSpriteX] = theColour;
                 }
 
