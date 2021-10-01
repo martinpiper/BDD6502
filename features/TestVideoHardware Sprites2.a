@@ -129,8 +129,15 @@ mainLoop
 .over
 }
 
-	+DoScaledSpriteWith 0 , tabRoadPosRight , tabRoadPosY
-	+DoScaledSpriteWith 1 , tabRoadPosRight , tabRoadPosY_1
+	+DoScaledSpriteWith 0 , tabRoadPosLeft , tabRoadPosY
+	+DoScaledSpriteWith 1 , tabRoadPosLeft , tabRoadPosY_1
+
+	lda sprite4Road
+	clc
+	adc #25
+	and #$7f
+	asl
+	tax
 	+DoScaledSpriteWith 2 , tabRoadPosLeft , tabRoadPosY
 	+DoScaledSpriteWith 3 , tabRoadPosLeft , tabRoadPosY_1
 
@@ -142,52 +149,46 @@ mainLoop
 	tax
 	+DoScaledSpriteWith 4 , tabRoadPosRight , tabRoadPosY
 	+DoScaledSpriteWith 5 , tabRoadPosRight , tabRoadPosY_1
-	+DoScaledSpriteWith 6 , tabRoadPosLeft , tabRoadPosY
-	+DoScaledSpriteWith 7 , tabRoadPosLeft , tabRoadPosY_1
 
 	lda sprite4Road
 	clc
-	adc #100
+	adc #75
+	and #$7f
+	asl
+	tax
+	+DoScaledSpriteWith 6 , tabRoadPosRight , tabRoadPosY
+	+DoScaledSpriteWith 7 , tabRoadPosRight , tabRoadPosY_1
+
+	lda sprite4Road
+	clc
+	adc #90
 	and #$7f
 	asl
 	tax
 	+DoScaledSpriteWith 8 , tabRoadPosRight , tabRoadPosY
 	+DoScaledSpriteWith 9 , tabRoadPosRight , tabRoadPosY_1
+
+	lda sprite4Road
+	clc
+	adc #115
+	and #$7f
+	asl
+	tax
 	+DoScaledSpriteWith 10 , tabRoadPosLeft , tabRoadPosY
 	+DoScaledSpriteWith 11 , tabRoadPosLeft , tabRoadPosY_1
-
-	lda sprite4Road
-	clc
-	adc #25
-	and #$7f
-	asl
-	tax
 	+DoScaledSpriteWith 12 , tabRoadPosRight , tabRoadPosY
 	+DoScaledSpriteWith 13 , tabRoadPosRight , tabRoadPosY_1
-	+DoScaledSpriteWith 14 , tabRoadPosLeft , tabRoadPosY
-	+DoScaledSpriteWith 15 , tabRoadPosLeft , tabRoadPosY_1
+;	+DoScaledSpriteWith 14 , tabRoadPosLeft , tabRoadPosY
+;	+DoScaledSpriteWith 15 , tabRoadPosLeft , tabRoadPosY_1
+;	+DoScaledSpriteWith 16 , tabRoadPosRight , tabRoadPosY
+;	+DoScaledSpriteWith 17 , tabRoadPosRight , tabRoadPosY_1
+;	+DoScaledSpriteWith 18 , tabRoadPosLeft , tabRoadPosY
+;	+DoScaledSpriteWith 19 , tabRoadPosLeft , tabRoadPosY_1
+;	+DoScaledSpriteWith 20 , tabRoadPosRight , tabRoadPosY
+;	+DoScaledSpriteWith 21 , tabRoadPosRight , tabRoadPosY_1
+;	+DoScaledSpriteWith 22 , tabRoadPosLeft , tabRoadPosY
+;	+DoScaledSpriteWith 23 , tabRoadPosLeft , tabRoadPosY_1
 
-	lda sprite4Road
-	clc
-	adc #110
-	and #$7f
-	asl
-	tax
-	+DoScaledSpriteWith 16 , tabRoadPosRight , tabRoadPosY
-	+DoScaledSpriteWith 17 , tabRoadPosRight , tabRoadPosY_1
-	+DoScaledSpriteWith 18 , tabRoadPosLeft , tabRoadPosY
-	+DoScaledSpriteWith 19 , tabRoadPosLeft , tabRoadPosY_1
-
-	lda sprite4Road
-	clc
-	adc #12
-	and #$7f
-	asl
-	tax
-	+DoScaledSpriteWith 20 , tabRoadPosRight , tabRoadPosY
-	+DoScaledSpriteWith 21 , tabRoadPosRight , tabRoadPosY_1
-	+DoScaledSpriteWith 22 , tabRoadPosLeft , tabRoadPosY
-	+DoScaledSpriteWith 23 , tabRoadPosLeft , tabRoadPosY_1
 
 	lda #JoystickBits_Up
 	bit CIA1KeyboardRowsJoystickB
@@ -228,7 +229,8 @@ mainLoop
 
 	jsr Video_WaitVBlank
 	+MBus24Bit_SetAddress_AXY $01 , $9200
-	+MBus24Bit_FastSpeedCopy Sprite2_data , 24 * 8
+;	+MBus24Bit_FastSpeedCopy Sprite2_data , 24 * 8
+	+MBus24Bit_FastSpeedCopy Sprite2_data , 14 * 8
 
 ;	+WaitForFireB_A
 
@@ -271,9 +273,11 @@ Sprite2_data
 !fill 256 , 0
 
 kEntries = 128
-kFarPoint = 0
+kFarPoint = -8
 kNearPoint = 128
 kMaxSwing = 64
+kMultiplier = 8
+kRoadWidth = 180
 
 swingX !by 0
 
@@ -290,39 +294,39 @@ tabRoadPerspective
 !for .i , kMaxSwing {
 !for .zz , kEntries {
 !set .z = kNearPoint - (.zz-1 + kFarPoint)
-	!by ((255 * .i) / kMaxSwing) / .z
+	!by ((kMultiplier * 255 * .i) / kMaxSwing) / .z
 }
 }
 
 tabRoadPosRight
 !for .zz , kEntries {
 !set .z = kNearPoint - (.zz-1 + kFarPoint)
-	+MLittleEndian16Bit 252 + (140 / .z)
+	+MLittleEndian16Bit 252 + ((kMultiplier * kRoadWidth) / .z)
 }
 tabRoadPosLeft
 !for .zz , kEntries {
 !set .z = kNearPoint - (.zz-1 + kFarPoint)
-!set .size = 96 / .z
-	+MLittleEndian16Bit 252 - (140 / .z) - .size
+!set .size = (kMultiplier * 96) / .z
+	+MLittleEndian16Bit 252 - ((kMultiplier * kRoadWidth) / .z) - .size
 }
 
 tabRoadPosY
 !for .zz , kEntries {
 !set .z = kNearPoint - (.zz-1 + kFarPoint)
-!set .size = 96 / .z
-	+MLittleEndian16Bit 128 + (120 / .z) - .size
+!set .size = (kMultiplier * 96) / .z
+	+MLittleEndian16Bit 128 + ((kMultiplier * 120) / .z) - .size
 }
 tabRoadPosY_1
 !for .zz , kEntries {
 !set .z = kNearPoint - (.zz-1 + kFarPoint)
-!set .size = 96 / .z
-	+MLittleEndian16Bit 128 + (120 / .z) - .size - .size
+!set .size = (kMultiplier * 96) / .z
+	+MLittleEndian16Bit 128 + ((kMultiplier * 120) / .z) - .size - .size
 }
 
 tabRoadScaleYSize
 !for .zz , kEntries {
 !set .z = kNearPoint - (.zz-1 + kFarPoint)
-!set .size = 96 / .z
+!set .size = (kMultiplier * 96) / .z
 !if .size <= 0 {
 !set .size = 1
 }
