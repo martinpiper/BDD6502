@@ -102,14 +102,14 @@ Feature: Tests the video character screen data conversion and sprites
 
     # Sprites2 registers
     # Sprites support X and Y flips with X & Y repeating patterns
-    # Palette | 0x10 =MSBY | 0x20 = MSBX | 0x40 = flipY | 0x80 = flipX
+    # Palette | 0x10 = MSBX | 0x20 = MSBY | 0x40 = flipX | 0x80 = flipY
     # Y pos
     # Y size (in screen pixels, regardless of scale)
     # X pos
     # X scale extent (uses internal coordinates)
-    # Y inv scale
-    # X inv scale
-    # Frame
+    # Y inv scale (*16)
+    # X inv scale (*16)
+    # Sprite frame (index)
     Given write data byte '0x0b' to 24bit bus at '0x9200' and addressEx '0x01'
     Given write data byte '0x40' to 24bit bus at '0x9201' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x9202' and addressEx '0x01'
@@ -129,7 +129,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x04' to 24bit bus at '0x920f' and addressEx '0x01'
 
     # Use MSB X test
-    Given write data byte '0xeb' to 24bit bus at '0x9210' and addressEx '0x01'
+    Given write data byte '0xdb' to 24bit bus at '0x9210' and addressEx '0x01'
     Given write data byte '0xc0' to 24bit bus at '0x9211' and addressEx '0x01'
     Given write data byte '0x80' to 24bit bus at '0x9212' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x9213' and addressEx '0x01'
@@ -139,7 +139,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x00' to 24bit bus at '0x9217' and addressEx '0x01'
 
     # Use MSB Y test
-    Given write data byte '0x1b' to 24bit bus at '0x9218' and addressEx '0x01'
+    Given write data byte '0x2b' to 24bit bus at '0x9218' and addressEx '0x01'
     Given write data byte '0xf0' to 24bit bus at '0x9219' and addressEx '0x01'
     Given write data byte '0x68' to 24bit bus at '0x921a' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x921b' and addressEx '0x01'

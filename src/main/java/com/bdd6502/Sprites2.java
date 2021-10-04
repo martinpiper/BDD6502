@@ -190,7 +190,10 @@ public class Sprites2 extends DisplayLayer {
                 break;
 
             case 3:
-                currentSpriteY = spriteY[drawingSpriteIndex] | ((currentSpritePalette & 0x10) << 4);
+                currentSpriteY = spriteY[drawingSpriteIndex] | ((currentSpritePalette & 0x20) << 3);
+                // To avoid the code having to invert Y across 9 bits, the hardware can do it cheaply...
+                currentSpriteY = ~currentSpriteY;
+                currentSpriteY &= 0x1ff;
                 drawingSpriteState++;
                 break;
 
@@ -201,7 +204,8 @@ public class Sprites2 extends DisplayLayer {
 
             case 7:
                 // Perform Y extent check, the wait is for the calculation to succeed due to multiply 16 (shift 4!!) lookup and add, and advance drawingSpriteIndex if it isn't going to be drawn
-                insideHeight = (displayV - currentSpriteY);
+                // This check uses the inverted Y, so a subtract is actually achieved.
+                insideHeight = (displayV + currentSpriteY);
                 // Note, unsigned comparison with low bits
                 insideHeight &= 0x1ff;
                 if (insideHeight >= currentSpriteSizeY) {
@@ -209,7 +213,7 @@ public class Sprites2 extends DisplayLayer {
                     drawingSpriteIndex++;
                     return;
                 }
-                currentSpriteX = spriteX[drawingSpriteIndex] | ((currentSpritePalette & 0x20) << 3);
+                currentSpriteX = spriteX[drawingSpriteIndex] | ((currentSpritePalette & 0x10) << 4);
                 drawingSpriteState++;
                 break;
 
@@ -243,10 +247,10 @@ public class Sprites2 extends DisplayLayer {
             case 16:
                 int pixelX = (currentSpriteXPixel >> 4) & 0x1f;
                 int pixelY = (currentSpriteYPixel >> 4) & 0x1f;
-                if ((currentSpritePalette & 0x80) > 0) {
+                if ((currentSpritePalette & 0x40) > 0) {
                     pixelX = 31 - pixelX;
                 }
-                if ((currentSpritePalette & 0x40) > 0) {
+                if ((currentSpritePalette & 0x80) > 0) {
                     pixelY = 31 - pixelY;
                 }
                 pixelX &= 0x1f;
