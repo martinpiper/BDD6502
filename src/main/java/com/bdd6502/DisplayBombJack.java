@@ -385,6 +385,10 @@ public class DisplayBombJack extends MemoryBus {
 
 
         if (enableDisplay) {
+            // Remove the problematic top most 8 pixel bug
+            if (displayBitmapY == 24) {
+                enablePixels = false;
+            }
             int tempy = displayBitmapY;
             // Make sure the rendering position is in the screen
             if (displayBitmapX >= 0 && tempy >= 0 && displayBitmapX < panel.fastGetWidth() && tempy < panel.fastGetHeight()) {

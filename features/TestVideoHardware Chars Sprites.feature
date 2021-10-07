@@ -50,8 +50,9 @@ Feature: Tests the video character screen data conversion and sprites
     And enable video display bus debug output
     Given video display processes 24 pixels per instruction
     Given video display refresh window every 32 instructions
+    Given video display saves debug BMP images to leaf filename "target/frames/TC-7-"
     Given video display add joystick to port 2
-    Given video display does not save debug BMP images
+#    Given video display does not save debug BMP images
 #    Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     Given a user port to 24 bit bus is installed
@@ -110,7 +111,7 @@ Feature: Tests the video character screen data conversion and sprites
     # Y inv scale (*16)
     # X inv scale (*16)
     # Sprite frame (index)
-    Given write data byte '0x0b' to 24bit bus at '0x9200' and addressEx '0x01'
+    Given write data byte '0x8b' to 24bit bus at '0x9200' and addressEx '0x01'
     Given write data byte '0x40' to 24bit bus at '0x9201' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x9202' and addressEx '0x01'
     Given write data byte '0xf8' to 24bit bus at '0x9203' and addressEx '0x01'
@@ -119,7 +120,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x10' to 24bit bus at '0x9206' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x9207' and addressEx '0x01'
 
-    Given write data byte '0x0b' to 24bit bus at '0x9208' and addressEx '0x01'
+    Given write data byte '0x4b' to 24bit bus at '0x9208' and addressEx '0x01'
     Given write data byte '0x80' to 24bit bus at '0x9209' and addressEx '0x01'
     Given write data byte '0x30' to 24bit bus at '0x920a' and addressEx '0x01'
     Given write data byte '0xf0' to 24bit bus at '0x920b' and addressEx '0x01'
@@ -224,6 +225,9 @@ Feature: Tests the video character screen data conversion and sprites
 
     Given render a video display frame
 
+    Then expect image "testdata/TC-7-000000.bmp" to be identical to "target/frames/TC-7-000000.bmp"
+
+    Given video display does not save debug BMP images
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Sprites2.a"
     And I run the command line: ..\C64\bin\LZMPi.exe -c64mbe test.prg testcmp.prg $200
@@ -238,3 +242,4 @@ Feature: Tests the video character screen data conversion and sprites
     When I execute the procedure at mainLoop until return
 
     When rendering the video until window closed
+

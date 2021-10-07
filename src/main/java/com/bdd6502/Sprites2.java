@@ -29,7 +29,7 @@ public class Sprites2 extends DisplayLayer {
     int drawingSpriteIndex = 0;
     int drawingSpriteState = 0;
     int currentSpriteX = 0 , currentSpriteY = 0 , currentSpriteFrame = 0 , currentSpritePalette = 0;
-    int currentSpriteScaleX = 0 , currentSpriteSizeY = 0;
+    int currentSpriteScaleExtentX = 0 , currentSpriteSizeY = 0;
     int currentSpriteScaleXInv = 0 , currentSpriteScaleYInv = 0;
     int currentSpriteXPixel = 0;
     int currentSpriteYPixel = 0;
@@ -155,10 +155,15 @@ public class Sprites2 extends DisplayLayer {
 
         handleSpriteSchedule(displayH, displayV);
 
-        // Output calculated data
-        int finalPixel = calculatedRasters[onScreen][fetchingPixel];
-        // And progressively clear the output pixel, like the hardware does
-        calculatedRasters[onScreen][fetchingPixel++] = 0;
+        int finalPixel = 0;
+        int delayFetchingPixel = fetchingPixel - 1;
+        if (delayFetchingPixel >= 0) {
+            // Output calculated data
+            finalPixel = calculatedRasters[onScreen][delayFetchingPixel];
+            // And progressively clear the output pixel, like the hardware does
+           calculatedRasters[onScreen][delayFetchingPixel] = 0;
+        }
+        fetchingPixel++;
 
         return finalPixel;
     }
@@ -218,7 +223,7 @@ public class Sprites2 extends DisplayLayer {
                 break;
 
             case 9:
-                currentSpriteScaleX = spriteScaleExtentX[drawingSpriteIndex];
+                currentSpriteScaleExtentX = spriteScaleExtentX[drawingSpriteIndex];
                 drawingSpriteState++;
                 break;
 
@@ -292,7 +297,7 @@ public class Sprites2 extends DisplayLayer {
                 currentSpriteX++;
                 currentSpriteXPixel += currentSpriteScaleXInv;
                 // Can be a carry check...
-                if ((currentSpriteXPixel >> 4) >= currentSpriteScaleX) {
+                if ((currentSpriteXPixel >> 4) >= currentSpriteScaleExtentX) {
                     drawingSpriteState = 0;
                     drawingSpriteIndex++;
                     return;
