@@ -137,12 +137,14 @@ public class Sprites2 extends DisplayLayer {
         if (!prevHSYNC && _hSync) {
             // This accounts for the signal being held low for a pixel count after the _HSYNC edge
             lineStartTimeDelay = 2;
+            // Flip-flip in hardware
+            onScreen = 1-onScreen;
         }
         prevHSYNC = _hSync;
-        if (lineStartTimeDelay > 0) {
+        if (!spriteEnable || lineStartTimeDelay > 0) {
             lineStartTimeDelay--;
+            // Reset on low in hardware
             fetchingPixel = 0;
-            onScreen = displayV & 1;
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
         }
@@ -161,9 +163,6 @@ public class Sprites2 extends DisplayLayer {
     }
 
     void handleSpriteSchedule(int displayH, int displayV) {
-        if(drawingSpriteIndex >= spriteScaleExtentX.length) {
-            return;
-        }
         int offScreen = 1 - onScreen;
 
         // Reading Y first gives time to calculate vertical extent and skip the sprite before drawing the span
@@ -206,8 +205,7 @@ public class Sprites2 extends DisplayLayer {
                 // Note, unsigned comparison with low bits
                 insideHeight &= 0x1ff;
                 if (insideHeight >= currentSpriteSizeY) {
-                    drawingSpriteState = 0;
-                    drawingSpriteIndex++;
+                    advanceSprite();
                     return;
                 }
                 currentSpriteX = spriteX[drawingSpriteIndex] | ((currentSpritePalette & 0x10) << 4);
@@ -290,12 +288,17 @@ public class Sprites2 extends DisplayLayer {
                 currentSpriteXPixel += currentSpriteScaleXInv;
                 // Can be a carry check...
                 if ((currentSpriteXPixel >> 4) >= currentSpriteScaleExtentX) {
-                    drawingSpriteState = 0;
-                    drawingSpriteIndex++;
+                    advanceSprite();
                     return;
                 }
 
                 break;
         }
+    }
+
+    private void advanceSprite() {
+        drawingSpriteState = 0;
+        drawingSpriteIndex++;
+        drawingSpriteIndex &= 0xff;
     }
 }

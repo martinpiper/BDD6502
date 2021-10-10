@@ -91,24 +91,49 @@ mainLoop
 .commonCompare
 	beq .is0
 
+	cmp #$ff
+	beq .isN1
+
+	; Way outside the limit :)
 	cmp #2
 	bcs .removeSprite
 
+
 	; Is 0x1**
-	; It is visible inside far right edge?
+	; It is visible inside right edge?
 	lda Sprite2_data + 3 + (.i*8)
-	cmp #128
+	cmp #kRoadXMiddleForCompare
 	bcc .addMSB
 	jmp .removeSprite
 
+.isN1
+	; Is 0xff**
+	lda Sprite2_data + 3 + (.i*8)
+	clc
+	; Adjust with the width (Y height in pixels)
+	adc Sprite2_data + 2 + (.i*8)
+	; No carry indicates the sprite is still far inside the left edge
+	bcc .removeSprite
+
+	; Just inside the left edge, still remove
+	cmp #kRoadXMiddleForCompare
+	bcc .removeSprite
+
+	jmp .addMSB
+
 .is0
 	; Is 0x0**
-	lda #128
-	sec
-	sbc Sprite2_data + 2 + (.i*8)
-	; Reverse compare
-	cmp Sprite2_data + 3 + (.i*8)
-	bcs .removeSprite
+	lda Sprite2_data + 3 + (.i*8)
+	clc
+	; Adjust with the width (Y height in pixels)
+	adc Sprite2_data + 2 + (.i*8)
+	; The right edge is carrying over, indicating it's on screen
+	bcs .noXMSB
+
+	; Just inside the left edge, still remove
+	cmp #kRoadXMiddleForCompare
+	bcc .removeSprite
+
 	jmp .noXMSB
 
 .removeSprite
@@ -129,7 +154,10 @@ mainLoop
 .over
 }
 
-	+DoScaledSpriteWith 0 , tabRoadPosLeft , tabRoadPosY
+;	+DoScaledSpriteWith 0 , tabRoadPosLeft , tabRoadPosY
+;	+DoScaledSpriteWith 1 , tabRoadPosLeft , tabRoadPosY_1
+	; Useful for testing left and right culling values
+	+DoScaledSpriteWith 0 , tabRoadPosRight , tabRoadPosY
 	+DoScaledSpriteWith 1 , tabRoadPosLeft , tabRoadPosY_1
 
 	lda sprite4Road
@@ -275,10 +303,15 @@ Sprite2_data
 
 kEntries = 128
 kFarPoint = -8
+;kFarPoint = 0
 kNearPoint = 128
 kMaxSwing = 64
 kMultiplier = 8
+;kMultiplier = 1
 kRoadWidth = 180
+
+kRoadXMiddleForCompare = 58
+kRoadXMiddle = kRoadXMiddleForCompare + 128
 
 swingX !by 0
 
@@ -302,13 +335,13 @@ tabRoadPerspective
 tabRoadPosRight
 !for .zz , kEntries {
 !set .z = kNearPoint - (.zz-1 + kFarPoint)
-	+MLittleEndian16Bit 252 + ((kMultiplier * kRoadWidth) / .z)
+	+MLittleEndian16Bit kRoadXMiddle + ((kMultiplier * kRoadWidth) / .z)
 }
 tabRoadPosLeft
 !for .zz , kEntries {
 !set .z = kNearPoint - (.zz-1 + kFarPoint)
 !set .size = (kMultiplier * 96) / .z
-	+MLittleEndian16Bit 252 - ((kMultiplier * kRoadWidth) / .z) - .size
+	+MLittleEndian16Bit kRoadXMiddle - ((kMultiplier * kRoadWidth) / .z) - .size
 }
 
 tabRoadPosY

@@ -225,7 +225,7 @@ Feature: Tests the video character screen data conversion and sprites
 
     Given render a video display frame
 
-#    Then expect image "testdata/TC-7-000000.bmp" to be identical to "target/frames/TC-7-000000.bmp"
+    Then expect image "testdata/TC-7-000000.bmp" to be identical to "target/frames/TC-7-000000.bmp"
 
     Given video display does not save debug BMP images
 
