@@ -24,7 +24,8 @@ public class Sprites2 extends DisplayLayer {
     int spriteFrame[] = new int[kNumSprites];
     int spritePalette[] = new int[kNumSprites];
 
-    boolean prevMSBH = false;
+    boolean prevHSYNC = false;
+    int lineStartTimeDelay = 0;
 
     int drawingSpriteIndex = 0;
     int drawingSpriteState = 0;
@@ -132,38 +133,29 @@ public class Sprites2 extends DisplayLayer {
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
-/*
-        // But in emulation the last 8 pixels are out of sync
-        // Time to the rising edge of the MSB, displayV is stable for the whole scan line at this point.
-        // Otherwise for any other position the hardware would need to latch and alternate, which actually is another option...
-        boolean msbH = (displayH & 0x100) == 0x100;
-        if (!spriteEnable || (!prevMSBH && msbH)) {
-            fetchingPixel = 0;
-            drawingSpriteIndex = 0;
-            drawingSpriteState = 0;
+        // Time to the rising edge of the _hSync
+        if (!prevHSYNC && _hSync) {
+            // This accounts for the signal being held low for a pixel count after the _HSYNC edge
+            lineStartTimeDelay = 2;
         }
-        prevMSBH = msbH;
-        onScreen = displayV & 1;
-*/
-        // Trigger on this displayH value instead
-        if (!spriteEnable || (displayH == 0x188)) {
+        prevHSYNC = _hSync;
+        if (lineStartTimeDelay > 0) {
+            lineStartTimeDelay--;
             fetchingPixel = 0;
             onScreen = displayV & 1;
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
         }
 
+
         handleSpriteSchedule(displayH, displayV);
 
-        int finalPixel = 0;
-        int delayFetchingPixel = fetchingPixel - 1;
-        if (delayFetchingPixel >= 0) {
-            // Output calculated data
-            finalPixel = calculatedRasters[onScreen][delayFetchingPixel];
-            // And progressively clear the output pixel, like the hardware does
-           calculatedRasters[onScreen][delayFetchingPixel] = 0;
-        }
+        // Output calculated data
+        int finalPixel = calculatedRasters[onScreen][fetchingPixel];
+        // And progressively clear the output pixel, like the hardware does
+        calculatedRasters[onScreen][fetchingPixel] = 0;
         fetchingPixel++;
+        fetchingPixel &= 0x1ff;
 
         return finalPixel;
     }
