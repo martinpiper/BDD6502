@@ -199,7 +199,7 @@ public class Sprites2 extends DisplayLayer {
                 break;
 
             case 7:
-                // Perform Y extent check, the wait is for the calculation to succeed due to multiply 16 (shift 4!!) lookup and add, and advance drawingSpriteIndex if it isn't going to be drawn
+                // Perform Y extent check, the wait is for the calculation to succeed due to multiply 32 (shift 5!!) lookup and add, and advance drawingSpriteIndex if it isn't going to be drawn
                 // This check uses the inverted Y, so a subtract is actually achieved.
                 insideHeight = (displayV + currentSpriteY);
                 // Note, unsigned comparison with low bits
@@ -240,8 +240,8 @@ public class Sprites2 extends DisplayLayer {
                 break;
 
             case 16:
-                int pixelX = (currentSpriteXPixel >> 4) & 0x1f;
-                int pixelY = (currentSpriteYPixel >> 4) & 0x1f;
+                int pixelX = (currentSpriteXPixel >> 5) & 0x1f;
+                int pixelY = (currentSpriteYPixel >> 5) & 0x1f;
                 if ((currentSpritePalette & 0x40) > 0) {
                     pixelX = 31 - pixelX;
                 }
@@ -287,7 +287,7 @@ public class Sprites2 extends DisplayLayer {
                 currentSpriteX++;
                 currentSpriteXPixel += currentSpriteScaleXInv;
                 // Can be a carry check...
-                if ((currentSpriteXPixel >> 4) >= currentSpriteScaleExtentX) {
+                if (((currentSpriteXPixel >> 5) & 0xff) >= currentSpriteScaleExtentX) {
                     advanceSprite();
                     return;
                 }

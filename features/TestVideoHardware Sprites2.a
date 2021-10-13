@@ -364,15 +364,25 @@ tabRoadScaleYSize
 !if .size <= 0 {
 !set .size = 1
 }
-!set .invscale = (16 * 32) / .size
+!set .invscale = (32 * 32) / .size
 !if .invscale <= 1 {
 !set .invscale = 1
 }
+; Need to calculate the height based on the scale
+!set .realSize = (32*32) / int(.invscale)
+; Using *32 (<<5) means it's not possible for the sprite to go below 4 pixels wide if the X end point is set to be 0x20.
+; This is because (32*32) / 255 ~= 4
+; Mitigations are to set the end point to be 0x10 and draw half the sprite, which should suffice in most cases.
+; This particular numeric range was chosen to give the sprite "scale up", where it gets larger, a little more accuracy.
+; However the Y height can be reduced to be smaller than 4 pixels
 !if .invscale >= 255 {
 !set .invscale = 255
 }
+!if .realSize < 1 {
+!set .realSize = 1
+}
 	!by .invscale
-	!by .size
+	!by .realSize
 }
 
 
