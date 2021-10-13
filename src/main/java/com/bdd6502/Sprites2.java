@@ -37,6 +37,7 @@ public class Sprites2 extends DisplayLayer {
     int insideHeight = 0;
     int fetchingPixel = 0;
     int onScreen = 0;
+    int currentLineV = 0;
 
 
     int calculatedRasters[][] = new int[2][512];
@@ -139,6 +140,7 @@ public class Sprites2 extends DisplayLayer {
             lineStartTimeDelay = 2;
             // Flip-flip in hardware
             onScreen = 1-onScreen;
+            currentLineV = displayV;
         }
         prevHSYNC = _hSync;
         if (!spriteEnable || lineStartTimeDelay > 0) {
@@ -201,7 +203,7 @@ public class Sprites2 extends DisplayLayer {
             case 7:
                 // Perform Y extent check, the wait is for the calculation to succeed due to multiply 32 (shift 5!!) lookup and add, and advance drawingSpriteIndex if it isn't going to be drawn
                 // This check uses the inverted Y, so a subtract is actually achieved.
-                insideHeight = (displayV + currentSpriteY);
+                insideHeight = (currentLineV + currentSpriteY);
                 // Note, unsigned comparison with low bits
                 insideHeight &= 0x1ff;
                 if (insideHeight >= currentSpriteSizeY) {
@@ -279,7 +281,6 @@ public class Sprites2 extends DisplayLayer {
                 theColour |= ((currentSpritePalette & 0x0f) << 4);
 
                 if ((calculatedRasters[offScreen][currentSpriteX] & 0x0f) == 0) {
-//                if ((theColour & 0x0f) != 0) {
                     calculatedRasters[offScreen][currentSpriteX] = theColour;
                 }
 
