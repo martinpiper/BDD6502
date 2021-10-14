@@ -143,10 +143,15 @@ public class Sprites2 extends DisplayLayer {
             currentLineV = displayV;
         }
         prevHSYNC = _hSync;
-        if (!spriteEnable || lineStartTimeDelay > 0) {
+        if (lineStartTimeDelay > 0) {
             lineStartTimeDelay--;
             // Reset on low in hardware
             fetchingPixel = 0;
+            drawingSpriteIndex = 0;
+            drawingSpriteState = 0;
+        }
+        if (!spriteEnable) {
+            // Reset on low in hardware
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
         }

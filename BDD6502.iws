@@ -761,7 +761,7 @@
         </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites2.java</url>
-          <line>145</line>
+          <line>146</line>
           <option name="timeStamp" value="40" />
         </line-breakpoint>
       </breakpoints>
