@@ -110,7 +110,7 @@ Feature: Tests the video character screen data conversion and sprites
     # X scale extent (uses internal coordinates)
     # Y inv scale (*32)
     # X inv scale (*32)
-    # Sprite frame (index)
+    # Sprite frame (index) | 0x40 = halfX | 0x80 = halfY
     Given write data byte '0x8b' to 24bit bus at '0x9200' and addressEx '0x01'
     Given write data byte '0x40' to 24bit bus at '0x9201' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x9202' and addressEx '0x01'
@@ -118,7 +118,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x20' to 24bit bus at '0x9204' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x9205' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x9206' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x9207' and addressEx '0x01'
+    Given write data byte '0xc0' to 24bit bus at '0x9207' and addressEx '0x01'
 
     Given write data byte '0x4b' to 24bit bus at '0x9208' and addressEx '0x01'
     Given write data byte '0x80' to 24bit bus at '0x9209' and addressEx '0x01'

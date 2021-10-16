@@ -255,6 +255,13 @@ public class Sprites2 extends DisplayLayer {
                 if ((currentSpritePalette & 0x80) > 0) {
                     pixelY = 31 - pixelY;
                 }
+                // Starts drawing from the opposite half of the coordinate range first
+                if ((currentSpriteFrame &0x40) > 0) {
+                    pixelX ^= 0x10;
+                }
+                if ((currentSpriteFrame &0x80) > 0) {
+                    pixelY ^= 0x10;
+                }
                 pixelX &= 0x1f;
                 pixelY &= 0x1f;
                 currentSpriteX = currentSpriteX & 0x1ff;
