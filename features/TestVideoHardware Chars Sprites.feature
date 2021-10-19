@@ -225,6 +225,23 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x10' to 24bit bus at '0x925e' and addressEx '0x01'
     Given write data byte '0x33' to 24bit bus at '0x925f' and addressEx '0x01'
 
+    # Will be end of list, but temporarily set this to be a valid but vertically very small sprite
+    Given write data byte '0x01' to 24bit bus at '0x9262' and addressEx '0x01'
+    # After the end of list, this large sprite should not be displayed
+    Given write data byte '0x0c' to 24bit bus at '0x9268' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x9269' and addressEx '0x01'
+    Given write data byte '0xf0' to 24bit bus at '0x926a' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x926b' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x926c' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x926d' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x926e' and addressEx '0x01'
+    Given write data byte '0x33' to 24bit bus at '0x926f' and addressEx '0x01'
+
+    Given render a video display frame
+
+    # Now test the end of list
+    Given write data byte '0x00' to 24bit bus at '0x9262' and addressEx '0x01'
+
     Given render a video display frame
 
     Then expect image "testdata/TC-7-000000.bmp" to be identical to "target/frames/TC-7-000000.bmp"

@@ -206,6 +206,10 @@ public class Sprites2 extends DisplayLayer {
                 break;
 
             case 7:
+                // Test for end of list
+                if (currentSpriteSizeY == 0) {
+                    return;
+                }
                 // Perform Y extent check, the wait is for the calculation to succeed due to multiply 32 (shift 5!!) lookup and add, and advance drawingSpriteIndex if it isn't going to be drawn
                 // This check uses the inverted Y, so a subtract is actually achieved.
                 insideHeight = (currentLineV + currentSpriteY);

@@ -4,6 +4,8 @@
 !source "BombJack/stdlib/Video_Macros.a"
 !source "BombJack/stdlib/Bus24Bit_Macros.a"
 
+scaledSpriteAddr = $02
+
 *=$200
 !zn
 DisplayScreen
@@ -151,8 +153,43 @@ mainLoop
 
 	lda .tableY,x
 	sta Sprite2_data + 1 + (.i*8)
+
+
+	ldy #0
+	lda Sprite2_data + 0 + (.i*8)
+	sta (scaledSpriteAddr),y
+	iny
+	lda Sprite2_data + 1 + (.i*8)
+	sta (scaledSpriteAddr),y
+	iny
+	lda Sprite2_data + 2 + (.i*8)
+	sta (scaledSpriteAddr),y
+	iny
+	lda Sprite2_data + 3 + (.i*8)
+	sta (scaledSpriteAddr),y
+	iny
+	lda Sprite2_data + 4 + (.i*8)
+	sta (scaledSpriteAddr),y
+	iny
+	lda Sprite2_data + 5 + (.i*8)
+	sta (scaledSpriteAddr),y
+	iny
+	lda Sprite2_data + 6 + (.i*8)
+	sta (scaledSpriteAddr),y
+	iny
+	lda Sprite2_data + 7 + (.i*8)
+	sta (scaledSpriteAddr),y
+
+	lda scaledSpriteAddr
+	clc
+	adc #8
+	sta scaledSpriteAddr
+	bcc .over
+	inc scaledSpriteAddr+1
 .over
 }
+
+	+MWordValueToAddress_A RealSprite2_data , scaledSpriteAddr
 
 ;	+DoScaledSpriteWith 0 , tabRoadPosLeft , tabRoadPosY
 ;	+DoScaledSpriteWith 1 , tabRoadPosLeft , tabRoadPosY_1
@@ -219,6 +256,11 @@ mainLoop
 ;	+DoScaledSpriteWith 23 , tabRoadPosLeft , tabRoadPosY_1
 
 
+	; End of list
+	lda #0
+	ldy #2
+	sta (scaledSpriteAddr),y
+
 	lda #JoystickBits_Up
 	bit CIA1KeyboardRowsJoystickB
 	bne .notUp
@@ -258,14 +300,17 @@ mainLoop
 
 	jsr Video_WaitVBlank
 	+MBus24Bit_SetAddress_AXY $01 , $9200
-;	+MBus24Bit_FastSpeedCopy Sprite2_data , 24 * 8
-	+MBus24Bit_FastSpeedCopy Sprite2_data , 14 * 8
+;	+MBus24Bit_FastSpeedCopy RealSprite2_data , 24 * 8
+	+MBus24Bit_FastSpeedCopy RealSprite2_data , 14 * 8
 
 ;	+WaitForFireB_A
 
 	jmp mainLoop
 
 sprite4Road !by 127
+
+RealSprite2_data
+	!fill 512,0
 
 Sprite2_data
 	!by 0x0c , 0x00 , 0x00 , 0x00 , 0x20 , 0x00 , 0x00 , 0x32
