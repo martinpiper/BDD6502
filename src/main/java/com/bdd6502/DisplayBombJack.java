@@ -75,6 +75,8 @@ public class DisplayBombJack extends MemoryBus {
     int pixelsSinceLastDebugWriteMax = 32;
     boolean is16Colours = false;
     UserPortTo24BitAddress callbackAPU = null;
+    boolean isOverscan = false;
+    int overscanControl = 0;
 
     public boolean getVSync() {
         return _vSync;
@@ -198,16 +200,24 @@ public class DisplayBombJack extends MemoryBus {
 
         // This logic now exists on the video layer hardware
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters) {
+            if ((data & 0x01) > 0) {
+                isOverscan = true;
+            } else {
+                isOverscan = false;
+            }
+
             if ((data & 0x20) > 0) {
                 enableDisplay = true;
             } else {
                 enableDisplay = false;
             }
+
             if ((data & 0x80) > 0) {
                 borderY = true;
             } else {
                 borderY = false;
             }
+
             if ((data & 0x40) > 0) {
                 borderX = true;
             } else {
@@ -217,6 +227,9 @@ public class DisplayBombJack extends MemoryBus {
 
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x08) {
             displayPriority = data;
+        }
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x09) {
+            overscanControl = data;
         }
 
         // Handle other layer writes
@@ -345,17 +358,26 @@ public class DisplayBombJack extends MemoryBus {
 
         // One pixel delay from U95:A
         enablePixels = true;
-        if (borderX && (displayH >= 0xfe/*0x181*/)) {
-            enablePixels = false;
-        }
-        if (!borderX && (displayH >= 0x188/*0x189*/)) {
-            enablePixels = false;
-        }
-        if (borderX && (displayH < 0x00d)) {
-            enablePixels = false;
-        }
-        if (!borderX && (displayH < 0x009)) {
-            enablePixels = false;
+        if (isOverscan) {
+            int localdisplayH = displayH - 1;   // Adjust for observed simulation delay
+            if ( (localdisplayH & 0x180) == 0x180) {
+                if ( ((localdisplayH & 0x7f)>>3) > (overscanControl & 0x0f) && ((localdisplayH & 0x7f)>>3) < ((overscanControl >> 4) & 0x0f) ) {
+                    enablePixels = false;
+                }
+            }
+        } else {
+            if (borderX && (displayH >= 0xfe/*0x181*/)) {
+                enablePixels = false;
+            }
+            if (!borderX && (displayH >= 0x188/*0x189*/)) {
+                enablePixels = false;
+            }
+            if (borderX && (displayH < 0x00d)) {
+                enablePixels = false;
+            }
+            if (!borderX && (displayH < 0x009)) {
+                enablePixels = false;
+            }
         }
 
         if (borderY && (displayV >= 0xe0)) {

@@ -87,10 +87,12 @@ Feature: Tests the video character screen data conversion and sprites
     # Chars screen
     Given write data from file "C:\Work\ImageToBitplane\target\chars512_scr.bin" to 24bit bus at '0x4000' and addressEx '0x80'
 
-    # Enable display
-    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
+    # Enable display, with overscan
+    Given write data byte '0x21' to 24bit bus at '0x9e00' and addressEx '0x01'
     # Default display priority
     Given write data byte '0xe4' to 24bit bus at '0x9e08' and addressEx '0x01'
+    # Overscan control
+    Given write data byte '0xd2' to 24bit bus at '0x9e09' and addressEx '0x01'
     # Test the chars layer display enable
     Given write data byte '0x00' to 24bit bus at '0x9000' and addressEx '0x01'
 
