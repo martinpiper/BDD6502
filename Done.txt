@@ -430,3 +430,13 @@ Added: Given I am using C64 processor port options
 	* Schematic will need a compatator for 0x188, could make it a latch in the register space and variable with a comparator...
 	* Could also use a configurable "use start line" value for the span draw. This would be useful for shifting the horizontal "origin" of the screen
 	* Done: If the write pixel logic does the same kind of transparency test as the regular sprites (read, test, then optional write / re-write value) this would allow the highest priority sprites to be drawn first and avoid dropout issues better...
+
+
+
+* Rotated Sprites2
+	double tempRot = Math.toRadians(33.0f);
+	int rotpixelX = (int)(((double)pixelX * Math.cos(tempRot)) - ((double)pixelY * Math.sin(tempRot)));
+	int rotpixelY = (int)(((double)pixelX * Math.sin(tempRot)) + ((double)pixelY * Math.cos(tempRot)));
+	pixelX = rotpixelX;
+	pixelY = rotpixelY;
+	if (pixelX >= 0 && pixelX < 32 && pixelY >= 0 && pixelY < 32) {
