@@ -1505,6 +1505,17 @@ public class Glue {
         devices.add(displayBombJack);
     }
 
+    @Given("^a new video display with overscan and 16 colours$")
+    public void aNewVideoOverscanDisplay16Colours() throws IOException {
+        if (displayBombJack != null) {
+            displayBombJack.getWindow().dispatchEvent(new WindowEvent(displayBombJack.getWindow(), WindowEvent.WINDOW_CLOSING));
+        }
+        displayBombJack = new DisplayBombJack();
+        displayBombJack.setWithOverscan(true);
+        displayBombJack.make16Colours();
+        devices.add(displayBombJack);
+    }
+
     @Given("^enable video display bus debug output$")
     public void enableVideoBusDebug() throws IOException {
         displayBombJack.enableDebugData();
@@ -1568,6 +1579,11 @@ public class Glue {
     public void aSimpleUserportToBitBusIsInstalled() throws MemoryRangeException {
         aUserportToBitBusIsInstalled();
         userPort24BitAddress.setSimpleMode(true);
+    }
+
+    @Given("^the layer has overscan$")
+    public void theLayerHasOverscan() {
+        displayBombJack.getLastLayerAdded().setWithOverscan(true);
     }
 
     @Given("^add a StaticColour layer for palette index '(.*)'$")

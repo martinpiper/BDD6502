@@ -25,7 +25,6 @@ public class Sprites2 extends DisplayLayer {
     int spritePalette[] = new int[kNumSprites];
 
     boolean prevHSYNC = false;
-    int lineStartTimeDelay = 0;
 
     int drawingSpriteIndex = 0;
     int drawingSpriteState = 0;
@@ -37,7 +36,6 @@ public class Sprites2 extends DisplayLayer {
     int insideHeight = 0;
     int fetchingPixel = 0;
     int onScreen = 0;
-    int currentLineV = 0;
 
 
     int calculatedRasters[][] = new int[2][512];
@@ -133,18 +131,14 @@ public class Sprites2 extends DisplayLayer {
     }
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart) {
         // Time to the rising edge of the _hSync
         if (!prevHSYNC && _hSync) {
-            // This accounts for the signal being held low for a pixel count after the _HSYNC edge
-            lineStartTimeDelay = 2;
             // Flip-flip in hardware
             onScreen = 1-onScreen;
-            currentLineV = displayV;
         }
         prevHSYNC = _hSync;
-        if (lineStartTimeDelay > 0) {
-            lineStartTimeDelay--;
+        if (_doLineStart) {
             // Reset on low in hardware
             fetchingPixel = 0;
             drawingSpriteIndex = 0;
@@ -212,7 +206,7 @@ public class Sprites2 extends DisplayLayer {
                 }
                 // Perform Y extent check, the wait is for the calculation to succeed due to multiply 32 (shift 5!!) lookup and add, and advance drawingSpriteIndex if it isn't going to be drawn
                 // This check uses the inverted Y, so a subtract is actually achieved.
-                insideHeight = (currentLineV + currentSpriteY);
+                insideHeight = (displayV + currentSpriteY);
                 // Note, unsigned comparison with low bits
                 insideHeight &= 0x1ff;
                 if (insideHeight >= currentSpriteSizeY) {

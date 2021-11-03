@@ -46,7 +46,7 @@ Feature: Tests the video character screen data conversion and sprites
   @TC-7
   Scenario: Testing Sprites2 layer
     Given clear all external devices
-    Given a new video display with 16 colours
+    Given a new video display with overscan and 16 colours
     And enable video display bus debug output
     Given video display processes 24 pixels per instruction
     Given video display refresh window every 32 instructions
@@ -58,10 +58,13 @@ Feature: Tests the video character screen data conversion and sprites
     Given a user port to 24 bit bus is installed
     Given add a StaticColour layer for palette index '0x07'
     And the layer has 16 colours
+    And the layer has overscan
     Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
     And the layer has 16 colours
+    And the layer has overscan
     Given add a Sprites2 layer with registers at '0x9000' and addressEx '0x10'
     And the layer has 16 colours
+    And the layer has overscan
     Given show video window
     Given limit video display to 60 fps
 
@@ -87,12 +90,12 @@ Feature: Tests the video character screen data conversion and sprites
     # Chars screen
     Given write data from file "C:\Work\ImageToBitplane\target\chars512_scr.bin" to 24bit bus at '0x4000' and addressEx '0x80'
 
-    # Enable display, with overscan
-    Given write data byte '0x21' to 24bit bus at '0x9e00' and addressEx '0x01'
+    # Enable display
+    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
     # Default display priority
     Given write data byte '0xe4' to 24bit bus at '0x9e08' and addressEx '0x01'
     # Overscan control
-    Given write data byte '0xd2' to 24bit bus at '0x9e09' and addressEx '0x01'
+    Given write data byte '0x29' to 24bit bus at '0x9e09' and addressEx '0x01'
     # Test the chars layer display enable
     Given write data byte '0x00' to 24bit bus at '0x9000' and addressEx '0x01'
 
@@ -245,6 +248,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x00' to 24bit bus at '0x9262' and addressEx '0x01'
 
     Given render a video display frame
+#    When display until window closed
 
     Then expect image "testdata/TC-7-000000.bmp" to be identical to "target/frames/TC-7-000000.bmp"
     Then expect image "testdata/TC-7-000001.bmp" to be identical to "target/frames/TC-7-000001.bmp"

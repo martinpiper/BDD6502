@@ -7,7 +7,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Random;
 
 public class DisplayBombJack extends MemoryBus {
@@ -25,6 +24,17 @@ public class DisplayBombJack extends MemoryBus {
     int addressPalette = 0x9c00, addressExPalette = 0x01;
     int addressRegisters = 0x9e00, addressExRegisters = 0x01;
     int displayPriority = 0;  // Default to be 0, this helps ensure startup code correctly sets this option
+    int lineStartTimeDelay = 0;
+
+    public boolean isWithOverscan() {
+        return withOverscan;
+    }
+
+    public void setWithOverscan(boolean withOverscan) {
+        this.withOverscan = withOverscan;
+    }
+
+    boolean withOverscan = false;
 
     public int getFrameNumberForSync() {
         return frameNumberForSync;
@@ -33,11 +43,11 @@ public class DisplayBombJack extends MemoryBus {
     int frameNumberForSync = 0;
 
     public int getDisplayH() {
-        return displayH;
+        return displayHExternal;
     }
 
     public int getDisplayV() {
-        return displayV;
+        return displayVExternal;
     }
 
     public int getDisplayX(int cia1RasterOffsetX) {
@@ -57,6 +67,7 @@ public class DisplayBombJack extends MemoryBus {
     }
 
     int displayH = 0, displayV = 0;
+    int displayHExternal = 0, displayVExternal = 0;
     int displayX = 0, displayY = 0;
     int displayBitmapX = 0, displayBitmapY = 0;
     boolean enablePixels = false;
@@ -75,7 +86,6 @@ public class DisplayBombJack extends MemoryBus {
     int pixelsSinceLastDebugWriteMax = 32;
     boolean is16Colours = false;
     UserPortTo24BitAddress callbackAPU = null;
-    boolean isOverscan = false;
     int overscanControl = 0;
 
     public boolean getVSync() {
@@ -159,7 +169,13 @@ public class DisplayBombJack extends MemoryBus {
         return panel.getImage();
     }
 
+    public DisplayLayer getLastLayerAdded() {
+        return lastLayerAdded;
+    }
+
+    DisplayLayer lastLayerAdded;
     public void addLayer(DisplayLayer layer) {
+        lastLayerAdded = layer;
         layer.setDisplay(this);
         layers.add(layer);
         // Profiling shows that layers.size() was taking a significant chunk of time. It shouldn't have been. Instead use this array instead.
@@ -175,7 +191,7 @@ public class DisplayBombJack extends MemoryBus {
             // This is true, as long as mode7 writes (due to resetting the internal values on _VSYNC) are completed before the end of the _VSYNC which starts later and shorter than the VBLANK
             if (enableDisplay && !vBlank && debugData != null) {
                 debugData.println("d$0");
-                debugData.printf("w$ff03ff00,$%02x%02x%02x00\n", displayV & 0xff , (displayH >> 8) & 0x01 , displayH & 0xff );
+                debugData.printf("w$ff03ff00,$%02x%02x%02x00\n", displayVExternal & 0xff , (displayHExternal >> 8) & 0x01 , displayHExternal & 0xff );
                 debugData.println("d$0");
             }
         }
@@ -200,12 +216,6 @@ public class DisplayBombJack extends MemoryBus {
 
         // This logic now exists on the video layer hardware
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters) {
-            if ((data & 0x01) > 0) {
-                isOverscan = true;
-            } else {
-                isOverscan = false;
-            }
-
             if ((data & 0x20) > 0) {
                 enableDisplay = true;
             } else {
@@ -218,18 +228,22 @@ public class DisplayBombJack extends MemoryBus {
                 borderY = false;
             }
 
-            if ((data & 0x40) > 0) {
-                borderX = true;
-            } else {
-                borderX = false;
+            if (!withOverscan) {
+                if ((data & 0x40) > 0) {
+                    borderX = true;
+                } else {
+                    borderX = false;
+                }
             }
         }
 
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x08) {
-            displayPriority = data;
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x09) {
-            overscanControl = data;
+            if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x08) {
+                displayPriority = data;
+            }
+        if (withOverscan) {
+            if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x09) {
+                overscanControl = data;
+            }
         }
 
         // Handle other layer writes
@@ -254,7 +268,7 @@ public class DisplayBombJack extends MemoryBus {
     public void calculatePixelsUntil(int waitH, int waitV) {
         do {
             calculatePixel();
-        } while (!(displayH == waitH && displayV == waitV));
+        } while (!(displayHExternal == waitH && displayVExternal == waitV));
     }
 
     public void calculateAFrame() {
@@ -329,6 +343,28 @@ public class DisplayBombJack extends MemoryBus {
             }
 //        }
 
+        boolean doLineStart = false;
+        if (withOverscan) {
+            if (displayH == 0x1d0) {
+                displayVExternal = displayV;
+                displayHExternal = 0;
+                lineStartTimeDelay = 2;
+            } else if (displayH == 0x1d1) {
+                displayHExternal = 0;
+            } else {
+                displayHExternal++;
+            }
+            if (lineStartTimeDelay > 0) {
+                lineStartTimeDelay--;
+                doLineStart = true;
+            } else {
+                doLineStart = false;
+            }
+        } else {
+            displayHExternal = displayH;
+            displayVExternal = displayV;
+        }
+
         if (callbackAPU != null) {
             // Each pixel by default, has two VIDCLK transitions, so the APU needs two ticks
             // Using JP10
@@ -358,10 +394,21 @@ public class DisplayBombJack extends MemoryBus {
 
         // One pixel delay from U95:A
         enablePixels = true;
-        if (isOverscan) {
-            int localdisplayH = displayH - 1;   // Adjust for observed simulation delay
-            if ( (localdisplayH & 0x180) == 0x180) {
-                if ( ((localdisplayH & 0x7f)>>3) > (overscanControl & 0x0f) && ((localdisplayH & 0x7f)>>3) < ((overscanControl >> 4) & 0x0f) ) {
+        if (withOverscan) {
+            if (!_hSync) {
+                enablePixels = false;
+            }
+            int localdisplayH = displayHExternal - 1;   // Adjust for observed simulation delay
+            if (displayHExternal <= 0) {
+                enablePixels = false;
+            }
+            if ( (localdisplayH & 0x100) == 0x100) {
+                if ( ((localdisplayH & 0x7f)>>3) > (overscanControl & 0x0f) ) {
+                    enablePixels = false;
+                }
+            }
+            if ( (localdisplayH & 0x180) == 0x000) {
+                if ( ((localdisplayH & 0x7f)>>3) < ((overscanControl >> 4) & 0x0f) ) {
                     enablePixels = false;
                 }
             }
@@ -380,15 +427,15 @@ public class DisplayBombJack extends MemoryBus {
             }
         }
 
-        if (borderY && (displayV >= 0xe0)) {
+        if (borderY && (displayVExternal >= 0xe0)) {
             enablePixels = false;
         }
 
         vBlank = false;
-        if (displayV < 0x10 || displayV >= 0xf0) {
+        if (displayVExternal < 0x10 || displayVExternal >= 0xf0) {
             vBlank = true;
         }
-        if (displayH == 0x180 && displayV == 0xf0) {
+        if (displayH == 0x180 && displayVExternal == 0xf0) {
             extEXTWANTIRQFlag = true;
         }
 
@@ -396,7 +443,7 @@ public class DisplayBombJack extends MemoryBus {
             enablePixels = false;
         }
         // The hardware syncs on -ve _VBLANK
-        if (displayX == 0 && displayV == 0xf0) {
+        if (displayX == 0 && displayVExternal == 0xf0) {
             if (enableDisplay && debugData != null) {
                 debugData.println("d$0");
                 debugData.println("^-$01");
@@ -439,7 +486,7 @@ public class DisplayBombJack extends MemoryBus {
                     // Ensure each layer index is executed once
                     if (cachedPixel[theLayer] < 0) {
                         DisplayLayer displayLayer = layersRaw[theLayer];
-                        int pixel = displayLayer.calculatePixel(displayH, displayV, _hSync, _vSync);
+                        int pixel = displayLayer.calculatePixel(displayHExternal, displayVExternal, _hSync, _vSync, doLineStart);
                         if (is16Colours) {
                             if ((pixel & 0x0f) != 0 || firstLayer) {
                                 latchedPixel = pixel;
@@ -460,7 +507,7 @@ public class DisplayBombJack extends MemoryBus {
             }
         } else {
             for (DisplayLayer layer : layersRaw) {
-                int pixel = layer.calculatePixel(displayH, displayV, _hSync, _vSync);
+                int pixel = layer.calculatePixel(displayHExternal, displayVExternal, _hSync, _vSync, doLineStart);
                 layer.ageContention();
                 // If there is pixel data in the layer then use it
                 // Always use the first colour, which is the furthest layer colour

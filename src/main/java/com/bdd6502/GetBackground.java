@@ -2,8 +2,6 @@ package com.bdd6502;
 
 import org.apache.commons.lang3.RandomUtils;
 
-import java.util.Random;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -29,7 +27,7 @@ public class GetBackground extends DisplayLayer {
     }
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart) {
         if (layer == null) {
             layer = display.layers.get(layerIndex);
         }

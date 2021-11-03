@@ -4,10 +4,8 @@ import TestGlue.Glue;
 import com.bdd6502.APUData;
 import com.bdd6502.DisplayBombJack;
 import com.bdd6502.DisplayLayer;
-import com.bdd6502.MemoryBus;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import javafx.util.Pair;
-import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -76,7 +74,7 @@ public class UserPortTo24BitAddressTest {
             }
 
             @Override
-            public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
+            public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart) {
                 return 0;
             }
         };

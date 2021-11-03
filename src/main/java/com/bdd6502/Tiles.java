@@ -106,23 +106,33 @@ public class Tiles extends DisplayLayer {
     }
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart) {
         if (!enableTiles) {
             return 0;
         }
 
-        if ((displayH & 0x188) == 0) {
+        if (withOverscan) {
             latchedDisplayV = displayV;
+        } else {
+            if ((displayH & 0x188) == 0) {
+                latchedDisplayV = displayV;
+            }
         }
         int latchedDisplayV2 = latchedDisplayV;
 
-        // Adjust for the extra timing
-        if (displayH >= 0x180) {
-            displayH -= 0x80;
+        if (!withOverscan) {
+            // Adjust for the coordinates
+            if (displayH >= 0x180) {
+                displayH -= 0x80;
+            }
         }
         // Adjust to match real hardware
         displayH -= 8;
-        displayH = displayH & 0xff;
+        if (withOverscan) {
+            displayH = displayH & 0x1ff;
+        } else {
+            displayH = displayH & 0xff;
+        }
         // Add scrolls and clamp
         displayH += scrollX;
         latchedDisplayV2 += scrollY;

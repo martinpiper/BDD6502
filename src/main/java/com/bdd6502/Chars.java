@@ -143,22 +143,32 @@ public class Chars extends DisplayLayer {
     }
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart) {
         if (displayDisable) {
             return 0;
         }
 
-        if ((displayH & 0x188) == 0) {
+        if (withOverscan) {
             latchedDisplayV = displayV;
+        } else {
+            if ((displayH & 0x188) == 0) {
+                latchedDisplayV = displayV;
+            }
         }
         int useDisplayV = latchedDisplayV;
-        // Adjust for the extra timing
-        if (displayH >= 0x180) {
-            displayH -= 0x80;
+        if (!withOverscan) {
+            // Adjust for the coordinates
+            if (displayH >= 0x180) {
+                displayH -= 0x80;
+            }
         }
         boolean generateBadRead = false;
         if (!isV4_0) {
-            displayH = displayH & 0xff;
+            if (withOverscan) {
+                displayH = displayH & 0x1ff;
+            } else {
+                displayH = displayH & 0xff;
+            }
         } else {
             if ((scrollX & 0x07) >= 4 && (scrollX & 0x07) <= 7 && (displayH & 0x07) < 0x03) {
                 if (((displayH >> 3) & 0x1f) == 0x01) {
