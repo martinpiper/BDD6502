@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class DisplayBombJack extends MemoryBus {
@@ -16,6 +17,7 @@ public class DisplayBombJack extends MemoryBus {
 
     ArrayList<DisplayLayer> layers = new ArrayList<>();
     DisplayLayer layersRaw[] = new DisplayLayer[0];
+    boolean enableLayerFlags[] = new boolean[0];
 
     int frameNumber = 0;
     int displayWidth = 384;
@@ -86,7 +88,7 @@ public class DisplayBombJack extends MemoryBus {
     int pixelsSinceLastDebugWriteMax = 32;
     boolean is16Colours = false;
     UserPortTo24BitAddress callbackAPU = null;
-    int overscanControl = 0;
+    int overscanBorderExtent = 0;
 
     public boolean getVSync() {
         return _vSync;
@@ -180,6 +182,9 @@ public class DisplayBombJack extends MemoryBus {
         layers.add(layer);
         // Profiling shows that layers.size() was taking a significant chunk of time. It shouldn't have been. Instead use this array instead.
         layersRaw = layers.toArray(new DisplayLayer[layers.size()]);
+        enableLayerFlags = new boolean[layers.size()];
+        // Without overscan then default layers to being enabled, with overscan default to disabled (a clear latch)
+        Arrays.fill(enableLayerFlags, !withOverscan);
     }
 
     @Override
@@ -237,12 +242,23 @@ public class DisplayBombJack extends MemoryBus {
             }
         }
 
-            if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x08) {
-                displayPriority = data;
-            }
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x08) {
+            displayPriority = data;
+        }
+
         if (withOverscan) {
             if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x09) {
-                overscanControl = data;
+                overscanBorderExtent = data;
+            }
+
+            if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0a) {
+                for (int i = 0 ; i < enableLayerFlags.length && i < 8 ; i++) {
+                    if ( (data & (1<<((enableLayerFlags.length - 1) - i))) > 0 ) {
+                        enableLayerFlags[i] = true;
+                    } else {
+                        enableLayerFlags[i] = false;
+                    }
+                }
             }
         }
 
@@ -395,20 +411,27 @@ public class DisplayBombJack extends MemoryBus {
         // One pixel delay from U95:A
         enablePixels = true;
         if (withOverscan) {
+            // Note: When using $2b in emulation, the very last pixel edge will be duplicated in hardware, but not in emulation which outputs a new column of pixels
+            // This is due to a small difference in _HSYNC handling
+            // Will be safer to use the recommended $29 for a 320 wide screen
             if (!_hSync) {
                 enablePixels = false;
             }
-            int localdisplayH = displayHExternal - 1;   // Adjust for observed simulation delay
+            int localdisplayH = displayHExternal;   // Adjust for observed simulation delay
             if (displayHExternal <= 0) {
                 enablePixels = false;
             }
             if ( (localdisplayH & 0x100) == 0x100) {
-                if ( ((localdisplayH & 0x7f)>>3) > (overscanControl & 0x0f) ) {
+                if ( ((localdisplayH & 0x7f)>>3) > (overscanBorderExtent & 0x0f) ) {
                     enablePixels = false;
                 }
             }
+            localdisplayH = displayHExternal - 1;   // Adjust for observed simulation delay
+            if (displayHExternal <= 0) {
+                enablePixels = false;
+            }
             if ( (localdisplayH & 0x180) == 0x000) {
-                if ( ((localdisplayH & 0x7f)>>3) < ((overscanControl >> 4) & 0x0f) ) {
+                if ( ((localdisplayH & 0x7f)>>3) < ((overscanBorderExtent >> 4) & 0x0f) ) {
                     enablePixels = false;
                 }
             }
@@ -486,7 +509,7 @@ public class DisplayBombJack extends MemoryBus {
                     // Ensure each layer index is executed once
                     if (cachedPixel[theLayer] < 0) {
                         DisplayLayer displayLayer = layersRaw[theLayer];
-                        int pixel = displayLayer.calculatePixel(displayHExternal, displayVExternal, _hSync, _vSync, doLineStart);
+                        int pixel = displayLayer.calculatePixel(displayHExternal, displayVExternal, _hSync, _vSync, doLineStart, enableLayerFlags[theLayer]);
                         if (is16Colours) {
                             if ((pixel & 0x0f) != 0 || firstLayer) {
                                 latchedPixel = pixel;
@@ -506,8 +529,9 @@ public class DisplayBombJack extends MemoryBus {
                 layer.ageContention();
             }
         } else {
+            int layerIndex = 0;
             for (DisplayLayer layer : layersRaw) {
-                int pixel = layer.calculatePixel(displayHExternal, displayVExternal, _hSync, _vSync, doLineStart);
+                int pixel = layer.calculatePixel(displayHExternal, displayVExternal, _hSync, _vSync, doLineStart, enableLayerFlags[layerIndex]);
                 layer.ageContention();
                 // If there is pixel data in the layer then use it
                 // Always use the first colour, which is the furthest layer colour
@@ -521,6 +545,7 @@ public class DisplayBombJack extends MemoryBus {
                     }
                 }
                 firstLayer = false;
+                layerIndex++;
             }
         }
 

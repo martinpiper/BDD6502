@@ -96,15 +96,8 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0xe4' to 24bit bus at '0x9e08' and addressEx '0x01'
     # Overscan control
     Given write data byte '0x29' to 24bit bus at '0x9e09' and addressEx '0x01'
-    # Test the chars layer display enable
-    Given write data byte '0x00' to 24bit bus at '0x9000' and addressEx '0x01'
-
-    # Enable sprites2
-    Given write data byte '0x01' to 24bit bus at '0x9100' and addressEx '0x01'
-
-    # Disable chars
-    Given write data byte '0x02' to 24bit bus at '0x9000' and addressEx '0x01'
-
+    # Just enable Sprites2, not the chars
+    Given write data byte '0x01' to 24bit bus at '0x9e0a' and addressEx '0x01'
 
     # Sprites2 registers
     # Sprites support X and Y flips with X & Y repeating patterns
@@ -243,6 +236,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x33' to 24bit bus at '0x926f' and addressEx '0x01'
 
     Given render a video display frame
+#    When display until window closed
 
     # Now test the end of list
     Given write data byte '0x00' to 24bit bus at '0x9262' and addressEx '0x01'

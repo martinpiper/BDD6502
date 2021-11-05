@@ -8,7 +8,6 @@
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Chars.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Chars.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayLayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayLayer.java" afterDir="false" />
@@ -19,8 +18,11 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/StaticColour.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/StaticColour.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Tiles.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Tiles.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/testdata/TC-7-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-7-000000.bmp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/testdata/TC-7-000001.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-7-000001.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000000.bmp" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -782,11 +784,6 @@
           <properties class="java.lang.ArrayIndexOutOfBoundsException" package="java.lang" />
           <option name="timeStamp" value="13" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites2.java</url>
-          <line>204</line>
-          <option name="timeStamp" value="41" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
@@ -799,14 +796,8 @@
         <watch expression="kAPU_IDataSelectRAM" language="JAVA" />
       </configuration>
       <configuration name="Application">
-        <watch expression="currentSpritePalette" />
-        <watch expression="currentSpriteY" />
-        <watch expression="currentSpriteScaleY" />
-        <watch expression="onScreen" />
-        <watch expression="displayH" />
-        <watch expression="displayV" language="JAVA" />
-        <watch expression="displayV &amp; 1" />
-        <watch expression="_hSync" />
+        <watch expression="enableLayerFlags" />
+        <watch expression="layersRaw" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

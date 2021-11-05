@@ -25,7 +25,7 @@ public class StaticColour extends DisplayLayer {
     }
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
         return getByteOrContention(paletteIndex);
     }
 }

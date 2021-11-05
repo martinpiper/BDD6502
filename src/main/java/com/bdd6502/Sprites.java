@@ -42,10 +42,12 @@ public class Sprites extends DisplayLayer {
     public void writeData(int address, int addressEx, byte data) {
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x200)) {
             lo32 = data & 0x0f;
-            if ((data & 0x10) > 0) {
-                spriteEnable = true;
-            } else {
-                spriteEnable = false;
+            if (!withOverscan) {
+                if ((data & 0x10) > 0) {
+                    spriteEnable = true;
+                } else {
+                    spriteEnable = false;
+                }
             }
         }
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x201)) {
@@ -116,9 +118,12 @@ public class Sprites extends DisplayLayer {
     }
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart) {
-        handleSpriteSchedule(displayH, displayV);
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
+        if (withOverscan) {
+            spriteEnable = enableLayer;
+        }
 
+        handleSpriteSchedule(displayH, displayV);
 
         // Output calculated data
         // Adjust for the extra timing
@@ -127,8 +132,14 @@ public class Sprites extends DisplayLayer {
             fetchingPixel = 0;
             onScreen = displayV & 1;
         }
-        if (fetchingPixel >= 0x100 ) {
-            return 0;
+        if (withOverscan) {
+            if (fetchingPixel >= 0x180 ) {
+                return 0;
+            }
+        } else {
+            if (fetchingPixel >= 0x100 ) {
+                return 0;
+            }
         }
         int finalPixel = calculatedRasters[onScreen][fetchingPixel];
         // And progressively clear the output pixel, like the hardware does
@@ -185,16 +196,14 @@ public class Sprites extends DisplayLayer {
             }
         }
         int spriteSizeX = 16;
+        int spriteSizeXSpan = 16;
         int spriteSizeY = 16;
-        if (withOverscan) {
-            if (spriteIndex == 23) {
-                spriteSizeX = 8;
-            }
-        }
+
         // Same logic as hardware 6R, 6S, 5R, 5S, 5T, 6T
         int tweakIndex = (spriteIndex >> 1) + 3;
         if ((tweakIndex < lo32 && !(tweakIndex < hi32)) || (tweakIndex < hi32 && !(tweakIndex < lo32))) {
             spriteSizeX = 32;
+            spriteSizeXSpan = 32;
             spriteSizeY = 32;
             skipNextSprite = true;
         }
@@ -205,10 +214,16 @@ public class Sprites extends DisplayLayer {
             spriteSizeY = 16;
         }
 
+        if (withOverscan) {
+            if (spriteIndex == 23) {
+                spriteSizeXSpan = 8;
+            }
+        }
+
         // Sprite Y position range check
         // +32 to adjust for expected behaviour where 0y = Bottom of the sprite on the bottom edge of the visible screen
-        int deltaY = (displayV + spriteSizeX + getByteOrContention(spriteY[spriteIndex])) & 0xff;
-        if (!fullHeightSprite && (deltaY >= spriteSizeX)) {
+        int deltaY = (displayV + spriteSizeY + getByteOrContention(spriteY[spriteIndex])) & 0xff;
+        if (!fullHeightSprite && (deltaY >= spriteSizeY)) {
             // This paints transparent pixels, but with palette information.
             // This emulates the observed sprite display behaviour if it is the last layer
             int finalPixel = 0;
@@ -217,11 +232,17 @@ public class Sprites extends DisplayLayer {
             } else {
                 finalPixel = ((theColour & 0x1f) << 3);
             }
-            for (int pixelIndex = 0; pixelIndex < spriteSizeX; pixelIndex++) {
-                int finalXPos = (getByteOrContention(spriteX[spriteIndex]) + pixelIndex) & 0xff;
+            for (int pixelIndex = 0; pixelIndex < spriteSizeXSpan; pixelIndex++) {
+                int finalXPos = getByteOrContention(spriteX[spriteIndex]) + pixelIndex;
                 if (isMSBX) {
                     finalXPos |= 0x100;
                 }
+                if (withOverscan) {
+                    finalXPos &= 0x1ff;
+                } else {
+                    finalXPos &= 0xff;
+                }
+
                 if (is16Colours) {
                     if ((calculatedRasters[offScreen][finalXPos] & 0x0f) == 0) {
                         calculatedRasters[offScreen][finalXPos] = finalPixel;   // Note, no contention since bit plane shifters are forced to be reset to 0
@@ -243,7 +264,7 @@ public class Sprites extends DisplayLayer {
         } else {
             realDeltaY = deltaY;
         }
-        for (int pixelIndex = 0; pixelIndex < spriteSizeX; pixelIndex++) {
+        for (int pixelIndex = 0; pixelIndex < spriteSizeXSpan; pixelIndex++) {
             // Include flips
             if ((theColour & 0x40) > 0) {
                 realPixelIndex = (spriteSizeX - 1) - pixelIndex;
@@ -360,9 +381,14 @@ public class Sprites extends DisplayLayer {
             } else {
                 finalPixel |= ((theColour & 0x1f) << 3);
             }
-            int finalXPos = (getByteOrContention(spriteX[spriteIndex]) + pixelIndex) & 0xff;
+            int finalXPos = (getByteOrContention(spriteX[spriteIndex]) + pixelIndex);
             if (isMSBX) {
                 finalXPos |= 0x100;
+            }
+            if (withOverscan) {
+                finalXPos &= 0x1ff;
+            } else {
+                finalXPos &= 0xff;
             }
 
             // Only output the pixel if there is nothing else there

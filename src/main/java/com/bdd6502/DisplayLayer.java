@@ -18,7 +18,7 @@ public abstract class DisplayLayer extends MemoryBus {
         display = theDisplay;
     }
 
-    public abstract int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart);
+    public abstract int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer);
 
     protected int getByteOrContention(int value) {
         if (busContention > 0 || memoryAsserted) {

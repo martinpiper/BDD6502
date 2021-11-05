@@ -84,7 +84,9 @@ public class Chars extends DisplayLayer {
                         hiPalette = (data & 0x01) << 4;
                     }
 
-                    displayDisable = MemoryBus.addressActive(data, 0x02);
+                    if (!withOverscan) {
+                        displayDisable = MemoryBus.addressActive(data, 0x02);
+                    }
                 }
 
                 if ((address & 0x1f) == 0x01) {
@@ -143,7 +145,10 @@ public class Chars extends DisplayLayer {
     }
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
+        if (withOverscan) {
+            displayDisable = !enableLayer;
+        }
         if (displayDisable) {
             return 0;
         }
@@ -170,11 +175,19 @@ public class Chars extends DisplayLayer {
                 displayH = displayH & 0xff;
             }
         } else {
-            if ((scrollX & 0x07) >= 4 && (scrollX & 0x07) <= 7 && (displayH & 0x07) < 0x03) {
-                if (((displayH >> 3) & 0x1f) == 0x01) {
-                    generateBadRead = true;
+            if (!withOverscan) {
+                // Simulate bad reads normally hidden under the border due to the old hardware
+                if ((scrollX & 0x07) >= 4 && (scrollX & 0x07) <= 7 && (displayH & 0x07) < 0x03) {
+                    if (((displayH >> 3) & 0x1f) == 0x01) {
+                        generateBadRead = true;
+                    }
+                    if (((displayH >> 3) & 0x1f) == 0x00) {
+                        generateBadRead = true;
+                    }
                 }
-                if (((displayH >> 3) & 0x1f) == 0x00) {
+            } else {
+                // Simulate bad reads normally hidden under the border
+                if (displayH <= 7 && ((displayH - scrollX) & 0x07) >= 2) {
                     generateBadRead = true;
                 }
             }

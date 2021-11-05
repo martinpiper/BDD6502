@@ -13,7 +13,6 @@ public class Sprites2 extends DisplayLayer {
     byte plane1[] = new byte[0x2000];
     byte plane2[] = new byte[0x2000];
     byte plane3[] = new byte[0x2000];
-    boolean spriteEnable = false;
     final int kNumSprites = 64;
     int spriteX[] = new int[kNumSprites];
     int spriteY[] = new int[kNumSprites];
@@ -53,14 +52,14 @@ public class Sprites2 extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
+/*
+        // No control register logic now...
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x100)) {
             if ((data & 0x01) > 0) {
-                spriteEnable = true;
             } else {
-                spriteEnable = false;
             }
         }
-
+*/
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= (addressRegisters + 0x200) && address < (addressRegisters + 0x400)) {
             busContention = display.getBusContentionPixels();
             int spriteIndex = (address - (addressRegisters + 0x200)) / 0x08;
@@ -131,7 +130,7 @@ public class Sprites2 extends DisplayLayer {
     }
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
         // Time to the rising edge of the _hSync
         if (!prevHSYNC && _hSync) {
             // Flip-flip in hardware
@@ -144,7 +143,7 @@ public class Sprites2 extends DisplayLayer {
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
         }
-        if (!spriteEnable) {
+        if (!enableLayer) {
             // Reset on low in hardware
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
@@ -168,10 +167,10 @@ public class Sprites2 extends DisplayLayer {
 
         // Reading Y first gives time to calculate vertical extent and skip the sprite before drawing the span
         switch (drawingSpriteState) {
+            // Even cycles, on the low portion of the event, on the +ve edge, the odd cycles, the load is actually completed
             case 0:
             case 2:
             case 4:
-            case 6:
             case 8:
             case 10:
             case 12:
@@ -199,7 +198,9 @@ public class Sprites2 extends DisplayLayer {
                 drawingSpriteState++;
                 break;
 
-            case 7:
+            case 6:
+                // On low S2_LDSPRX
+
                 // Test for end of list
                 if (currentSpriteSizeY == 0) {
                     return;
@@ -213,6 +214,11 @@ public class Sprites2 extends DisplayLayer {
                     advanceSprite();
                     return;
                 }
+
+                drawingSpriteState++;
+                break;
+
+            case 7:
                 currentSpriteX = spriteX[drawingSpriteIndex] | ((currentSpritePalette & 0x10) << 4);
                 drawingSpriteState++;
                 break;
@@ -242,7 +248,8 @@ public class Sprites2 extends DisplayLayer {
             case 15:
                 currentSpriteFrame = spriteFrame[drawingSpriteIndex];
                 drawingSpriteState++;
-                break;
+                // Note the fall through to simulate the transition from loading the data to rendering the first pixel
+//                break;
 
             case 16:
                 int pixelX = (currentSpriteXPixel >> 5) & 0x1f;

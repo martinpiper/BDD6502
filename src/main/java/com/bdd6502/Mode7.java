@@ -105,21 +105,36 @@ public class Mode7 extends DisplayLayer {
             flagRegisterXY = false;
             flagRegisterY = false;
             flagRegisterYX = false;
-            flagDisplayEnable = false;
-            if ((data & 0x01) > 0) {
-                flagDisplayEnable = true;
-            }
-            if ((data & 0x02) > 0) {
-                flagRegisterX = true;
-            }
-            if ((data & 0x04) > 0) {
-                flagRegisterXY = true;
-            }
-            if ((data & 0x08) > 0) {
-                flagRegisterY = true;
-            }
-            if ((data & 0x10) > 0) {
-                flagRegisterYX = true;
+            if (!withOverscan) {
+                flagDisplayEnable = false;
+                if ((data & 0x01) > 0) {
+                    flagDisplayEnable = true;
+                }
+                if ((data & 0x02) > 0) {
+                    flagRegisterX = true;
+                }
+                if ((data & 0x04) > 0) {
+                    flagRegisterXY = true;
+                }
+                if ((data & 0x08) > 0) {
+                    flagRegisterY = true;
+                }
+                if ((data & 0x10) > 0) {
+                    flagRegisterYX = true;
+                }
+            } else {
+                if ((data & 0x01) > 0) {
+                    flagRegisterX = true;
+                }
+                if ((data & 0x02) > 0) {
+                    flagRegisterXY = true;
+                }
+                if ((data & 0x04) > 0) {
+                    flagRegisterY = true;
+                }
+                if ((data & 0x08) > 0) {
+                    flagRegisterYX = true;
+                }
             }
             handleRegisterFlags();
         }
@@ -154,7 +169,11 @@ public class Mode7 extends DisplayLayer {
     }
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
+        if (withOverscan) {
+            flagDisplayEnable = enableLayer;
+        }
+
         x += dx;
         yx += dyx;
 

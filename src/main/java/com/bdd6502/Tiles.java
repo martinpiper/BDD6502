@@ -37,11 +37,13 @@ public class Tiles extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x00) {
-            if ((data & 0x10) > 0) {
-                enableTiles = true;
-            } else {
-                enableTiles = false;
+        if (!withOverscan) {
+            if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x00) {
+                if ((data & 0x10) > 0) {
+                    enableTiles = true;
+                } else {
+                    enableTiles = false;
+                }
             }
         }
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x01) {
@@ -106,7 +108,10 @@ public class Tiles extends DisplayLayer {
     }
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
+        if (withOverscan) {
+            enableTiles = enableLayer;
+        }
         if (!enableTiles) {
             return 0;
         }
@@ -126,6 +131,14 @@ public class Tiles extends DisplayLayer {
                 displayH -= 0x80;
             }
         }
+        boolean generateBadRead = false;
+        if (withOverscan) {
+            // Simulate bad reads normally hidden under the border
+            if (displayH <= 12 && ((displayH - scrollX) & 0x07) >= 2) {
+                generateBadRead = true;
+            }
+        }
+
         // Adjust to match real hardware
         displayH -= 8;
         if (withOverscan) {
@@ -140,6 +153,7 @@ public class Tiles extends DisplayLayer {
         latchedDisplayV2 &= 0x3ff;
         int index = ((displayH >> 4) & 0x3f) + (((latchedDisplayV2 >> 4) & 0x3f) * 0x40);
         int theChar = (screenData[index]) & 0xff;
+
 //        System.out.println(displayH + " " + displayV + " Chars index: " + Integer.toHexString(index) + " char " + Integer.toHexString(theChar));
         byte theColour = colourData[index];
         displayH &= 0x0f;
@@ -151,6 +165,14 @@ public class Tiles extends DisplayLayer {
         if ((theColour & 0x80) > 0) {
             latchedDisplayV2 = 0x0f - latchedDisplayV2;
         }
+
+        if (generateBadRead) {
+            theChar = (byte)~theChar;
+            theChar &= 0xff;
+//            theColour = (byte)~theColour;
+//            theColour &= 0xff;
+        }
+
         int pixelPlane0;
         int pixelPlane1;
         int pixelPlane2;

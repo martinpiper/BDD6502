@@ -316,8 +316,11 @@ Feature: Tests the video and audio hardware expansion together
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanClouds_tiles.bin" to 24bit bus at '0x4000' and addressEx '0x08'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanClouds_tiles.bin2" to 24bit bus at '0x8000' and addressEx '0x08'
 
-    # Wide overscan
-    Given write data byte '0x2f' to 24bit bus at '0x9e09' and addressEx '0x01'
+    # Wide overscan can use 0x2b which has a couple of chars on the left masked for scrolling and hits the right edge _HSYNC
+    # Use the 320 wide settings
+    Given write data byte '0x29' to 24bit bus at '0x9e09' and addressEx '0x01'
+    # Disable all layers
+    Given write data byte '0x00' to 24bit bus at '0x9e0a' and addressEx '0x01'
 
     # Enable display with tiles and borders
     Given write data byte '0xf0' to 24bit bus at '0x9e00' and addressEx '0x01'
@@ -372,12 +375,42 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x60' to 24bit bus at '0x9816' and addressEx '0x01'
     Given write data byte '0x90' to 24bit bus at '0x9817' and addressEx '0x01'
 
-    # Quickly verify mode7 register latch reset behaviour
-    Given render a video display until H=80 and V=128
-    Given write data byte '0x01' to 24bit bus at '0xa015' and addressEx '0x01'
-    Given write data byte '0x1f' to 24bit bus at '0xa015' and addressEx '0x01'
+    Given render a video display frame
+
+    # Now progressively enable layers and test for expected behaviour
+    Given write data byte '0x01' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    Given render a video display frame
+
+    # Some combinations
+    Given write data byte '0x03' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    Given render a video display frame
+
     Given render a video display until vsync
 
-    When display until window closed
+    # Quickly verify mode7 register latch reset behaviour
+    Given render a video display until H=320 and V=128
+    Given write data byte '0x00' to 24bit bus at '0xa015' and addressEx '0x01'
+    Given write data byte '0x0f' to 24bit bus at '0xa015' and addressEx '0x01'
+    Given render a video display until vsync
+
+#    When display until window closed
 
     Then expect image "testdata/TC-8-000000.bmp" to be identical to "target/frames/TC-8-000000.bmp"
+    Then expect image "testdata/TC-8-000001.bmp" to be identical to "target/frames/TC-8-000001.bmp"
+    Then expect image "testdata/TC-8-000002.bmp" to be identical to "target/frames/TC-8-000002.bmp"
+    Then expect image "testdata/TC-8-000003.bmp" to be identical to "target/frames/TC-8-000003.bmp"
+    Then expect image "testdata/TC-8-000004.bmp" to be identical to "target/frames/TC-8-000004.bmp"
+    Then expect image "testdata/TC-8-000005.bmp" to be identical to "target/frames/TC-8-000005.bmp"
+    Then expect image "testdata/TC-8-000006.bmp" to be identical to "target/frames/TC-8-000006.bmp"
+    Then expect image "testdata/TC-8-000007.bmp" to be identical to "target/frames/TC-8-000007.bmp"
+    Then expect image "testdata/TC-8-000008.bmp" to be identical to "target/frames/TC-8-000008.bmp"
