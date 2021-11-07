@@ -168,6 +168,8 @@ public class Mode7 extends DisplayLayer {
         }
     }
 
+    int finalPixelDelay0 , finalPixelDelay1 , finalPixelDelay2 , finalPixelDelay3 , finalPixelDelay4;
+    int _vSyncDelay = 0;
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
         if (withOverscan) {
@@ -178,6 +180,12 @@ public class Mode7 extends DisplayLayer {
         yx += dyx;
 
         if (!previousHSync && _hSync) {
+            if (_vSyncDelay > 0) {
+                // This models observed simulation behaviour, the cause may be the timing between _vsync and _hsync pulses...
+                y = 0;
+                xy = 0;
+                _vSyncDelay--;
+            }
             xy += dxy;
             y += dy;
         }
@@ -188,6 +196,7 @@ public class Mode7 extends DisplayLayer {
         if (_vSync == false) {
             y = 0;
             xy = 0;
+            _vSyncDelay = 2;
         }
 
         handleRegisterFlags();
@@ -221,7 +230,12 @@ public class Mode7 extends DisplayLayer {
         if (finalPixel == 0 || flagDisplayEnable == false) {
             finalPixel = backgroundColour;
         }
-        return getByteOrContention(finalPixel);
+        finalPixelDelay0 = finalPixelDelay1;
+        finalPixelDelay1 = finalPixelDelay2;
+        finalPixelDelay2 = finalPixelDelay3;
+        finalPixelDelay3 = finalPixelDelay4;
+        finalPixelDelay4 = finalPixel;
+        return getByteOrContention(finalPixelDelay0);
     }
 
     public void handleRegisterFlags() {
