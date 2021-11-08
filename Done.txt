@@ -440,3 +440,28 @@ Added: Given I am using C64 processor port options
 	pixelX = rotpixelX;
 	pixelY = rotpixelY;
 	if (pixelX >= 0 && pixelX < 32 && pixelY >= 0 && pixelY < 32) {
+
+	// Rotation with origin correction
+                int pixelX = (currentSpriteXPixel >> 5) & 0x1f;
+                int pixelY = (currentSpriteYPixel >> 5) & 0x1f;
+
+                pixelX = (currentSpriteXPixel >> 3) & 0x7f;
+                pixelY = (currentSpriteYPixel >> 3) & 0x7f;
+
+                double tempRot = Math.toRadians(display.getFrameNumberForSync());
+
+                // Note, reverse the rotation for the origin
+                pixelX += 64.0f * Math.cos(-tempRot) - 64.0f * Math.sin(-tempRot);
+                pixelY += 64.0f * Math.sin(-tempRot) + 64.0f * Math.cos(-tempRot);
+
+                pixelX -= 64.0f;
+                pixelY -= 64.0f;
+
+                int rotpixelX = (int)(((double)pixelX * Math.cos(tempRot)) - ((double)pixelY * Math.sin(tempRot)));
+                int rotpixelY = (int)(((double)pixelX * Math.sin(tempRot)) + ((double)pixelY * Math.cos(tempRot)));
+
+                pixelX = rotpixelX >> 2;
+                pixelY = rotpixelY >> 2;
+                if (pixelX >= 0 && pixelX < 32 && pixelY >= 0 && pixelY < 32) {
+                    pixelX &= 0x1f;
+                    pixelY &= 0x1f;
