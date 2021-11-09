@@ -465,3 +465,32 @@ Added: Given I am using C64 processor port options
                 if (pixelX >= 0 && pixelX < 32 && pixelY >= 0 && pixelY < 32) {
                     pixelX &= 0x1f;
                     pixelY &= 0x1f;
+
+	// Rotation with a sqrt(2) scale fix applied, to avoid sprite bounding edges
+                int pixelX = (currentSpriteXPixel >> 5) & 0x1f;
+                int pixelY = (currentSpriteYPixel >> 5) & 0x1f;
+
+                pixelX = (currentSpriteXPixel >> 3) & 0x7f;
+                pixelY = (currentSpriteYPixel >> 3) & 0x7f;
+
+                double tempRot = Math.toRadians(display.getFrameNumberForSync() * (drawingSpriteIndex / 2));
+                if ((drawingSpriteIndex & 1) == 1) {
+                    tempRot = Math.toRadians(-display.getFrameNumberForSync() / drawingSpriteIndex);
+                }
+
+                final double root2 = Math.sqrt(2.0f);
+                // Note, reverse the rotation for the origin
+                pixelX += (64.0f * Math.cos(-tempRot) - 64.0f * Math.sin(-tempRot)) / root2;
+                pixelY += (64.0f * Math.sin(-tempRot) + 64.0f * Math.cos(-tempRot)) / root2;
+
+                pixelX -= 64.0f;
+                pixelY -= 64.0f;
+
+                int rotpixelX = (int)((((double)pixelX * Math.cos(tempRot)) - ((double)pixelY * Math.sin(tempRot))) * root2);
+                int rotpixelY = (int)((((double)pixelX * Math.sin(tempRot)) + ((double)pixelY * Math.cos(tempRot))) * root2);
+
+                pixelX = rotpixelX >> 2;
+                pixelY = rotpixelY >> 2;
+                if (pixelX >= 0 && pixelX < 32 && pixelY >= 0 && pixelY < 32) {
+                    pixelX &= 0x1f;
+                    pixelY &= 0x1f;
