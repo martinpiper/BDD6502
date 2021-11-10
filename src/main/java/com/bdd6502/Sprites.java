@@ -235,7 +235,7 @@ public class Sprites extends DisplayLayer {
             for (int pixelIndex = 0; pixelIndex < spriteSizeXSpan; pixelIndex++) {
                 int finalXPos = getByteOrContention(spriteX[spriteIndex]) + pixelIndex;
                 if (isMSBX) {
-                    finalXPos |= 0x100;
+                    finalXPos += 0x100;
                 }
                 if (withOverscan) {
                     finalXPos &= 0x1ff;
@@ -383,7 +383,7 @@ public class Sprites extends DisplayLayer {
             }
             int finalXPos = (getByteOrContention(spriteX[spriteIndex]) + pixelIndex);
             if (isMSBX) {
-                finalXPos |= 0x100;
+                finalXPos += 0x100;
             }
             if (withOverscan) {
                 finalXPos &= 0x1ff;
