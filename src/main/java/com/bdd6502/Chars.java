@@ -10,6 +10,7 @@ public class Chars extends DisplayLayer {
     int addressPlane1 = 0x4000, addressExPlane1 = 0x20;
     int addressPlane2 = 0x8000, addressExPlane2 = 0x20;
     int addressScreenV4_0 = 0x4000, addressExScreenV4_0 = 0x80;
+    int addressScreenV8_0 = 0x8000, addressExScreenV8_0 = 0x80;
     byte screenData[];
     byte colourData[];
     byte plane0[] = new byte[0x2000];
@@ -22,6 +23,7 @@ public class Chars extends DisplayLayer {
     int hiPalette = 0;
     boolean isV4_0 = false;
     byte screenDataV4_0[];
+    byte screenDataV8_0[];
     boolean displayDisable = false;
     int scrollX , scrollY;
 
@@ -53,6 +55,7 @@ public class Chars extends DisplayLayer {
         this.addressExScreenV4_0 = addressExScreen;
         isV4_0 = true;
         screenDataV4_0 = new byte[0x2000];
+        screenDataV8_0 = new byte[0x2000];
     }
 
     @Override
@@ -90,10 +93,18 @@ public class Chars extends DisplayLayer {
                 }
 
                 if ((address & 0x1f) == 0x01) {
-                    scrollX = (scrollX & 0x100) | (data & 0x0ff);
+                    if (withOverscan) {
+                        scrollX = (scrollX & 0x300) | (data & 0x0ff);
+                    } else {
+                        scrollX = (scrollX & 0x100) | (data & 0x0ff);
+                    }
                 }
                 if ((address & 0x1f) == 0x02) {
-                    scrollX = (scrollX & 0x0ff) | ((data & 0x01) << 8);
+                    if (withOverscan) {
+                        scrollX = (scrollX & 0x0ff) | ((data & 0x03) << 8);
+                    } else {
+                        scrollX = (scrollX & 0x0ff) | ((data & 0x01) << 8);
+                    }
                 }
                 if ((address & 0x1f) == 0x03) {
                     scrollY = (scrollY & 0x100) | (data & 0x0ff);
@@ -106,6 +117,12 @@ public class Chars extends DisplayLayer {
             if (MemoryBus.addressActive(addressEx, addressExScreenV4_0) && address >= addressScreenV4_0 && address < (addressScreenV4_0 + 0x2000)) {
                 busContention = display.getBusContentionPixels();
                 screenDataV4_0[address & 0x1fff] = data;
+            }
+            if (withOverscan) {
+                if (MemoryBus.addressActive(addressEx, addressExScreenV8_0) && address >= addressScreenV8_0 && address < (addressScreenV8_0 + 0x2000)) {
+                    busContention = display.getBusContentionPixels();
+                    screenDataV8_0[address & 0x1fff] = data;
+                }
             }
         }
 
@@ -193,14 +210,25 @@ public class Chars extends DisplayLayer {
             }
             useDisplayV += scrollY;
             displayH += scrollX;
-            displayH = displayH & 0x1ff;
+            if (withOverscan) {
+                displayH = displayH & 0x3ff;
+            } else {
+                displayH = displayH & 0x1ff;
+            }
         }
         // -1 to match the real hardware
         int index = 0;
         if (!isV4_0) {
             index = (((displayH >> 3) - 1) & 0x1f) + (((useDisplayV >> 3) & 0x1f) * 0x20);
+            index &= 0x1fff;
         } else {
-            index = (((displayH >> 3) - 1) & 0x3f) + (((useDisplayV >> 3) & 0x3f) * 0x40);
+            if (withOverscan) {
+                index = (((displayH >> 3) - 1) & 0x7f) + (((useDisplayV >> 3) & 0x3f) * 0x80);
+                index &= 0x1fff;
+            } else {
+                index = (((displayH >> 3) - 1) & 0x3f) + (((useDisplayV >> 3) & 0x3f) * 0x40);
+                index &= 0x0fff;
+            }
         }
         int theChar;
         if (!isV4_0) {
@@ -213,7 +241,11 @@ public class Chars extends DisplayLayer {
         if (!isV4_0) {
             theColour = colourData[index];
         } else {
-            theColour = screenDataV4_0[index + 0x1000];
+            if (withOverscan) {
+                theColour = screenDataV8_0[index];
+            } else {
+                theColour = screenDataV4_0[index + 0x1000];
+            }
         }
         if (generateBadRead) {
             theChar = (byte)~theChar;
