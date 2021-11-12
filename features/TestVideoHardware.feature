@@ -192,7 +192,7 @@ Feature: Tests the video and audio hardware expansion together
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanClouds_tiles.bin2" to 24bit bus at '0x8000' and addressEx '0x08'
 
     # Enable display with tiles and borders
-    Given write data byte '0xf0' to 24bit bus at '0x9e00' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
     Given write data byte '0x70' to 24bit bus at '0x9e01' and addressEx '0x01'
     Given write data byte '0x01' to 24bit bus at '0x9e02' and addressEx '0x01'
     Given write data byte '0x8a' to 24bit bus at '0x9e03' and addressEx '0x01'
@@ -307,6 +307,7 @@ Feature: Tests the video and audio hardware expansion together
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanTiles_plane3.bin" to 24bit bus at '0x0000' and addressEx '0x40'
     # Chars
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_map.bin" to 24bit bus at '0x4000' and addressEx '0x80'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_map.bin2" to 24bit bus at '0x8000' and addressEx '0x80'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane0.bin" to 24bit bus at '0x2000' and addressEx '0x20'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane1.bin" to 24bit bus at '0x4000' and addressEx '0x20'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane2.bin" to 24bit bus at '0x8000' and addressEx '0x20'
@@ -323,17 +324,15 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x00' to 24bit bus at '0x9e0a' and addressEx '0x01'
 
     # Enable display with tiles and borders
-    Given write data byte '0xf0' to 24bit bus at '0x9e00' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
     Given write data byte '0x70' to 24bit bus at '0x9e01' and addressEx '0x01'
     Given write data byte '0x01' to 24bit bus at '0x9e02' and addressEx '0x01'
     Given write data byte '0x8a' to 24bit bus at '0x9e03' and addressEx '0x01'
     Given write data byte '0x02' to 24bit bus at '0x9e04' and addressEx '0x01'
     # Layer priority, mode7 in front of sprites and tiles
     Given write data byte '0x8d' to 24bit bus at '0x9e08' and addressEx '0x01'
-    # Enable chars display
-    Given write data byte '0x00' to 24bit bus at '0x9000' and addressEx '0x01'
-    # Enable sprites display
-    Given write data byte '0x10' to 24bit bus at '0x9a00' and addressEx '0x01'
+    # Sprites size
+    Given write data byte '0x00' to 24bit bus at '0x9a00' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
 
     # Mode7 registers
