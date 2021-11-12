@@ -53,6 +53,7 @@ public class Chars extends DisplayLayer {
         this.addressExPlane1 = addressExPlane0;
         this.addressExPlane2 = addressExPlane0;
         this.addressExScreenV4_0 = addressExScreen;
+        this.addressExScreenV8_0 = addressExScreen;
         isV4_0 = true;
         screenDataV4_0 = new byte[0x2000];
         screenDataV8_0 = new byte[0x2000];
