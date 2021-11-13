@@ -6,12 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestAudioHardware.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestAudioHardware.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestAudioHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestAudioHardware.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-2-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-2-000000.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/exportedMusicEvents.cmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/exportedMusicSamples.bin" beforeDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -59,7 +61,7 @@
     <property name="dynamic.classpath" value="false" />
     <property name="extract.method.default.visibility" value="public" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/features" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="recentsLimit" value="5" />
@@ -99,7 +101,7 @@
       <recent name="com.bdd6502" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-9 sprites 32x32 control">
+  <component name="RunManager" selected="Application.TestRunner no parameters">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">

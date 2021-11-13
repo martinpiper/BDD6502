@@ -181,18 +181,18 @@ Feature: Tests the video and audio hardware expansion together
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanTiles_plane2.bin" to 24bit bus at '0x8000' and addressEx '0x40'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanTiles_plane3.bin" to 24bit bus at '0x0000' and addressEx '0x40'
     # Chars
-    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_map.bin" to 24bit bus at '0x4000' and addressEx '0x80'
-    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane0.bin" to 24bit bus at '0x2000' and addressEx '0x20'
-    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane1.bin" to 24bit bus at '0x4000' and addressEx '0x20'
-    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane2.bin" to 24bit bus at '0x8000' and addressEx '0x20'
-    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane3.bin" to 24bit bus at '0x0000' and addressEx '0x20'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_map512.bin" to 24bit bus at '0x4000' and addressEx '0x80'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane5120.bin" to 24bit bus at '0x2000' and addressEx '0x20'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane5121.bin" to 24bit bus at '0x4000' and addressEx '0x20'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane5122.bin" to 24bit bus at '0x8000' and addressEx '0x20'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane5123.bin" to 24bit bus at '0x0000' and addressEx '0x20'
     # Mode7
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanClouds_screen.bin" to 24bit bus at '0x2000' and addressEx '0x08'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanClouds_tiles.bin" to 24bit bus at '0x4000' and addressEx '0x08'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanClouds_tiles.bin2" to 24bit bus at '0x8000' and addressEx '0x08'
 
     # Enable display with tiles and borders
-    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
+    Given write data byte '0xf0' to 24bit bus at '0x9e00' and addressEx '0x01'
     Given write data byte '0x70' to 24bit bus at '0x9e01' and addressEx '0x01'
     Given write data byte '0x01' to 24bit bus at '0x9e02' and addressEx '0x01'
     Given write data byte '0x8a' to 24bit bus at '0x9e03' and addressEx '0x01'

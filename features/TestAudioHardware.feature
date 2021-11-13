@@ -1,6 +1,6 @@
 Feature: Tests the video and audio hardware expansion together
 
-  @TC-1
+  @TC-1-a
   Scenario: Full display test with sprites, borders, contention, chars, tiles, and mode7, and sample play
     Given I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm features/TestAudioHardware.a
 
@@ -23,7 +23,7 @@ Feature: Tests the video and audio hardware expansion together
 
     # Instead of writing this data via the 6502 CPU, just send it straight to memory
     # Audio
-    Given write data from file "testdata/exportedMusicSamples.bin" to 24bit bus at '0x0000' and addressEx '0x04'
+    Given write data from file "target/exportedMusicSamples.bin" to 24bit bus at '0x0000' and addressEx '0x04'
 
     And I load prg "test.prg"
     And I load labels "test.lbl"

@@ -89,5 +89,5 @@ MusicPlay
 !zn
 MusicDataStart
 MusicDataStart_afterHeader = MusicDataStart + 4
-	!bin "testdata/exportedMusicEvents.cmp"
+	!bin "target/exportedMusicEvents.cmp"
 MusicDataEnd
