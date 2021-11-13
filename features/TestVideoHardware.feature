@@ -413,3 +413,796 @@ Feature: Tests the video and audio hardware expansion together
     Then expect image "testdata/TC-8-000006.bmp" to be identical to "target/frames/TC-8-000006.bmp"
     Then expect image "testdata/TC-8-000007.bmp" to be identical to "target/frames/TC-8-000007.bmp"
     Then expect image "testdata/TC-8-000008.bmp" to be identical to "target/frames/TC-8-000008.bmp"
+
+
+
+
+
+  @TC-9
+  Scenario: Sprites 32x32 mode select test
+    Given clear all external devices
+    Given a new video display with overscan and 16 colours
+    And enable video display bus debug output
+    Given a new audio expansion
+    Given video display processes 8 pixels per instruction
+    Given video display refresh window every 32 instructions
+    Given video display does not save debug BMP images
+    Given video display add joystick to port 1
+    Given video display saves debug BMP images to leaf filename "target/frames/TC-9-"
+    Given property "bdd6502.bus24.trace" is set to string "true"
+    Given I have a simple overclocked 6502 system
+    And That does fail on BRK
+    And I enable unitialised memory read protection with immediate fail
+    Given a user port to 24 bit bus is installed
+#    Given add a GetBackground layer fetching from layer index '1'
+    Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
+    And the layer has 16 colours
+    And the layer has overscan
+    Given add a Sprites layer with registers at '0x9800' and addressEx '0x10'
+    And the layer has 16 colours
+    And the layer has overscan
+    Given show video window
+
+    # Use: convert4.bat
+    # Palette
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanPaletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
+
+    # Sprites
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanSprites_plane0.bin" to 24bit bus at '0x2000' and addressEx '0x10'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanSprites_plane1.bin" to 24bit bus at '0x4000' and addressEx '0x10'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanSprites_plane2.bin" to 24bit bus at '0x8000' and addressEx '0x10'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanSprites_plane3.bin" to 24bit bus at '0x0000' and addressEx '0x10'
+
+    # Chars
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_map.bin" to 24bit bus at '0x4000' and addressEx '0x80'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_map.bin2" to 24bit bus at '0x8000' and addressEx '0x80'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane0.bin" to 24bit bus at '0x2000' and addressEx '0x20'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane1.bin" to 24bit bus at '0x4000' and addressEx '0x20'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane2.bin" to 24bit bus at '0x8000' and addressEx '0x20'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane3.bin" to 24bit bus at '0x0000' and addressEx '0x20'
+
+    # Something to debug clear
+    Given write data byte '0x10' to 24bit bus at '0x4201' and addressEx '0x80'
+
+    # Wide overscan can use 0x2b which has a couple of chars on the left masked for scrolling and hits the right edge _HSYNC
+    # Use the 320 wide settings
+    Given write data byte '0x29' to 24bit bus at '0x9e09' and addressEx '0x01'
+    # Enable display
+    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
+
+    # Default layer priority
+    Given write data byte '0xe4' to 24bit bus at '0x9e08' and addressEx '0x01'
+    # Enable top two layers
+    Given write data byte '0x03' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    # Sprites size
+    Given write data byte '0x00' to 24bit bus at '0x9a00' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+
+    # Setup some graphics
+    Given write data byte '0x00' to 24bit bus at '0x9800' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x9801' and addressEx '0x01'
+    Given write data byte '0xc0' to 24bit bus at '0x9802' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x9803' and addressEx '0x01'
+
+    Given write data byte '0x01' to 24bit bus at '0x9804' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x9805' and addressEx '0x01'
+    Given write data byte '0xc0' to 24bit bus at '0x9806' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x9807' and addressEx '0x01'
+
+    Given write data byte '0x02' to 24bit bus at '0x9808' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x9809' and addressEx '0x01'
+    Given write data byte '0xc0' to 24bit bus at '0x980a' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0x980b' and addressEx '0x01'
+
+    Given write data byte '0x03' to 24bit bus at '0x980c' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x980d' and addressEx '0x01'
+    Given write data byte '0xc0' to 24bit bus at '0x980e' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x980f' and addressEx '0x01'
+
+    Given write data byte '0x04' to 24bit bus at '0x9810' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x9811' and addressEx '0x01'
+    Given write data byte '0xc0' to 24bit bus at '0x9812' and addressEx '0x01'
+    Given write data byte '0xa0' to 24bit bus at '0x9813' and addressEx '0x01'
+
+    Given write data byte '0x05' to 24bit bus at '0x9814' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x9815' and addressEx '0x01'
+    Given write data byte '0xc0' to 24bit bus at '0x9816' and addressEx '0x01'
+    Given write data byte '0xc0' to 24bit bus at '0x9817' and addressEx '0x01'
+
+    Given write data byte '0x06' to 24bit bus at '0x9818' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x9819' and addressEx '0x01'
+    Given write data byte '0xc0' to 24bit bus at '0x981a' and addressEx '0x01'
+    Given write data byte '0xe0' to 24bit bus at '0x981b' and addressEx '0x01'
+
+    Given write data byte '0x07' to 24bit bus at '0x981c' and addressEx '0x01'
+    Given write data byte '0x11' to 24bit bus at '0x981d' and addressEx '0x01'
+    Given write data byte '0xc0' to 24bit bus at '0x981e' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x981f' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9820' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x9821' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0x9822' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x9823' and addressEx '0x01'
+
+    Given write data byte '0x01' to 24bit bus at '0x9824' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x9825' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0x9826' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x9827' and addressEx '0x01'
+
+    Given write data byte '0x02' to 24bit bus at '0x9828' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x9829' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0x982a' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0x982b' and addressEx '0x01'
+
+    Given write data byte '0x03' to 24bit bus at '0x982c' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x982d' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0x982e' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x982f' and addressEx '0x01'
+
+    Given write data byte '0x04' to 24bit bus at '0x9830' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x9831' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0x9832' and addressEx '0x01'
+    Given write data byte '0xa0' to 24bit bus at '0x9833' and addressEx '0x01'
+
+    Given write data byte '0x05' to 24bit bus at '0x9834' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x9835' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0x9836' and addressEx '0x01'
+    Given write data byte '0xc0' to 24bit bus at '0x9837' and addressEx '0x01'
+
+    Given write data byte '0x06' to 24bit bus at '0x9838' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x9839' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0x983a' and addressEx '0x01'
+    Given write data byte '0xe0' to 24bit bus at '0x983b' and addressEx '0x01'
+
+    Given write data byte '0x07' to 24bit bus at '0x983c' and addressEx '0x01'
+    Given write data byte '0x11' to 24bit bus at '0x983d' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0x983e' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x983f' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9840' and addressEx '0x01'
+    Given write data byte '0x81' to 24bit bus at '0x9841' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0x9842' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x9843' and addressEx '0x01'
+
+    Given write data byte '0x01' to 24bit bus at '0x9844' and addressEx '0x01'
+    Given write data byte '0x81' to 24bit bus at '0x9845' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0x9846' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x9847' and addressEx '0x01'
+
+    Given write data byte '0x02' to 24bit bus at '0x9848' and addressEx '0x01'
+    Given write data byte '0x81' to 24bit bus at '0x9849' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0x984a' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0x984b' and addressEx '0x01'
+
+    Given write data byte '0x03' to 24bit bus at '0x984c' and addressEx '0x01'
+    Given write data byte '0x81' to 24bit bus at '0x984d' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0x984e' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x984f' and addressEx '0x01'
+
+    Given write data byte '0x04' to 24bit bus at '0x9850' and addressEx '0x01'
+    Given write data byte '0xc1' to 24bit bus at '0x9851' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0x9852' and addressEx '0x01'
+    Given write data byte '0xa0' to 24bit bus at '0x9853' and addressEx '0x01'
+
+    Given write data byte '0x05' to 24bit bus at '0x9854' and addressEx '0x01'
+    Given write data byte '0xc1' to 24bit bus at '0x9855' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0x9856' and addressEx '0x01'
+    Given write data byte '0xc0' to 24bit bus at '0x9857' and addressEx '0x01'
+
+    Given write data byte '0x06' to 24bit bus at '0x9858' and addressEx '0x01'
+    Given write data byte '0xc1' to 24bit bus at '0x9859' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0x985a' and addressEx '0x01'
+    Given write data byte '0xe0' to 24bit bus at '0x985b' and addressEx '0x01'
+
+    Given write data byte '0x07' to 24bit bus at '0x985c' and addressEx '0x01'
+    Given write data byte '0xd1' to 24bit bus at '0x985d' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0x985e' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x985f' and addressEx '0x01'
+
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x00' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x00' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x01' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x01' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x02' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x02' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x03' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x03' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x04' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x04' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x05' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x05' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x06' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x06' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x07' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x07' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x08' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x08' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x09' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x09' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x0a' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x0a' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x0b' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x0b' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x0c' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x0c' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x0d' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x0d' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x0e' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x0e' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+    # Each start step
+    Given write data byte '0x0f' to 24bit bus at '0x4201' and addressEx '0x80'
+    Given write data byte '0x0f' to 24bit bus at '0x9a00' and addressEx '0x01'
+
+    Given write data byte '0x00' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x09' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0a' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0c' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0d' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0e' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0f' to 24bit bus at '0x9a01' and addressEx '0x01'
+    Given render a video display frame
+
+#    When display until window closed
+
+    Then expect image "testdata/TC-9-000000.bmp" to be identical to "target/frames/TC-9-000000.bmp"
+    Then expect image "testdata/TC-9-000010.bmp" to be identical to "target/frames/TC-9-000010.bmp"
+    Then expect image "testdata/TC-9-000020.bmp" to be identical to "target/frames/TC-9-000020.bmp"
+    Then expect image "testdata/TC-9-000030.bmp" to be identical to "target/frames/TC-9-000030.bmp"
+    Then expect image "testdata/TC-9-000040.bmp" to be identical to "target/frames/TC-9-000040.bmp"
+    Then expect image "testdata/TC-9-000050.bmp" to be identical to "target/frames/TC-9-000050.bmp"
+    Then expect image "testdata/TC-9-000060.bmp" to be identical to "target/frames/TC-9-000060.bmp"
+    Then expect image "testdata/TC-9-000070.bmp" to be identical to "target/frames/TC-9-000070.bmp"
+    Then expect image "testdata/TC-9-000080.bmp" to be identical to "target/frames/TC-9-000080.bmp"
+    Then expect image "testdata/TC-9-000090.bmp" to be identical to "target/frames/TC-9-000090.bmp"
+    Then expect image "testdata/TC-9-000100.bmp" to be identical to "target/frames/TC-9-000100.bmp"

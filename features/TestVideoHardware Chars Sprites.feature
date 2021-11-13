@@ -75,7 +75,9 @@ Feature: Tests the video character screen data conversion and sprites
 
 
     # Sprites2 data
-    # Turrican Scaled: --rgbshift 4 4 4 --newpalettes --palettesize 16 --forcergb 255 0 255 --image "Turrican/player.png" --tilewh 32 32 --imagequantize 16 --palettequantize 16 --nostacking --outputscaled ../tmp/TurricanScaledSprites --outputsprites ../tmp/TurricanScaledSpritesSheet.txt --outputpalettes ../tmp/TurricanScaledPaletteData.bin --convertwritepass
+    # Turrican Scaled
+    # buildings concat
+    # Building Scaled
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledSprites0.bin" to 24bit bus at '0x2000' and addressEx '0x10'
     Given write data from file "C:\work\C64\VideoHardware\tmp\TurricanScaledSprites1.bin" to 24bit bus at '0x4000' and addressEx '0x10'
     Given write data from file "C:\work\C64\VideoHardware\tmp\TurricanClouds_tiles.bin2" to 24bit bus at '0x8000' and addressEx '0x10'
@@ -83,12 +85,13 @@ Feature: Tests the video character screen data conversion and sprites
 
     # Chars
     # oldbridge char screen with rgbfactor 512
-    Given write data from file "C:\Work\ImageToBitplane\target\chars512_plane0.bin" to 24bit bus at '0x2000' and addressEx '0x20'
-    Given write data from file "C:\Work\ImageToBitplane\target\chars512_plane1.bin" to 24bit bus at '0x4000' and addressEx '0x20'
-    Given write data from file "C:\Work\ImageToBitplane\target\chars512_plane2.bin" to 24bit bus at '0x8000' and addressEx '0x20'
-    Given write data from file "C:\Work\ImageToBitplane\target\chars512_plane3.bin" to 24bit bus at '0x0000' and addressEx '0x20'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_plane0.bin" to 24bit bus at '0x2000' and addressEx '0x20'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_plane1.bin" to 24bit bus at '0x4000' and addressEx '0x20'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_plane2.bin" to 24bit bus at '0x8000' and addressEx '0x20'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_plane3.bin" to 24bit bus at '0x0000' and addressEx '0x20'
     # Chars screen
-    Given write data from file "C:\Work\ImageToBitplane\target\chars512_scr.bin" to 24bit bus at '0x4000' and addressEx '0x80'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_scr.bin" to 24bit bus at '0x4000' and addressEx '0x80'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_scr.bin2" to 24bit bus at '0x8000' and addressEx '0x80'
 
     # Enable display
     Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'

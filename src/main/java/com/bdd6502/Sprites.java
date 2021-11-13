@@ -200,12 +200,26 @@ public class Sprites extends DisplayLayer {
         int spriteSizeY = 16;
 
         // Same logic as hardware 6R, 6S, 5R, 5S, 5T, 6T
-        int tweakIndex = (spriteIndex >> 1) + 3;
-        if ((tweakIndex < lo32 && !(tweakIndex < hi32)) || (tweakIndex < hi32 && !(tweakIndex < lo32))) {
-            spriteSizeX = 32;
-            spriteSizeXSpan = 32;
-            spriteSizeY = 32;
-            skipNextSprite = true;
+        if (withOverscan) {
+            int tweakIndex = spriteIndex >> 1;
+            // Note: In hardware simulation the first sprite (index 0) does not display correctly if the comparison logic is changed to allow this behaviour.
+            // So the comparison logic excludes this sprite by using +5V input to the "<" cascade input for the comparators.
+            if (spriteIndex > 1) {
+                if ((tweakIndex <= lo32 && !(tweakIndex <= hi32)) || (tweakIndex <= hi32 && !(tweakIndex <= lo32))) {
+                    spriteSizeX = 32;
+                    spriteSizeXSpan = 32;
+                    spriteSizeY = 32;
+                    skipNextSprite = true;
+                }
+            }
+        } else {
+            int tweakIndex = (spriteIndex >> 1) + 3;
+            if ((tweakIndex < lo32 && !(tweakIndex < hi32)) || (tweakIndex < hi32 && !(tweakIndex < lo32))) {
+                spriteSizeX = 32;
+                spriteSizeXSpan = 32;
+                spriteSizeY = 32;
+                skipNextSprite = true;
+            }
         }
         boolean fullHeightSprite = false;
         if ((theColour & 0x20) > 0) {
@@ -215,7 +229,11 @@ public class Sprites extends DisplayLayer {
         }
 
         if (withOverscan) {
-            if (spriteIndex == 23) {
+            // Adjust last sprite for hardware behaviour
+            if (spriteIndex == 22 && spriteSizeXSpan == 32) {
+                spriteSizeXSpan = 24;
+            }
+            if (spriteIndex == 23 && spriteSizeXSpan == 16) {
                 spriteSizeXSpan = 8;
             }
         }

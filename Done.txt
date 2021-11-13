@@ -494,3 +494,7 @@ Added: Given I am using C64 processor port options
                 if (pixelX >= 0 && pixelX < 32 && pixelY >= 0 && pixelY < 32) {
                     pixelX &= 0x1f;
                     pixelY &= 0x1f;
+
+
+
+* @TC-9 created for 32x32 behaviour
