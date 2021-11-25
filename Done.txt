@@ -498,3 +498,21 @@ Added: Given I am using C64 processor port options
 
 
 * @TC-9 created for 32x32 behaviour
+
+
+
+* @TC-1: When using "enable APU mode" and "enable user port bus debug output" the debug output needs to include valid "wait for" information so that it can be fully tested with the APU hardware
+	This "wait for" information should be the same as "enable video display bus debug output" and the APU hardware output should roughly match what is observed from "enable video display bus debug output"
+	The APU hardware output can then be used with the video rendering
+	* This mostly works, however at the moment the data from data writes done in the feature file are not fully captured in the user port debug: VideoHardware\target\debugDataJustUserPort.txt
+	Data up to the first d$9e0001** with enable display bit $20 set will be captured in VideoHardware\target\debugData.txt
+		This is up to the first w$ or ^-$01 in that file
+	* So copy the whole chunk from there to the start of debugDataJustUserPort.txt, replacing everything up to the first w$ or ^-$01
+		Then use debugDataJustUserPort.txt in the APU simulation
+	* Then for the file BombJack\output\DebugAPUOutput.txt
+		The initial waits before  d$9e0001** with enable display bit $20 will need to be changed from "w$" to ";w$"
+		Then DebugAPUOutput.txt should be able to be used in the video simulation to check APU generated output
+	* At the moment the video simulation with APU output seems to be roughly OK, but some of the waits seem to be missed?
+		Replacing all "w$ff03ff00" with "w$ff01ff00" to ignore the _VIDCLK seems to make most (no all) frames better
+		Also making the DigtlaData generator use a faster clock rate helps
+		* This is most likely due to some waits appearing just before the last data write is completed

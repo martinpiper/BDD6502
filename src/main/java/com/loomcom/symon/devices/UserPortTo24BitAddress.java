@@ -228,14 +228,26 @@ public class UserPortTo24BitAddress extends Device {
     }
 
     public void writeMemoryBusWithState(int data) {
-        if (debugData != null) {
-            debugData.printf("d$%04x%02x%02x\n", bus24Bytes[1] | (bus24Bytes[2] << 8), bus24Bytes[0], data);
-            debugData.flush();
-        }
+        emitMemoryDebugForUserport(bus24Bytes[1] | (bus24Bytes[2] << 8) , bus24Bytes[0] , data);
 
 
         for (MemoryBus device : externalDevices) {
             device.writeData(bus24Bytes[1] | (bus24Bytes[2] << 8), bus24Bytes[0], data);
+        }
+    }
+
+    public void emitMemoryDebugForUserport(int address, int addressEx , int data) {
+        if (displayBombJack != null) {
+            if (debugData != null && displayBombJack.isEnableDisplay() && !displayBombJack.getVBlank()) {
+                debugData.println("d$0");
+                debugData.printf("w$ff03ff00,$%02x%02x%02x00\n", displayBombJack.getDisplayV() & 0xff, (displayBombJack.getDisplayH() >> 8) & 0x01, displayBombJack.getDisplayH() & 0xff);
+                debugData.println("d$0");
+            }
+        }
+
+        if (debugData != null) {
+            debugData.printf("d$%04x%02x%02x\n", address, addressEx, data);
+            debugData.flush();
         }
     }
 
@@ -451,6 +463,16 @@ public class UserPortTo24BitAddress extends Device {
         if (apuEnableDebug) {
             String output = getDebugOutputLastState();
             System.out.println(output);
+        }
+    }
+
+    public void signalVBlank() {
+        if (debugData != null) {
+            debugData.println("; Frame " + displayBombJack.getFrameNumberForSync());
+            debugData.println("d$0");
+            debugData.println("^-$01");
+            debugData.println("d$0");
+            debugData.flush();
         }
     }
 

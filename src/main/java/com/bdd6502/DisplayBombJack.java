@@ -74,6 +74,11 @@ public class DisplayBombJack extends MemoryBus {
     int displayBitmapX = 0, displayBitmapY = 0;
     boolean enablePixels = false;
     boolean borderX = true, borderY = true;
+
+    public boolean isEnableDisplay() {
+        return enableDisplay;
+    }
+
     boolean enableDisplay = false;  // Default to be display off, this helps ensure startup code correctly sets this option
     int latchedPixel = 0;
     int palette[] = new int[256];
@@ -118,9 +123,6 @@ public class DisplayBombJack extends MemoryBus {
     public void enableDebugData() throws IOException {
         debugData = new PrintWriter(new FileWriter("target/debugData.txt"));
         debugData.println("; Automatically created by DisplayBombJack");
-        // The address is handled by the writeData
-//        debugData.println("+16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,+");
-//        debugData.println("<0,1,2,3,4,5,6,7,<");
         debugData.println("d0");
     }
 
@@ -468,10 +470,14 @@ public class DisplayBombJack extends MemoryBus {
         // The hardware syncs on -ve _VBLANK
         if (displayX == 0 && displayVExternal == 0xf0) {
             if (enableDisplay && debugData != null) {
+                debugData.println("; Frame " + frameNumberForSync);
                 debugData.println("d$0");
                 debugData.println("^-$01");
                 debugData.println("d$0");
                 debugData.flush();
+                if (callbackAPU != null) {
+                    callbackAPU.signalVBlank();
+                }
             }
         }
 
