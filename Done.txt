@@ -513,6 +513,6 @@ Added: Given I am using C64 processor port options
 		The initial waits before  d$9e0001** with enable display bit $20 will need to be changed from "w$" to ";w$"
 		Then DebugAPUOutput.txt should be able to be used in the video simulation to check APU generated output
 	* At the moment the video simulation with APU output seems to be roughly OK, but some of the waits seem to be missed?
-		Replacing all "w$ff03ff00" with "w$ff01ff00" to ignore the _VIDCLK seems to make most (no all) frames better
-		Also making the DigtlaData generator use a faster clock rate helps
+		Replacing all "w$ff03ff00" with "w$ff01ff00" to ignore the _VIDCLK seems to make most (not all) frames better
+		Also making the DigitalData generator use a faster clock rate helps
 		* This is most likely due to some waits appearing just before the last data write is completed
