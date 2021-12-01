@@ -15,7 +15,7 @@ Feature: Tests the video and audio hardware expansion together
     Given property "bdd6502.apu.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     And That does fail on BRK
-    And I enable unitialised memory read protection with immediate fail
+    And I enable uninitialised memory read protection with immediate fail
     Given a user port to 24 bit bus is installed
     And enable user port bus debug output
     And enable APU mode
@@ -151,7 +151,7 @@ Feature: Tests the video and audio hardware expansion together
     Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     And That does fail on BRK
-    And I enable unitialised memory read protection with immediate fail
+    And I enable uninitialised memory read protection with immediate fail
     Given a user port to 24 bit bus is installed
 #    Given add a GetBackground layer fetching from layer index '1'
     Given add a Mode7 layer with registers at '0xa000' and addressEx '0x08'
@@ -271,7 +271,7 @@ Feature: Tests the video and audio hardware expansion together
     Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     And That does fail on BRK
-    And I enable unitialised memory read protection with immediate fail
+    And I enable uninitialised memory read protection with immediate fail
     Given a user port to 24 bit bus is installed
 #    Given add a GetBackground layer fetching from layer index '1'
     Given add a Mode7 layer with registers at '0xa000' and addressEx '0x08'
@@ -432,7 +432,7 @@ Feature: Tests the video and audio hardware expansion together
     Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     And That does fail on BRK
-    And I enable unitialised memory read protection with immediate fail
+    And I enable uninitialised memory read protection with immediate fail
     Given a user port to 24 bit bus is installed
 #    Given add a GetBackground layer fetching from layer index '1'
     Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'

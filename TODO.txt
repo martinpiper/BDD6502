@@ -1,11 +1,30 @@
 ; TODO items
 
+* Add automatic guard memory ranges that assert when read / write / execute operations happens
+	These can be read from label pairs that add buffer memory space
+	A macro can be used, the same label names sorted by their memory addresses represent the address pairs
+
+
+
+* Vector display layer
+	8K for colour, 8K for scan length
+	Two banks of this for displayed and back buffer screen
+	Will need a bank selection register
+	Each new line reads the colour and scan length pair in parallel, the pixel clock counts down for the scan length byte before reading a new pixel/length pair.
+	Each new line ignores any remaining scan length
+	This gives a maximum theoretical scan complexity of 36 segments per scan, assuming 224 scans
+	The existing C64 VectorBitmap demo that calculates scans could be used for this
+
+
+
 * APU Source debugging works, however the APU instructions are all implemented as macros, so the macro source is shown. Doh. :)
 	ACME will need to be improved to output the debug source hierarchy in the PDB, i.e. which file include which file
 	Or ACME parses APU code directly without macros
 	Then AddrInfo can be updated to include the source file levels after the primary level...
 			
 
+
+* APU disassembly seems to ignore locations 0-$10 during the SotB demo?
 
 
 

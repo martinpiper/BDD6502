@@ -15,7 +15,7 @@ Feature: Tests the video and audio hardware expansion together
     Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     And That does fail on BRK
-    And I enable unitialised memory read protection with immediate fail
+    And I enable uninitialised memory read protection with immediate fail
     Given a user port to 24 bit bus is installed
 #    And I enable trace with indent
     Given show video window

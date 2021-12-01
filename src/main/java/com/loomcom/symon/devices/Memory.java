@@ -37,7 +37,7 @@ public class Memory extends Device {
     private int[] mem;
     private boolean[] memWritten;
 
-    private boolean unitialisedReadOccured;
+    private boolean uninitialisedReadOccured;
 
     public Memory(int startAddress, int endAddress, boolean readOnly)
             throws MemoryRangeException {
@@ -46,7 +46,7 @@ public class Memory extends Device {
         this.mem = new int[this.size];
         this.memWritten = new boolean[this.size];
         clearAllWrittenFlags();
-        resetUnitialisedReadOccured();
+        resetuninitialisedReadOccured();
         this.fill(DEFAULT_FILL);
     }
 
@@ -67,7 +67,7 @@ public class Memory extends Device {
 
     public void clearAllWrittenFlags() {
         Arrays.fill(this.memWritten, false);
-        unitialisedReadOccured = false;
+        uninitialisedReadOccured = false;
     }
 
     public void write(int address, int data) throws MemoryAccessException {
@@ -110,7 +110,7 @@ public class Memory extends Device {
 
     public int read(int address, boolean logRead) throws MemoryAccessException {
         if (logRead && !memWritten[address]) {
-            unitialisedReadOccured = true;
+            uninitialisedReadOccured = true;
         }
         return this.mem[address];
     }
@@ -131,11 +131,11 @@ public class Memory extends Device {
         return mem;
     }
 
-    public boolean isUnitialisedReadOccured() {
-        return unitialisedReadOccured;
+    public boolean isuninitialisedReadOccured() {
+        return uninitialisedReadOccured;
     }
 
-    public void resetUnitialisedReadOccured() {
-        this.unitialisedReadOccured = false;
+    public void resetuninitialisedReadOccured() {
+        this.uninitialisedReadOccured = false;
     }
 }

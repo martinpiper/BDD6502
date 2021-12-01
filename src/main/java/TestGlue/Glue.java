@@ -53,8 +53,8 @@ public class Glue {
     static private boolean traceOveride = false;
     static private boolean indentTrace = false;
     static private int lastStackValue = -1;
-    static private boolean enableUnitialisedReadProtection = false;
-    static private boolean enableUnitialisedReadProtectionWithFail = false;
+    static private boolean enableuninitialisedReadProtection = false;
+    static private boolean enableuninitialisedReadProtectionWithFail = false;
     static private DisplayBombJack displayBombJack = null;
     static private AudioExpansion audioExpansion = null;
     static private UserPortTo24BitAddress userPort24BitAddress = null;
@@ -246,8 +246,8 @@ public class Glue {
         traceMapByte.clear();
         traceMapWord.clear();
         lastStackValue = -1;
-        enableUnitialisedReadProtection = false;
-        enableUnitialisedReadProtectionWithFail = false;
+        enableuninitialisedReadProtection = false;
+        enableuninitialisedReadProtectionWithFail = false;
     }
 
     @Given("^I am using C64 processor port options$")
@@ -262,35 +262,35 @@ public class Glue {
         mem.fill(valueToInt(arg1));
     }
 
-    @When("^I enable unitialised memory read protection$")
-    public void i_enable_unitialised_memory_read_protection() throws Throwable {
-        enableUnitialisedReadProtection = true;
+    @When("^I enable uninitialised memory read protection$")
+    public void i_enable_uninitialised_memory_read_protection() throws Throwable {
+        enableuninitialisedReadProtection = true;
     }
 
-    @When("^I enable unitialised memory read protection with immediate fail$")
-    public void i_enable_unitialised_memory_read_protection_with_immediate_fail() throws Throwable {
-        enableUnitialisedReadProtection = true;
-        enableUnitialisedReadProtectionWithFail = true;
+    @When("^I enable uninitialised memory read protection with immediate fail$")
+    public void i_enable_uninitialised_memory_read_protection_with_immediate_fail() throws Throwable {
+        enableuninitialisedReadProtection = true;
+        enableuninitialisedReadProtectionWithFail = true;
     }
 
-    @When("^I disable unitialised memory read protection$")
-    public void i_disable_unitialised_memory_read_protection() throws Throwable {
-        enableUnitialisedReadProtection = false;
+    @When("^I disable uninitialised memory read protection$")
+    public void i_disable_uninitialised_memory_read_protection() throws Throwable {
+        enableuninitialisedReadProtection = false;
     }
 
-    @When("^I reset the unitialised memory read flag$")
-    public void i_reset_unitialised_memory_read_flag() throws Throwable {
-        machine.getRam().resetUnitialisedReadOccured();
+    @When("^I reset the uninitialised memory read flag$")
+    public void i_reset_uninitialised_memory_read_flag() throws Throwable {
+        machine.getRam().resetuninitialisedReadOccured();
     }
 
-    @Then("^I assert the unitialised memory read flag is set$")
-    public void i_assert_the_unitialised_memory_read_flag_is_set() throws Throwable {
-        assertThat(machine.getRam().isUnitialisedReadOccured(), is(equalTo(true)));
+    @Then("^I assert the uninitialised memory read flag is set$")
+    public void i_assert_the_uninitialised_memory_read_flag_is_set() throws Throwable {
+        assertThat(machine.getRam().isuninitialisedReadOccured(), is(equalTo(true)));
     }
 
-    @Then("^I assert the unitialised memory read flag is clear$")
-    public void i_assert_the_unitialised_memory_read_flag_is_clear() throws Throwable {
-        assertThat(machine.getRam().isUnitialisedReadOccured(), is(equalTo(false)));
+    @Then("^I assert the uninitialised memory read flag is clear$")
+    public void i_assert_the_uninitialised_memory_read_flag_is_clear() throws Throwable {
+        assertThat(machine.getRam().isuninitialisedReadOccured(), is(equalTo(false)));
     }
 
     @Given("^I start writing memory at (.+)$")
@@ -768,8 +768,8 @@ public class Glue {
         while (getNBytesValueAt(addrToCheck, numBytes) != valueToCheckFor) {
             Integer addr = machine.getCpu().getCpuState().pc;
             internalCPUStep(displayTrace);
-            if (enableUnitialisedReadProtection && machine.getRam().isUnitialisedReadOccured()) {
-                processUnitialisedMemoryRead(addr);
+            if (enableuninitialisedReadProtection && machine.getRam().isuninitialisedReadOccured()) {
+                processuninitialisedMemoryRead(addr);
                 break;
             }
         }
@@ -958,8 +958,8 @@ public class Glue {
             if (maxInstructions > 0) {
                 assertThat(numInstructions, is(lessThanOrEqualTo(maxInstructions)));
             }
-            if (enableUnitialisedReadProtection && machine.getRam().isUnitialisedReadOccured()) {
-                processUnitialisedMemoryRead(addr);
+            if (enableuninitialisedReadProtection && machine.getRam().isuninitialisedReadOccured()) {
+                processuninitialisedMemoryRead(addr);
                 break;
             }
         }
@@ -977,10 +977,10 @@ public class Glue {
         }
     }
 
-    public void processUnitialisedMemoryRead(Integer addr) throws Exception {
-        String fullDebug = "Unitialised memory read: " + getTraceLine(addr);
+    public void processuninitialisedMemoryRead(Integer addr) throws Exception {
+        String fullDebug = "uninitialised memory read: " + getTraceLine(addr);
         scenario.write(fullDebug);
-        if (enableUnitialisedReadProtectionWithFail) {
+        if (enableuninitialisedReadProtectionWithFail) {
             throw new MemoryAccessException(fullDebug);
         }
     }
@@ -1555,6 +1555,15 @@ public class Glue {
         displayBombJack.RepaintWindow();
     }
 
+    @Given("^render (.*) video display frames$")
+    public void renderVideoDisplayFrames(Integer numFrames) {
+        while (numFrames-- > 0) {
+            displayBombJack.calculateAFrame();
+            displayBombJack.RepaintWindow();
+        }
+    }
+
+
     @Given("^render a video display until H=(.*) and V=(.*)$")
     public void renderAVideoDisplayUntilHV(String h, String v) throws ScriptException {
         displayBombJack.calculatePixelsUntil(valueToInt(h),valueToInt(v));
@@ -1624,6 +1633,11 @@ public class Glue {
     @Given("^add a Sprites2 layer with registers at '(.*)' and addressEx '(.*)'$")
     public void addASprites2LayerWithRegistersAtXAndAddressExX(String addressRegisters, String addressEx) throws ScriptException {
         displayBombJack.addLayer(new Sprites2(valueToInt(addressRegisters), valueToInt(addressEx)));
+    }
+
+    @Given("^add a Sprites3 layer with registers at '(.*)' and addressEx '(.*)'$")
+    public void addASprites3LayerWithRegistersAtXAndAddressExX(String addressRegisters, String addressEx) throws ScriptException {
+        displayBombJack.addLayer(new Sprites3(valueToInt(addressRegisters), valueToInt(addressEx)));
     }
 
     @Given("^the layer has 16 colours$")
