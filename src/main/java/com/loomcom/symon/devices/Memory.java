@@ -25,6 +25,7 @@ package com.loomcom.symon.devices;
 
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
+import com.loomcom.symon.util.HexUtil;
 
 import java.io.*;
 import java.util.Arrays;
@@ -36,6 +37,9 @@ public class Memory extends Device {
     private boolean readOnly;
     private int[] mem;
     private boolean[] memWritten;
+    private boolean[] assertOnWrite;
+    private boolean[] assertOnRead;
+    private boolean[] assertOnExec;
 
     private boolean uninitialisedReadOccured;
 
@@ -45,6 +49,9 @@ public class Memory extends Device {
         this.readOnly = readOnly;
         this.mem = new int[this.size];
         this.memWritten = new boolean[this.size];
+        this.assertOnWrite = new boolean[this.size];
+        this.assertOnRead = new boolean[this.size];
+        this.assertOnExec = new boolean[this.size];
         clearAllWrittenFlags();
         resetuninitialisedReadOccured();
         this.fill(DEFAULT_FILL);
@@ -71,6 +78,9 @@ public class Memory extends Device {
     }
 
     public void write(int address, int data) throws MemoryAccessException {
+        if (assertOnWrite[address]) {
+            throw new MemoryAccessException("Write exception at: " + HexUtil.wordToHex(address));
+        }
         if (readOnly) {
             throw new MemoryAccessException("Cannot write to read-only memory at address " + address);
         } else {
@@ -109,6 +119,9 @@ public class Memory extends Device {
     }
 
     public int read(int address, boolean logRead) throws MemoryAccessException {
+        if (logRead && assertOnRead[address]) {
+            throw new MemoryAccessException("Read exception at: " + HexUtil.wordToHex(address));
+        }
         if (logRead && !memWritten[address]) {
             uninitialisedReadOccured = true;
         }
@@ -137,5 +150,17 @@ public class Memory extends Device {
 
     public void resetuninitialisedReadOccured() {
         this.uninitialisedReadOccured = false;
+    }
+
+    public void setAssertOnWrite(int startInclusive, int endExclusive , boolean value) {
+        Arrays.fill(assertOnWrite,startInclusive,endExclusive,value);
+    }
+
+    public void setAssertOnRead(int startInclusive, int endExclusive , boolean value) {
+        Arrays.fill(assertOnRead,startInclusive,endExclusive,value);
+    }
+
+    public void setAssertOnExec(int startInclusive, int endExclusive , boolean value) {
+        Arrays.fill(assertOnExec,startInclusive,endExclusive,value);
     }
 }

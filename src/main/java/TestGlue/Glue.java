@@ -50,6 +50,8 @@ public class Glue {
     static private Map<Integer, Integer> traceMapByteUpdate = new TreeMap<Integer, Integer>();
     static private Map<Integer, Integer> traceMapWordUpdate = new TreeMap<Integer, Integer>();
     static private List<MemoryBus> devices = new LinkedList<MemoryBus>();
+    static private TreeSet ignoreTraceForAddress = new TreeSet();
+
     static private boolean traceOveride = false;
     static private boolean indentTrace = false;
     static private int lastStackValue = -1;
@@ -293,6 +295,27 @@ public class Glue {
         assertThat(machine.getRam().isuninitialisedReadOccured(), is(equalTo(false)));
     }
 
+    @Given("^assert on read memory from (.+) to (.+)$")
+    public void assertOnReadMemory(String arg1 , String arg2) throws Throwable {
+        int start = valueToInt(arg1);
+        int end = valueToInt(arg2);
+        machine.getRam().setAssertOnRead(start,end,true);
+    }
+
+    @Given("^assert on write memory from (.+) to (.+)$")
+    public void assertOnWriteMemory(String arg1 , String arg2) throws Throwable {
+        int start = valueToInt(arg1);
+        int end = valueToInt(arg2);
+        machine.getRam().setAssertOnWrite(start,end,true);
+    }
+
+    @Given("^assert on exec memory from (.+) to (.+)$")
+    public void assertOnExecMemory(String arg1 , String arg2) throws Throwable {
+        int start = valueToInt(arg1);
+        int end = valueToInt(arg2);
+        machine.getRam().setAssertOnExec(start,end,true);
+    }
+
     @Given("^I start writing memory at (.+)$")
     public void i_start_writing_memory_at(String arg1) throws Throwable {
         writingAddress = valueToInt(arg1);
@@ -398,6 +421,14 @@ public class Glue {
         lastStackValue = -1;
     }
 
+    @Given("^ignore address (.+) to (.+) for trace$")
+    public void ignoreAddressForTrace(String addressStart, String addressEnd) throws Throwable {
+        for (int address = valueToInt(addressStart) ; address < valueToInt(addressEnd) ; address++) {
+            ignoreTraceForAddress.add(address);
+        }
+    }
+
+
     int wantCPUPCSuspendHere = -1;
     boolean wantCPUSuspendNext = false;
     int wantCPUSuspendNextReturn = -1;
@@ -446,9 +477,10 @@ public class Glue {
 
         machine.getCpu().step();
         if (displayTrace) {
-            String traceLine = getTraceLine(addr);
-
-            scenario.write(traceLine);
+            if (!ignoreTraceForAddress.contains(addr)) {
+                String traceLine = getTraceLine(addr);
+                scenario.write(traceLine);
+            }
         }
 
         if (remoteDebugger != null && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU) && remoteDebugger.isReceivedStep()) {

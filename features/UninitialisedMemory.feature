@@ -25,12 +25,14 @@ Feature: Tests uninitialised memory syntax
     And I load prg "test.prg"
     And I load labels "test.lbl"
     When I enable trace with indent
+    And ignore address start to start+10 for trace
     When I set register A to $ff
     When I set register X to $ff
     When I set register Y to $ff
     Then I assert the uninitialised memory read flag is clear
     # Not really needed, since it is disabled by default
     Then I disable uninitialised memory read protection
+#    When assert on read memory from $200 to $10000
     When I execute the procedure at start for no more than 100 instructions
     Then I assert the uninitialised memory read flag is set
     # The procedure exited and the PC is returned to 0

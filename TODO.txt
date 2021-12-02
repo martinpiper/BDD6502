@@ -3,6 +3,7 @@
 * Add automatic guard memory ranges that assert when read / write / execute operations happens
 	These can be read from label pairs that add buffer memory space
 	A macro can be used, the same label names sorted by their memory addresses represent the address pairs
+	Syntax to submit lable/address pairs
 
 
 
