@@ -1206,3 +1206,95 @@ Feature: Tests the video and audio hardware expansion together
     Then expect image "testdata/TC-9-000080.bmp" to be identical to "target/frames/TC-9-000080.bmp"
     Then expect image "testdata/TC-9-000090.bmp" to be identical to "target/frames/TC-9-000090.bmp"
     Then expect image "testdata/TC-9-000100.bmp" to be identical to "target/frames/TC-9-000100.bmp"
+
+
+
+
+
+  @TC-11
+  Scenario: Vector display test
+    Given clear all external devices
+    Given a new video display with overscan and 16 colours
+    And enable video display bus debug output
+    Given video display processes 8 pixels per instruction
+    Given video display refresh window every 32 instructions
+    Given video display does not save debug BMP images
+    Given video display add joystick to port 1
+    Given video display saves debug BMP images to leaf filename "target/frames/TC-11-"
+    Given property "bdd6502.bus24.trace" is set to string "true"
+    Given I have a simple overclocked 6502 system
+    And That does fail on BRK
+    And I enable uninitialised memory read protection with immediate fail
+    Given a user port to 24 bit bus is installed
+#    Given add a GetBackground layer fetching from layer index '1'
+    Given add a Vector layer with registers at '0xa000' and addressEx '0x02'
+    And the layer has 16 colours
+    And the layer has overscan
+    Given show video window
+
+    # Palette
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanPaletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
+
+    # Wide overscan can use 0x2b which has a couple of chars on the left masked for scrolling and hits the right edge _HSYNC
+    # Use the 320 wide settings
+    Given write data byte '0x29' to 24bit bus at '0x9e09' and addressEx '0x01'
+    # Enable all layers
+    Given write data byte '0x0f' to 24bit bus at '0x9e0a' and addressEx '0x01'
+
+    # Enable display
+    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
+
+    # Layer priority
+    Given write data byte '0x00' to 24bit bus at '0x9e08' and addressEx '0x01'
+
+    # Setup some vector graphics
+    # Fill with transparent lines
+    Given fill data byte '0x00' to 24bit bus at '0x0000' to '0x1fff' and addressEx '0x02'
+    Given fill data byte '0xfe' to 24bit bus at '0x2000' to '0x2fff' and addressEx '0x02'
+
+    # First visible line
+    Given write data byte '0x01' to 24bit bus at '0x0032' and addressEx '0x02'
+    Given write data byte '0xfe' to 24bit bus at '0x2032' and addressEx '0x02'
+
+    Given write data byte '0x02' to 24bit bus at '0x0033' and addressEx '0x02'
+    Given write data byte '0x40' to 24bit bus at '0x2033' and addressEx '0x02'
+
+    Given write data byte '0x03' to 24bit bus at '0x0034' and addressEx '0x02'
+    Given write data byte '0x20' to 24bit bus at '0x2034' and addressEx '0x02'
+
+    Given write data byte '0x04' to 24bit bus at '0x0035' and addressEx '0x02'
+    Given write data byte '0xfe' to 24bit bus at '0x2035' and addressEx '0x02'
+
+    # Next line
+    Given write data byte '0x05' to 24bit bus at '0x0036' and addressEx '0x02'
+    Given write data byte '0x20' to 24bit bus at '0x2036' and addressEx '0x02'
+
+    Given write data byte '0x06' to 24bit bus at '0x0037' and addressEx '0x02'
+    Given write data byte '0x40' to 24bit bus at '0x2037' and addressEx '0x02'
+
+    Given write data byte '0x07' to 24bit bus at '0x0038' and addressEx '0x02'
+    Given write data byte '0x80' to 24bit bus at '0x2038' and addressEx '0x02'
+
+    Given write data byte '0x08' to 24bit bus at '0x0039' and addressEx '0x02'
+    Given write data byte '0xfe' to 24bit bus at '0x2039' and addressEx '0x02'
+
+    # Line after a gap
+    Given write data byte '0x05' to 24bit bus at '0x0155' and addressEx '0x02'
+    Given write data byte '0x20' to 24bit bus at '0x2155' and addressEx '0x02'
+
+    Given write data byte '0x06' to 24bit bus at '0x0156' and addressEx '0x02'
+    Given write data byte '0x40' to 24bit bus at '0x2156' and addressEx '0x02'
+
+    Given write data byte '0x07' to 24bit bus at '0x0157' and addressEx '0x02'
+    Given write data byte '0x80' to 24bit bus at '0x2157' and addressEx '0x02'
+
+    Given write data byte '0x08' to 24bit bus at '0x0158' and addressEx '0x02'
+    Given write data byte '0xfe' to 24bit bus at '0x2158' and addressEx '0x02'
+
+    Given render a video display frame
+
+    Given render a video display frame
+
+#    When display until window closed
+
+    Then expect image "testdata/TC-11-000000.bmp" to be identical to "target/frames/TC-11-000000.bmp"

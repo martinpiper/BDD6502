@@ -1672,6 +1672,11 @@ public class Glue {
         displayBombJack.addLayer(new Sprites3(valueToInt(addressRegisters), valueToInt(addressEx)));
     }
 
+    @Given("^add a Vector layer with registers at '(.*)' and addressEx '(.*)'$")
+    public void addAVectorDisplayWithRegistersAtXaAndAddressExX(String addressRegisters, String addressExMap) throws ScriptException {
+        displayBombJack.addLayer(new VectorPlane(valueToInt(addressRegisters), valueToInt(addressExMap)));
+    }
+
     @Given("^the layer has 16 colours$")
     public void make16Colours() throws ScriptException {
         displayBombJack.getLastLayer().make16Colours();
@@ -1688,6 +1693,15 @@ public class Glue {
     public void writeDataByteToBitBusAtXCAndAddressExX(String value, String address, String addressEx) throws Throwable {
         for (MemoryBus device : devices) {
             device.writeData(valueToInt(address), valueToInt(addressEx), valueToInt(value));
+        }
+    }
+
+    @Given("^fill data byte '(.*)' to 24bit bus at '(.*)' to '(.*)' and addressEx '(.*)'$")
+    public void fillDataByteToBitBusAtXCAndAddressExX(String value, String address, String addressTo, String addressEx) throws Throwable {
+        for (MemoryBus device : devices) {
+            for (int addr = valueToInt(address) ; addr < valueToInt(addressTo) ; addr++) {
+                device.writeData(addr, valueToInt(addressEx), valueToInt(value));
+            }
         }
     }
 

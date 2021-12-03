@@ -516,3 +516,20 @@ Added: Given I am using C64 processor port options
 		Replacing all "w$ff03ff00" with "w$ff01ff00" to ignore the _VIDCLK seems to make most (not all) frames better
 		Also making the DigitalData generator use a faster clock rate helps
 		* This is most likely due to some waits appearing just before the last data write is completed
+
+
+
+
+* @TC-11: Vector display layer
+	8K for colour, 8K for scan length
+	Two banks of this for displayed and back buffer screen
+	Will need a bank selection register
+	Low vsync resets the pixel count, pixel, address
+	Low display enable behaves like vsync
+	Each new line reads the colour and scan length pair in parallel, the pixel clock counts down for the scan length byte before reading a new pixel/length pair.
+	End of line -ve _hsync edge increments the read address
+	Or if the inverted length (read into the counter) increments when it reaches zero will trigger a read address increment
+		And new length read
+		And pixel colour latch
+	This gives a maximum theoretical scan complexity of 36 segments per scan, assuming 224 scans
+	The existing C64 VectorBitmap demo that calculates scans could be used for this
