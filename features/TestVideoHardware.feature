@@ -1221,7 +1221,7 @@ Feature: Tests the video and audio hardware expansion together
     Given video display does not save debug BMP images
     Given video display add joystick to port 1
     Given video display saves debug BMP images to leaf filename "target/frames/TC-11-"
-    Given property "bdd6502.bus24.trace" is set to string "true"
+#    Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     And That does fail on BRK
     And I enable uninitialised memory read protection with immediate fail
@@ -1248,51 +1248,57 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x00' to 24bit bus at '0x9e08' and addressEx '0x01'
 
     # Setup some vector graphics
-    # Fill with transparent lines
+    # Set displayed bank
+    Given write data byte '0x00' to 24bit bus at '0xa000' and addressEx '0x01'
+    # Fill both banks with transparent lines
     Given fill data byte '0x00' to 24bit bus at '0x0000' to '0x3fff' stride '0x02' and addressEx '0x02'
     Given fill data byte '0xfe' to 24bit bus at '0x0001' to '0x3fff' stride '0x02' and addressEx '0x02'
+    Given fill data byte '0x00' to 24bit bus at '0x8000' to '0xbfff' stride '0x02' and addressEx '0x02'
+    Given fill data byte '0xfe' to 24bit bus at '0x8001' to '0xbfff' stride '0x02' and addressEx '0x02'
 
     # First visible line
-    Given write data byte '0x01' to 24bit bus at '0x0064' and addressEx '0x02'
-    Given write data byte '0xfe' to 24bit bus at '0x0065' and addressEx '0x02'
+    Given write data byte '0x01' to 24bit bus at '0x0042' and addressEx '0x02'
+    Given write data byte '0xae' to 24bit bus at '0x0043' and addressEx '0x02'
 
-    Given write data byte '0x02' to 24bit bus at '0x0066' and addressEx '0x02'
-    Given write data byte '0x40' to 24bit bus at '0x0067' and addressEx '0x02'
+    Given write data byte '0x02' to 24bit bus at '0x0044' and addressEx '0x02'
+    Given write data byte '0x40' to 24bit bus at '0x0045' and addressEx '0x02'
 
-    Given write data byte '0x03' to 24bit bus at '0x0068' and addressEx '0x02'
-    Given write data byte '0x20' to 24bit bus at '0x0069' and addressEx '0x02'
+    Given write data byte '0x03' to 24bit bus at '0x0046' and addressEx '0x02'
+    Given write data byte '0x20' to 24bit bus at '0x0047' and addressEx '0x02'
 
-    Given write data byte '0x04' to 24bit bus at '0x006a' and addressEx '0x02'
-    Given write data byte '0xfe' to 24bit bus at '0x006b' and addressEx '0x02'
+    Given write data byte '0x04' to 24bit bus at '0x0048' and addressEx '0x02'
+    Given write data byte '0xfe' to 24bit bus at '0x0049' and addressEx '0x02'
 
     # Next line
-    Given write data byte '0x05' to 24bit bus at '0x006c' and addressEx '0x02'
-    Given write data byte '0x20' to 24bit bus at '0x006d' and addressEx '0x02'
+    Given write data byte '0x05' to 24bit bus at '0x004a' and addressEx '0x02'
+    Given write data byte '0x20' to 24bit bus at '0x004b' and addressEx '0x02'
 
-    Given write data byte '0x06' to 24bit bus at '0x006e' and addressEx '0x02'
-    Given write data byte '0x40' to 24bit bus at '0x006f' and addressEx '0x02'
+    Given write data byte '0x06' to 24bit bus at '0x004c' and addressEx '0x02'
+    Given write data byte '0x40' to 24bit bus at '0x004d' and addressEx '0x02'
 
-    Given write data byte '0x07' to 24bit bus at '0x0070' and addressEx '0x02'
-    Given write data byte '0x80' to 24bit bus at '0x0071' and addressEx '0x02'
+    Given write data byte '0x07' to 24bit bus at '0x004e' and addressEx '0x02'
+    Given write data byte '0x80' to 24bit bus at '0x004f' and addressEx '0x02'
 
-    Given write data byte '0x08' to 24bit bus at '0x0072' and addressEx '0x02'
-    Given write data byte '0xfe' to 24bit bus at '0x0073' and addressEx '0x02'
+    Given write data byte '0x08' to 24bit bus at '0x0050' and addressEx '0x02'
+    Given write data byte '0xfe' to 24bit bus at '0x0051' and addressEx '0x02'
 
     # Line after a gap
-    Given write data byte '0x05' to 24bit bus at '0x02aa' and addressEx '0x02'
-    Given write data byte '0x20' to 24bit bus at '0x02ab' and addressEx '0x02'
+    Given write data byte '0x05' to 24bit bus at '0x01aa' and addressEx '0x02'
+    Given write data byte '0x20' to 24bit bus at '0x01ab' and addressEx '0x02'
 
-    Given write data byte '0x06' to 24bit bus at '0x02ac' and addressEx '0x02'
-    Given write data byte '0x40' to 24bit bus at '0x02ad' and addressEx '0x02'
+    Given write data byte '0x06' to 24bit bus at '0x01ac' and addressEx '0x02'
+    Given write data byte '0x40' to 24bit bus at '0x01ad' and addressEx '0x02'
 
-    Given write data byte '0x07' to 24bit bus at '0x02ae' and addressEx '0x02'
-    Given write data byte '0x80' to 24bit bus at '0x02af' and addressEx '0x02'
+    Given write data byte '0x07' to 24bit bus at '0x01ae' and addressEx '0x02'
+    Given write data byte '0x80' to 24bit bus at '0x01af' and addressEx '0x02'
 
-    Given write data byte '0x08' to 24bit bus at '0x02b0' and addressEx '0x02'
-    Given write data byte '0xfe' to 24bit bus at '0x02b1' and addressEx '0x02'
+    Given write data byte '0x08' to 24bit bus at '0x01b0' and addressEx '0x02'
+    Given write data byte '0xfe' to 24bit bus at '0x01b1' and addressEx '0x02'
 
     Given render a video display frame
 
+    # Set displayed bank
+    Given write data byte '0x01' to 24bit bus at '0xa000' and addressEx '0x01'
     Given render a video display frame
 
 #    When display until window closed
@@ -1301,14 +1307,51 @@ Feature: Tests the video and audio hardware expansion together
     Then expect image "testdata/TC-11-000001.bmp" to be identical to "target/frames/TC-11-000001.bmp"
 
 
-    And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Vector.a"
+    And I run the command line: ..\C64\acme.exe -v3 --lib ../ --lib ../C64/VectorPlotBitmap/ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Vector.a"
     And I load prg "test.prg"
     And I load labels "test.lbl"
-    And I enable trace with indent
+#    And I enable trace with indent
 
-    When I execute the procedure at start for no more than 76036 instructions
+    # Test a very simple 6502 span update
+    # Set displayed bank
+    Given write data byte '0x00' to 24bit bus at '0xa000' and addressEx '0x01'
+    When I execute the procedure at start for no more than 1000000 instructions
+    Given render a video display until vsync
     Given render a video display frame
-    Given render a video display frame
-
     Then expect image "testdata/TC-11-000002.bmp" to be identical to "target/frames/TC-11-000002.bmp"
-    Then expect image "testdata/TC-11-000003.bmp" to be identical to "target/frames/TC-11-000003.bmp"
+
+    # Test complex 3D rendering
+    Given write data byte '0x01' to 24bit bus at '0xa000' and addressEx '0x01'
+    When I execute the procedure at renderFrame for no more than 1000000 instructions
+    When I execute the procedure at VectorPlot_drawSpansLo for no more than 1000000 instructions
+    Given render a video display until vsync
+
+    Given write data byte '0x00' to 24bit bus at '0xa000' and addressEx '0x01'
+    When I execute the procedure at renderFrame for no more than 1000000 instructions
+    When I execute the procedure at VectorPlot_drawSpansHi for no more than 1000000 instructions
+    Given render a video display until vsync
+
+    Given write data byte '0x01' to 24bit bus at '0xa000' and addressEx '0x01'
+    When I execute the procedure at renderFrame for no more than 1000000 instructions
+    When I execute the procedure at VectorPlot_drawSpansLo for no more than 1000000 instructions
+    Given render a video display until vsync
+
+    Given write data byte '0x00' to 24bit bus at '0xa000' and addressEx '0x01'
+    When I execute the procedure at renderFrame for no more than 1000000 instructions
+    When I execute the procedure at VectorPlot_drawSpansHi for no more than 1000000 instructions
+    Given render a video display until vsync
+
+    Given write data byte '0x01' to 24bit bus at '0xa000' and addressEx '0x01'
+    When I execute the procedure at renderFrame for no more than 1000000 instructions
+    When I execute the procedure at VectorPlot_drawSpansLo for no more than 1000000 instructions
+    Given render a video display until vsync
+
+#    When display until window closed
+
+#    Then expect image "testdata/TC-11-000003.bmp" to be identical to "target/frames/TC-11-000003.bmp"
+#    Then expect image "testdata/TC-11-000004.bmp" to be identical to "target/frames/TC-11-000004.bmp"
+#    Then expect image "testdata/TC-11-000005.bmp" to be identical to "target/frames/TC-11-000005.bmp"
+#    Then expect image "testdata/TC-11-000006.bmp" to be identical to "target/frames/TC-11-000006.bmp"
+#    Then expect image "testdata/TC-11-000007.bmp" to be identical to "target/frames/TC-11-000007.bmp"
+
+    When I execute the procedure at mainLoop until return

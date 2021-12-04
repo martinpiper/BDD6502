@@ -1,5 +1,7 @@
 package com.bdd6502;
 
+import com.loomcom.symon.util.HexUtil;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -87,10 +89,6 @@ public class VectorPlane extends DisplayLayer {
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
-        // End of line edge advances the address
-        if (prevHSYNC && !_hSync) {
-            drawIndex++;
-        }
         prevHSYNC = _hSync;
         if (!_vSync || !enableLayer) {
             drawIndex = 0;
@@ -108,11 +106,14 @@ public class VectorPlane extends DisplayLayer {
             if (pixelCount == 0) {
                 if (!onScreenBank) {
                     finalPixel = getByteOrContention(plane0[drawIndex]);
-                    pixelCount = ~getByteOrContention(plane1[drawIndex]);
+                    pixelCount = getByteOrContention(plane1[drawIndex]);
+//                    System.out.println("VectorPlane: x=" + displayH + " y=" + displayV + " addr=" + HexUtil.wordToHex(drawIndex*2) + " finalPixel=" + HexUtil.byteToHex(finalPixel) + " pixelCount=" + HexUtil.byteToHex(pixelCount));
                 } else {
                     finalPixel = getByteOrContention(plane2[drawIndex]);
-                    pixelCount = ~getByteOrContention(plane3[drawIndex]);
+                    pixelCount = getByteOrContention(plane3[drawIndex]);
+//                    System.out.println("VectorPlane: x=" + displayH + " y=" + displayV + " addr=" + HexUtil.wordToHex(0x8000 + (drawIndex*2)) + " finalPixel=" + HexUtil.byteToHex(finalPixel) + " pixelCount=" + HexUtil.byteToHex(pixelCount));
                 }
+                pixelCount = ~pixelCount;
                 pixelCount &= 0xff;
                 finalPixel &= 0xff;
                 drawIndex++;

@@ -6,11 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Vector.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Vector.a" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/VectorPlane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/VectorPlane.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000000.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000001.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000001.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000002.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000002.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000003.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000003.bmp" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -799,16 +802,6 @@
           <properties class="java.lang.ArrayIndexOutOfBoundsException" package="java.lang" />
           <option name="timeStamp" value="13" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>1031</line>
-          <option name="timeStamp" value="15" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/VectorPlane.java</url>
-          <line>35</line>
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>

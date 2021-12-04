@@ -1,8 +1,30 @@
+kBus24Bit_VideoLayer_HasOverscan = 1
 !sal
 !pdb "target/t.pdb"
 !source "C64/stdlib/stdlib.a"
+!source "C64/stdlib/LongBranches.a"
 !source "BombJack/stdlib/Bus24Bit_Macros.a"
 !source "BombJack/stdlib/Video_Macros.a"
+
+kPoly2D_vertexBufferInZP = 1
+
+kSpanPlot_maxLen	= 160
+kSpanPlot_maxHeight	= 224
+kSpanCalc_maxSegments	= 8
+
+; Variables
+Vector_CurrentYPos	= $02
+ZPSegments_VarBase	= $03
+!source "SegmentsVars.a"
+ZPPoly2D_VarBase	= ZPSegments_endVars
+!source "Poly2DVars.a"
+ZPTransform_VarBase	= ZPPoly2D_endVars
+!source "TransformVars.a"
+
+!source "SegmentsMacros.a"
+!source "SpanCalcMacros.a"
+!source "Poly2DMacros.a"
+!source "TransformMacros.a"
 
 *=$200
 !zn
@@ -11,11 +33,162 @@ start
 	jsr InitialiseMachine
 	jsr Bus24Bit_Init
 
-	+MBus24Bit_SetAddress_AXY $02 , $0064
+	+MBus24Bit_SetAddress_AXY $02 , $0042
 	+MBus24Bit_Send8BitValue 15
+
+	; 3D Test
+	jsr Transform_Init
+	lda #1
+	jsr Transform_loadMesh
+	rts
+
+renderFrame
+	; Start rendering
+	jsr Segments_initStorage
+	ldx #0
+	ldy #kSpanPlot_maxHeight
+	jsr Segments_initListHeaders
+
+	jsr Transform_calcRotation
+	jsr Transform_transformProjectVerts
+	jsr Transform_renderFaces
+
+	inc ZPTransform_rotX
+	inc ZPTransform_rotX
+	inc ZPTransform_rotX
+	inc ZPTransform_rotY
+	inc ZPTransform_rotY
+	inc ZPTransform_rotZ
 	rts
 
 
+!zn
+mainLoop
+	jsr Video_WaitVBlank
+	+MBus24Bit_SetAddress_AXY $01 , $a000
+	+MBus24Bit_Send8BitValue 1
+	jsr renderFrame
+	jsr VectorPlot_drawSpansLo
+
+	jsr Video_WaitVBlank
+	+MBus24Bit_SetAddress_AXY $01 , $a000
+	+MBus24Bit_Send8BitValue 0
+	jsr renderFrame
+	jsr VectorPlot_drawSpansHi
+
+	jmp mainLoop
+
+
+
+
+!zn
+VectorPlot_drawSpansLo
+	+MBus24Bit_SetAddress_AXY $02 , $0042
+	jmp VectorPlot_drawSpansInternal
+
+VectorPlot_drawSpansHi
+	+MBus24Bit_SetAddress_AXY $02 , $8042
+
+VectorPlot_drawSpansInternal
+	lda #0
+	sta Vector_CurrentYPos
+.l1
+	lda #0
+	sta .currentSpanLength
+
+	ldx Vector_CurrentYPos
+	lda Segments_linesHi,x
+	beq .completeSpan
+
+	sta ZPSegments_currentSegmentHi
+	lda Segments_linesLo,x
+	sta ZPSegments_currentSegmentLo
+
+.gotSegment
+	ldy #kSegment_offset_left
+	lda (ZPSegments_currentSegmentLo),y
+	cmp .currentSpanLength
+	beq .inSync
+
+	; Output a transparent span to match the sparse span left pos
+	sec
+	sbc .currentSpanLength
+	ldx #0
+	jsr .outputSpan
+
+.inSync
+	; Now output a span with its colour
+	ldy #kSegment_offset_colour
+	lda (ZPSegments_currentSegmentLo),y
+;	lda #1	; Debug force colour
+	tax
+	inx
+
+	ldy #kSegment_offset_right
+	lda (ZPSegments_currentSegmentLo),y
+	sec
+	sbc .currentSpanLength
+
+	jsr .outputSpan
+
+	+Segments_getNextSegment
+	lda ZPSegments_currentSegmentHi
+	bne .gotSegment
+
+.fillLength = (kBus24Bit_VideoLayer_XPos_HSYNC_start+8)/2
+.completeSpan
+	; Complete any length remaining
+	lda .currentSpanLength
+	cmp #.fillLength
+	bcs .endSpan
+
+	lda #.fillLength
+	sec
+	sbc .currentSpanLength
+	ldx #0
+	jsr .outputSpan
+
+.endSpan
+	inc Vector_CurrentYPos
+	lda Vector_CurrentYPos
+	cmp #kSpanPlot_maxHeight
+	+lbne .l1
+
+	rts
+; A = Length
+; X = Colour
+.outputSpan
+	pha
+	clc
+	adc .currentSpanLength
+	sta .currentSpanLength
+	pla
+
+	cmp #100
+	bcc .fits
+
+	; To account for the multiply by 2
+	pha
+	lda #100*2
+	stx CIA2PortBRS232
+	sta CIA2PortBRS232
+	pla
+
+	sec
+	sbc #100
+	bne .fits
+
+	rts
+
+.fits
+	asl
+	stx CIA2PortBRS232
+	sta CIA2PortBRS232
+	rts
+
+
+.currentSpanLength
+	!by 0
 
 Initialise_NoPreserveStack = 1
 Initialise_NoIRQServiceRoutine = 1
@@ -25,3 +198,13 @@ Initialise_NoMACROWaitForTheLastScan = 1
 
 !source "BombJack/stdlib/Bus24Bit.a"
 !source "BombJack/stdlib/Video.a"
+
+
+!source "SegmentsMemory.a"
+!source "Segments.a"
+!source "Poly2D.a"
+!source "Poly2DMem.a"
+!source "Transform.a"
+!source "TransformMem.a"
+!source "TransformTables.a"
+!source "3DModels.a"

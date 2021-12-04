@@ -1,5 +1,14 @@
 ; TODO items
 
+* @TC-11-000433.bmp
+	3D rendering almost works, but there seems to be some weird scan corruptions
+	Also seeing: com.loomcom.symon.exceptions.MemoryAccessException: uninitialised memory read: 2D75  F5 19     SBC $19,X      [$00]@$0033 A:39 X:1A Y:19 F:25 S:1F3 [..-..I.C]    SBC Poly2D_vertexBufferX
+	Poly2D_loadVertsIntoRegs: sbc Poly2D_vertexBufferX, x
+	x should b 0-3 at this point
+	** Will need to enable: I enable trace with indent
+
+
+
 * Add automatic guard memory ranges that assert when read / write / execute operations happens
 	These can be read from label pairs that add buffer memory space
 	A macro can be used, the same label names sorted by their memory addresses represent the address pairs
