@@ -5,9 +5,8 @@ import static org.hamcrest.Matchers.*;
 
 public class VectorPlane extends DisplayLayer {
     int addressRegisters = 0xa000, addressExRegisters = 0x01;
-    int addressPlane0 = 0x2000, addressExPlane0 = 0x02;
-    int addressPlane1 = 0x4000, addressExPlane1 = 0x02;
-    int addressPlane2 = 0x8000, addressExPlane2 = 0x02;
+    int addressPlane0 = 0x0000, addressExPlane0 = 0x02;
+    int addressPlane1 = 0x8000, addressExPlane1 = 0x02;
     byte plane0[] = new byte[0x2000];
     byte plane1[] = new byte[0x2000];
     byte plane2[] = new byte[0x2000];
@@ -44,18 +43,33 @@ public class VectorPlane extends DisplayLayer {
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
         if (MemoryBus.addressActive(addressEx, addressExPlane0)) {
-            busContention = display.getBusContentionPixels();
-            if (MemoryBus.addressActive(address, addressPlane0)) {
-                plane0[address & 0x1fff] = data;
-            }
-            if (MemoryBus.addressActive(address, addressPlane1)) {
-                plane1[address & 0x1fff] = data;
-            }
-            if (MemoryBus.addressActive(address, addressPlane2)) {
-                plane2[address & 0x1fff] = data;
-            }
-            if(MemoryBus.addressLower8KActive(address)) {
-                plane3[address & 0x1fff] = data;
+            if(!MemoryBus.addressActive(address, 0x8000)) {
+                // The RAMs will only be in contention if they are being used to draw the frame
+                // This is not strictly hardware accurate if the visible bank is switched during the contention period, but for emulation it will suffice
+                // To be completely accurate would need two independent contentions for each bank
+                if (!onScreenBank) {
+                    busContention = display.getBusContentionPixels();
+                }
+
+                // HW: Select bits
+                int addressShifted = address >> 1;
+                if (!MemoryBus.addressActive(address, 0x01)) {
+                    plane0[addressShifted & 0x1fff] = data;
+                } else {
+                    plane1[addressShifted & 0x1fff] = data;
+                }
+            } else {
+                if (onScreenBank) {
+                    busContention = display.getBusContentionPixels();
+                }
+
+                // HW: Select bits
+                int addressShifted = address >> 1;
+                if (!MemoryBus.addressActive(address, 0x01)) {
+                    plane2[addressShifted & 0x1fff] = data;
+                } else {
+                    plane3[addressShifted & 0x1fff] = data;
+                }
             }
         }
     }
@@ -93,11 +107,11 @@ public class VectorPlane extends DisplayLayer {
             // HW: Note the pixel count invert
             if (pixelCount == 0) {
                 if (!onScreenBank) {
-                    finalPixel = plane3[drawIndex];
-                    pixelCount = ~plane0[drawIndex];
+                    finalPixel = getByteOrContention(plane0[drawIndex]);
+                    pixelCount = ~getByteOrContention(plane1[drawIndex]);
                 } else {
-                    finalPixel = plane1[drawIndex];
-                    pixelCount = ~plane2[drawIndex];
+                    finalPixel = getByteOrContention(plane2[drawIndex]);
+                    pixelCount = ~getByteOrContention(plane3[drawIndex]);
                 }
                 pixelCount &= 0xff;
                 finalPixel &= 0xff;

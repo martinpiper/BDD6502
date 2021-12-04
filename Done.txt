@@ -533,3 +533,7 @@ Added: Given I am using C64 processor port options
 		And pixel colour latch
 	This gives a maximum theoretical scan complexity of 36 segments per scan, assuming 224 scans
 	The existing C64 VectorBitmap demo that calculates scans could be used for this
+
+
+
+* Vector layer: Storing palette/length pairs needs to be in sequence $0000-$3fff or $8000-$bfff, but stored in the RAMs alternately to allow the parallel read

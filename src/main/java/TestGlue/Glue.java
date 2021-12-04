@@ -1696,10 +1696,10 @@ public class Glue {
         }
     }
 
-    @Given("^fill data byte '(.*)' to 24bit bus at '(.*)' to '(.*)' and addressEx '(.*)'$")
-    public void fillDataByteToBitBusAtXCAndAddressExX(String value, String address, String addressTo, String addressEx) throws Throwable {
+    @Given("^fill data byte '(.*)' to 24bit bus at '(.*)' to '(.*)' stride '(.*)' and addressEx '(.*)'$")
+    public void fillDataByteToBitBusAtXCAndAddressExX(String value, String address, String addressTo, String stride, String addressEx) throws Throwable {
         for (MemoryBus device : devices) {
-            for (int addr = valueToInt(address) ; addr < valueToInt(addressTo) ; addr++) {
+            for (int addr = valueToInt(address) ; addr < valueToInt(addressTo) ; addr += valueToInt(stride)) {
                 device.writeData(addr, valueToInt(addressEx), valueToInt(value));
             }
         }
