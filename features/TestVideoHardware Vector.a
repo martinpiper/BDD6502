@@ -1,0 +1,27 @@
+!sal
+!pdb "target/t.pdb"
+!source "C64/stdlib/stdlib.a"
+!source "BombJack/stdlib/Bus24Bit_Macros.a"
+!source "BombJack/stdlib/Video_Macros.a"
+
+*=$200
+!zn
+start
+	lda #ProcessorPortAllRAMWithIO
+	jsr InitialiseMachine
+	jsr Bus24Bit_Init
+
+	+MBus24Bit_SetAddress_AXY $02 , $0032
+	+MBus24Bit_Send8BitValue 15
+	rts
+
+
+
+Initialise_NoPreserveStack = 1
+Initialise_NoIRQServiceRoutine = 1
+Initialise_NoMACROWaitForTheLastScan = 1
+!source "C64/stdlib/Initialise.a"
+
+
+!source "BombJack/stdlib/Bus24Bit.a"
+!source "BombJack/stdlib/Video.a"

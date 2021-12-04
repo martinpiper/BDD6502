@@ -1298,3 +1298,13 @@ Feature: Tests the video and audio hardware expansion together
 #    When display until window closed
 
     Then expect image "testdata/TC-11-000000.bmp" to be identical to "target/frames/TC-11-000000.bmp"
+
+
+    And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Vector.a"
+    And I load prg "test.prg"
+    And I load labels "test.lbl"
+#    And I enable trace with indent
+
+    When I execute the procedure at start for no more than 76036 instructions
+    Given render a video display frame
+    Given render a video display frame
