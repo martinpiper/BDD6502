@@ -9,7 +9,7 @@ kBus24Bit_VideoLayer_HasOverscan = 1
 kPoly2D_vertexBufferInZP = 1
 
 kSpanPlot_maxLen	= 160
-kSpanPlot_maxHeight	= 200
+kSpanPlot_maxHeight	= 224
 kSpanCalc_maxSegments	= 8
 
 ; Variables
@@ -129,6 +129,7 @@ VectorPlot_drawSpansInternal
 	ldy #kSegment_offset_colour
 	lda (ZPSegments_currentSegmentLo),y
 ;	lda #1	; Debug force colour
+	; Adjust colour range to avoid transparent colour 0
 	and #%111
 	tax
 	inx
@@ -178,34 +179,17 @@ VectorPlot_drawSpansInternal
 ; A = Length (never 0)
 ; X = Colour
 .outputSpan
-	pha
+	tay
 	clc
 	adc .currentSpanLength
 	sta .currentSpanLength
-	pla
 
-	cmp #100
-	bcc .fits
-
-	; To account for the multiply by 2
-	pha
+	dey	; -1 Adjustment for hardware
+	; Double draw the span in hardware, makes the logic a lot easier
 	stx CIA2PortBRS232
-	lda #(100*2) - 1	; -1 Adjustment for hardware
-	sta CIA2PortBRS232
-	pla
-
-	sec
-	sbc #100
-	bne .fits
-
-	rts
-
-.fits
-	asl
+	sty CIA2PortBRS232
 	stx CIA2PortBRS232
-	tax
-	dex	; -1 Adjustment for hardware
-	stx CIA2PortBRS232
+	sty CIA2PortBRS232
 	rts
 
 
