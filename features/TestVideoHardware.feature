@@ -1335,8 +1335,8 @@ Feature: Tests the video and audio hardware expansion together
 
 #    When display until window closed
 
-#    Then expect image "testdata/TC-11-000000.bmp" to be identical to "target/frames/TC-11-000000.bmp"
-#    Then expect image "testdata/TC-11-000001.bmp" to be identical to "target/frames/TC-11-000001.bmp"
+    Then expect image "testdata/TC-11-000000.bmp" to be identical to "target/frames/TC-11-000000.bmp"
+    Then expect image "testdata/TC-11-000001.bmp" to be identical to "target/frames/TC-11-000001.bmp"
 
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ --lib ../C64/VectorPlotBitmap/ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Vector.a"
@@ -1350,7 +1350,7 @@ Feature: Tests the video and audio hardware expansion together
     When I execute the procedure at start for no more than 1000000 instructions
     Given render a video display until vsync
     Given render a video display frame
-#    Then expect image "testdata/TC-11-000002.bmp" to be identical to "target/frames/TC-11-000002.bmp"
+    Then expect image "testdata/TC-11-000002.bmp" to be identical to "target/frames/TC-11-000002.bmp"
 
     # Test complex 3D rendering
     Given write data byte '0x01' to 24bit bus at '0xa000' and addressEx '0x01'
@@ -1382,10 +1382,10 @@ Feature: Tests the video and audio hardware expansion together
 
 #    When display until window closed
 
-#    Then expect image "testdata/TC-11-000003.bmp" to be identical to "target/frames/TC-11-000003.bmp"
-#    Then expect image "testdata/TC-11-000004.bmp" to be identical to "target/frames/TC-11-000004.bmp"
-#    Then expect image "testdata/TC-11-000005.bmp" to be identical to "target/frames/TC-11-000005.bmp"
-#    Then expect image "testdata/TC-11-000006.bmp" to be identical to "target/frames/TC-11-000006.bmp"
-#    Then expect image "testdata/TC-11-000007.bmp" to be identical to "target/frames/TC-11-000007.bmp"
+    Then expect image "testdata/TC-11-000003.bmp" to be identical to "target/frames/TC-11-000003.bmp"
+    Then expect image "testdata/TC-11-000004.bmp" to be identical to "target/frames/TC-11-000004.bmp"
+    Then expect image "testdata/TC-11-000005.bmp" to be identical to "target/frames/TC-11-000005.bmp"
+    Then expect image "testdata/TC-11-000006.bmp" to be identical to "target/frames/TC-11-000006.bmp"
+    Then expect image "testdata/TC-11-000007.bmp" to be identical to "target/frames/TC-11-000007.bmp"
 
     When I execute the procedure at mainLoop until return
