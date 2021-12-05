@@ -1227,6 +1227,9 @@ Feature: Tests the video and audio hardware expansion together
     And I enable uninitialised memory read protection with immediate fail
     Given a user port to 24 bit bus is installed
 #    Given add a GetBackground layer fetching from layer index '1'
+    Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
+    And the layer has 16 colours
+    And the layer has overscan
     Given add a Vector layer with registers at '0xa000' and addressEx '0x02'
     And the layer has 16 colours
     And the layer has overscan
@@ -1234,38 +1237,50 @@ Feature: Tests the video and audio hardware expansion together
 
     # Palette
 #    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanPaletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
-    Given write data byte '0x0f' to 24bit bus at '0x9c00' and addressEx '0x01'
-    Given write data byte '0x0f' to 24bit bus at '0x9c01' and addressEx '0x01'
-    Given write data byte '0x11' to 24bit bus at '0x9c02' and addressEx '0x01'
-    Given write data byte '0x11' to 24bit bus at '0x9c03' and addressEx '0x01'
-    Given write data byte '0x22' to 24bit bus at '0x9c04' and addressEx '0x01'
-    Given write data byte '0x22' to 24bit bus at '0x9c05' and addressEx '0x01'
-    Given write data byte '0x33' to 24bit bus at '0x9c06' and addressEx '0x01'
-    Given write data byte '0x33' to 24bit bus at '0x9c07' and addressEx '0x01'
-    Given write data byte '0x44' to 24bit bus at '0x9c08' and addressEx '0x01'
-    Given write data byte '0x44' to 24bit bus at '0x9c09' and addressEx '0x01'
-    Given write data byte '0x55' to 24bit bus at '0x9c0a' and addressEx '0x01'
-    Given write data byte '0x55' to 24bit bus at '0x9c0b' and addressEx '0x01'
-    Given write data byte '0x66' to 24bit bus at '0x9c0c' and addressEx '0x01'
-    Given write data byte '0x66' to 24bit bus at '0x9c0d' and addressEx '0x01'
-    Given write data byte '0x77' to 24bit bus at '0x9c0e' and addressEx '0x01'
-    Given write data byte '0x77' to 24bit bus at '0x9c0f' and addressEx '0x01'
-    Given write data byte '0x88' to 24bit bus at '0x9c10' and addressEx '0x01'
-    Given write data byte '0x88' to 24bit bus at '0x9c11' and addressEx '0x01'
-    Given write data byte '0x99' to 24bit bus at '0x9c12' and addressEx '0x01'
-    Given write data byte '0x99' to 24bit bus at '0x9c13' and addressEx '0x01'
-    Given write data byte '0xaa' to 24bit bus at '0x9c14' and addressEx '0x01'
-    Given write data byte '0xaa' to 24bit bus at '0x9c15' and addressEx '0x01'
-    Given write data byte '0xbb' to 24bit bus at '0x9c16' and addressEx '0x01'
-    Given write data byte '0xbb' to 24bit bus at '0x9c17' and addressEx '0x01'
-    Given write data byte '0xcc' to 24bit bus at '0x9c18' and addressEx '0x01'
-    Given write data byte '0xcc' to 24bit bus at '0x9c19' and addressEx '0x01'
-    Given write data byte '0xdd' to 24bit bus at '0x9c1a' and addressEx '0x01'
-    Given write data byte '0xdd' to 24bit bus at '0x9c1b' and addressEx '0x01'
-    Given write data byte '0xee' to 24bit bus at '0x9c1c' and addressEx '0x01'
-    Given write data byte '0xee' to 24bit bus at '0x9c1d' and addressEx '0x01'
-    Given write data byte '0xff' to 24bit bus at '0x9c1e' and addressEx '0x01'
-    Given write data byte '0xff' to 24bit bus at '0x9c1f' and addressEx '0x01'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars512_paletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
+
+    Given write data byte '0x0f' to 24bit bus at '0x9d00' and addressEx '0x01'
+    Given write data byte '0x0f' to 24bit bus at '0x9d01' and addressEx '0x01'
+    Given write data byte '0x11' to 24bit bus at '0x9d02' and addressEx '0x01'
+    Given write data byte '0x11' to 24bit bus at '0x9d03' and addressEx '0x01'
+    Given write data byte '0x22' to 24bit bus at '0x9d04' and addressEx '0x01'
+    Given write data byte '0x22' to 24bit bus at '0x9d05' and addressEx '0x01'
+    Given write data byte '0x33' to 24bit bus at '0x9d06' and addressEx '0x01'
+    Given write data byte '0x33' to 24bit bus at '0x9d07' and addressEx '0x01'
+    Given write data byte '0x44' to 24bit bus at '0x9d08' and addressEx '0x01'
+    Given write data byte '0x44' to 24bit bus at '0x9d09' and addressEx '0x01'
+    Given write data byte '0x55' to 24bit bus at '0x9d0a' and addressEx '0x01'
+    Given write data byte '0x55' to 24bit bus at '0x9d0b' and addressEx '0x01'
+    Given write data byte '0x66' to 24bit bus at '0x9d0c' and addressEx '0x01'
+    Given write data byte '0x66' to 24bit bus at '0x9d0d' and addressEx '0x01'
+    Given write data byte '0x77' to 24bit bus at '0x9d0e' and addressEx '0x01'
+    Given write data byte '0x77' to 24bit bus at '0x9d0f' and addressEx '0x01'
+    Given write data byte '0x88' to 24bit bus at '0x9d10' and addressEx '0x01'
+    Given write data byte '0x88' to 24bit bus at '0x9d11' and addressEx '0x01'
+    Given write data byte '0x99' to 24bit bus at '0x9d12' and addressEx '0x01'
+    Given write data byte '0x99' to 24bit bus at '0x9d13' and addressEx '0x01'
+    Given write data byte '0xaa' to 24bit bus at '0x9d14' and addressEx '0x01'
+    Given write data byte '0xaa' to 24bit bus at '0x9d15' and addressEx '0x01'
+    Given write data byte '0xbb' to 24bit bus at '0x9d16' and addressEx '0x01'
+    Given write data byte '0xbb' to 24bit bus at '0x9d17' and addressEx '0x01'
+    Given write data byte '0xcc' to 24bit bus at '0x9d18' and addressEx '0x01'
+    Given write data byte '0xcc' to 24bit bus at '0x9d19' and addressEx '0x01'
+    Given write data byte '0xdd' to 24bit bus at '0x9d1a' and addressEx '0x01'
+    Given write data byte '0xdd' to 24bit bus at '0x9d1b' and addressEx '0x01'
+    Given write data byte '0xee' to 24bit bus at '0x9d1c' and addressEx '0x01'
+    Given write data byte '0xee' to 24bit bus at '0x9d1d' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x9d1e' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x9d1f' and addressEx '0x01'
+
+    # Chars
+    # oldbridge char screen with rgbfactor 512
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_plane0.bin" to 24bit bus at '0x2000' and addressEx '0x20'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_plane1.bin" to 24bit bus at '0x4000' and addressEx '0x20'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_plane2.bin" to 24bit bus at '0x8000' and addressEx '0x20'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_plane3.bin" to 24bit bus at '0x0000' and addressEx '0x20'
+    # Chars screen
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_scr.bin" to 24bit bus at '0x4000' and addressEx '0x80'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_scr.bin2" to 24bit bus at '0x8000' and addressEx '0x80'
 
     # Wide overscan can use 0x2b which has a couple of chars on the left masked for scrolling and hits the right edge _HSYNC
     # Use the 320 wide settings
@@ -1277,7 +1292,7 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
 
     # Layer priority
-    Given write data byte '0x00' to 24bit bus at '0x9e08' and addressEx '0x01'
+    Given write data byte '0xe4' to 24bit bus at '0x9e08' and addressEx '0x01'
 
     # Setup some vector graphics
     # Set displayed bank

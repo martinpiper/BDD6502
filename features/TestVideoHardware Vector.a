@@ -98,7 +98,7 @@ VectorPlot_drawSpansInternal
 	sta .currentSpanLength
 
 	; Output a constant colour for left edge debugging
-	lda #$f
+	lda #$8f
 	sta CIA2PortBRS232
 	; Note: First pixel coordinate is double clocked in hardware, so no -1 adjustment
 	lda #$12
@@ -132,6 +132,7 @@ VectorPlot_drawSpansInternal
 ;	lda #1	; Debug force colour
 	; Adjust colour range to avoid transparent colour 0
 	and #%111
+	ora #$80
 	tax
 	inx
 
@@ -169,7 +170,7 @@ VectorPlot_drawSpansInternal
 .endSpan
 	; Output a very long end span to take this into or beyond the hsync
 	; Output a constant colour for right edge debugging
-	lda #$f
+	lda #$8f
 	sta CIA2PortBRS232
 	lda #$fe
 	sta CIA2PortBRS232

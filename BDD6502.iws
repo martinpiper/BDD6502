@@ -8,7 +8,13 @@
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Vector.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Vector.a" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/VectorPlane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/VectorPlane.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000000.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000001.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000001.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000002.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000002.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000003.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000003.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000004.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000004.bmp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/testdata/TC-11-000005.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000005.bmp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/testdata/TC-11-000006.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000006.bmp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/testdata/TC-11-000007.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000007.bmp" afterDir="false" />
