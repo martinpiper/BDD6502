@@ -1290,39 +1290,39 @@ Feature: Tests the video and audio hardware expansion together
 
     # First visible line
     Given write data byte '0x01' to 24bit bus at '0x0042' and addressEx '0x02'
-    Given write data byte '0x80' to 24bit bus at '0x0043' and addressEx '0x02'
+    Given write data byte '0x7f' to 24bit bus at '0x0043' and addressEx '0x02'
 
     Given write data byte '0x02' to 24bit bus at '0x0044' and addressEx '0x02'
-    Given write data byte '0x00' to 24bit bus at '0x0045' and addressEx '0x02'
+    Given write data byte '0xff' to 24bit bus at '0x0045' and addressEx '0x02'
 
     Given write data byte '0x03' to 24bit bus at '0x0046' and addressEx '0x02'
-    Given write data byte '0x01' to 24bit bus at '0x0047' and addressEx '0x02'
+    Given write data byte '0x00' to 24bit bus at '0x0047' and addressEx '0x02'
 
     Given write data byte '0x04' to 24bit bus at '0x0048' and addressEx '0x02'
     Given write data byte '0xfe' to 24bit bus at '0x0049' and addressEx '0x02'
 
     # Next line
     Given write data byte '0x05' to 24bit bus at '0x004a' and addressEx '0x02'
-    Given write data byte '0x80' to 24bit bus at '0x004b' and addressEx '0x02'
+    Given write data byte '0x7f' to 24bit bus at '0x004b' and addressEx '0x02'
 
     Given write data byte '0x06' to 24bit bus at '0x004c' and addressEx '0x02'
-    Given write data byte '0x02' to 24bit bus at '0x004d' and addressEx '0x02'
+    Given write data byte '0x01' to 24bit bus at '0x004d' and addressEx '0x02'
 
     Given write data byte '0x07' to 24bit bus at '0x004e' and addressEx '0x02'
-    Given write data byte '0x03' to 24bit bus at '0x004f' and addressEx '0x02'
+    Given write data byte '0x02' to 24bit bus at '0x004f' and addressEx '0x02'
 
     Given write data byte '0x08' to 24bit bus at '0x0050' and addressEx '0x02'
     Given write data byte '0xfe' to 24bit bus at '0x0051' and addressEx '0x02'
 
     # Line after a gap
     Given write data byte '0x05' to 24bit bus at '0x01aa' and addressEx '0x02'
-    Given write data byte '0x20' to 24bit bus at '0x01ab' and addressEx '0x02'
+    Given write data byte '0x1f' to 24bit bus at '0x01ab' and addressEx '0x02'
 
     Given write data byte '0x06' to 24bit bus at '0x01ac' and addressEx '0x02'
-    Given write data byte '0x40' to 24bit bus at '0x01ad' and addressEx '0x02'
+    Given write data byte '0x3f' to 24bit bus at '0x01ad' and addressEx '0x02'
 
     Given write data byte '0x07' to 24bit bus at '0x01ae' and addressEx '0x02'
-    Given write data byte '0x80' to 24bit bus at '0x01af' and addressEx '0x02'
+    Given write data byte '0x7f' to 24bit bus at '0x01af' and addressEx '0x02'
 
     Given write data byte '0x08' to 24bit bus at '0x01b0' and addressEx '0x02'
     Given write data byte '0xfe' to 24bit bus at '0x01b1' and addressEx '0x02'
@@ -1338,6 +1338,8 @@ Feature: Tests the video and audio hardware expansion together
     Then expect image "testdata/TC-11-000000.bmp" to be identical to "target/frames/TC-11-000000.bmp"
     Then expect image "testdata/TC-11-000001.bmp" to be identical to "target/frames/TC-11-000001.bmp"
 
+
+#    Given foo
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ --lib ../C64/VectorPlotBitmap/ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Vector.a"
     And I load prg "test.prg"

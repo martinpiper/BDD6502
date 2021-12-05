@@ -8,7 +8,8 @@ kBus24Bit_VideoLayer_HasOverscan = 1
 
 kPoly2D_vertexBufferInZP = 1
 
-kSpanPlot_maxLen	= 160
+; Left and right edges use debug bright spans to show the span length calculation logic is working correctly
+kSpanPlot_maxLen	= 156
 kSpanPlot_maxHeight	= 224
 kSpanCalc_maxSegments	= 8
 
@@ -96,11 +97,11 @@ VectorPlot_drawSpansInternal
 	lda #0
 	sta .currentSpanLength
 
-	; Output a constant colour for debugging
+	; Output a constant colour for left edge debugging
 	lda #$f
 	sta CIA2PortBRS232
 	; Note: First pixel coordinate is double clocked in hardware, so no -1 adjustment
-	lda #$14
+	lda #$12
 	sta CIA2PortBRS232
 
 
@@ -154,17 +155,21 @@ VectorPlot_drawSpansInternal
 	lda #kSpanPlot_maxLen
 	sec
 	sbc .currentSpanLength
+	sbc #2
 
 	; Output an end span, twice. This makes the maths and logic easier
 	ldx #0
+;	inx
 	stx CIA2PortBRS232
 	sta CIA2PortBRS232
+;	inx
 	stx CIA2PortBRS232
 	sta CIA2PortBRS232
 
 .endSpan
 	; Output a very long end span to take this into or beyond the hsync
-	lda #0
+	; Output a constant colour for right edge debugging
+	lda #$f
 	sta CIA2PortBRS232
 	lda #$fe
 	sta CIA2PortBRS232
@@ -184,7 +189,8 @@ VectorPlot_drawSpansInternal
 	adc .currentSpanLength
 	sta .currentSpanLength
 
-	dey	; -1 Adjustment for hardware
+	dey	; -2 Adjustment for hardware
+	dey
 	; Double draw the span in hardware, makes the logic a lot easier
 	stx CIA2PortBRS232
 	sty CIA2PortBRS232
