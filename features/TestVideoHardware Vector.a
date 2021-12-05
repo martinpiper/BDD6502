@@ -9,7 +9,7 @@ kBus24Bit_VideoLayer_HasOverscan = 1
 kPoly2D_vertexBufferInZP = 1
 
 kSpanPlot_maxLen	= 160
-kSpanPlot_maxHeight	= 224
+kSpanPlot_maxHeight	= 200
 kSpanCalc_maxSegments	= 8
 
 ; Variables
@@ -96,6 +96,14 @@ VectorPlot_drawSpansInternal
 	lda #0
 	sta .currentSpanLength
 
+	; Output a constant colour for debugging
+	lda #$f
+	sta CIA2PortBRS232
+	; Note: First pixel coordinate is double clocked in hardware, so no -1 adjustment
+	lda #$14
+	sta CIA2PortBRS232
+
+
 	ldx Vector_CurrentYPos
 	lda Segments_linesHi,x
 	beq .completeSpan
@@ -121,6 +129,7 @@ VectorPlot_drawSpansInternal
 	ldy #kSegment_offset_colour
 	lda (ZPSegments_currentSegmentLo),y
 ;	lda #1	; Debug force colour
+	and #%111
 	tax
 	inx
 
@@ -135,27 +144,38 @@ VectorPlot_drawSpansInternal
 	lda ZPSegments_currentSegmentHi
 	bne .gotSegment
 
-.fillLength = (kBus24Bit_VideoLayer_XPos_HSYNC_start+8)/2
 .completeSpan
 	; Complete any length remaining
 	lda .currentSpanLength
-	cmp #.fillLength
+	cmp #kSpanPlot_maxLen
 	bcs .endSpan
 
-	lda #.fillLength
+	lda #kSpanPlot_maxLen
 	sec
 	sbc .currentSpanLength
+
+	; Output an end span, twice. This makes the maths and logic easier
 	ldx #0
-	jsr .outputSpan
+	stx CIA2PortBRS232
+	sta CIA2PortBRS232
+	stx CIA2PortBRS232
+	sta CIA2PortBRS232
 
 .endSpan
+	; Output a very long end span to take this into or beyond the hsync
+	lda #0
+	sta CIA2PortBRS232
+	lda #$fe
+	sta CIA2PortBRS232
+
 	inc Vector_CurrentYPos
 	lda Vector_CurrentYPos
 	cmp #kSpanPlot_maxHeight
 	+lbne .l1
 
 	rts
-; A = Length
+
+; A = Length (never 0)
 ; X = Colour
 .outputSpan
 	pha
@@ -169,8 +189,8 @@ VectorPlot_drawSpansInternal
 
 	; To account for the multiply by 2
 	pha
-	lda #100*2
 	stx CIA2PortBRS232
+	lda #(100*2) - 1	; -1 Adjustment for hardware
 	sta CIA2PortBRS232
 	pla
 
@@ -183,7 +203,9 @@ VectorPlot_drawSpansInternal
 .fits
 	asl
 	stx CIA2PortBRS232
-	sta CIA2PortBRS232
+	tax
+	dex	; -1 Adjustment for hardware
+	stx CIA2PortBRS232
 	rts
 
 

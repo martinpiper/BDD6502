@@ -1233,7 +1233,39 @@ Feature: Tests the video and audio hardware expansion together
     Given show video window
 
     # Palette
-    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanPaletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
+#    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanPaletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
+    Given write data byte '0x0f' to 24bit bus at '0x9c00' and addressEx '0x01'
+    Given write data byte '0x0f' to 24bit bus at '0x9c01' and addressEx '0x01'
+    Given write data byte '0x11' to 24bit bus at '0x9c02' and addressEx '0x01'
+    Given write data byte '0x11' to 24bit bus at '0x9c03' and addressEx '0x01'
+    Given write data byte '0x22' to 24bit bus at '0x9c04' and addressEx '0x01'
+    Given write data byte '0x22' to 24bit bus at '0x9c05' and addressEx '0x01'
+    Given write data byte '0x33' to 24bit bus at '0x9c06' and addressEx '0x01'
+    Given write data byte '0x33' to 24bit bus at '0x9c07' and addressEx '0x01'
+    Given write data byte '0x44' to 24bit bus at '0x9c08' and addressEx '0x01'
+    Given write data byte '0x44' to 24bit bus at '0x9c09' and addressEx '0x01'
+    Given write data byte '0x55' to 24bit bus at '0x9c0a' and addressEx '0x01'
+    Given write data byte '0x55' to 24bit bus at '0x9c0b' and addressEx '0x01'
+    Given write data byte '0x66' to 24bit bus at '0x9c0c' and addressEx '0x01'
+    Given write data byte '0x66' to 24bit bus at '0x9c0d' and addressEx '0x01'
+    Given write data byte '0x77' to 24bit bus at '0x9c0e' and addressEx '0x01'
+    Given write data byte '0x77' to 24bit bus at '0x9c0f' and addressEx '0x01'
+    Given write data byte '0x88' to 24bit bus at '0x9c10' and addressEx '0x01'
+    Given write data byte '0x88' to 24bit bus at '0x9c11' and addressEx '0x01'
+    Given write data byte '0x99' to 24bit bus at '0x9c12' and addressEx '0x01'
+    Given write data byte '0x99' to 24bit bus at '0x9c13' and addressEx '0x01'
+    Given write data byte '0xaa' to 24bit bus at '0x9c14' and addressEx '0x01'
+    Given write data byte '0xaa' to 24bit bus at '0x9c15' and addressEx '0x01'
+    Given write data byte '0xbb' to 24bit bus at '0x9c16' and addressEx '0x01'
+    Given write data byte '0xbb' to 24bit bus at '0x9c17' and addressEx '0x01'
+    Given write data byte '0xcc' to 24bit bus at '0x9c18' and addressEx '0x01'
+    Given write data byte '0xcc' to 24bit bus at '0x9c19' and addressEx '0x01'
+    Given write data byte '0xdd' to 24bit bus at '0x9c1a' and addressEx '0x01'
+    Given write data byte '0xdd' to 24bit bus at '0x9c1b' and addressEx '0x01'
+    Given write data byte '0xee' to 24bit bus at '0x9c1c' and addressEx '0x01'
+    Given write data byte '0xee' to 24bit bus at '0x9c1d' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x9c1e' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x9c1f' and addressEx '0x01'
 
     # Wide overscan can use 0x2b which has a couple of chars on the left masked for scrolling and hits the right edge _HSYNC
     # Use the 320 wide settings
@@ -1258,26 +1290,26 @@ Feature: Tests the video and audio hardware expansion together
 
     # First visible line
     Given write data byte '0x01' to 24bit bus at '0x0042' and addressEx '0x02'
-    Given write data byte '0xae' to 24bit bus at '0x0043' and addressEx '0x02'
+    Given write data byte '0x80' to 24bit bus at '0x0043' and addressEx '0x02'
 
     Given write data byte '0x02' to 24bit bus at '0x0044' and addressEx '0x02'
-    Given write data byte '0x40' to 24bit bus at '0x0045' and addressEx '0x02'
+    Given write data byte '0x00' to 24bit bus at '0x0045' and addressEx '0x02'
 
     Given write data byte '0x03' to 24bit bus at '0x0046' and addressEx '0x02'
-    Given write data byte '0x20' to 24bit bus at '0x0047' and addressEx '0x02'
+    Given write data byte '0x01' to 24bit bus at '0x0047' and addressEx '0x02'
 
     Given write data byte '0x04' to 24bit bus at '0x0048' and addressEx '0x02'
     Given write data byte '0xfe' to 24bit bus at '0x0049' and addressEx '0x02'
 
     # Next line
     Given write data byte '0x05' to 24bit bus at '0x004a' and addressEx '0x02'
-    Given write data byte '0x20' to 24bit bus at '0x004b' and addressEx '0x02'
+    Given write data byte '0x80' to 24bit bus at '0x004b' and addressEx '0x02'
 
     Given write data byte '0x06' to 24bit bus at '0x004c' and addressEx '0x02'
-    Given write data byte '0x40' to 24bit bus at '0x004d' and addressEx '0x02'
+    Given write data byte '0x02' to 24bit bus at '0x004d' and addressEx '0x02'
 
     Given write data byte '0x07' to 24bit bus at '0x004e' and addressEx '0x02'
-    Given write data byte '0x80' to 24bit bus at '0x004f' and addressEx '0x02'
+    Given write data byte '0x03' to 24bit bus at '0x004f' and addressEx '0x02'
 
     Given write data byte '0x08' to 24bit bus at '0x0050' and addressEx '0x02'
     Given write data byte '0xfe' to 24bit bus at '0x0051' and addressEx '0x02'
@@ -1303,8 +1335,8 @@ Feature: Tests the video and audio hardware expansion together
 
 #    When display until window closed
 
-    Then expect image "testdata/TC-11-000000.bmp" to be identical to "target/frames/TC-11-000000.bmp"
-    Then expect image "testdata/TC-11-000001.bmp" to be identical to "target/frames/TC-11-000001.bmp"
+#    Then expect image "testdata/TC-11-000000.bmp" to be identical to "target/frames/TC-11-000000.bmp"
+#    Then expect image "testdata/TC-11-000001.bmp" to be identical to "target/frames/TC-11-000001.bmp"
 
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ --lib ../C64/VectorPlotBitmap/ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Vector.a"
@@ -1318,7 +1350,7 @@ Feature: Tests the video and audio hardware expansion together
     When I execute the procedure at start for no more than 1000000 instructions
     Given render a video display until vsync
     Given render a video display frame
-    Then expect image "testdata/TC-11-000002.bmp" to be identical to "target/frames/TC-11-000002.bmp"
+#    Then expect image "testdata/TC-11-000002.bmp" to be identical to "target/frames/TC-11-000002.bmp"
 
     # Test complex 3D rendering
     Given write data byte '0x01' to 24bit bus at '0xa000' and addressEx '0x01'
@@ -1330,6 +1362,8 @@ Feature: Tests the video and audio hardware expansion together
     When I execute the procedure at renderFrame for no more than 1000000 instructions
     When I execute the procedure at VectorPlot_drawSpansHi for no more than 1000000 instructions
     Given render a video display until vsync
+
+#    Given foo
 
     Given write data byte '0x01' to 24bit bus at '0xa000' and addressEx '0x01'
     When I execute the procedure at renderFrame for no more than 1000000 instructions

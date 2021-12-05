@@ -115,12 +115,12 @@ public class VectorPlane extends DisplayLayer {
                 }
                 pixelCount = ~pixelCount;
                 pixelCount &= 0xff;
-                finalPixel &= 0xff;
+
                 drawIndex++;
                 drawIndex &= 0x1fff;
-            } else {
-                pixelCount++;
             }
+
+            pixelCount++;
         }
 
         // HW: Note bit selection and wrap around
