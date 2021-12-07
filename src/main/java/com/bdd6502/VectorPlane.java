@@ -19,6 +19,7 @@ public class VectorPlane extends DisplayLayer {
     int drawIndex = 0;
     int pixelCount = 0;
     int finalPixel = 0;
+    int finalPixelDelay = 0;
 
     public VectorPlane() {
     }
@@ -89,17 +90,30 @@ public class VectorPlane extends DisplayLayer {
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
+        finalPixelDelay = finalPixel;
         prevHSYNC = _hSync;
         if (!_vSync || !enableLayer) {
             drawIndex = 0;
             pixelCount = 0;
             finalPixel = 0;
+            finalPixelDelay = 0;
+        }
+        if (displayH == 0 && displayV == 0) {
+            // This is a fix to align emulation with the observed hardware
+            // _EVSYNC and _EHSYNC are both low when H,V == 0,0
+            drawIndex = 0;
+            pixelCount = 0;
+            finalPixel = 0;
+            finalPixelDelay = 0;
         }
         if (!_hSync) {
             pixelCount = 0;
             finalPixel = 0;
         }
 
+        if (displayH == 0 && displayV == 16) {
+            int foo = 0;
+        }
         if (_hSync && _vSync) {
             // HW: Time this to an edge so that a 0xff input value results in 256 pixels being output
             // HW: Note the pixel count invert
@@ -126,6 +140,6 @@ public class VectorPlane extends DisplayLayer {
         // HW: Note bit selection and wrap around
         pixelCount &= 0xff;
 
-        return finalPixel;
+        return finalPixelDelay;
     }
 }

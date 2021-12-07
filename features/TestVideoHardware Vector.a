@@ -34,7 +34,7 @@ start
 	jsr InitialiseMachine
 	jsr Bus24Bit_Init
 
-	+MBus24Bit_SetAddress_AXY $02 , $0042
+	+MBus24Bit_SetAddress_AXY $02 , $0040
 	+MBus24Bit_Send8BitValue 15
 
 	; 3D Test
@@ -84,11 +84,11 @@ mainLoop
 
 !zn
 VectorPlot_drawSpansLo
-	+MBus24Bit_SetAddress_AXY $02 , $0042
+	+MBus24Bit_SetAddress_AXY $02 , $0040
 	jmp VectorPlot_drawSpansInternal
 
 VectorPlot_drawSpansHi
-	+MBus24Bit_SetAddress_AXY $02 , $8042
+	+MBus24Bit_SetAddress_AXY $02 , $8040
 
 VectorPlot_drawSpansInternal
 	lda #0
