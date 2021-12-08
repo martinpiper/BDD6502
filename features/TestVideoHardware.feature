@@ -1288,9 +1288,6 @@ Feature: Tests the video and audio hardware expansion together
     # Enable all layers
     Given write data byte '0x0f' to 24bit bus at '0x9e0a' and addressEx '0x01'
 
-    # Enable display
-    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
-
     # Layer priority
     Given write data byte '0xe4' to 24bit bus at '0x9e08' and addressEx '0x01'
 
@@ -1341,6 +1338,9 @@ Feature: Tests the video and audio hardware expansion together
 
     Given write data byte '0x08' to 24bit bus at '0x01ae' and addressEx '0x02'
     Given write data byte '0xfe' to 24bit bus at '0x01af' and addressEx '0x02'
+
+    # Enable display
+    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
 
     Given render a video display frame
 
