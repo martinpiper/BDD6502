@@ -14,7 +14,6 @@ public class VectorPlane extends DisplayLayer {
     byte plane2[] = new byte[0x2000];
     byte plane3[] = new byte[0x2000];
 
-    boolean prevHSYNC = false;
     boolean onScreenBank = false;
     int drawIndex = 0;
     int pixelCount = 0;
@@ -91,7 +90,6 @@ public class VectorPlane extends DisplayLayer {
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
         finalPixelDelay = finalPixel;
-        prevHSYNC = _hSync;
         if (!_vSync || !enableLayer) {
             drawIndex = 0;
             pixelCount = 0;
@@ -111,9 +109,6 @@ public class VectorPlane extends DisplayLayer {
             finalPixel = 0;
         }
 
-        if (displayH == 0 && displayV == 16) {
-            int foo = 0;
-        }
         if (_hSync && _vSync) {
             // HW: Time this to an edge so that a 0xff input value results in 256 pixels being output
             // HW: Note the pixel count invert
@@ -128,7 +123,6 @@ public class VectorPlane extends DisplayLayer {
 //                    System.out.println("VectorPlane: x=" + displayH + " y=" + displayV + " addr=" + HexUtil.wordToHex(0x8000 + (drawIndex*2)) + " finalPixel=" + HexUtil.byteToHex(finalPixel) + " pixelCount=" + HexUtil.byteToHex(pixelCount));
                 }
                 pixelCount = ~pixelCount;
-                pixelCount &= 0xff;
 
                 drawIndex++;
                 drawIndex &= 0x1fff;

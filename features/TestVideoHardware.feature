@@ -1342,7 +1342,11 @@ Feature: Tests the video and audio hardware expansion together
     # Enable display
     Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
 
+    # Test image conversion output
+#    Given write data from file "C:\Work\ImageToBitplane\target\vectors_Data.bin" to 24bit bus at '0x0000' and addressEx '0x02'
+
     Given render a video display frame
+#    When display until window closed
 
     # Set displayed bank
     Given write data byte '0x01' to 24bit bus at '0xa000' and addressEx '0x01'
@@ -1405,4 +1409,9 @@ Feature: Tests the video and audio hardware expansion together
     Then expect image "testdata/TC-11-000006.bmp" to be identical to "target/frames/TC-11-000006.bmp"
     Then expect image "testdata/TC-11-000007.bmp" to be identical to "target/frames/TC-11-000007.bmp"
 
+    Given I disable trace
+    Given property "bdd6502.bus24.trace" is set to string "false"
+    Given video display does not save debug BMP images
+    Given video display processes 24 pixels per instruction
+    Given limit video display to 60 fps
     When I execute the procedure at mainLoop until return

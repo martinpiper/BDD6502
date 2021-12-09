@@ -24,7 +24,7 @@ public abstract class DisplayLayer extends MemoryBus {
         if (busContention > 0 || memoryAsserted) {
             return display.getContentionColouredPixel();
         }
-        return value;
+        return value & 0xff;
     }
 
     public void make16Colours() {
