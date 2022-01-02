@@ -1,13 +1,5 @@
 ; TODO items
 
-* APU Source debugging works, however the APU instructions are all implemented as macros, so the macro source is shown. Doh. :)
-	ACME will need to be improved to output the debug source hierarchy in the PDB, i.e. which file include which file
-	Or ACME parses APU code directly without macros
-	Then AddrInfo can be updated to include the source file levels after the primary level...
-	** Or have the option of reporting the parent in the PDB after encountering a ! pseudo op. The PO would basically say "output the level above this macro" for the lifetime of the macro
-
-
-
 * APU disassembly seems to ignore locations 0-$10 during the SotB demo?
 
 
