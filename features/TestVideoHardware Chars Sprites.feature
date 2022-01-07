@@ -62,7 +62,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
     And the layer has 16 colours
     And the layer has overscan
-    Given add a Sprites2 layer with registers at '0x9000' and addressEx '0x10'
+    Given add a Sprites2 layer with registers at '0x9000' and addressEx '0x10' and running at 14.31818MHz
     And the layer has 16 colours
     And the layer has overscan
     Given show video window

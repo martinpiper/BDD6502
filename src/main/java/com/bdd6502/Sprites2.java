@@ -35,6 +35,7 @@ public class Sprites2 extends DisplayLayer {
     int insideHeight = 0;
     int fetchingPixel = 0;
     int onScreen = 0;
+    double clockMultiplier = 1.0f;
 
 
     int calculatedRasters[][] = new int[2][512];
@@ -43,9 +44,16 @@ public class Sprites2 extends DisplayLayer {
     }
 
     public Sprites2(int addressRegisters, int addressExPlane0) {
+        this(addressRegisters,  addressExPlane0 , 1.0);
+    }
+
+    public Sprites2(int addressRegisters, int addressExPlane0 , double clockMultiplier) {
+        assertThat(clockMultiplier, is(greaterThanOrEqualTo(0.5)));
         assertThat(addressRegisters, is(greaterThanOrEqualTo(0x8000)));
         assertThat(addressRegisters, is(lessThan(0xc000)));
         assertThat(addressRegisters & 0x7ff, is(equalTo(0x0000)));
+
+        this.clockMultiplier = clockMultiplier;
         this.addressRegisters = addressRegisters;
         this.addressExPlane0 = addressExPlane0;
     }
@@ -129,6 +137,10 @@ public class Sprites2 extends DisplayLayer {
         }
     }
 
+    double clockAccumulator = 0.0;
+    boolean delayed_doLineStart1 = false;
+    boolean delayed_doLineStart2 = false;
+
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
         // Time to the rising edge of the _hSync
@@ -136,21 +148,31 @@ public class Sprites2 extends DisplayLayer {
             // Flip-flip in hardware
             onScreen = 1-onScreen;
         }
+        boolean runLogic = true;
         prevHSYNC = _hSync;
-        if (_doLineStart) {
+        // To emulate the longer delayed line start
+        if (_doLineStart || delayed_doLineStart1 || delayed_doLineStart2) {
             // Reset on low in hardware
             fetchingPixel = 0;
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
+            runLogic = false;
         }
+        delayed_doLineStart2 = delayed_doLineStart1;
+        delayed_doLineStart1 = _doLineStart;
         if (!enableLayer) {
             // Reset on low in hardware
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
         }
 
-
-        handleSpriteSchedule(displayH, displayV);
+        clockAccumulator += clockMultiplier;
+        while (clockAccumulator >= 1.0) {
+            if (runLogic) {
+                handleSpriteSchedule(displayH, displayV);
+            }
+            clockAccumulator -= 1.0;
+        }
 
         // Output calculated data
         int finalPixel = calculatedRasters[onScreen][fetchingPixel];

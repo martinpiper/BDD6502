@@ -1667,6 +1667,12 @@ public class Glue {
         displayBombJack.addLayer(new Sprites2(valueToInt(addressRegisters), valueToInt(addressEx)));
     }
 
+    @Given("^add a Sprites2 layer with registers at '(.*)' and addressEx '(.*)' and running at (.*)MHz$")
+    public void addASprites2LayerWithRegistersAtXAndAddressExXMHz(String addressRegisters, String addressEx , String MHz) throws ScriptException {
+        double clockMultiplier = Double.parseDouble(MHz) / 12.096;
+        displayBombJack.addLayer(new Sprites2(valueToInt(addressRegisters), valueToInt(addressEx) , clockMultiplier));
+    }
+
     @Given("^add a Sprites3 layer with registers at '(.*)' and addressEx '(.*)'$")
     public void addASprites3LayerWithRegistersAtXAndAddressExX(String addressRegisters, String addressEx) throws ScriptException {
         displayBombJack.addLayer(new Sprites3(valueToInt(addressRegisters), valueToInt(addressEx)));

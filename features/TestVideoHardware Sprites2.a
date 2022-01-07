@@ -244,14 +244,28 @@ mainLoop
 	+DoScaledSpriteWith 12 , tabRoadPosRight , tabRoadPosY
 	+DoScaledSpriteWith 13 , tabRoadPosRight , tabRoadPosY_1
 
-;	+DoScaledSpriteWith 14 , tabRoadPosLeft , tabRoadPosY
-;	+DoScaledSpriteWith 15 , tabRoadPosLeft , tabRoadPosY_1
-;	+DoScaledSpriteWith 16 , tabRoadPosRight , tabRoadPosY
-;	+DoScaledSpriteWith 17 , tabRoadPosRight , tabRoadPosY_1
-;	+DoScaledSpriteWith 18 , tabRoadPosLeft , tabRoadPosY
-;	+DoScaledSpriteWith 19 , tabRoadPosLeft , tabRoadPosY_1
-;	+DoScaledSpriteWith 20 , tabRoadPosRight , tabRoadPosY
-;	+DoScaledSpriteWith 21 , tabRoadPosRight , tabRoadPosY_1
+	lda sprite4Road
+	clc
+	adc #63
+	and #$7f
+	asl
+	tax
+	+DoScaledSpriteWith 14 , tabRoadPosLeft , tabRoadPosY
+	+DoScaledSpriteWith 15 , tabRoadPosLeft , tabRoadPosY_1
+	+DoScaledSpriteWith 16 , tabRoadPosRight , tabRoadPosY
+	+DoScaledSpriteWith 17 , tabRoadPosRight , tabRoadPosY_1
+
+	lda sprite4Road
+	clc
+	adc #15
+	and #$7f
+	asl
+	tax
+	+DoScaledSpriteWith 18 , tabRoadPosLeft , tabRoadPosY
+	+DoScaledSpriteWith 19 , tabRoadPosLeft , tabRoadPosY_1
+	+DoScaledSpriteWith 20 , tabRoadPosRight , tabRoadPosY
+	+DoScaledSpriteWith 21 , tabRoadPosRight , tabRoadPosY_1
+
 ;	+DoScaledSpriteWith 22 , tabRoadPosLeft , tabRoadPosY
 ;	+DoScaledSpriteWith 23 , tabRoadPosLeft , tabRoadPosY_1
 
@@ -301,7 +315,8 @@ mainLoop
 	jsr Video_WaitVBlank
 	+MBus24Bit_SetAddress_AXY $01 , $9200
 ;	+MBus24Bit_FastSpeedCopy RealSprite2_data , 24 * 8
-	+MBus24Bit_FastSpeedCopy RealSprite2_data , 14 * 8
+;	+MBus24Bit_FastSpeedCopy RealSprite2_data , 14 * 8
+	+MBus24Bit_FastSpeedCopy RealSprite2_data , 22 * 8
 
 ;	+WaitForFireB_A
 

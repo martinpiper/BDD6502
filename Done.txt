@@ -565,3 +565,11 @@ Added: Given I am using C64 processor port options
 	Then AddrInfo can be updated to include the source file levels after the primary level...
 	** Or have the option of reporting the parent in the PDB after encountering a ! pseudo op. The PO would basically say "output the level above this macro" for the lifetime of the macro
 	!previouscontext added to ACME
+
+
+
+* Fix sprites2 alignment (shift 2 pixels to the right) in emulation to match simulation and reduce calculation by 2 extra clocks
+
+
+
+* Add sprites2 clock speed selection in emulation
