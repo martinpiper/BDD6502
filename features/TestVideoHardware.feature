@@ -1293,13 +1293,18 @@ Feature: Tests the video and audio hardware expansion together
 
     # Setup some vector graphics
     # Set displayed bank
-    Given write data byte '0x00' to 24bit bus at '0xa000' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0xa000' and addressEx '0x01'
     # Fill both banks with transparent lines
     Given fill data byte '0x00' to 24bit bus at '0x0000' to '0x3fff' stride '0x02' and addressEx '0x02'
     Given fill data byte '0xfe' to 24bit bus at '0x0001' to '0x3fff' stride '0x02' and addressEx '0x02'
+
+    # Set displayed bank
+    Given write data byte '0x00' to 24bit bus at '0xa000' and addressEx '0x01'
     Given fill data byte '0x00' to 24bit bus at '0x8000' to '0xbfff' stride '0x02' and addressEx '0x02'
     Given fill data byte '0xfe' to 24bit bus at '0x8001' to '0xbfff' stride '0x02' and addressEx '0x02'
 
+    # Set displayed bank
+    Given write data byte '0x01' to 24bit bus at '0xa000' and addressEx '0x01'
     # First visible line
     Given write data byte '0x01' to 24bit bus at '0x0040' and addressEx '0x02'
     Given write data byte '0x7f' to 24bit bus at '0x0041' and addressEx '0x02'
@@ -1339,6 +1344,8 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x08' to 24bit bus at '0x01ae' and addressEx '0x02'
     Given write data byte '0xfe' to 24bit bus at '0x01af' and addressEx '0x02'
 
+    # Set displayed bank
+    Given write data byte '0x00' to 24bit bus at '0xa000' and addressEx '0x01'
     # Enable display
     Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
 
