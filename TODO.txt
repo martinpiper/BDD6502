@@ -1,5 +1,21 @@
 ; TODO items
 
+* For if (pixelsSinceLastDebugWrite >= pixelsSinceLastDebugWriteMax)
+	This test is actually bugged as it outputs something like:
+		w$ff03ff00,$72004800
+		d$980f01f8
+		d$9e0a010f
+	This does not reflect accurately the position to actually wait for when writing...
+	Need to debug "APU_ProcessSpriteStrip" and double check the enable is done 16 pixels after the sprite register updates...
+	The the simulation can be fixed if needed. But data indicates that actually it should be OK.
+
+
+
+* For w$** remove the wrapping d$0 as the data generator has the option now of setting forcing the bus to 0
+	* TODO: And test data gen in VC
+
+
+
 * APU disassembly seems to ignore locations 0-$10 during the SotB demo?
 
 

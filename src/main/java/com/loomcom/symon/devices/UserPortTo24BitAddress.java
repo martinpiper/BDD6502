@@ -239,9 +239,9 @@ public class UserPortTo24BitAddress extends Device {
     public void emitMemoryDebugForUserport(int address, int addressEx , int data) {
         if (displayBombJack != null) {
             if (debugData != null && displayBombJack.isEnableDisplay() && !displayBombJack.getVBlank()) {
-                debugData.println("d$0");
+//                debugData.println("d$0");
                 debugData.printf("w$ff03ff00,$%02x%02x%02x00\n", displayBombJack.getDisplayV() & 0xff, (displayBombJack.getDisplayH() >> 8) & 0x01, displayBombJack.getDisplayH() & 0xff);
-                debugData.println("d$0");
+//                debugData.println("d$0");
             }
         }
 

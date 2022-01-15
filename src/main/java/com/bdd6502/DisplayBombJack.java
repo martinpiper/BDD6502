@@ -90,7 +90,7 @@ public class DisplayBombJack extends MemoryBus {
     boolean extEXTWANTIRQFlag = false;
     PrintWriter debugData = null;
     int pixelsSinceLastDebugWrite = 0;
-    int pixelsSinceLastDebugWriteMax = 32;
+    int pixelsSinceLastDebugWriteMax = 16;
     boolean is16Colours = false;
     UserPortTo24BitAddress callbackAPU = null;
     int overscanBorderExtent = 0;
@@ -197,9 +197,9 @@ public class DisplayBombJack extends MemoryBus {
             // The waits during the VBLANK would not really be that important from a simulation point of view
             // This is true, as long as mode7 writes (due to resetting the internal values on _VSYNC) are completed before the end of the _VSYNC which starts later and shorter than the VBLANK
             if (enableDisplay && !vBlank && debugData != null) {
-                debugData.println("d$0");
+//                debugData.println("d$0");
                 debugData.printf("w$ff03ff00,$%02x%02x%02x00\n", displayVExternal & 0xff , (displayHExternal >> 8) & 0x01 , displayHExternal & 0xff );
-                debugData.println("d$0");
+//                debugData.println("d$0");
             }
         }
         if (debugData != null) {
