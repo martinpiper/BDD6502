@@ -245,11 +245,16 @@ public class Glue {
         machine.getCpu().reset();
         // When the "procedure" returns then the 0 address contains an initialised byte of memory
         machine.getCpu().getBus().write(0, 0);
+        labelMap.clear();
+        reverseLabelMap.clear();
         traceMapByte.clear();
         traceMapWord.clear();
+        traceMapByteUpdate.clear();
+        traceMapWordUpdate.clear();
         lastStackValue = -1;
         enableuninitialisedReadProtection = false;
         enableuninitialisedReadProtectionWithFail = false;
+        ignoreTraceForAddress.clear();
     }
 
     @Given("^I am using C64 processor port options$")

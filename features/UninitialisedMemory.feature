@@ -1,6 +1,7 @@
 Feature: Tests uninitialised memory syntax
 
   Scenario: Test simple uninitialised memory syntax
+    Given clear all external devices
     Given I have a simple overclocked 6502 system
     And I create file "test.a" with
       """

@@ -5,10 +5,12 @@ Feature: Simple 6502 code test
   This ensures the BDD6502 library is included and initialised properly.
 
   Scenario: Simple code test
+    Given clear all external devices
     Then assert that "($c100 - $c080) <= 160" is true
     Then assert that "($c100 - $c080) <= 60" is false
 
     Given I have a simple overclocked 6502 system
+    When I fill memory with $00
     And I start writing memory at $400
     And I write the following hex bytes
       | 78 ee 20 d0 60 4c 01 04 |
