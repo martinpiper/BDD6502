@@ -11,7 +11,6 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 import com.loomcom.symon.util.HexUtil;
-import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -1688,9 +1687,14 @@ public class Glue {
         displayBombJack.addLayer(new VectorPlane(valueToInt(addressRegisters), valueToInt(addressExMap)));
     }
 
+    @Given("^add a 2-to-1 merge layer$")
+    public void add2to1MergeLayer() throws ScriptException {
+        displayBombJack.addLayer(new MergeNTo1(2));
+    }
+
     @Given("^the layer has 16 colours$")
     public void make16Colours() throws ScriptException {
-        displayBombJack.getLastLayer().make16Colours();
+        displayBombJack.getLastLayerAdded().make16Colours();
     }
 
     @Given("^write data from file \"([^\"]*)\" to 24bit bus at '(.*)' and addressEx '(.*)'$")

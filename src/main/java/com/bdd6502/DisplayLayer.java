@@ -31,4 +31,10 @@ public abstract class DisplayLayer extends MemoryBus {
         is16Colours = true;
     }
 
+    public boolean capturingMergeLayer() {
+        return false;
+    }
+
+    public void captureLayer(DisplayLayer layer) {
+    }
 }

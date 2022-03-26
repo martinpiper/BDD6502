@@ -181,12 +181,23 @@ public class DisplayBombJack extends MemoryBus {
     public void addLayer(DisplayLayer layer) {
         lastLayerAdded = layer;
         layer.setDisplay(this);
-        layers.add(layer);
-        // Profiling shows that layers.size() was taking a significant chunk of time. It shouldn't have been. Instead use this array instead.
-        layersRaw = layers.toArray(new DisplayLayer[layers.size()]);
-        enableLayerFlags = new boolean[layers.size()];
-        // Without overscan then default layers to being enabled, with overscan default to disabled (a clear latch)
-        Arrays.fill(enableLayerFlags, !withOverscan);
+
+        boolean captured = false;
+        if (layersRaw.length > 0) {
+            if (layersRaw[layersRaw.length-1].capturingMergeLayer()) {
+                layersRaw[layersRaw.length-1].captureLayer(layer);
+                captured = true;
+            }
+        }
+
+        if (!captured) {
+            layers.add(layer);
+            // Profiling shows that layers.size() was taking a significant chunk of time. It shouldn't have been. Instead use this array instead.
+            layersRaw = layers.toArray(new DisplayLayer[layers.size()]);
+            enableLayerFlags = new boolean[layers.size()];
+            // Without overscan then default layers to being enabled, with overscan default to disabled (a clear latch)
+            Arrays.fill(enableLayerFlags, !withOverscan);
+        }
     }
 
     @Override
@@ -588,9 +599,5 @@ public class DisplayBombJack extends MemoryBus {
 
     public DisplayMainFrame getWindow() {
         return window;
-    }
-
-    public DisplayLayer getLastLayer() {
-        return layers.get(layers.size()-1);
     }
 }

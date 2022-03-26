@@ -283,9 +283,16 @@ Feature: Tests the video and audio hardware expansion together
     Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
     And the layer has 16 colours
     And the layer has overscan
-    Given add a Sprites layer with registers at '0x9800' and addressEx '0x10'
+
+    Given add a 2-to-1 merge layer
     And the layer has 16 colours
     And the layer has overscan
+      Given add a Sprites layer with registers at '0x9800' and addressEx '0x10'
+      And the layer has 16 colours
+      And the layer has overscan
+      Given add a Sprites layer with registers at '0xa800' and addressEx '0x10'
+      And the layer has 16 colours
+      And the layer has overscan
     Given show video window
 
     # Use: convert4.bat
@@ -374,6 +381,36 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x60' to 24bit bus at '0x9816' and addressEx '0x01'
     Given write data byte '0x90' to 24bit bus at '0x9817' and addressEx '0x01'
 
+    Given write data byte '0x00' to 24bit bus at '0xa800' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0xa801' and addressEx '0x01'
+    Given write data byte '0x70' to 24bit bus at '0xa802' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0xa803' and addressEx '0x01'
+
+    Given write data byte '0x01' to 24bit bus at '0xa804' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0xa805' and addressEx '0x01'
+    Given write data byte '0x70' to 24bit bus at '0xa806' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0xa807' and addressEx '0x01'
+
+    Given write data byte '0x0d' to 24bit bus at '0xa808' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0xa809' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0xa80a' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0xa80b' and addressEx '0x01'
+
+    Given write data byte '0x0e' to 24bit bus at '0xa80c' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0xa80d' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0xa80e' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0xa80f' and addressEx '0x01'
+
+    Given write data byte '0x2d' to 24bit bus at '0xa810' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0xa811' and addressEx '0x01'
+    Given write data byte '0x50' to 24bit bus at '0xa812' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0xa813' and addressEx '0x01'
+
+    Given write data byte '0x2e' to 24bit bus at '0xa814' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0xa815' and addressEx '0x01'
+    Given write data byte '0x50' to 24bit bus at '0xa816' and addressEx '0x01'
+    Given write data byte '0x90' to 24bit bus at '0xa817' and addressEx '0x01'
+    
     Given render a video display frame
 
     # Now progressively enable layers and test for expected behaviour

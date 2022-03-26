@@ -584,3 +584,10 @@ Added: Given I am using C64 processor port options
 	This does not reflect accurately the position to actually wait for when writing...
 	Need to debug "APU_ProcessSpriteStrip" and double check the enable is done 16 pixels after the sprite register updates...
 	The the simulation can be fixed if needed. But data indicates that actually it should be OK.
+
+
+
+* Layer combiner for pixel output: com.bdd6502.DisplayBombJack.addLayer
+	Add a pixel combiner for two inputs to one combined output. This will be useful for the SF2 demo which uses two sprites planes
+	Copy from @TC-8
+	Hardware wise the layer enable signal from the pixel header would need to be split to the two input pixel headers
