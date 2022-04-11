@@ -5,6 +5,9 @@
 !source "BombJack/stdlib/Bus24Bit_Macros.a"
 
 scaledSpriteAddr = $02
+scaledSpriteIndex = $04
+scaledSpriteSorted = $05
+scaledSpriteSortedTemp = $06
 
 *=$200
 !zn
@@ -154,42 +157,33 @@ mainLoop
 	lda .tableY,x
 	sta Sprite2_data + 1 + (.i*8)
 
+	ldy scaledSpriteIndex
+	tya
+	sta scaledSpriteIndexValues,y
 
-	ldy #0
 	lda Sprite2_data + 0 + (.i*8)
-	sta (scaledSpriteAddr),y
-	iny
+	sta scaledSpritePreSort0,y
 	lda Sprite2_data + 1 + (.i*8)
-	sta (scaledSpriteAddr),y
-	iny
+	sta scaledSpritePreSort1,y
 	lda Sprite2_data + 2 + (.i*8)
-	sta (scaledSpriteAddr),y
-	iny
+	sta scaledSpritePreSort2,y
 	lda Sprite2_data + 3 + (.i*8)
-	sta (scaledSpriteAddr),y
-	iny
+	sta scaledSpritePreSort3,y
 	lda Sprite2_data + 4 + (.i*8)
-	sta (scaledSpriteAddr),y
-	iny
+	sta scaledSpritePreSort4,y
 	lda Sprite2_data + 5 + (.i*8)
-	sta (scaledSpriteAddr),y
-	iny
+	sta scaledSpritePreSort5,y
 	lda Sprite2_data + 6 + (.i*8)
-	sta (scaledSpriteAddr),y
-	iny
+	sta scaledSpritePreSort6,y
 	lda Sprite2_data + 7 + (.i*8)
-	sta (scaledSpriteAddr),y
+	sta scaledSpritePreSort7,y
 
-	lda scaledSpriteAddr
-	clc
-	adc #8
-	sta scaledSpriteAddr
-	bcc .over
-	inc scaledSpriteAddr+1
+	inc scaledSpriteIndex
 .over
 }
 
-	+MWordValueToAddress_A RealSprite2_data , scaledSpriteAddr
+	lda #0
+	sta scaledSpriteIndex
 
 ;	+DoScaledSpriteWith 0 , tabRoadPosLeft , tabRoadPosY
 ;	+DoScaledSpriteWith 1 , tabRoadPosLeft , tabRoadPosY_1
@@ -269,6 +263,72 @@ mainLoop
 ;	+DoScaledSpriteWith 22 , tabRoadPosLeft , tabRoadPosY
 ;	+DoScaledSpriteWith 23 , tabRoadPosLeft , tabRoadPosY_1
 
+	; Sort the scaledSpriteIndexValues using the indexed scaledSpritePreSort5
+	; This proves sprite ordering can be used when rendering depth sorted views
+	; TODO: This bubble sort is quite slow, use a fast sort instead
+!if 0 {
+.sl1
+	ldy scaledSpriteIndex
+	dey
+	lda #0
+	sta scaledSpriteSorted
+.sl2
+	ldx scaledSpriteIndexValues,y
+	lda scaledSpritePreSort5,x
+	ldx scaledSpriteIndexValues-1,y
+	cmp scaledSpritePreSort5,x
+	bcc .sl3
+	beq .sl3
+	; Swap index values only
+	lda scaledSpriteIndexValues-1,y
+	sta scaledSpriteSortedTemp
+	lda scaledSpriteIndexValues,y
+	sta scaledSpriteIndexValues-1,y
+	lda scaledSpriteSortedTemp
+	sta scaledSpriteIndexValues,y
+
+	inc scaledSpriteSorted ; Don't care what the value is as long as it's not 0
+.sl3
+	dey
+	bne .sl2
+	lda scaledSpriteSorted
+	bne .sl1
+}
+
+
+	+MWordValueToAddress_A RealSprite2_data , scaledSpriteAddr
+
+.cl1
+	ldy scaledSpriteIndex
+	ldx scaledSpriteIndexValues-1,y
+	ldy #0
+	lda scaledSpritePreSort0,x
+	sta (scaledSpriteAddr),y
+	iny
+	lda scaledSpritePreSort1,x
+	sta (scaledSpriteAddr),y
+	iny
+	lda scaledSpritePreSort2,x
+	sta (scaledSpriteAddr),y
+	iny
+	lda scaledSpritePreSort3,x
+	sta (scaledSpriteAddr),y
+	iny
+	lda scaledSpritePreSort4,x
+	sta (scaledSpriteAddr),y
+	iny
+	lda scaledSpritePreSort5,x
+	sta (scaledSpriteAddr),y
+	iny
+	lda scaledSpritePreSort6,x
+	sta (scaledSpriteAddr),y
+	iny
+	lda scaledSpritePreSort7,x
+	sta (scaledSpriteAddr),y
+
+	+MAddU8ToAddr16 8 , scaledSpriteAddr , scaledSpriteAddr+1
+	dec scaledSpriteIndex
+	bne .cl1
 
 	; End of list
 	lda #0
@@ -323,6 +383,17 @@ mainLoop
 	jmp mainLoop
 
 sprite4Road !by 127
+
+scaledSpriteIndexValues !fill 256,0
+scaledSpritePreSort0	!fill 256,0
+scaledSpritePreSort1	!fill 256,0
+scaledSpritePreSort2	!fill 256,0
+scaledSpritePreSort3	!fill 256,0
+scaledSpritePreSort4	!fill 256,0
+scaledSpritePreSort5	!fill 256,0
+scaledSpritePreSort6	!fill 256,0
+scaledSpritePreSort7	!fill 256,0
+
 
 RealSprite2_data
 	!fill 512,0

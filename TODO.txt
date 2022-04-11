@@ -1,5 +1,9 @@
 ; TODO items
 
+* ; TODO: This bubble sort is quite slow, use a fast sort instead
+
+
+
 * For w$** remove the wrapping d$0 as the data generator has the option now of setting forcing the bus to 0
 	* TODO: And test data gen in VC
 
