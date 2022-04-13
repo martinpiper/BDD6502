@@ -66,13 +66,13 @@ renderFrame
 !zn
 mainLoop
 	jsr Video_WaitVBlank
-	+MBus24Bit_SetAddress_AXY $01 , $a000
+	+MBus24Bit_SetAddress_AXY kBus24Bit_VectorsScreen_EBBS , kBus24Bit_VectorsScreen_Registers
 	+MBus24Bit_Send8BitValue 1
 	jsr renderFrame
 	jsr VectorPlot_drawSpansLo
 
 	jsr Video_WaitVBlank
-	+MBus24Bit_SetAddress_AXY $01 , $a000
+	+MBus24Bit_SetAddress_AXY kBus24Bit_VectorsScreen_EBBS , kBus24Bit_VectorsScreen_Registers
 	+MBus24Bit_Send8BitValue 0
 	jsr renderFrame
 	jsr VectorPlot_drawSpansHi
@@ -84,11 +84,11 @@ mainLoop
 
 !zn
 VectorPlot_drawSpansLo
-	+MBus24Bit_SetAddress_AXY $02 , $0040
+	+MBus24Bit_SetAddress_AXY kBus24Bit_VectorsScreen_Bank0_EBBS , kBus24Bit_VectorsScreen_Bank0_Plane + $0040
 	jmp VectorPlot_drawSpansInternal
 
 VectorPlot_drawSpansHi
-	+MBus24Bit_SetAddress_AXY $02 , $8040
+	+MBus24Bit_SetAddress_AXY kBus24Bit_VectorsScreen_Bank1_EBBS , kBus24Bit_VectorsScreen_Bank1_Plane + $0040
 
 VectorPlot_drawSpansInternal
 	lda #0

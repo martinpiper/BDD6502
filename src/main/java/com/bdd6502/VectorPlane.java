@@ -8,7 +8,6 @@ import static org.hamcrest.Matchers.*;
 public class VectorPlane extends DisplayLayer {
     int addressRegisters = 0xa000, addressExRegisters = 0x01;
     int addressPlane0 = 0x0000, addressExPlane0 = 0x02;
-    int addressPlane1 = 0x8000, addressExPlane1 = 0x02;
     byte plane0[] = new byte[0x2000];
     byte plane1[] = new byte[0x2000];
     byte plane2[] = new byte[0x2000];
@@ -26,7 +25,7 @@ public class VectorPlane extends DisplayLayer {
     public VectorPlane(int addressRegisters, int addressExPlane0) {
         assertThat(addressRegisters, is(greaterThanOrEqualTo(0x8000)));
         assertThat(addressRegisters, is(lessThan(0xc000)));
-        assertThat(addressRegisters & 0x7ff, is(equalTo(0x0000)));
+        assertThat(addressRegisters & 0x7ff, is(equalTo(0x100)));
         this.addressRegisters = addressRegisters;
         this.addressExPlane0 = addressExPlane0;
     }
@@ -35,7 +34,7 @@ public class VectorPlane extends DisplayLayer {
     public void writeData(int address, int addressEx, byte data) {
 
         // No control register logic now...
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x00)) {
             if ((data & 0x01) > 0) {
                 onScreenBank = true;
             } else {

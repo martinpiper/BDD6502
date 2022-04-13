@@ -40,3 +40,5 @@ Feature:  Code performance test
     Given I set register X to 3
     When I execute the procedure at start until return
     Then I expect the cycle count to be no more than 32 cycles
+
+    Given I disable trace

@@ -51,7 +51,7 @@ public class Sprites2 extends DisplayLayer {
         assertThat(clockMultiplier, is(greaterThanOrEqualTo(0.5)));
         assertThat(addressRegisters, is(greaterThanOrEqualTo(0x8000)));
         assertThat(addressRegisters, is(lessThan(0xc000)));
-        assertThat(addressRegisters & 0x7ff, is(equalTo(0x0000)));
+        assertThat(addressRegisters & 0x7ff, is(equalTo(0x200)));
 
         this.clockMultiplier = clockMultiplier;
         this.addressRegisters = addressRegisters;
@@ -68,9 +68,9 @@ public class Sprites2 extends DisplayLayer {
             }
         }
 */
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= (addressRegisters + 0x200) && address < (addressRegisters + 0x400)) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= (addressRegisters + 0x00) && address < (addressRegisters + 0x200)) {
             busContention = display.getBusContentionPixels();
-            int spriteIndex = (address - (addressRegisters + 0x200)) / 0x08;
+            int spriteIndex = (address - addressRegisters) / 0x08;
             switch (address & 0x07) {
                 case 0:
                 default: {
@@ -129,7 +129,7 @@ public class Sprites2 extends DisplayLayer {
     @Override
     public void setAddressBus(int address, int addressEx) {
         memoryAsserted = false;
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= (addressRegisters + 0x100) && address < (addressRegisters + 0x200)) {
+        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= (addressRegisters + 0x00) && address < (addressRegisters + 0x200)) {
 //            memoryAsserted = true;
         }
         if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
