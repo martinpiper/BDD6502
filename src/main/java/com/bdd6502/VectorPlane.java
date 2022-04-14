@@ -14,6 +14,7 @@ public class VectorPlane extends DisplayLayer {
     byte plane3[] = new byte[0x2000];
 
     boolean onScreenBank = false;
+    boolean kill = false;
     int drawIndex = 0;
     int pixelCount = 0;
     int finalPixel = 0;
@@ -39,6 +40,12 @@ public class VectorPlane extends DisplayLayer {
                 onScreenBank = true;
             } else {
                 onScreenBank = false;
+            }
+
+            if ((data & 0x80) > 0) {
+                kill = true;
+            } else {
+                kill = false;
             }
         }
 
@@ -89,7 +96,7 @@ public class VectorPlane extends DisplayLayer {
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
         finalPixelDelay = finalPixel;
-        if (!_vSync || !enableLayer) {
+        if (!_vSync || !enableLayer || kill) {
             drawIndex = 0;
             pixelCount = 0;
             finalPixel = 0;

@@ -1267,7 +1267,7 @@ Feature: Tests the video and audio hardware expansion together
     Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
     And the layer has 16 colours
     And the layer has overscan
-    Given add a Vector layer with registers at '0xa000' and addressEx '0x02'
+    Given add a Vector layer with registers at '0xa100' and addressEx '0x02'
     And the layer has 16 colours
     And the layer has overscan
     Given show video window
@@ -1381,14 +1381,18 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x08' to 24bit bus at '0x01ae' and addressEx '0x02'
     Given write data byte '0xfe' to 24bit bus at '0x01af' and addressEx '0x02'
 
-    # Set displayed bank
-    Given write data byte '0x00' to 24bit bus at '0xa100' and addressEx '0x01'
+    # Set displayed bank, but with kill bit
+    Given write data byte '0x80' to 24bit bus at '0xa100' and addressEx '0x01'
     # Enable display
     Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
 
     # Test image conversion output
 #    Given write data from file "C:\Work\ImageToBitplane\target\vectors_Data.bin" to 24bit bus at '0x0000' and addressEx '0x02'
 
+    Given render a video display frame
+
+    # Set displayed bank, without kill bit
+    Given write data byte '0x00' to 24bit bus at '0xa100' and addressEx '0x01'
     Given render a video display frame
 #    When display until window closed
 
@@ -1400,6 +1404,7 @@ Feature: Tests the video and audio hardware expansion together
 
     Then expect image "testdata/TC-11-000000.bmp" to be identical to "target/frames/TC-11-000000.bmp"
     Then expect image "testdata/TC-11-000001.bmp" to be identical to "target/frames/TC-11-000001.bmp"
+    Then expect image "testdata/TC-11-000002.bmp" to be identical to "target/frames/TC-11-000002.bmp"
 
 
 #    Given foo
@@ -1415,7 +1420,7 @@ Feature: Tests the video and audio hardware expansion together
     When I execute the procedure at start for no more than 1000000 instructions
     Given render a video display until vsync
     Given render a video display frame
-    Then expect image "testdata/TC-11-000002.bmp" to be identical to "target/frames/TC-11-000002.bmp"
+    Then expect image "testdata/TC-11-000003.bmp" to be identical to "target/frames/TC-11-000003.bmp"
 
     # Test complex 3D rendering
     Given write data byte '0x01' to 24bit bus at '0xa100' and addressEx '0x01'
@@ -1447,11 +1452,11 @@ Feature: Tests the video and audio hardware expansion together
 
 #    When display until window closed
 
-    Then expect image "testdata/TC-11-000003.bmp" to be identical to "target/frames/TC-11-000003.bmp"
     Then expect image "testdata/TC-11-000004.bmp" to be identical to "target/frames/TC-11-000004.bmp"
     Then expect image "testdata/TC-11-000005.bmp" to be identical to "target/frames/TC-11-000005.bmp"
     Then expect image "testdata/TC-11-000006.bmp" to be identical to "target/frames/TC-11-000006.bmp"
     Then expect image "testdata/TC-11-000007.bmp" to be identical to "target/frames/TC-11-000007.bmp"
+    Then expect image "testdata/TC-11-000008.bmp" to be identical to "target/frames/TC-11-000008.bmp"
 
     Given I disable trace
     Given property "bdd6502.bus24.trace" is set to string "false"
