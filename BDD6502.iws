@@ -6,16 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/VectorPlane.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/VectorPlane.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000000.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000001.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000001.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000002.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000002.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000003.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000003.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000005.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000005.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000007.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000007.bmp" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -66,7 +60,6 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="recentsLimit" value="5" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
@@ -103,7 +96,7 @@
       <recent name="com.bdd6502" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-11 Vectors">
+  <component name="RunManager" selected="Application.TestRunner VideoHardware @Demo9">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">

@@ -135,7 +135,7 @@ public class DisplayBombJack extends MemoryBus {
     }
 
     public void InitWindow() {
-        InitWindow(800, 600);
+        InitWindow(800, (800 * displayHeight) / displayWidth);
     }
 
     public void InitWindow(int width, int height) {

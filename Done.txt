@@ -591,3 +591,7 @@ Added: Given I am using C64 processor port options
 	Add a pixel combiner for two inputs to one combined output. This will be useful for the SF2 demo which uses two sprites planes
 	Copy from @TC-8
 	Hardware wise the layer enable signal from the pixel header would need to be split to the two input pixel headers
+
+
+
+* InitWindow uses the correct window size to reflect the screen display aspect ratio
