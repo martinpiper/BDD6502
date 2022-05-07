@@ -344,6 +344,8 @@ public class DisplayBombJack extends MemoryBus {
         }
     }
 
+    int cachedPixel[] = {-1,-1,-1,-1};
+
     public void calculatePixel() {
         pixelsSinceLastDebugWrite++;
         _hSync = true;
@@ -517,7 +519,10 @@ public class DisplayBombJack extends MemoryBus {
         latchedPixel = 0;
         boolean firstLayer = true;
         if (layersRaw.length <= 4) {
-            int cachedPixel[] = {-1,-1,-1,-1};
+            cachedPixel[0] = -1;
+            cachedPixel[1] = -1;
+            cachedPixel[2] = -1;
+            cachedPixel[3] = -1;
             // Go backwards from the furthest plane first
             for (int i = layersRaw.length-1 ; i >= 0 ; i--) {
                 int theLayer = (displayPriority >> (i*2)) & 0x03;

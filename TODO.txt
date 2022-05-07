@@ -1,5 +1,11 @@
 ; TODO items
 
+* calculatePixel() is slow, says the profiler
+	Turning off all the layer calculatePixel(), so they quickly return 0, does seem to massively speed up the rendering :D
+	Maybe the abstract int calculatePixel() is just really slow?
+
+
+
 * ; TODO: This bubble sort is quite slow, use a fast sort instead
 
 
