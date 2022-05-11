@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/BDD6502.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Sprites2.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Sprites2.a" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,6 +37,9 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="1anfB9JlBnsxJHk9Vcqo5jPAlWX" />
   <component name="ProjectLevelVcsManager">
@@ -96,7 +97,7 @@
       <recent name="com.bdd6502" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner VideoHardware @Demo9">
+  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-7 Sprites2 (Scaled)">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -724,8 +725,6 @@
     <list>
       <item itemvalue="Application.TestRunner --execAudioTest" />
       <item itemvalue="Application.TestRunner --execVideoTest" />
-      <item itemvalue="Application.TestRunner no parameters" />
-      <item itemvalue="Application.TestRunner BombJack" />
       <item itemvalue="Application.TestRunner --exportmod Biffe" />
       <item itemvalue="Application.TestRunner --exportmod SotB (1)" />
       <item itemvalue="Application.TestRunner --exportmod SotB title" />
@@ -738,7 +737,7 @@
       <item itemvalue="Application.TestRunner --exportmod" />
       <item itemvalue="Application.TestRunner --playmod" />
       <item itemvalue="Application.TestRunner -CotE" />
-      <item itemvalue="Application.TestRunner features/PerformanceTesting.feature" />
+      <item itemvalue="Application.TestRunner BombJack" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5" />
@@ -758,17 +757,19 @@
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-9 sprites 32x32 control" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature" />
       <item itemvalue="Application.TestRunner Tusari2" />
-      <item itemvalue="Application.TestRunner UninitialisedMemory.feature" />
       <item itemvalue="Application.TestRunner UninitialisedMemory.feature simple.feature" />
+      <item itemvalue="Application.TestRunner UninitialisedMemory.feature" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo1" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo3" />
+      <item itemvalue="Application.TestRunner VideoHardware @Demo6" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo9" />
       <item itemvalue="Application.TestRunner VideoHardware @RPG" />
       <item itemvalue="Application.TestRunner VideoHardware @ShadowBeastB" />
-      <item itemvalue="Application.TestRunner VideoHardware @Demo6" />
       <item itemvalue="Application.TestRunner VideoHardware @Turrican" />
       <item itemvalue="Application.TestRunner VideoHardware @Turrican_8" />
       <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
+      <item itemvalue="Application.TestRunner features/PerformanceTesting.feature" />
+      <item itemvalue="Application.TestRunner no parameters" />
       <item itemvalue="Application.TestRunner simple.feature @RemoteDebugger" />
       <item itemvalue="Application.TestRunner simple.feature" />
       <item itemvalue="Cucumber Java.All features" />
@@ -817,7 +818,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">

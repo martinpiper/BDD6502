@@ -1,23 +1,35 @@
+kBus24Bit_VideoLayer_HasOverscan = 1
 !sal
 !pdb "target/t.pdb"
 !source "C64/stdlib/stdlib.a"
 !source "BombJack/stdlib/Video_Macros.a"
 !source "BombJack/stdlib/Bus24Bit_Macros.a"
 
+!source "C64/stdlib/Comparisons.a"
+!source "C64/stdlib/LongBranches.a"
+!source "C64/stdlib/QuickSort.a"
+SortHardMaxEntries = 24	; The hard maximum for entries for the sort
+
 scaledSpriteAddr = $02
 scaledSpriteIndex = $04
 scaledSpriteSorted = $05
 scaledSpriteSortedTemp = $06
+SortTemp0 = $07
+SortTemp1 = $08
 
 *=$200
 !zn
 DisplayScreen
 	jsr Bus24Bit_Init
+	jsr SortTableInit
 
 ;	jsr Video_DisableDisplay
 ;	lda #$30
 ;	jsr Video_EnableDisplay
 
+	jsr Video_SetAddressVideoLayersEnable
+	lda #kBus24Bit_VideoLayer_LayersEnable_Default
+	+MBus24Bit_Send8BitValueFromA
 
 	jsr Bus24Bit_Reset
 
@@ -158,8 +170,8 @@ mainLoop
 	sta Sprite2_data + 1 + (.i*8)
 
 	ldy scaledSpriteIndex
-	tya
-	sta scaledSpriteIndexValues,y
+;	tya
+;	sta scaledSpriteIndexValues,y
 
 	lda Sprite2_data + 0 + (.i*8)
 	sta scaledSpritePreSort0,y
@@ -265,41 +277,14 @@ mainLoop
 
 	; Sort the scaledSpriteIndexValues using the indexed scaledSpritePreSort5
 	; This proves sprite ordering can be used when rendering depth sorted views
-	; TODO: This bubble sort is quite slow, use a fast sort instead
-!if 0 {
-.sl1
-	ldy scaledSpriteIndex
-	dey
-	lda #0
-	sta scaledSpriteSorted
-.sl2
-	ldx scaledSpriteIndexValues,y
-	lda scaledSpritePreSort5,x
-	ldx scaledSpriteIndexValues-1,y
-	cmp scaledSpritePreSort5,x
-	bcc .sl3
-	beq .sl3
-	; Swap index values only
-	lda scaledSpriteIndexValues-1,y
-	sta scaledSpriteSortedTemp
-	lda scaledSpriteIndexValues,y
-	sta scaledSpriteIndexValues-1,y
-	lda scaledSpriteSortedTemp
-	sta scaledSpriteIndexValues,y
-
-	inc scaledSpriteSorted ; Don't care what the value is as long as it's not 0
-.sl3
-	dey
-	bne .sl2
-	lda scaledSpriteSorted
-	bne .sl1
-}
-
+	jsr SortSort
 
 	+MWordValueToAddress_A RealSprite2_data , scaledSpriteAddr
 
+	lda scaledSpriteIndex
+	sta SortTemp0
 .cl1
-	ldy scaledSpriteIndex
+	ldy SortTemp0
 	ldx scaledSpriteIndexValues-1,y
 	ldy #0
 	lda scaledSpritePreSort0,x
@@ -327,7 +312,7 @@ mainLoop
 	sta (scaledSpriteAddr),y
 
 	+MAddU8ToAddr16 8 , scaledSpriteAddr , scaledSpriteAddr+1
-	dec scaledSpriteIndex
+	dec SortTemp0
 	bne .cl1
 
 	; End of list
@@ -519,3 +504,24 @@ tabRoadScaleYSize
 
 !source "BombJack/stdlib/Bus24Bit.a"
 !source "BombJack/stdlib/Video.a"
+
+QuickSort_Sortlo !fill SortHardMaxEntries , 0
+QuickSort_Sorthi !fill SortHardMaxEntries , 0
+
+.previousEntries !by 0
+SortSort
+	; Only init index the table if there is a change in the number of sprites
+	; TODO: It would be more efficient to set the unused entries to be the max/min value and always sort up to SortHardMaxEntries instead
+	; This would then allow the previous frame index values, and thus the previous ordering, to always be used instead
+	lda scaledSpriteIndex
+	cmp .previousEntries
+	beq .same
+	sta .previousEntries
+	+QuickSort_Init scaledSpriteIndex , scaledSpriteIndexValues
+.same
+
+	+QuickSort_SortRTS -1 , SortHardMaxEntries , scaledSpriteIndex , scaledSpriteIndexValues , scaledSpritePreSort5 , SortTemp0 , SortTemp1 , QuickSort_Sortlo , QuickSort_Sorthi , ~SortBlockByteLength , ~QuickSort_sortstart
+
+SortTableInit
+	+QuickSort_TableInit SortHardMaxEntries , SortTemp0 , SortTemp1 , SortBlockByteLength , QuickSort_Sortlo , QuickSort_Sorthi , QuickSort_sortstart
+	rts
