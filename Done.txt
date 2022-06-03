@@ -595,3 +595,9 @@ Added: Given I am using C64 processor port options
 
 
 * InitWindow uses the correct window size to reflect the screen display aspect ratio
+
+
+
+* Sprites2: Add debugger output to show the used scan time for each line of calculated sprites2
+	* Best place to add that is: debuggerUpdateRegs
+	^^ Done

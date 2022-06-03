@@ -688,15 +688,25 @@ public class Glue {
     }
 
     private void debuggerUpdateRegs(RemoteDebugger remoteDebugger) throws MemoryAccessException {
+        String optionalExtras = "";
+        if (UserPortTo24BitAddress.getThisInstance() != null) {
+            if (UserPortTo24BitAddress.getThisInstance().isEnableAPU()) {
+                optionalExtras += UserPortTo24BitAddress.getThisInstance().getDebugOutputLastState();
+            }
+        }
+
         int displayH = 0 , displayV = 0;
         if (displayBombJack != null) {
             displayH = displayBombJack.getDisplayH();
             displayV = displayBombJack.getDisplayV();
+            optionalExtras += displayBombJack.getDebug();
         }
+
         remoteDebugger.setReplyReg(machine.getCpu().getCpuState().pc, machine.getCpu().getCpuState().a, machine.getCpu().getCpuState().x, machine.getCpu().getCpuState().y,
                 machine.getCpu().getCpuState().sp, machine.getRam().read(0, false), machine.getRam().read(1, false),
                 machine.getCpu().getCpuState().getStatusFlag(), displayV, displayH,
-                machine.getCpu().getClockCycles());
+                machine.getCpu().getClockCycles(),
+                optionalExtras);
     }
 
     public String getTraceLine(Integer addr) {

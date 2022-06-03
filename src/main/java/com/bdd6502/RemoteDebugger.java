@@ -8,7 +8,7 @@ import java.net.Socket;
 
 public class RemoteDebugger implements Runnable {
     private RemoteDebugger() {
-        setReplyReg(0,0,0,0,0,0,0,0,0,0,0);
+        setReplyReg(0,0,0,0,0,0,0,0,0,0,0, "");
     }
 
     public int getNumConnections() {
@@ -153,7 +153,7 @@ public class RemoteDebugger implements Runnable {
 
     volatile boolean receivedReg = false;
 
-    public void setReplyReg(int addr, int a , int x , int y , int sp , int mem0 , int mem1 , int st , int lin , int cycle , int stopwatch) {
+    public void setReplyReg(int addr, int a , int x , int y , int sp , int mem0 , int mem1 , int st , int lin , int cycle , int stopwatch, String optionalExtras) {
         setCurrentPrefix(addr);
         receivedReg = false;
 
@@ -187,12 +187,10 @@ public class RemoteDebugger implements Runnable {
         decimal = String.format("%8d", stopwatch).replace(' ', '0');
         newReplyReg += decimal + "\n";
 
-        if (UserPortTo24BitAddress.getThisInstance() != null) {
-            if (UserPortTo24BitAddress.getThisInstance().isEnableAPU()) {
-                newReplyReg += UserPortTo24BitAddress.getThisInstance().getDebugOutputLastState();
-            }
+        if (optionalExtras != null) {
+            newReplyReg += optionalExtras;
         }
-        
+
         this.replyReg = newReplyReg;
     }
 

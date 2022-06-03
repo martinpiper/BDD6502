@@ -40,6 +40,9 @@ public class Sprites2 extends DisplayLayer {
 
     int calculatedRasters[][] = new int[2][512];
 
+    int debugUsedRasterTime[] = new int[1024];
+    int debugMaxDisplayV = 0;
+
     public Sprites2() {
     }
 
@@ -141,6 +144,8 @@ public class Sprites2 extends DisplayLayer {
     boolean delayed_doLineStart1 = false;
     boolean delayed_doLineStart2 = false;
 
+    boolean reachedEndOfLine = false;
+
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
         // Time to the rising edge of the _hSync
@@ -157,6 +162,7 @@ public class Sprites2 extends DisplayLayer {
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
             runLogic = false;
+            reachedEndOfLine = false;
         }
         delayed_doLineStart2 = delayed_doLineStart1;
         delayed_doLineStart1 = _doLineStart;
@@ -168,7 +174,7 @@ public class Sprites2 extends DisplayLayer {
 
         clockAccumulator += clockMultiplier;
         while (clockAccumulator >= 1.0) {
-            if (runLogic) {
+            if (runLogic && !reachedEndOfLine) {
                 handleSpriteSchedule(displayH, displayV);
             }
             clockAccumulator -= 1.0;
@@ -225,6 +231,11 @@ public class Sprites2 extends DisplayLayer {
 
                 // Test for end of list
                 if (currentSpriteSizeY == 0) {
+                    debugUsedRasterTime[displayV] = displayH;
+                    if(displayV > debugMaxDisplayV) {
+                        debugMaxDisplayV = displayV;
+                    }
+                    reachedEndOfLine = true;
                     return;
                 }
                 // Perform Y extent check, the wait is for the calculation to succeed due to multiply 32 (shift 5!!) lookup and add, and advance drawingSpriteIndex if it isn't going to be drawn
@@ -340,5 +351,20 @@ public class Sprites2 extends DisplayLayer {
         drawingSpriteState = 0;
         drawingSpriteIndex++;
         drawingSpriteIndex &= 0xff;
+    }
+
+    @Override
+    public String getDebug() {
+        String debug = "";
+        for (int i = 0 ; i < debugMaxDisplayV ; i++) {
+            // Only flag those lines that are really starting to get to the limit
+            if (debugUsedRasterTime[i] > 320) {
+                debug += "V" + i + " H" + debugUsedRasterTime[i] + "   ";
+            }
+        }
+        if (!debug.isEmpty()) {
+            debug = "Sprites2: " + debug;
+        }
+        return debug;
     }
 }

@@ -37,4 +37,8 @@ public abstract class DisplayLayer extends MemoryBus {
 
     public void captureLayer(DisplayLayer layer) {
     }
+
+    public String getDebug() {
+        return "";
+    }
 }

@@ -64,4 +64,13 @@ public class MergeNTo1 extends DisplayLayer {
         displayLayers[addIndex] = layer;
         addIndex++;
     }
+
+    @Override
+    public String getDebug() {
+        String debug = "";
+        for (int i = 0 ; i < displayLayers.length ; i++) {
+            debug += displayLayers[i].getDebug();
+        }
+        return debug;
+    }
 }

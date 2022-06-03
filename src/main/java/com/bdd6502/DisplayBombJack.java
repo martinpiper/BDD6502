@@ -605,4 +605,12 @@ public class DisplayBombJack extends MemoryBus {
     public DisplayMainFrame getWindow() {
         return window;
     }
+
+    public String getDebug() {
+        String debug = "";
+        for (int i = layersRaw.length-1 ; i >= 0 ; i--) {
+            debug += layersRaw[i].getDebug();
+        }
+        return debug;
+    }
 }
