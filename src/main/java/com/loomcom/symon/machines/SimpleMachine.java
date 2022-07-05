@@ -49,7 +49,7 @@ public class SimpleMachine implements Machine {
         this.cpu = new Cpu();
 
         bus.addCpu(cpu);
-        bus.addDevice(ram);
+        bus.addDevice(ram , 1);
     }
 
     public Bus getBus() {

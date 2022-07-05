@@ -2,10 +2,7 @@ package TestGlue;
 
 import com.bdd6502.*;
 import com.loomcom.symon.Cpu;
-import com.loomcom.symon.devices.Device;
-import com.loomcom.symon.devices.Memory;
-import com.loomcom.symon.devices.PrintIODevice;
-import com.loomcom.symon.devices.UserPortTo24BitAddress;
+import com.loomcom.symon.devices.*;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.machines.Machine;
@@ -1063,6 +1060,22 @@ public class Glue {
         executeProcedureAtForNoMoreThanInstructionsUntilPC(arg1, "", "");
     }
 
+    @When("^I execute the indirect procedure at (.+) until return$")
+    public void i_execute_the_indirect_procedure_at(String arg1) throws Throwable {
+        machine.getCpu().setStackPointer(0xff);
+        int addr = valueToInt(arg1);
+        int code = machine.getBus().read(addr) | (machine.getBus().read(addr + 1) << 8);
+        executeProcedureAtForNoMoreThanInstructionsUntilPC(Integer.toString(code), "", "");
+    }
+
+    @When("^I execute the indirect procedure at (.+) until return or until PC = (.+)$")
+    public void i_execute_the_indirect_procedure_at_until_pc(String arg1 , String arg2) throws Throwable {
+        machine.getCpu().setStackPointer(0xff);
+        int addr = valueToInt(arg1);
+        int code = machine.getBus().read(addr) | (machine.getBus().read(addr + 1) << 8);
+        executeProcedureAtForNoMoreThanInstructionsUntilPC(Integer.toString(code), "", arg2);
+    }
+
     @When("^I continue executing the procedure until return$")
     public void i_continue_executing_the_procedure_at_until_return() throws Throwable {
         executeProcedureAtForNoMoreThanInstructionsUntilPC("", "", "");
@@ -2000,5 +2013,20 @@ public class Glue {
     @Then("^expect the line to contain \"([^\"]*)\"$")
     public void expectTheLineToContain(String subString) {
         assertThat(currentLineRead, containsString(subString));
+    }
+
+    @Given("^a ROM from file \"([^\"]*)\" at (.*)$")
+    public void a_ROM_from_file_at_$a(String filename, String address) throws Throwable {
+        File file = new File(filename);
+        int iaddr = valueToInt(address);
+        int flen = (int) file.length();
+        Memory memory = Memory.makeROM(iaddr , iaddr + flen - 1 , file);
+
+        machine.getCpu().getBus().addDevice(memory);
+    }
+
+    @Given("^add a C64 VIC$")
+    public void addAVICII() throws MemoryRangeException {
+        machine.getCpu().getBus().addDevice(new C64VICII(scenario));
     }
 }

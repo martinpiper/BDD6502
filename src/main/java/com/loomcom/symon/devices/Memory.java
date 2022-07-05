@@ -82,7 +82,8 @@ public class Memory extends Device {
             throw new MemoryAccessException("Write exception at: " + HexUtil.wordToHex(address));
         }
         if (readOnly) {
-            throw new MemoryAccessException("Cannot write to read-only memory at address " + address);
+            // C64 kernal RAM test must silently succeed in writing to ROM
+//            throw new MemoryAccessException("Cannot write to read-only memory at address " + address);
         } else {
             this.mem[address] = data;
             this.memWritten[address] = true;
