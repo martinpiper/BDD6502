@@ -30,6 +30,7 @@ public class AudioExpansion extends MemoryBus implements Runnable {
     int voiceInternalCounter[] = new int[numVoices];    // Not addressable
     boolean voiceInternalChooseLoop[] = new boolean[numVoices];    // Not addressable
 
+    byte voicesActiveMaskPrevious = 0;
     byte voicesActiveMask = 0;
     byte voicesLoopMask = 0;
     // Each voice is stored linearly in the address space, with 8 bytes per voice:
@@ -148,14 +149,19 @@ public class AudioExpansion extends MemoryBus implements Runnable {
             voicesLoopMask = data;
         }
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + (numVoices * voiceSize) + 1) {
-            voicesActiveMask = data;
             for (int i = 0 ; i < numVoices ; i++) {
-                if ((voicesActiveMask & (1 << i)) == 0) {
-                    // HW: Reset the latch on low. voiceInternalCounter is 24 bits
-                    voiceInternalCounter[i] = 0;
-                    voiceInternalChooseLoop[i] = false;
+                // Reset clear in latches
+                if ((data & (1 << i)) == 0) {
+                    voicesActiveMask &= ~(1 << i);
+                } else {
+                    // Detect positive edge on active mask and set
+                    if ( (voicesActiveMaskPrevious & (1 << i)) == 0 ) {
+                        voicesActiveMask |= (1 << i);
+                    }
                 }
             }
+            voicesActiveMaskPrevious = data;
+            handleVoiceActiveMaskLatches();
         }
 
         // HW: Full 64K for sample memory, must use a proper selector
@@ -163,6 +169,16 @@ public class AudioExpansion extends MemoryBus implements Runnable {
         if (MemoryBus.addressActive(addressEx, addressExSampleBank)) {
             busContention = 8;
             sampleRAM[address] = data;
+        }
+    }
+
+    private void handleVoiceActiveMaskLatches() {
+        for (int i = 0 ; i < numVoices ; i++) {
+            if ((voicesActiveMask & (1 << i)) == 0) {
+                // HW: Reset the latch on low. voiceInternalCounter is 24 bits
+                voiceInternalCounter[i] = 0;
+                voiceInternalChooseLoop[i] = false;
+            }
         }
     }
 
@@ -193,6 +209,9 @@ public class AudioExpansion extends MemoryBus implements Runnable {
             int accumulatedSample = 0;
             for (int index = 0 ; index < (numVoices/2) ; index++) {
                 int voice = (offset * (numVoices/2)) + index;
+
+                handleVoiceActiveMaskLatches();
+
                 if ((voicesActiveMask & (1 << voice)) > 0) {
                     int address;
                     if (voiceInternalChooseLoop[voice]) {
