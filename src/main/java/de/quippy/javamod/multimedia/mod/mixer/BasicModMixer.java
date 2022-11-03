@@ -1486,6 +1486,8 @@ public abstract class BasicModMixer
 
 		int loopLength = actMemo.currentSample.repeatLength;
 		if (loopLength == 0) {
+			// The first exported sample is always going to be 0x80 (a silent sample, basically 0)
+			// This is used to simulate a voice off for non-looping voices
 			sampleLoopStarts[sampleIndex] = 0;
 			sampleLoopLengths[sampleIndex] = 0;
 		} else {

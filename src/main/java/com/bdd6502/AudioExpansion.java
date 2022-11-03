@@ -32,7 +32,6 @@ public class AudioExpansion extends MemoryBus implements Runnable {
 
     byte voicesActiveMaskPrevious = 0;
     byte voicesActiveMask = 0;
-    byte voicesLoopMask = 0;
     // Each voice is stored linearly in the address space, with 8 bytes per voice:
     // volume
     // voiceAddressLo , voiceAddressHi
@@ -145,9 +144,6 @@ public class AudioExpansion extends MemoryBus implements Runnable {
             }
         }
 
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + (numVoices * voiceSize)) {
-            voicesLoopMask = data;
-        }
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + (numVoices * voiceSize) + 1) {
             for (int i = 0 ; i < numVoices ; i++) {
                 // Reset clear in latches
@@ -241,15 +237,10 @@ public class AudioExpansion extends MemoryBus implements Runnable {
                         }
                     } else {
                         if (((voiceInternalCounter[voice] >> counterShift) & 0xffff) >= voiceLength[voice]) {
-                            if ((voicesLoopMask & (1 << voice)) > 0) {
-                                voiceInternalChooseLoop[voice] = true;
-                                // HW: Note selective reset of only some adders when length is reached
-//                                voiceInternalCounter[voice] = voiceInternalCounter[voice] & counterShiftMask;
-                                voiceInternalCounter[voice] = 0;
-                            } else {
-                                // HW: Reset the latch for this specific voice
-                                voicesActiveMask = (byte) (voicesActiveMask & ~(1 << voice));
-                            }
+                            voiceInternalChooseLoop[voice] = true;
+                            // HW: Note selective reset of only some adders when length is reached
+//                            voiceInternalCounter[voice] = voiceInternalCounter[voice] & counterShiftMask;
+                            voiceInternalCounter[voice] = 0;
                         }
                     }
 

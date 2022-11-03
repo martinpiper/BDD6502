@@ -565,7 +565,6 @@ public class TestRunner {
             long startTime = System.currentTimeMillis();
             int waitUntil = 0;
             int channelPlayingMask = 0;
-            int channelLoopingMask = 0;
             boolean doPlay = true;
             while (compressedPos < compressedData.length && doPlay) {
                 while (System.currentTimeMillis() < (startTime+waitUntil)) {
@@ -594,12 +593,10 @@ public class TestRunner {
                         int sampleIndex = getNextByte();
                         int sampleStart = sampleStarts[sampleIndex];
                         int sampleLength = sampleLengths[sampleIndex];
-                        int sampleLoopStart = sampleLoopStarts[sampleIndex];;
+                        int sampleLoopStart = sampleLoopStarts[sampleIndex];
                         int sampleLoopLength = sampleLoopLengths[sampleIndex];
 
                         int sampleFrequency = getNextByte() | (getNextByte() << 8);
-
-                        channelLoopingMask = channelLoopingMask & ~(1<<channel);
 
                         channelPlayingMask = channelPlayingMask & ~(1<<channel);
                         audioExpansion.writeData(0x8000 + (AudioExpansion.numVoices * AudioExpansion.voiceSize) + 1, 0x01, channelPlayingMask);
@@ -613,15 +610,10 @@ public class TestRunner {
                         audioExpansion.writeData(voiceAddress+5, 0x01, sampleFrequency);
                         audioExpansion.writeData(voiceAddress+6, 0x01, sampleFrequency>>8);
 
-                        if (sampleLoopLength != 0) {
-                            audioExpansion.writeData(voiceAddress+7, 0x01, sampleLoopStart);
-                            audioExpansion.writeData(voiceAddress+8, 0x01, sampleLoopStart>>8);
-                            audioExpansion.writeData(voiceAddress+9, 0x01, sampleLoopLength);
-                            audioExpansion.writeData(voiceAddress+10, 0x01, sampleLoopLength>>8);
-
-                            channelLoopingMask = channelLoopingMask | (1 << channel);
-                        }
-                        audioExpansion.writeData(0x8000 + (AudioExpansion.numVoices * AudioExpansion.voiceSize), 0x01, channelLoopingMask);
+                        audioExpansion.writeData(voiceAddress+7, 0x01, sampleLoopStart);
+                        audioExpansion.writeData(voiceAddress+8, 0x01, sampleLoopStart>>8);
+                        audioExpansion.writeData(voiceAddress+9, 0x01, sampleLoopLength);
+                        audioExpansion.writeData(voiceAddress+10, 0x01, sampleLoopLength>>8);
 
                         channelPlayingMask = channelPlayingMask | (1<<channel);
                         audioExpansion.writeData(0x8000 + (AudioExpansion.numVoices * AudioExpansion.voiceSize) + 1, 0x01, channelPlayingMask);

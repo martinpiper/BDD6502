@@ -6,7 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/ModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/ModMixer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
@@ -176,6 +180,15 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\_nice_outfit_.mod&quot; &quot;target/exportedMusic&quot; 1 1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner --exportmod (4) fnkyldrt.mod" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\work\c64\VideoHardware\assets\fnkyldrt.mod&quot; &quot;target/exportedMusic&quot; 1 1" />
+      <option name="VM_PARAMETERS" value="-Dmusic.volume=1" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -735,6 +748,7 @@
       <item itemvalue="Application.TestRunner --exportmod (3)" />
       <item itemvalue="Application.TestRunner --exportmod blood money" />
       <item itemvalue="Application.TestRunner --exportmod" />
+      <item itemvalue="Application.TestRunner --exportmod (4) fnkyldrt.mod" />
       <item itemvalue="Application.TestRunner --playmod" />
       <item itemvalue="Application.TestRunner -CotE" />
       <item itemvalue="Application.TestRunner BombJack" />
@@ -864,11 +878,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/C64VICII.java</url>
           <line>30</line>
           <option name="timeStamp" value="26" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java</url>
-          <line>250</line>
-          <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

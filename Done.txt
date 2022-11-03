@@ -601,3 +601,11 @@ Added: Given I am using C64 processor port options
 * Sprites2: Add debugger output to show the used scan time for each line of calculated sprites2
 	* Best place to add that is: debuggerUpdateRegs
 	^^ Done
+
+
+
+* Removed voicesLoopMask since the Audio 9.3 hardware assumes loops are always enabled now
+
+
+
+* Updated non-looped samples to always use the first exported sample 0x80 byte

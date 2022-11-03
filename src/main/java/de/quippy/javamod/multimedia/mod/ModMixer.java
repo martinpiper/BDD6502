@@ -583,6 +583,8 @@ public class ModMixer extends BasicMixer
 		try {
 			debugData = new PrintWriter(new FileWriter(filename + CHANNEL_EVENTS_TXT));
 			sampleData = new DataOutputStream(new FileOutputStream(filename + SAMPLES_BIN));
+			// To simulate a stopped voice the first exported sample is always 0x80
+			sampleData.write(0x80);
 			musicData = new DataOutputStream(new FileOutputStream(filename + EVENTS_BIN));
 			modMixer.setDebugData(debugData);
 			modMixer.setDebugSampleData(sampleData);
