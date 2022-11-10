@@ -98,6 +98,7 @@ public class DisplayBombJack extends MemoryBus {
     public boolean getVSync() {
         return _vSync;
     }
+
     public boolean getVBlank() {
         return vBlank;
     }
@@ -178,14 +179,15 @@ public class DisplayBombJack extends MemoryBus {
     }
 
     DisplayLayer lastLayerAdded;
+
     public void addLayer(DisplayLayer layer) {
         lastLayerAdded = layer;
         layer.setDisplay(this);
 
         boolean captured = false;
         if (layersRaw.length > 0) {
-            if (layersRaw[layersRaw.length-1].capturingMergeLayer()) {
-                layersRaw[layersRaw.length-1].captureLayer(layer);
+            if (layersRaw[layersRaw.length - 1].capturingMergeLayer()) {
+                layersRaw[layersRaw.length - 1].captureLayer(layer);
                 captured = true;
             }
         }
@@ -209,7 +211,7 @@ public class DisplayBombJack extends MemoryBus {
             // This is true, as long as mode7 writes (due to resetting the internal values on _VSYNC) are completed before the end of the _VSYNC which starts later and shorter than the VBLANK
             if (enableDisplay && !vBlank && debugData != null) {
 //                debugData.println("d$0");
-                debugData.printf("w$ff03ff00,$%02x%02x%02x00\n", displayVExternal & 0xff , (displayHExternal >> 8) & 0x01 , displayHExternal & 0xff );
+                debugData.printf("w$ff03ff00,$%02x%02x%02x00\n", displayVExternal & 0xff, (displayHExternal >> 8) & 0x01, displayHExternal & 0xff);
 //                debugData.println("d$0");
             }
         }
@@ -265,8 +267,8 @@ public class DisplayBombJack extends MemoryBus {
             }
 
             if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0a) {
-                for (int i = 0 ; i < enableLayerFlags.length && i < 8 ; i++) {
-                    if ( (data & (1<<((enableLayerFlags.length - 1) - i))) > 0 ) {
+                for (int i = 0; i < enableLayerFlags.length && i < 8; i++) {
+                    if ((data & (1 << ((enableLayerFlags.length - 1) - i))) > 0) {
                         enableLayerFlags[i] = true;
                     } else {
                         enableLayerFlags[i] = false;
@@ -301,17 +303,16 @@ public class DisplayBombJack extends MemoryBus {
     }
 
     public void calculateAFrame() {
-        for (int i = 0 ; i < pixelsInWholeFrame() ; i++) {
+        for (int i = 0; i < pixelsInWholeFrame(); i++) {
             calculatePixel();
         }
     }
 
     public int pixelsInWholeFrame() {
-        return displayWidth*displayHeight;
+        return displayWidth * displayHeight;
     }
 
-    public void displayClearAhead()
-    {
+    public void displayClearAhead() {
         int grey = Color.gray.getRGB();
         int tempx = displayBitmapX + 1;
         int tempy = displayBitmapY;
@@ -327,8 +328,7 @@ public class DisplayBombJack extends MemoryBus {
         }
     }
 
-    public void displayClear()
-    {
+    public void displayClear() {
         int grey = Color.gray.getRGB();
         int tempx = 0;
         int tempy = 0;
@@ -344,7 +344,7 @@ public class DisplayBombJack extends MemoryBus {
         }
     }
 
-    int cachedPixel[] = {-1,-1,-1,-1};
+    int cachedPixel[] = {-1, -1, -1, -1};
 
     public void calculatePixel() {
         pixelsSinceLastDebugWrite++;
@@ -366,12 +366,12 @@ public class DisplayBombJack extends MemoryBus {
         }
 
 //        if (displayH == 0x180) {
-            if (displayY >= 0 && displayY < 0x08) {
-                displayV = 0xf8 + displayY;
-                _vSync = false;
-            } else {
-                displayV = displayY - 0x08;
-            }
+        if (displayY >= 0 && displayY < 0x08) {
+            displayV = 0xf8 + displayY;
+            _vSync = false;
+        } else {
+            displayV = displayY - 0x08;
+        }
 //        }
 
         boolean doLineStart = false;
@@ -408,7 +408,7 @@ public class DisplayBombJack extends MemoryBus {
             frameNumberForSync++;
             pixelsSinceLastDebugWrite = 0;
         }
-        if (displayX == 0 && displayY == (displayHeight-1)) {
+        if (displayX == 0 && displayY == (displayHeight - 1)) {
             if (leafFilename != null && !leafFilename.isEmpty()) {
                 try {
                     File file = new File(leafFilename + String.format("%06d", frameNumber++) + ".bmp");
@@ -419,7 +419,8 @@ public class DisplayBombJack extends MemoryBus {
                         // Try once more before really failing...
                         ImageIO.write(getImage(), "bmp", file);
                     }
-                } catch (IOException e) {}
+                } catch (IOException e) {
+                }
             }
         }
 
@@ -436,8 +437,8 @@ public class DisplayBombJack extends MemoryBus {
             if (displayHExternal <= 0) {
                 enablePixels = false;
             }
-            if ( (localdisplayH & 0x100) == 0x100) {
-                if ( ((localdisplayH & 0x7f)>>3) > (overscanBorderExtent & 0x0f) ) {
+            if ((localdisplayH & 0x100) == 0x100) {
+                if (((localdisplayH & 0x7f) >> 3) > (overscanBorderExtent & 0x0f)) {
                     enablePixels = false;
                 }
             }
@@ -445,8 +446,8 @@ public class DisplayBombJack extends MemoryBus {
             if (displayHExternal <= 0) {
                 enablePixels = false;
             }
-            if ( (localdisplayH & 0x180) == 0x000) {
-                if ( ((localdisplayH & 0x7f)>>3) < ((overscanBorderExtent >> 4) & 0x0f) ) {
+            if ((localdisplayH & 0x180) == 0x000) {
+                if (((localdisplayH & 0x7f) >> 3) < ((overscanBorderExtent >> 4) & 0x0f)) {
                     enablePixels = false;
                 }
             }
@@ -524,9 +525,9 @@ public class DisplayBombJack extends MemoryBus {
             cachedPixel[2] = -1;
             cachedPixel[3] = -1;
             // Go backwards from the furthest plane first
-            for (int i = layersRaw.length-1 ; i >= 0 ; i--) {
-                int theLayer = (displayPriority >> (i*2)) & 0x03;
-                theLayer = (layersRaw.length-1)-theLayer;
+            for (int i = layersRaw.length - 1; i >= 0; i--) {
+                int theLayer = (displayPriority >> (i * 2)) & 0x03;
+                theLayer = (layersRaw.length - 1) - theLayer;
                 if (theLayer >= 0 && theLayer < layersRaw.length) {
                     // Ensure each layer index is executed once
                     if (cachedPixel[theLayer] < 0) {
@@ -589,6 +590,7 @@ public class DisplayBombJack extends MemoryBus {
     }
 
     int sequentialValue = 0;
+
     int getContentionColouredPixel() {
         // Introduce some colour and pattern using the part of last byte written to simulate a bus with contention
         sequentialValue++;
@@ -608,9 +610,23 @@ public class DisplayBombJack extends MemoryBus {
 
     public String getDebug() {
         String debug = "";
-        for (int i = layersRaw.length-1 ; i >= 0 ; i--) {
+        for (int i = layersRaw.length - 1; i >= 0; i--) {
             debug += layersRaw[i].getDebug();
         }
         return debug;
+    }
+
+    public void randomiseData(Random rand) {
+        for (DisplayLayer layer : layers) {
+            layer.randomiseData(rand);
+        }
+
+        randomiseHelper(rand , palette);
+        borderX = rand.nextBoolean();
+        borderY = rand.nextBoolean();
+        overscanBorderExtent = rand.nextInt();
+
+        displayPriority = rand.nextInt();
+        randomiseHelper(rand , enableLayerFlags);
     }
 }

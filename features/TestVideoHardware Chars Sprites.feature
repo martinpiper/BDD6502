@@ -21,6 +21,8 @@ Feature: Tests the video character screen data conversion and sprites
     Given add a StaticColour layer for palette index '0x7f'
     Given add a Chars layer with registers at '0x9000' and addressEx '0x20'
     Given add a Sprites layer with registers at '0x9800' and addressEx '0x10'
+
+    Given randomly initialise all memory using seed 1234
     Given show video window
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware Chars Sprites full.a"
@@ -288,7 +290,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
     And the layer has 16 colours
     And the layer has overscan
-    Given add a Sprites3 layer with registers at '0x9000' and addressEx '0x10'
+    Given add a Sprites3 layer with registers at '0x9200' and addressEx '0x10'
     And the layer has 16 colours
     And the layer has overscan
     Given show video window

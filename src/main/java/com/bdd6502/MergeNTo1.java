@@ -1,5 +1,7 @@
 package com.bdd6502;
 
+import java.util.Random;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -73,4 +75,11 @@ public class MergeNTo1 extends DisplayLayer {
         }
         return debug;
     }
+
+    public void randomiseData(Random rand) {
+        for (DisplayLayer displayLayer : displayLayers) {
+            displayLayer.randomiseData(rand);
+        }
+    }
+
 }

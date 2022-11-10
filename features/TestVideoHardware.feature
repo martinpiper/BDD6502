@@ -24,6 +24,7 @@ Feature: Tests the video and audio hardware expansion together
     Given add a Chars layer with registers at '0x9000' and addressEx '0x20'
     Given add a Sprites layer with registers at '0x9800' and addressEx '0x10'
     Given show video window
+#    Given randomly initialise all memory using seed 4321
 
     # Instead of writing this data via the 6502 CPU, just send it straight to memory
     # Audio
@@ -60,6 +61,8 @@ Feature: Tests the video and audio hardware expansion together
     Given write data from file "C:\work\BombJack\Mode7.bin" to 24bit bus at '0x4000' and addressEx '0x08'
     Given write data from file "C:\work\BombJack\Mode7B.bin" to 24bit bus at '0x8000' and addressEx '0x08'
 
+    # Disable APU
+    Given write data byte '0x00' to 24bit bus at '0x2000' and addressEx '0x02'
     # Setup bright yellow as background colour
     Given write data byte '0xff' to 24bit bus at '0x9c00' and addressEx '0x01'
     # Enable display with all borders

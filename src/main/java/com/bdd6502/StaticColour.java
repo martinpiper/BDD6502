@@ -1,5 +1,7 @@
 package com.bdd6502;
 
+import java.util.Random;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -21,6 +23,11 @@ public class StaticColour extends DisplayLayer {
 
     @Override
     public void setAddressBus(int address, int addressEx) {
+
+    }
+
+    @Override
+    public void randomiseData(Random rand) {
 
     }
 

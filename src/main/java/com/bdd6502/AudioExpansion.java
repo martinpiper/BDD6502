@@ -3,6 +3,7 @@ package com.bdd6502;
 import javax.sound.sampled.*;
 
 import java.io.*;
+import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -283,5 +284,21 @@ public class AudioExpansion extends MemoryBus implements Runnable {
     volatile boolean mute = false;
     public void setMute(boolean mute) {
         this.mute = mute;
+    }
+
+    public void randomiseData(Random rand) {
+        randomiseHelper(rand , sampleRAM);
+        randomiseHelper(rand , voiceInternalCounter);
+        randomiseHelper(rand , voiceInternalChooseLoop);
+
+        randomiseHelper(rand , voiceVolume);
+        randomiseHelper(rand , voiceAddress);
+        randomiseHelper(rand , voiceLength);
+        randomiseHelper(rand , voiceRate);
+        randomiseHelper(rand , voiceLoopAddress);
+        randomiseHelper(rand , voiceLoopLength);
+
+        voicesActiveMaskPrevious = (byte) rand.nextInt();
+        voicesActiveMask = (byte) rand.nextInt();
     }
 }

@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 public abstract class MemoryBus {
     protected int busContention = 0;
@@ -82,5 +83,34 @@ public abstract class MemoryBus {
     }
 
     public void resetExtEXTWANTIRQ() {
+    }
+
+    abstract public void randomiseData(Random rand);
+
+    static void randomiseHelper(Random rand , byte[] values) {
+        if (values == null) {
+            return;
+        }
+        for (int i = 0 ; i < values.length ; i++) {
+            values[i] = (byte) rand.nextInt();
+        }
+    }
+
+    static void randomiseHelper(Random rand , int[] values) {
+        if (values == null) {
+            return;
+        }
+        for (int i = 0 ; i < values.length ; i++) {
+            values[i] = rand.nextInt();
+        }
+    }
+
+    static void randomiseHelper(Random rand , boolean[] values) {
+        if (values == null) {
+            return;
+        }
+        for (int i = 0 ; i < values.length ; i++) {
+            values[i] = rand.nextBoolean();
+        }
     }
 }

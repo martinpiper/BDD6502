@@ -2,6 +2,8 @@ package com.bdd6502;
 
 import org.apache.commons.lang3.RandomUtils;
 
+import java.util.Random;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -23,6 +25,11 @@ public class GetBackground extends DisplayLayer {
 
     @Override
     public void setAddressBus(int address, int addressEx) {
+
+    }
+
+    @Override
+    public void randomiseData(Random rand) {
 
     }
 

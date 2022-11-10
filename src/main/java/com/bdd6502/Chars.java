@@ -1,5 +1,7 @@
 package com.bdd6502;
 
+import java.util.Random;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -305,5 +307,20 @@ public class Chars extends DisplayLayer {
             finalPixel |= (((theColour & 0x0f) | hiPalette) << 3);
         }
         return getByteOrContention(finalPixel);
+    }
+
+    public void randomiseData(Random rand) {
+        randomiseHelper(rand , screenData);
+        randomiseHelper(rand , screenDataV4_0);
+        randomiseHelper(rand , screenDataV8_0);
+        randomiseHelper(rand , colourData);
+        randomiseHelper(rand , plane0);
+        randomiseHelper(rand , plane1);
+        randomiseHelper(rand , plane2);
+        randomiseHelper(rand , plane3);
+
+        displayDisable = rand.nextBoolean();
+        scrollX = rand.nextInt();
+        scrollY = rand.nextInt();
     }
 }

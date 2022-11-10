@@ -609,3 +609,8 @@ Added: Given I am using C64 processor port options
 
 
 * Updated non-looped samples to always use the first exported sample 0x80 byte
+
+
+
+* Syntax to randomly initialise data in all connected devices and memory
+	Given randomly initialise all memory using seed 4321

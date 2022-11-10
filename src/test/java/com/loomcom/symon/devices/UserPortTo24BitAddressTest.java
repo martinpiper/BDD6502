@@ -14,6 +14,7 @@ import org.junit.rules.ExpectedException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -71,6 +72,11 @@ public class UserPortTo24BitAddressTest {
 
             @Override
             public void setAddressBus(int address, int addressEx) {
+            }
+
+            @Override
+            public void randomiseData(Random rand) {
+
             }
 
             @Override

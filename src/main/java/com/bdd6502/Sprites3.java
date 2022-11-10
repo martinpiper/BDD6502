@@ -1,5 +1,7 @@
 package com.bdd6502;
 
+import java.util.Random;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -352,5 +354,27 @@ public class Sprites3 extends DisplayLayer {
         drawingSpriteState = 0;
         drawingSpriteIndex++;
         drawingSpriteIndex &= 0xff;
+    }
+
+    public void randomiseData(Random rand) {
+        randomiseHelper(rand, plane0);
+        randomiseHelper(rand, plane1);
+        randomiseHelper(rand, plane2);
+        randomiseHelper(rand, plane3);
+
+        randomiseHelper(rand, calculatedRasters[0]);
+        randomiseHelper(rand, calculatedRasters[1]);
+
+        randomiseHelper(rand, spriteX);
+        randomiseHelper(rand, spriteY);
+        randomiseHelper(rand, spriteScaleExtentX);
+        randomiseHelper(rand, spriteSizeY);
+        randomiseHelper(rand, spriteScaleXInv);
+        randomiseHelper(rand, spriteScaleYInv);
+        randomiseHelper(rand, spriteFrame);
+        randomiseHelper(rand, spritePalette);
+
+        randomiseHelper(rand, spriteRotation);
+        randomiseHelper(rand, spriteEdgeFlags);
     }
 }

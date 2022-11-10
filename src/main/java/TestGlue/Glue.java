@@ -1585,14 +1585,6 @@ public class Glue {
         userPort24BitAddress.enableDebugData();
     }
 
-    @Given("^enable APU mode$")
-    public void enableAPUMode() throws IOException {
-        APUData apuData = new APUData();
-        devices.add(apuData);
-        userPort24BitAddress.setEnableAPU(displayBombJack , apuData);
-        displayBombJack.setCallbackAPU(userPort24BitAddress);
-    }
-
     @Given("^a new audio expansion$")
     public void aNewAudioExpansion() throws IOException {
         if (audioExpansion != null) {
@@ -1601,6 +1593,14 @@ public class Glue {
         audioExpansion = new AudioExpansion();
         audioExpansion.start();
         devices.add(audioExpansion);
+    }
+
+    @Given("^enable APU mode$")
+    public void enableAPUMode() throws IOException {
+        APUData apuData = new APUData();
+        devices.add(apuData);
+        userPort24BitAddress.setEnableAPU(displayBombJack , apuData);
+        displayBombJack.setCallbackAPU(userPort24BitAddress);
     }
 
     @Given("^show video window$")
@@ -2028,5 +2028,23 @@ public class Glue {
     @Given("^add a C64 VIC$")
     public void addAVICII() throws MemoryRangeException {
         machine.getCpu().getBus().addDevice(new C64VICII(scenario));
+    }
+
+    @Given("^randomly initialise all memory using seed (.*)$")
+    public void randomlyInitialiseAllMemoryUsingSeed(String seedValue) throws ScriptException {
+        int seed = valueToInt(seedValue);
+
+        Random rand = new Random(seed);
+
+        for (MemoryBus device : devices) {
+            device.randomiseData(rand);
+        }
+
+        if (displayBombJack != null) {
+            displayBombJack.randomiseData(rand);
+        }
+        if (audioExpansion != null) {
+            audioExpansion.randomiseData(rand);
+        }
     }
 }

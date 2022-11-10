@@ -1,5 +1,7 @@
 package com.bdd6502;
 
+import java.util.Random;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -251,5 +253,27 @@ public class Mode7 extends DisplayLayer {
         if (!flagRegisterYX) {
             yx = 0;
         }
+    }
+
+    public void randomiseData(Random rand) {
+        randomiseHelper(rand , screenData);
+        randomiseHelper(rand , tiles);
+
+        dx = rand.nextInt();
+        dxy = rand.nextInt();
+
+        dy = rand.nextInt();
+        dyx = rand.nextInt();
+
+        xorg = rand.nextInt();
+        yorg = rand.nextInt();
+
+        backgroundColour = rand.nextInt();
+
+        flagDisplayEnable = rand.nextBoolean();
+        flagRegisterX = rand.nextBoolean();
+        flagRegisterY = rand.nextBoolean();
+        flagRegisterXY = rand.nextBoolean();
+        flagRegisterYX = rand.nextBoolean();
     }
 }

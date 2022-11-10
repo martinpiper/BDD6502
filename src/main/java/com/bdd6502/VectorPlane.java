@@ -2,6 +2,8 @@ package com.bdd6502;
 
 import com.loomcom.symon.util.HexUtil;
 
+import java.util.Random;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -141,5 +143,15 @@ public class VectorPlane extends DisplayLayer {
         pixelCount &= 0xff;
 
         return finalPixelDelay;
+    }
+
+    public void randomiseData(Random rand) {
+        randomiseHelper(rand, plane0);
+        randomiseHelper(rand, plane1);
+        randomiseHelper(rand, plane2);
+        randomiseHelper(rand, plane3);
+
+        onScreenBank = rand.nextBoolean();
+        kill = rand.nextBoolean();
     }
 }

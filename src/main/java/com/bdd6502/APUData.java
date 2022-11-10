@@ -2,6 +2,7 @@ package com.bdd6502;
 
 import javax.sound.sampled.*;
 import java.io.*;
+import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -82,5 +83,11 @@ public class APUData extends MemoryBus {
             }
         }
 
+    }
+
+    public void randomiseData(Random rand) {
+        randomiseHelper(rand , apuInstructions);
+        randomiseHelper(rand , apuData);
+        randomiseHelper(rand , apuRegisters);
     }
 }
