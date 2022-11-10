@@ -291,7 +291,12 @@ public class AudioExpansion extends MemoryBus implements Runnable {
         randomiseHelper(rand , voiceInternalCounter);
         randomiseHelper(rand , voiceInternalChooseLoop);
 
-        randomiseHelper(rand , voiceVolume);
+        // To avoid killing ears/speakers/headphones use a quiet volume
+//        randomiseHelper(rand , voiceVolume);
+        for (int i = 0 ; i < voiceVolume.length ; i++) {
+            voiceVolume[i] = 32;
+        }
+
         randomiseHelper(rand , voiceAddress);
         randomiseHelper(rand , voiceLength);
         randomiseHelper(rand , voiceRate);
