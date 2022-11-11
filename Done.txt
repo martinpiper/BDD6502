@@ -614,3 +614,7 @@ Added: Given I am using C64 processor port options
 
 * Syntax to randomly initialise data in all connected devices and memory
 	Given randomly initialise all memory using seed 4321
+
+
+
+* Added Audio layer debug in the register view, if it's enabled

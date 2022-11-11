@@ -1,5 +1,7 @@
 package com.bdd6502;
 
+import com.loomcom.symon.util.HexUtil;
+
 import javax.sound.sampled.*;
 
 import java.io.*;
@@ -305,5 +307,24 @@ public class AudioExpansion extends MemoryBus implements Runnable {
 
         voicesActiveMaskPrevious = (byte) rand.nextInt();
         voicesActiveMask = (byte) rand.nextInt();
+    }
+
+    public String getDebug() {
+        String debug = "";
+        for (int i = 0 ; i < voiceVolume.length ; i++) {
+            if ( (voicesActiveMask & (1<<i)) != 0 ) {
+                debug += " Active";
+            } else {
+                debug += "       ";
+            }
+            if ( voiceInternalChooseLoop[i] ) {
+                debug += " Looping";
+            } else {
+                debug += "        ";
+            }
+            debug += " " + HexUtil.byteToHex(i) + " Addr:" + HexUtil.wordToHex(voiceAddress[i]) + " Len:" + HexUtil.wordToHex(voiceLength[i]) + " Rate:" + HexUtil.wordToHex(voiceRate[i]) + " LoopAddr:" + HexUtil.wordToHex(voiceLoopAddress[i]) + " LoopLen:" + HexUtil.wordToHex(voiceLoopLength[i]) + " Counter:" + HexUtil.wordToHex(voiceInternalCounter[i] >> counterShift);
+            debug += "\r";
+        }
+        return debug;
     }
 }
