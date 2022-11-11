@@ -584,10 +584,21 @@ public class Glue {
                 int end = remoteDebugger.getDumpEnd();
 
                 byte returnMemory[] = new byte[(end - start) + 1];
-                int i = 0;
-                while (start < end) {
-                    returnMemory[i++] = (byte) machine.getRam().safeInvisibleRead(start);
-                    start++;
+
+                if (remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU)) {
+                    int i = 0;
+                    while (start < end) {
+                        returnMemory[i++] = (byte) machine.getRam().safeInvisibleRead(start);
+                        start++;
+                    }
+                }
+                if (userPort24BitAddress.isEnableAPU() && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_APU)) {
+                    byte[] memory = userPort24BitAddress.getAPUDataMemory();
+                    int i = 0;
+                    while (start <= end) {
+                        returnMemory[i++] = memory[start % memory.length];  // Clamp for the APU memory size
+                        start++;
+                    }
                 }
 
                 remoteDebugger.setReplyDump(returnMemory);

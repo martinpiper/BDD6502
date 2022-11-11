@@ -496,6 +496,10 @@ public class UserPortTo24BitAddress extends Device {
         return HexUtil.intToHexSpaces((int) instruction) + "    " + instructionString;
     }
 
+    public byte[] getAPUDataMemory() {
+        return apuData.getApuData();
+    }
+
     public boolean isWaitState() {
         if (apuPC == 0) {
             return true;
