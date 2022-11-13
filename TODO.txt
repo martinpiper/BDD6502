@@ -1,5 +1,17 @@
 ; TODO items
 
+* Break on address
+	CPU and APU
+
+
+* Break on memory access (watch)
+	CPU and APU
+
+
+* When the debugger reconnects to BDD6502 force all pending break/watches to be cleared
+
+
+
 * Sprites2: Add a configurable threshold to reduce the list scan time used list (com.bdd6502.Sprites2.getDebug)
 
 * Sprites2: Add a breakpoint on exhausted configurable used time for a scanline (com.bdd6502.Sprites2.getDebug)
@@ -18,10 +30,6 @@
 
 * For w$** remove the wrapping d$0 as the data generator has the option now of setting forcing the bus to 0
 	* TODO: And test data gen in VC
-
-
-
-* APU disassembly seems to ignore locations 0-$10 during the SotB demo?
 
 
 
@@ -129,7 +137,7 @@
 
 
 
-* Branch instructions followed by a $xx value must take into account the current PC and calculate the correct destination address before encriching the disassembly output
+* Branch instructions followed by a $xx value must take into account the current PC and calculate the correct destination address before enriching the disassembly output
 
 
 
