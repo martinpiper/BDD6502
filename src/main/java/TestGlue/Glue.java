@@ -93,8 +93,11 @@ public class Glue {
             e.printStackTrace();
         }
     }
-
     static public int valueToIntFast(String valueIn) throws ScriptException {
+        return valueToIntFast(valueIn , 10);
+    }
+
+    static public int valueToIntFast(String valueIn, int radix) throws ScriptException {
         String origValueIn = valueIn.trim();
         Object found = labelMap.get(origValueIn);
         if (null != found) {
@@ -113,23 +116,25 @@ public class Glue {
             return ivalue.intValue();
         }
         try {
-            Integer ivalue = Integer.parseInt(origValueIn, 10);
+            Integer ivalue = Integer.parseInt(origValueIn, radix);
             return ivalue.intValue();
         } catch (Exception e) {
             throw new ScriptException("Fast fail " + origValueIn);
         }
 
     }
-
     static public int valueToInt(String valueIn) throws ScriptException {
+        return valueToInt(valueIn , 10);
+    }
+    static public int valueToInt(String valueIn , int radix) throws ScriptException {
         if (null == valueIn || valueIn.isEmpty()) {
             return -1;
         }
         if ((valueIn.contains("+") == false) && (valueIn.contains("}") == false) && (valueIn.contains("{") == false) && (valueIn.contains(")") == false) && (valueIn.contains("(") == false) && (valueIn.contains("-") == false) && (valueIn.contains("st") == false) && (valueIn.contains("*") == false) && (valueIn.contains("/") == false)) {
-            return valueToIntFast(valueIn);
+            return valueToIntFast(valueIn , radix);
         }
 
-        String origValueIn = valueIn;
+        String origValueIn = radix + ":" + valueIn;
         Integer cachedRet = calculationMap.get(origValueIn);
         if (null != cachedRet) {
             return cachedRet.intValue();
@@ -202,7 +207,7 @@ public class Glue {
         }
         Integer i = null;
         try {
-            i = Integer.parseInt(t);
+            i = Integer.parseInt(t , radix);
         } catch (Exception e) {
             i = (int) Math.round(Double.parseDouble(t));
         }
@@ -677,6 +682,16 @@ public class Glue {
 
         if (wantCPUSuspendNext) {
             wantCPUSuspendNext = false;
+            remoteDebugger.signalSuspendDevice(RemoteDebugger.kDeviceFlags_CPU);
+            remoteDebugger.setCurrentPrefix(machine.getCpu().getProgramCounter());
+            String debug = getNextInstructionForDebugger();
+            remoteDebugger.setReplyNext(debug);
+            return true;
+        }
+
+        if (remoteDebugger.isReceivedBreakAt(machine.getCpu().getProgramCounter())) {
+            wantCPUSuspendNext = false;
+            wantCPUPCSuspendHere = -1;
             remoteDebugger.signalSuspendDevice(RemoteDebugger.kDeviceFlags_CPU);
             remoteDebugger.setCurrentPrefix(machine.getCpu().getProgramCounter());
             String debug = getNextInstructionForDebugger();

@@ -1,7 +1,9 @@
 ; TODO items
 
 * Break on address
-	CPU and APU
+	Done - CPU: receivedBreakAt
+	Done - Add "delete"/"del" command to remove address breakpoints
+	APU
 
 
 * Break on memory access (watch)

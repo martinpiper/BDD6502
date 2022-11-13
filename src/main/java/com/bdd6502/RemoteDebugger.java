@@ -1,10 +1,14 @@
 package com.bdd6502;
 
+import TestGlue.Glue;
 import com.loomcom.symon.devices.UserPortTo24BitAddress;
 
+import javax.script.ScriptException;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RemoteDebugger implements Runnable {
     private RemoteDebugger() {
@@ -39,6 +43,12 @@ public class RemoteDebugger implements Runnable {
 
     public boolean isReceivedReturn() {
         return receivedReturn;
+    }
+
+    volatile Set<Integer> receivedBreakAt = new HashSet<>();
+
+    public boolean isReceivedBreakAt(int address) {
+        return receivedBreakAt.contains(address);
     }
 
     public void clearStepNextReturn() {
@@ -305,10 +315,35 @@ public class RemoteDebugger implements Runnable {
                                 writer.print(currentReplyPrefix);
                             }
                             writer.flush();
-                        } else if (line.equalsIgnoreCase("break") || line.equalsIgnoreCase("bk")) {
+                        } else if (line.startsWith("break") || line.startsWith("bk")) {
+                            String[] splits = line.split(" ");
                             suspendCurrentDevice();
+                            if (splits.length > 1) {
+                                int address = 0;
+                                try {
+                                    address = Glue.valueToInt(splits[1]);
+                                    receivedBreakAt.add(address);
+                                } catch (ScriptException e) {
+                                    writer.println("Couldn't parse: " + splits[1]);
+                                }
+                            }
                             // TODO: Respond with current break points
-                            writer.print("No breakpoints are set\n" + currentReplyPrefix);
+                            if (receivedBreakAt.isEmpty()) {
+                                writer.print("No breakpoints are set\n" + currentReplyPrefix);
+                            } else {
+                                writer.print(receivedBreakAt.size() + " breakpoints set\n");
+                                for (Integer address: receivedBreakAt
+                                     ) {
+                                    writer.println("   " + String.format("$%04x", address));
+                                }
+                                writer.print(currentReplyPrefix);
+                            }
+                            writer.flush();
+                            continue;
+                        } else if (line.startsWith("delete") || line.startsWith("del")) {
+                            suspendCurrentDevice();
+                            receivedBreakAt.clear();
+                            writer.print("All breakpoints deleted\n" + currentReplyPrefix);
                             writer.flush();
                             continue;
                         } else if (line.equalsIgnoreCase("reg") || line.equalsIgnoreCase("r")) {
@@ -336,11 +371,11 @@ public class RemoteDebugger implements Runnable {
                                 String[] splits = line.split(" ");
                                 disassembleEnd = disassembleStart + 0x30;
                                 if (splits.length >= 2) {
-                                    disassembleStart = Integer.parseInt(splits[1], 16);
+                                    disassembleStart = Glue.valueToInt(splits[1], 16);
                                     disassembleEnd = disassembleStart + 0x30;
                                 }
                                 if (splits.length >= 3) {
-                                    disassembleEnd = Integer.parseInt(splits[2], 16);
+                                    disassembleEnd = Glue.valueToInt(splits[2], 16);
                                 }
 
                                 suspendCurrentDevice();
