@@ -379,16 +379,19 @@ public class RemoteDebugger implements Runnable {
                             receivedReg = true;
                             continue;
                         } else if (splits[0].equalsIgnoreCase("next") || splits[0].equalsIgnoreCase("n")) {
+                            clearStepNextReturn();
                             replyNext = null;
                             receivedNext = true;
                             suspendCPU = 0;
                             continue;
                         } else if (splits[0].equalsIgnoreCase("step") || splits[0].equalsIgnoreCase("z")) {
+                            clearStepNextReturn();
                             replyNext = null;
                             receivedStep = true;
                             suspendCPU = 0;
                             continue;
                         } else if (splits[0].equalsIgnoreCase("return") || splits[0].equalsIgnoreCase("ret")) {
+                            clearStepNextReturn();
                             replyNext = null;
                             receivedReturn = true;
                             suspendCPU = 0;
