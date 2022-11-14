@@ -623,3 +623,17 @@ Added: Given I am using C64 processor port options
 
 * APU disassembly seems to ignore locations 0-$10 during the SotB demo?
 	(Previous fix)
+
+
+
+* Break on address
+	Done - CPU: receivedBreakAt
+	Done - Add "delete"/"del" command to remove address breakpoints
+
+
+
+* BDD6502 needs to output compatible break response...
+	Also "break" might need to show a list with index values like Vice...
+	"delete" also
+	break 300
+		BREAK: 2  C:$0300  (Stop on exec)

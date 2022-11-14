@@ -1,9 +1,11 @@
 ; TODO items
 
-* Break on address
-	Done - CPU: receivedBreakAt
-	Done - Add "delete"/"del" command to remove address breakpoints
-	APU
+* BDD6502: Add text based "mem"/"m" command
+
+
+
+* Break of execution for APU
+
 
 
 * Break on memory access (watch)

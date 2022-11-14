@@ -2,13 +2,13 @@ package com.bdd6502;
 
 import TestGlue.Glue;
 import com.loomcom.symon.devices.UserPortTo24BitAddress;
+import javafx.util.Pair;
 
 import javax.script.ScriptException;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class RemoteDebugger implements Runnable {
     private RemoteDebugger() {
@@ -45,6 +45,8 @@ public class RemoteDebugger implements Runnable {
         return receivedReturn;
     }
 
+    int breakpointNum = 1;
+    Map<Integer,Integer> breakpointNumToAddress = new LinkedHashMap<>();
     volatile Set<Integer> receivedBreakAt = new HashSet<>();
 
     public boolean isReceivedBreakAt(int address) {
@@ -56,6 +58,16 @@ public class RemoteDebugger implements Runnable {
         receivedStep = false;
         receivedReturn = false;
     }
+
+    public int getReceivedGotoAddress() {
+        return receivedGotoAddress;
+    }
+
+    public void clearReceivedGotoAddress() {
+        receivedGotoAddress = -1;
+    }
+
+    volatile int receivedGotoAddress = -1;
 
     public enum DisplayType {kDisplay_Full , kDisplay_Clear , kDisplay_Ahead};
 
@@ -285,25 +297,29 @@ public class RemoteDebugger implements Runnable {
                             continue;
                         }
 
-                        if (line.equalsIgnoreCase("exit") || line.equalsIgnoreCase("x") || line.equalsIgnoreCase("goto") || line.equalsIgnoreCase("g")) {
+                        String[] splits = line.split(" ");
+
+                        if (splits[0].equalsIgnoreCase("exit") || splits[0].equalsIgnoreCase("x") || splits[0].equalsIgnoreCase("goto") || splits[0].equalsIgnoreCase("g")) {
+                            if (splits.length > 1) {
+                                int address = Glue.valueToInt(splits[1] , 16);
+                                receivedGotoAddress = address;
+                            }
                             suspendCPU = 0;
                             continue;
                         }
 
-                        if (line.startsWith("display")) {
+                        if (splits[0].equalsIgnoreCase("display")) {
                             try {
-                                String[] splits = line.split(" ");
-
                                 if (splits.length >= 2) {
-                                    if (splits[1].compareToIgnoreCase("full") == 0) {
+                                    if (splits[1].equalsIgnoreCase("full")) {
                                         debuggerDisplay = DisplayType.kDisplay_Full;
                                         debuggerDisplayChanged = true;
                                         writer.print(currentReplyPrefix);
-                                    } else if (splits[1].compareToIgnoreCase("cls") == 0) {
+                                    } else if (splits[1].equalsIgnoreCase("cls")) {
                                         debuggerDisplay = DisplayType.kDisplay_Clear;
                                         debuggerDisplayChanged = true;
                                         writer.print(currentReplyPrefix);
-                                    } else if (splits[1].compareToIgnoreCase("ahead") == 0) {
+                                    } else if (splits[1].equalsIgnoreCase("ahead")) {
                                         debuggerDisplay = DisplayType.kDisplay_Ahead;
                                         debuggerDisplayChanged = true;
                                         writer.print(currentReplyPrefix);
@@ -315,60 +331,70 @@ public class RemoteDebugger implements Runnable {
                                 writer.print(currentReplyPrefix);
                             }
                             writer.flush();
-                        } else if (line.startsWith("break") || line.startsWith("bk")) {
-                            String[] splits = line.split(" ");
+                        } else if (splits[0].equalsIgnoreCase("break") || splits[0].equalsIgnoreCase("bk")) {
                             suspendCurrentDevice();
                             if (splits.length > 1) {
                                 int address = 0;
-                                try {
-                                    address = Glue.valueToInt(splits[1]);
-                                    receivedBreakAt.add(address);
-                                } catch (ScriptException e) {
-                                    writer.println("Couldn't parse: " + splits[1]);
-                                }
-                            }
-                            // TODO: Respond with current break points
-                            if (receivedBreakAt.isEmpty()) {
-                                writer.print("No breakpoints are set\n" + currentReplyPrefix);
+                                address = Glue.valueToInt(splits[1] , 16);
+                                receivedBreakAt.add(address);
+                                breakpointNumToAddress.put(breakpointNum, address);
+
+                                writer.println("BREAK: "+breakpointNum+"  C:$"+valueToHexWord(address)+"  (Stop on exec)");
+
+                                breakpointNum++;
                             } else {
-                                writer.print(receivedBreakAt.size() + " breakpoints set\n");
-                                for (Integer address: receivedBreakAt
-                                     ) {
-                                    writer.println("   " + String.format("$%04x", address));
+                                // Respond with current break points
+                                if (receivedBreakAt.isEmpty()) {
+                                    writer.println("No breakpoints are set");
+                                } else {
+                                    for (Integer key : breakpointNumToAddress.keySet()
+                                    ) {
+                                        writer.println("BREAK: "+key+"  C:$"+valueToHexWord(breakpointNumToAddress.get(key))+"  (Stop on exec)");
+                                    }
                                 }
+                            }
+                            writer.print(currentReplyPrefix);
+                            writer.flush();
+                            continue;
+                        } else if (splits[0].equalsIgnoreCase("delete") || splits[0].equalsIgnoreCase("del")) {
+                            suspendCurrentDevice();
+
+                            if (splits.length > 1) {
+                                int index = Glue.valueToInt(splits[1], 10);
+                                receivedBreakAt.remove(breakpointNumToAddress.get(index));
+                                breakpointNumToAddress.remove(index);
+
                                 writer.print(currentReplyPrefix);
+                            } else {
+                                receivedBreakAt.clear();
+                                breakpointNumToAddress.clear();
+
+                                writer.print("Deleting all checkpoints\n" + currentReplyPrefix);
                             }
                             writer.flush();
                             continue;
-                        } else if (line.startsWith("delete") || line.startsWith("del")) {
-                            suspendCurrentDevice();
-                            receivedBreakAt.clear();
-                            writer.print("All breakpoints deleted\n" + currentReplyPrefix);
-                            writer.flush();
-                            continue;
-                        } else if (line.equalsIgnoreCase("reg") || line.equalsIgnoreCase("r")) {
+                        } else if (splits[0].equalsIgnoreCase("reg") || splits[0].equalsIgnoreCase("r")) {
                             suspendCurrentDevice();
                             replyReg = null;
                             receivedReg = true;
                             continue;
-                        } else if (line.equalsIgnoreCase("next") || line.equalsIgnoreCase("n")) {
+                        } else if (splits[0].equalsIgnoreCase("next") || splits[0].equalsIgnoreCase("n")) {
                             replyNext = null;
                             receivedNext = true;
                             suspendCPU = 0;
                             continue;
-                        } else if (line.equalsIgnoreCase("step") || line.equalsIgnoreCase("z")) {
+                        } else if (splits[0].equalsIgnoreCase("step") || splits[0].equalsIgnoreCase("z")) {
                             replyNext = null;
                             receivedStep = true;
                             suspendCPU = 0;
                             continue;
-                        } else if (line.equalsIgnoreCase("return") || line.equalsIgnoreCase("ret")) {
+                        } else if (splits[0].equalsIgnoreCase("return") || splits[0].equalsIgnoreCase("ret")) {
                             replyNext = null;
                             receivedReturn = true;
                             suspendCPU = 0;
                             continue;
-                        } else if (line.startsWith("disass") || line.startsWith("d ") || line.equalsIgnoreCase("d")) {
+                        } else if (splits[0].equalsIgnoreCase("disass") || splits[0].equalsIgnoreCase("d")) {
                             try {
-                                String[] splits = line.split(" ");
                                 disassembleEnd = disassembleStart + 0x30;
                                 if (splits.length >= 2) {
                                     disassembleStart = Glue.valueToInt(splits[1], 16);
@@ -385,10 +411,8 @@ public class RemoteDebugger implements Runnable {
                                 writer.print(currentReplyPrefix);
                             }
                             writer.flush();
-                        } else if (line.startsWith("cpu")) {
+                        } else if (splits[0].equalsIgnoreCase("cpu")) {
                             try {
-                                String[] splits = line.split(" ");
-
                                 if (splits.length >= 2) {
                                     if (splits[1].compareToIgnoreCase("6502") == 0) {
                                         currentDevice = kDeviceFlags_CPU;
@@ -410,7 +434,10 @@ public class RemoteDebugger implements Runnable {
                             writer.flush();
                         }
                     }
-                } catch (IOException | InterruptedException e) {
+                } catch (IOException | InterruptedException | ScriptException e) {
+                    writer.print("Command parsing error: " + e.getMessage() + "\n" + currentReplyPrefix);
+                    writer.flush();
+
                     e.printStackTrace();
                 }
                 // Any broken connection and the state resets itself
@@ -421,6 +448,10 @@ public class RemoteDebugger implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String valueToHexWord(Integer address) {
+        return String.format("%04x", address);
     }
 
     private void handleReplies(OutputStream output, PrintWriter writer) throws IOException {

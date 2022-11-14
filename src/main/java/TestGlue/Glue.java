@@ -440,7 +440,6 @@ public class Glue {
     int wantCPUSuspendNextReturn = -1;
     boolean wantAPUStep = false;
     boolean wantAPUBreakOnWaitOrPC0 = false;
-
     public void internalCPUStep(boolean displayTrace) throws Throwable {
 
         RemoteDebugger remoteDebugger = RemoteDebugger.getRemoteDebugger();
@@ -453,6 +452,12 @@ public class Glue {
             }
 
             handleSuspendLoop(remoteDebugger , RemoteDebugger.kDeviceFlags_CPU);
+
+            int addr = remoteDebugger.getReceivedGotoAddress();
+            if (addr >= 0) {
+                remoteDebugger.clearReceivedGotoAddress();
+                machine.getCpu().setProgramCounter(addr);
+            }
         }
 
         Integer addr = machine.getCpu().getCpuState().pc;
