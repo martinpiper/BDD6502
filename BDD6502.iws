@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestAudioHardware.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestAudioHardware.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
@@ -743,12 +741,13 @@
       <item itemvalue="Application.TestRunner --exportmod (2) with ratio" />
       <item itemvalue="Application.TestRunner --exportmod (2)" />
       <item itemvalue="Application.TestRunner --exportmod (3)" />
+      <item itemvalue="Application.TestRunner --exportmod (4) fnkyldrt.mod" />
       <item itemvalue="Application.TestRunner --exportmod blood money" />
       <item itemvalue="Application.TestRunner --exportmod" />
-      <item itemvalue="Application.TestRunner --exportmod (4) fnkyldrt.mod" />
       <item itemvalue="Application.TestRunner --playmod" />
       <item itemvalue="Application.TestRunner -CotE" />
       <item itemvalue="Application.TestRunner BombJack" />
+      <item itemvalue="Application.TestRunner C64ROMs.feature" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5" />
@@ -783,7 +782,6 @@
       <item itemvalue="Application.TestRunner no parameters" />
       <item itemvalue="Application.TestRunner simple.feature @RemoteDebugger" />
       <item itemvalue="Application.TestRunner simple.feature" />
-      <item itemvalue="Application.TestRunner C64ROMs.feature" />
       <item itemvalue="Cucumber Java.All features" />
       <item itemvalue="Cucumber Java.Compare Test" />
       <item itemvalue="Cucumber Java.Simple ALL" />
