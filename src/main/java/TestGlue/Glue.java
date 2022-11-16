@@ -634,7 +634,7 @@ public class Glue {
                         start += Math.max(machine.getCpu().instructionSizes[tir], 1);
                     }
                 }
-                if (userPort24BitAddress.isEnableAPU() && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_APU)) {
+                if (userPort24BitAddress != null && userPort24BitAddress.isEnableAPU() && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_APU)) {
                     while (start <= end) {
                         sb.append(".C:");
                         String line = userPort24BitAddress.disassembleAPUInstructionAt(start);
@@ -658,14 +658,16 @@ public class Glue {
             }
 
             timeSinceLastDebugDisplayTimes = System.currentTimeMillis();
-            displaySyncFrame = displayBombJack.getFrameNumberForSync();
+            if (displayBombJack != null) {
+                displaySyncFrame = displayBombJack.getFrameNumberForSync();
+            }
             lastFramesCount = displaySyncFrame;
             startTime = System.currentTimeMillis() - (1000/60);
         }
     }
 
     private void handleDisplayEvents(RemoteDebugger remoteDebugger) {
-        if (displayBombJack.isVisible()) {
+        if (displayBombJack != null && displayBombJack.isVisible()) {
             if (remoteDebugger.getDebuggerDisplay() == RemoteDebugger.DisplayType.kDisplay_Clear) {
                 displayBombJack.displayClear();
             } else if (remoteDebugger.getDebuggerDisplay() == RemoteDebugger.DisplayType.kDisplay_Ahead) {
@@ -2015,16 +2017,20 @@ public class Glue {
 
     @When("^wait for debugger connection$")
     public void wait_for_debugger_connection() throws InterruptedException {
+        System.out.println(">> Waiting for debugger connection");
         while (RemoteDebugger.getRemoteDebugger().getNumConnections() <= 0) {
             Thread.sleep(100);
         }
+        System.out.println("<< Got debugger connection");
     }
 
     @And("^wait for debugger command$")
     public void waitForDebuggerCommand() throws InterruptedException {
+        System.out.println(">> Waiting for debugger command");
         while (!RemoteDebugger.getRemoteDebugger().isReceivedCommand()) {
             Thread.sleep(100);
         }
+        System.out.println("<< Got debugger command");
     }
 
     BufferedReader fileReading;
