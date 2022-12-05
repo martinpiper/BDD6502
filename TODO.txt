@@ -5,6 +5,9 @@
 
 
 * Break of execution for APU
+	See wantAPUBreakOnWaitOrPC0 and wantAPUStep
+		Check how to operate with receivedBreakAt and isReceivedBreakAt
+
 
 
 
