@@ -136,6 +136,7 @@
 	Add syntax to specify combinatorial logic (use the variable resolution code ) on multiple locations and enable/disable carts banks, kernal/BASIC ROMs etc
 		This can also support bank sizes by mapping cart banks with addresses
 	Obviously more than one rule and multiple ROM binary or CRT files can be specified allowing complex cart bank/ROM arrangements to be created
+		EF3 and GMod2 need support
 	
 	
 	
