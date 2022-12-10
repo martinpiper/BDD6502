@@ -142,7 +142,7 @@
 					features/C64ROMs.feature
 					Given a CRT from file "some\file"
 						Will implicitly enable processor port. Note: IO Write detected:
-							theProcessorPort needs $17 on reset to emulate the C64
+							Done: theProcessorPort needs $17 on reset to emulate the C64
 						Note: C:\work\c64\stdlib\stdlib.a lines 19-35
 						However the precise CRT support will need early hooks into Bus read and write
 							But must only access the cart when ProcessorPortDefault or ProcessorPortCharROMBASICKERNAL
@@ -154,10 +154,11 @@
 						Given a ROM from file "..\..\VICE\C64\kernal" at $e000
 						Given a ROM from file "..\..\VICE\C64\basic" at $a000
 						Given add a C64 VIC
-					Will need expansion to match the processor port config
+					Done: Will need expansion to match the processor port config
 						>> com.loomcom.symon.Bus.buildDeviceAddressArray can have an array of deviceAddressArrayWrite and deviceAddressArrayRead indexed by the lower three bits of the processor port
 							Bus read and write will need different behaviour as writes go to the underlying RAM
-							And will automatically map in devices with $a000 $d000 $e000 addresses
+								file:///C:/work/C64Docs/unusedino.de/ec64/technical/aay/c64/memcfg.htm
+							And will automatically map in devices with $a000 $d000 $d800 $e000 addresses
 
 
 	

@@ -8,6 +8,8 @@ import cucumber.api.Scenario;
 public class C64VICII extends Device {
     private Scenario mScenario = null;
     private int upperStore = 0;
+
+    int registers[] = new int[0x30];
     boolean rasterToggle = true;
 
     public C64VICII( Scenario scenario) throws MemoryRangeException {
@@ -18,6 +20,7 @@ public class C64VICII extends Device {
     @Override
     public void write(int address, int data) throws MemoryAccessException {
         int register = address & 0x3f;
+        registers[register] = data;
         switch (register) {
             case 0x12: // Raster
                 break;
@@ -40,7 +43,7 @@ public class C64VICII extends Device {
                 }
 
             default:
-                return 0;
+                return registers[register];
         }
     }
 

@@ -50,7 +50,8 @@ public class Bus {
     // Ordered sets of IO devices, associated with their priority
     private Map<Integer, SortedSet<Device>> deviceMap;
     // an array for quick lookup of adresses, brute-force style
-    private Device[] deviceAddressArray;
+    private Device[][] deviceAddressArrayRead;
+    private Device[][] deviceAddressArrayWrite;
 
     public Bus(int size) {
         this(0, size - 1);
@@ -62,7 +63,7 @@ public class Bus {
         this.startAddress = startAddress;
         this.endAddress = endAddress;
         processorPort = false;
-        theProcessorPort = 0;
+        theProcessorPort = 0x17;    // Default value from the C64
     }
 
     public void setProcessorPort() {
@@ -79,13 +80,81 @@ public class Bus {
 
     private void buildDeviceAddressArray() {
         int size = (this.endAddress - this.startAddress) + 1;
-        deviceAddressArray = new Device[size];
+        deviceAddressArrayRead = new Device[16][size];
+        deviceAddressArrayWrite = new Device[16][size];
 
         // getDevices() provides an OrderedSet with devices ordered by priorities
-        for (Device device : getDevices()) {
-            MemoryRange range = device.getMemoryRange();
-            for (int address = range.startAddress; address <= range.endAddress; ++address) {
-                deviceAddressArray[address - this.startAddress] = device;
+        for (int pp = 0 ; pp < 16 ; pp++) {
+            for (Device device : getDevices()) {
+                MemoryRange range = device.getMemoryRange();
+                for (int address = range.startAddress; address <= range.endAddress; ++address) {
+                    if (processorPort) {
+                        switch (pp) {
+                            case 0b000:
+                                // Choose RAM only
+                                if (range.startAddress == 0) {
+                                    deviceAddressArrayRead[pp][address - this.startAddress] = device;
+                                    deviceAddressArrayWrite[pp][address - this.startAddress] = device;
+                                }
+                                break;
+                            case 0b001:
+                                // Choose RAM only, ignore char ROM
+                                if (range.startAddress == 0) {
+                                    deviceAddressArrayRead[pp][address - this.startAddress] = device;
+                                    deviceAddressArrayWrite[pp][address - this.startAddress] = device;
+                                }
+                                break;
+                            case 0b010:
+                                if (range.startAddress == 0 || range.startAddress == 0xe000) {
+                                    deviceAddressArrayRead[pp][address - this.startAddress] = device;
+                                }
+                                if (range.startAddress == 0) {
+                                    deviceAddressArrayWrite[pp][address - this.startAddress] = device;
+                                }
+                                break;
+                            case 0b011:
+                                if (range.startAddress == 0 || range.startAddress == 0xa000 || range.startAddress == 0xe000) {
+                                    deviceAddressArrayRead[pp][address - this.startAddress] = device;
+                                }
+                                if (range.startAddress == 0) {
+                                    deviceAddressArrayWrite[pp][address - this.startAddress] = device;
+                                }
+                                break;
+                            case 0b100:
+                                // Choose RAM only
+                                if (range.startAddress == 0) {
+                                    deviceAddressArrayRead[pp][address - this.startAddress] = device;
+                                    deviceAddressArrayWrite[pp][address - this.startAddress] = device;
+                                }
+                                break;
+                            case 0b101:
+                                if (range.startAddress == 0 || range.startAddress == 0xd000 || range.startAddress == 0xd800) {
+                                    deviceAddressArrayRead[pp][address - this.startAddress] = device;
+                                    deviceAddressArrayWrite[pp][address - this.startAddress] = device;
+                                }
+                                break;
+                            case 0b110:
+                                if (range.startAddress == 0 || range.startAddress == 0xd000 || range.startAddress == 0xd800 || range.startAddress == 0xe000) {
+                                    deviceAddressArrayRead[pp][address - this.startAddress] = device;
+                                }
+                                if (range.startAddress == 0 || range.startAddress == 0xd000 || range.startAddress == 0xd800) {
+                                    deviceAddressArrayWrite[pp][address - this.startAddress] = device;
+                                }
+                                break;
+                            case 0b111:
+                                if (range.startAddress == 0 || range.startAddress == 0xa000  || range.startAddress == 0xd000 || range.startAddress == 0xd800 || range.startAddress == 0xe000) {
+                                    deviceAddressArrayRead[pp][address - this.startAddress] = device;
+                                }
+                                if (range.startAddress == 0 || range.startAddress == 0xd000 || range.startAddress == 0xd800) {
+                                    deviceAddressArrayWrite[pp][address - this.startAddress] = device;
+                                }
+                                break;
+                        }
+                    } else {
+                        deviceAddressArrayRead[pp][address - this.startAddress] = device;
+                        deviceAddressArrayWrite[pp][address - this.startAddress] = device;
+                    }
+                }
             }
         }
 
@@ -154,12 +223,15 @@ public class Bus {
      * device.
      */
     public boolean isComplete() {
-        if (deviceAddressArray == null) {
+        if (deviceAddressArrayRead == null) {
             buildDeviceAddressArray();
         }
 
         for (int address = startAddress; address <= endAddress; ++address) {
-            if (deviceAddressArray[address - startAddress] == null) {
+            if (deviceAddressArrayRead[address - startAddress] == null) {
+                return false;
+            }
+            if (deviceAddressArrayWrite[address - startAddress] == null) {
                 return false;
             }
         }
@@ -173,7 +245,7 @@ public class Bus {
 
 
     public int read(int address, boolean logRead) throws MemoryAccessException {
-        Device d = deviceAddressArray[address - this.startAddress];
+        Device d = deviceAddressArrayRead[theProcessorPort & 0b111][address - this.startAddress];
         if (d != null) {
             MemoryRange range = d.getMemoryRange();
             int devAddr = address - range.startAddress();
@@ -194,11 +266,11 @@ public class Bus {
             if (0b111 == pp || 0b110 == pp || 0b101 == pp) {
                 if (0xd000 <= address && address <= 0xdfff) {
                     System.out.println("IO Write detected: " + String.format("$%04X", address) + " of " + String.format("$%02X", value));
-                    return;
+//                    return;
                 }
             }
         }
-        Device d = deviceAddressArray[address - this.startAddress];
+        Device d = deviceAddressArrayWrite[theProcessorPort & 0b111][address - this.startAddress];
         if (d != null) {
             MemoryRange range = d.getMemoryRange();
             int devAddr = address - range.startAddress();

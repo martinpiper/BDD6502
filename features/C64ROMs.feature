@@ -4,6 +4,7 @@ Feature: C64 ROM tests
 
   Scenario: Simple code test for C64 ROMs
     Given I have a simple overclocked 6502 system
+    Given I am using C64 processor port options
     Given a ROM from file "..\..\VICE\C64\kernal" at $e000
     Given a ROM from file "..\..\VICE\C64\basic" at $a000
     Given add a C64 VIC
@@ -39,3 +40,80 @@ Feature: C64 ROM tests
     When I hex dump memory between $400 and $800
     Then property "test.BDD6502.lastHexDump" must contain string "4f0: 12 15 0e 20"
     Then property "test.BDD6502.lastHexDump" must contain string "540: 12 05 01 04 19 2e 20"
+
+    # Now explicitly check the various processor port expected behaviours
+    And I create file "test.a" with
+    """
+    !source "../C64/stdlib/stdlib.a"
+    !sal
+    * = C64Cartridge_Lo_8K
+    !word start
+    !by $C3 , $C2 , $CD , $38 , $30	; CBM80 magic bytes
+    start
+      lda #ProcessorPortAllRAM
+      sta ZPProcessorPort
+
+      ; Underlying RAM writes
+      lda #$53
+      sta $d800
+      lda #$63
+      sta $d000
+
+
+      lda #ProcessorPortDefault
+      sta ZPProcessorPort
+
+      ; Underlying RAM writes through the ROMs
+      lda #$23
+      sta $e000
+      lda #$13
+      sta $a000
+      ; To IO
+      lda #$33
+      sta $d800
+      lda #$43
+      sta $d000
+
+      rts
+
+    get
+      sta ZPProcessorPort
+
+      lda KERNALROM
+      sta $400
+
+      lda BASICROM
+      sta $401
+
+      lda VIC
+      sta $402
+
+      lda COLORRAM
+      sta $403
+
+      rts
+    """
+    And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
+    And I load prg "test.prg"
+    And I load labels "test.lbl"
+
+    And I enable trace with indent
+
+    When I execute the indirect procedure at $8000 until return
+
+    When I set register A to ProcessorPortDefault
+    When I execute the procedure at get until return
+    When I hex dump memory between $400 and $407
+    Then property "test.BDD6502.lastHexDump" must contain string "400: 85 94 43 03"
+
+    When I set register A to ProcessorPortAllRAM
+    When I execute the procedure at get until return
+    When I hex dump memory between $400 and $407
+    Then property "test.BDD6502.lastHexDump" must contain string "400: 23 13 63 53"
+
+    When I set register A to ProcessorPortKERNALWithIO
+    When I execute the procedure at get until return
+    When I hex dump memory between $400 and $407
+    Then property "test.BDD6502.lastHexDump" must contain string "400: 85 13 43 03"
+
+    And I disable trace
