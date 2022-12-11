@@ -144,7 +144,7 @@
 						Will implicitly enable processor port. Note: IO Write detected:
 							Done: theProcessorPort needs $17 on reset to emulate the C64
 						Note: C:\work\c64\stdlib\stdlib.a lines 19-35
-						However the precise CRT support will need early hooks into Bus read and write
+						Done: However the precise CRT support will need early hooks into Bus read and write
 							But must only access the cart when ProcessorPortDefault or ProcessorPortCharROMBASICKERNAL
 							Or for EF3 EASYFLASH_CONTROL_ULTIMAX mode (the default) where the kernal is mapped from the cart
 								EASYFLASH_CONTROL_8K is used very early if most of my startup code

@@ -50,6 +50,18 @@ Feature: C64 ROM tests
     !word start
     !by $C3 , $C2 , $CD , $38 , $30	; CBM80 magic bytes
     start
+      ; Copy into RAM under the ROM
+      +MWordValueToAddress_A start , $fb
+      ldy #0
+    .cl1  lda ($fb),y
+      sta ($fb),y
+      +MIncAddr16 $fb , $fc
+      lda $fc
+      cmp #(>endCode)+1
+      bcc .cl1
+
+      ; Real code in ROM and in RAM so this is safe.
+      ; NOTE: In Vice the EF3 cart type seems to map ROM all the time instead of RAM. But this emulation maps in RAM.
       lda #ProcessorPortAllRAM
       sta ZPProcessorPort
 
@@ -92,9 +104,13 @@ Feature: C64 ROM tests
       sta $403
 
       rts
+    endCode
     """
     And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
-    And I load prg "test.prg"
+    And I run the command line: ..\C64\bin\MakeCart.exe -te -n -a $8000 -b 0 -r test.prg -c 0 2 $ffff -w -a $a000 -b 0 -c $1ffc 2 4 -w -o test.crt
+
+#    And I load prg "test.prg"
+    And I load crt "test.crt"
     And I load labels "test.lbl"
 
     And I enable trace with indent

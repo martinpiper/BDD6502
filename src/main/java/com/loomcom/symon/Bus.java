@@ -160,6 +160,30 @@ public class Bus {
 
     }
 
+    boolean crtActive = false;
+    int crtType , crtExrom , crtGame;
+
+    public void addCRTInfo(int type, int exrom, int game) {
+        crtActive = true;
+        crtType = type;
+        crtExrom = exrom;
+        crtGame = game;
+    }
+    ArrayList<Device> crtChips8000 = new ArrayList<>();
+    ArrayList<Device> crtChipsA000 = new ArrayList<>();
+    ArrayList<Device> crtChipsE000 = new ArrayList<>();
+    public void addCRTChip(Device device , int bank) {
+        if (device.getMemoryRange().startAddress == 0x8000) {
+            crtChips8000.add(bank, device);
+        }
+        if (device.getMemoryRange().startAddress == 0xa000) {
+            crtChipsA000.add(bank, device);
+        }
+        if (device.getMemoryRange().startAddress == 0xe000) {
+            crtChipsE000.add(bank, device);
+        }
+    }
+
     /**
      * Add a device to the bus.
      *
@@ -243,8 +267,22 @@ public class Bus {
         return read(address, true);
     }
 
-
+    int crtBank = 0;
+    int crtEasyFlashControl = 0;
     public int read(int address, boolean logRead) throws MemoryAccessException {
+        if (processorPort && crtActive) {
+            int pp = theProcessorPort & 0b111;
+            if (0b111 == pp || 0b011 == pp) {
+                if (address >= 0x8000 && address <= 0x9fff) {
+                    if (crtBank < crtChips8000.size()) {
+                        Device chip = crtChips8000.get(crtBank);
+                        if (null != chip) {
+                            return chip.read(address - 0x8000, logRead);
+                        }
+                    }
+                }
+            }
+        }
         Device d = deviceAddressArrayRead[theProcessorPort & 0b111][address - this.startAddress];
         if (d != null) {
             MemoryRange range = d.getMemoryRange();
@@ -266,7 +304,17 @@ public class Bus {
             if (0b111 == pp || 0b110 == pp || 0b101 == pp) {
                 if (0xd000 <= address && address <= 0xdfff) {
                     System.out.println("IO Write detected: " + String.format("$%04X", address) + " of " + String.format("$%02X", value));
-//                    return;
+                    // gmod2
+                    if (crtActive && crtType == 0x13 && address == 0xde00) {
+                        crtBank = value;
+                    }
+                    // EF3
+                    if (crtActive && crtType == 0x20 && address == 0xde00) {
+                        crtBank = value;
+                    }
+                    if (crtActive && crtType == 0x20 && address == 0xde02) {
+                        crtEasyFlashControl = value;
+                    }
                 }
             }
         }

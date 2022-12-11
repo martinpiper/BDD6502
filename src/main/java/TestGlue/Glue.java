@@ -1299,6 +1299,57 @@ public class Glue {
         while ((c = in.read()) != -1) {
             machine.getBus().write(addr++, c);
         }
+        in.close();
+    }
+
+    @Given("^I load crt \"(.*?)\"$")
+    public void i_load_crt(String arg1) throws Throwable {
+        FileInputStream in = null;
+        in = new FileInputStream(arg1);
+        in.skip(0x14);
+        int version = (in.read() * 256) + in.read();
+        int type = (in.read() * 256) + in.read();
+        int exrom = in.read();
+        int game = in.read();
+        in.skip(0x06);  // Unused
+        in.skip(0x20);  // Name
+
+        machine.getBus().addCRTInfo(type , exrom , game);
+
+        int c;
+        while ((c = in.read()) != -1) {
+            in.skip(0x03);
+            in.skip(0x02);
+            int chipLength = (in.read() * 256) + in.read();
+            int chipType = in.read() + (in.read() * 256);
+            int chipBank = in.read() + (in.read() * 256);
+            int chipAddress = (in.read() * 256) + in.read();
+            int chipSize = (in.read() * 256) + in.read();
+            Device chip = new Device(chipAddress , chipAddress + chipSize - 1 , "CRTChip " + chipBank + ":$" + Integer.toHexString(chipAddress)) {
+                int chipData[] = new int[chipSize];
+                @Override
+                public void write(int address, int data) throws MemoryAccessException {
+                    chipData[address] = data;
+                }
+
+                @Override
+                public int read(int address, boolean logRead) throws MemoryAccessException {
+                    return chipData[address];
+                }
+
+                @Override
+                public String toString() {
+                    return null;
+                }
+            };
+            int addr = 0;
+            while (addr < chipSize) {
+                chip.write(addr,in.read());
+                addr++;
+            }
+            machine.getBus().addCRTChip(chip,chipBank);
+        }
+        in.close();
     }
 
     @Given("^I load bin \"(.*?)\" at (.+)$")
@@ -1310,6 +1361,7 @@ public class Glue {
         while ((c = in.read()) != -1) {
             machine.getBus().write(addr++, c);
         }
+        in.close();
     }
 
     @Given("^I load labels \"(.*?)\"$")
