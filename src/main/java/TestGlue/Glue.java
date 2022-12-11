@@ -1321,8 +1321,8 @@ public class Glue {
             in.skip(0x03);
             in.skip(0x02);
             int chipLength = (in.read() * 256) + in.read();
-            int chipType = in.read() + (in.read() * 256);
-            int chipBank = in.read() + (in.read() * 256);
+            int chipType = (in.read() * 256) + in.read();
+            int chipBank = (in.read() * 256) + in.read();
             int chipAddress = (in.read() * 256) + in.read();
             int chipSize = (in.read() * 256) + in.read();
             Device chip = new Device(chipAddress , chipAddress + chipSize - 1 , "CRTChip " + chipBank + ":$" + Integer.toHexString(chipAddress)) {

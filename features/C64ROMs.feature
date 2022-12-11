@@ -60,6 +60,12 @@ Feature: C64 ROM tests
       cmp #(>endCode)+1
       bcc .cl1
 
+    .cl2
+      lda FuncC000,y
+      sta $c000,y
+      dey
+      bne .cl2
+
       ; Real code in ROM and in RAM so this is safe.
       ; NOTE: In Vice the EF3 cart type seems to map ROM all the time instead of RAM. But this emulation maps in RAM.
       lda #ProcessorPortAllRAM
@@ -104,10 +110,27 @@ Feature: C64 ROM tests
       sta $403
 
       rts
+
+    FuncC000
+      sta ZPProcessorPort
+      lda #42
+      sta $400
+      lda $8000
+      sta $401
+      stx $de00 ; Bank control
+      lda $8000
+      sta $402
+
+      lda #ProcessorPortAllRAM
+      sta ZPProcessorPort
+      lda $8000
+      sta $403
+
+      rts
     endCode
     """
     And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
-    And I run the command line: ..\C64\bin\MakeCart.exe -te -n -a $8000 -b 0 -r test.prg -c 0 2 $ffff -w -a $a000 -b 0 -c $1ffc 2 4 -w -o test.crt
+    And I run the command line: ..\C64\bin\MakeCart.exe -te -n -a $8000 -b 0 -r test.prg -c 0 2 $ffff -w -a $a000 -b 0 -c $1ffc 2 4 -w -a $8000 -b 1 -w  -b 2 -w -o test.crt
 
 #    And I load prg "test.prg"
     And I load crt "test.crt"
@@ -131,5 +154,24 @@ Feature: C64 ROM tests
     When I execute the procedure at get until return
     When I hex dump memory between $400 and $407
     Then property "test.BDD6502.lastHexDump" must contain string "400: 85 13 43 03"
+
+    When I set register A to ProcessorPortDefault
+    When I set register X to 1
+    When I execute the procedure at $c000 until return
+    When I hex dump memory between $400 and $407
+    Then property "test.BDD6502.lastHexDump" must contain string "400: 2a 07 02 00"
+
+    When I set register A to ProcessorPortDefault
+    When I set register X to 2
+    When I execute the procedure at $c000 until return
+    When I hex dump memory between $400 and $407
+    Then property "test.BDD6502.lastHexDump" must contain string "400: 2a 02 03 00"
+
+    # Bank doesn't exist, so read RAM instead
+    When I set register A to ProcessorPortDefault
+    When I set register X to 3
+    When I execute the procedure at $c000 until return
+    When I hex dump memory between $400 and $407
+    Then property "test.BDD6502.lastHexDump" must contain string "400: 2a 03 00 00"
 
     And I disable trace

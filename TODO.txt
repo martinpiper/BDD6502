@@ -160,7 +160,7 @@
 							Bus read and write will need different behaviour as writes go to the underlying RAM
 								file:///C:/work/C64Docs/unusedino.de/ec64/technical/aay/c64/memcfg.htm
 							And will automatically map in devices with $a000 $d000 $d800 $e000 addresses
-
+					* Need to test bank switching behaviour. Create a function that stores known data when it's called from ROM.
 
 	
 	
