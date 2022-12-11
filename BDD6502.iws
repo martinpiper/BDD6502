@@ -9,10 +9,8 @@
       <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/C64ROMs.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/C64ROMs.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Bus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Bus.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/C64VICII.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/C64VICII.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/machines/SimpleMachine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/machines/SimpleMachine.java" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -93,7 +91,7 @@
       <recent name="com.bdd6502" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner no parameters">
+  <component name="RunManager" selected="Application.TestRunner C64ROMs.feature">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -509,6 +507,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestRunner printIO.feature" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/printIO.feature" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestRunner simple.feature @RemoteDebugger" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
@@ -610,11 +616,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserPortTo24BitAddressTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="UserPortTo24BitAddressTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="BDD6502" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.loomcom.symon.devices.*" />
+          <option name="PATTERN" value="com.loomcom.symon.devices.C64ColourRAM" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -630,7 +636,7 @@
       <module name="BDD6502" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.loomcom.symon.devices.*" />
+          <option name="PATTERN" value="com.loomcom.symon.devices.C64ColourRAM" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -647,7 +653,7 @@
       <module name="BDD6502" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.loomcom.symon.devices.*" />
+          <option name="PATTERN" value="com.loomcom.symon.devices.C64ColourRAM" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -664,7 +670,7 @@
       <module name="BDD6502" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.loomcom.symon.devices.*" />
+          <option name="PATTERN" value="com.loomcom.symon.devices.C64ColourRAM" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -753,6 +759,7 @@
       <item itemvalue="Application.TestRunner -CotE" />
       <item itemvalue="Application.TestRunner BombJack" />
       <item itemvalue="Application.TestRunner C64ROMs.feature" />
+      <item itemvalue="Application.TestRunner printIO.feature" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5" />

@@ -2066,10 +2066,12 @@ public class Glue {
         machine.getCpu().getBus().addDevice(memory);
     }
 
-    @Given("^add a C64 VIC$")
-    public void addAVICII() throws MemoryRangeException {
-        machine.getCpu().getBus().addDevice(new C64VICII(scenario));
-        machine.getCpu().getBus().addDevice(new C64ColourRAM(scenario));
+    @Given("^add C64 hardware$")
+    public void addC64Hardware() throws MemoryRangeException {
+        machine.getCpu().getBus().addDevice(new C64VICII(scenario) , 1);
+        machine.getCpu().getBus().addDevice(new C64SID(scenario) , 1);
+        machine.getCpu().getBus().addDevice(new C64ColourRAM(scenario) , 1);
+        machine.getCpu().getBus().addDevice(new C64IO(scenario) , 1);
     }
 
     @Given("^randomly initialise all memory using seed (.*)$")

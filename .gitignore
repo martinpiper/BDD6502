@@ -71,3 +71,4 @@ test.lbl
 *.pdb
 testcmp.prg
 testcmp.prg
+test.crt

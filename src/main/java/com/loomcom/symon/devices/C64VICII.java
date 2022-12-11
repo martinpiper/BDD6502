@@ -9,17 +9,17 @@ public class C64VICII extends Device {
     private Scenario mScenario = null;
     private int upperStore = 0;
 
-    int registers[] = new int[0x30];
+    int registers[] = new int[0x400];
     boolean rasterToggle = true;
 
     public C64VICII( Scenario scenario) throws MemoryRangeException {
-        super(0xd000, 0xd02f, "C64 VIC-II");
+        super(0xd000, 0xd3ff, "C64 VIC-II");
         mScenario = scenario;
     }
 
     @Override
     public void write(int address, int data) throws MemoryAccessException {
-        int register = address & 0x3f;
+        int register = address & 0x3ff;
         registers[register] = data;
         switch (register) {
             case 0x12: // Raster
@@ -31,7 +31,7 @@ public class C64VICII extends Device {
 
     @Override
     public int read(int address, boolean logRead) throws MemoryAccessException {
-        int register = address & 0x3f;
+        int register = address & 0x3ff;
         switch (register) {
             case 0x12: // Raster
                 // For the kernal display mode check at $ff5e

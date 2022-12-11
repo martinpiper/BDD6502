@@ -153,7 +153,8 @@
 					Note these will be needed in the scenario, but don't need code updates:
 						Given a ROM from file "..\..\VICE\C64\kernal" at $e000
 						Given a ROM from file "..\..\VICE\C64\basic" at $a000
-						Given add a C64 VIC
+						Given add C64 hardware
+							Adds devices to cover $d000 - $dfff
 					Done: Will need expansion to match the processor port config
 						>> com.loomcom.symon.Bus.buildDeviceAddressArray can have an array of deviceAddressArrayWrite and deviceAddressArrayRead indexed by the lower three bits of the processor port
 							Bus read and write will need different behaviour as writes go to the underlying RAM

@@ -7,7 +7,7 @@ Feature: C64 ROM tests
     Given I am using C64 processor port options
     Given a ROM from file "..\..\VICE\C64\kernal" at $e000
     Given a ROM from file "..\..\VICE\C64\basic" at $a000
-    Given add a C64 VIC
+    Given add C64 hardware
 
 #    And I enable trace with indent
     # This gets to repeatedly checking the keyboard buffer: E5CD  A5 C6     LDA $C6
