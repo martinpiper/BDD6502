@@ -7,8 +7,7 @@
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/C64ROMs.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/C64ROMs.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Bus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Bus.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
@@ -91,7 +90,7 @@
       <recent name="com.bdd6502" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature">
+  <component name="RunManager" selected="Application.TestRunner C64ROMs.feature">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -433,6 +432,15 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags @Demo6 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/VideoHardware" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner VideoHardware @Demo6C" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @Demo6C --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/VideoHardware" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -784,6 +792,7 @@
       <item itemvalue="Application.TestRunner VideoHardware @Demo1" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo3" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo6" />
+      <item itemvalue="Application.TestRunner VideoHardware @Demo6C" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo9" />
       <item itemvalue="Application.TestRunner VideoHardware @RPG" />
       <item itemvalue="Application.TestRunner VideoHardware @ShadowBeastB" />
@@ -799,7 +808,7 @@
       <item itemvalue="Cucumber Java.Simple ALL" />
       <item itemvalue="Cucumber Java.Trace Test" />
       <item itemvalue="JUnit.JUnit all" />
-      <item itemvalue="JUnit.UserPortTo24BitAddressTest (1)" />
+      <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU6" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU7" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU8" />
@@ -808,7 +817,6 @@
     <recent_temporary>
       <list>
         <item itemvalue="Maven.BDD6502 [install]" />
-        <item itemvalue="JUnit.UserPortTo24BitAddressTest (1)" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU8" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU7" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU6" />
@@ -867,11 +875,6 @@
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/APUData.java</url>
-          <line>88</line>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
           <line>457</line>
           <option name="timeStamp" value="29" />
@@ -897,9 +900,14 @@
           <option name="timeStamp" value="41" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/Bus.java</url>
+          <line>305</line>
+          <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>1349</line>
-          <option name="timeStamp" value="43" />
+          <line>1731</line>
+          <option name="timeStamp" value="50" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

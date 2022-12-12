@@ -1,5 +1,12 @@
 ; TODO items
 
+* To help with cartridge code, in addition to: When I enable uninitialised memory read protection with immediate fail
+	Add syntax to mark certain memory ranges as initialised. For ROM/CRT ROM etc
+	@Demo6C
+
+
+
+
 * BDD6502: Add text based "mem"/"m" command
 
 

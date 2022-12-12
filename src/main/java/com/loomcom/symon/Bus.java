@@ -128,24 +128,24 @@ public class Bus {
                                 }
                                 break;
                             case 0b101:
-                                if (range.startAddress == 0 || range.startAddress == 0xd000 || range.startAddress == 0xd800) {
+                                if (range.startAddress == 0 || (range.startAddress >= 0xd000 && range.startAddress < 0xe000)) {
                                     deviceAddressArrayRead[pp][address - this.startAddress] = device;
                                     deviceAddressArrayWrite[pp][address - this.startAddress] = device;
                                 }
                                 break;
                             case 0b110:
-                                if (range.startAddress == 0 || range.startAddress == 0xd000 || range.startAddress == 0xd800 || range.startAddress == 0xe000) {
+                                if (range.startAddress == 0 || (range.startAddress >= 0xd000 && range.startAddress < 0xe000) || range.startAddress == 0xe000) {
                                     deviceAddressArrayRead[pp][address - this.startAddress] = device;
                                 }
-                                if (range.startAddress == 0 || range.startAddress == 0xd000 || range.startAddress == 0xd800) {
+                                if (range.startAddress == 0 || (range.startAddress >= 0xd000 && range.startAddress < 0xe000)) {
                                     deviceAddressArrayWrite[pp][address - this.startAddress] = device;
                                 }
                                 break;
                             case 0b111:
-                                if (range.startAddress == 0 || range.startAddress == 0xa000  || range.startAddress == 0xd000 || range.startAddress == 0xd800 || range.startAddress == 0xe000) {
+                                if (range.startAddress == 0 || range.startAddress == 0xa000  || (range.startAddress >= 0xd000 && range.startAddress < 0xe000) || range.startAddress == 0xe000) {
                                     deviceAddressArrayRead[pp][address - this.startAddress] = device;
                                 }
-                                if (range.startAddress == 0 || range.startAddress == 0xd000 || range.startAddress == 0xd800) {
+                                if (range.startAddress == 0 || (range.startAddress >= 0xd000 && range.startAddress < 0xe000)) {
                                     deviceAddressArrayWrite[pp][address - this.startAddress] = device;
                                 }
                                 break;
@@ -303,7 +303,7 @@ public class Bus {
             int pp = theProcessorPort & 0b111;
             if (0b111 == pp || 0b110 == pp || 0b101 == pp) {
                 if (0xd000 <= address && address <= 0xdfff) {
-                    System.out.println("IO Write detected: " + String.format("$%04X", address) + " of " + String.format("$%02X", value));
+//                    System.out.println("IO Write detected: " + String.format("$%04X", address) + " of " + String.format("$%02X", value));
                     // gmod2
                     if (crtActive && crtType == 0x13 && address == 0xde00) {
                         crtBank = value;
