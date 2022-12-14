@@ -672,3 +672,13 @@ Added: Given I am using C64 processor port options
 								file:///C:/work/C64Docs/unusedino.de/ec64/technical/aay/c64/memcfg.htm
 							And will automatically map in devices with $a000 $d000 $d800 $e000 addresses
 					* Need to test bank switching behaviour. Create a function that stores known data when it's called from ROM.
+
+
+
+* To aid debugging hardware, displaying the pixel palette index and RGB colour under the mouse cursor hovering over the screen would be very useful
+	Also which layer it came from
+	Can be optional syntax since it will probably have a performance impact
+	Set the title with details?
+	com.bdd6502.DisplayBombJack.calculatePixel will need to store extra details
+	Just before some calls to com.bdd6502.QuickDrawPanel.fastSetRGB
+	com.bdd6502.DisplayBombJack.RepaintWindow to do the update

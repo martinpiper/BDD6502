@@ -20,8 +20,19 @@ public class DisplayBombJack extends MemoryBus {
     boolean enableLayerFlags[] = new boolean[0];
 
     int frameNumber = 0;
-    int displayWidth = 384;
-    int displayHeight = 264;
+    final int displayWidth = 384;
+    final int displayHeight = 264;
+    private int latchedPixelFromWhere = -1;
+
+    public void setDebugDisplayPixels(boolean debugDisplayPixels) {
+        this.debugDisplayPixels = debugDisplayPixels;
+    }
+
+    boolean debugDisplayPixels = false;
+    int debugDisplayPixel[] = new int[pixelsInWholeFrame()];
+    int debugDisplayPixelRGB[] = new int[pixelsInWholeFrame()];
+    int debugDisplayPixelFromWhere[] = new int[pixelsInWholeFrame()];
+
     int busContentionPalette = 0;
     int addressPalette = 0x9c00, addressExPalette = 0x01;
     int addressRegisters = 0x9e00, addressExRegisters = 0x01;
@@ -141,8 +152,9 @@ public class DisplayBombJack extends MemoryBus {
 
     public void InitWindow(int width, int height) {
         // Testing window drawing in a loop for eventual graphics updates
-        window = new DisplayMainFrame();
+        window = new DisplayMainFrame(this);
         window.addKeyListener(window);
+        window.addMouseMotionListener(window);
         //window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.getContentPane().setPreferredSize(new Dimension(width, height));
         window.pack();
@@ -164,6 +176,19 @@ public class DisplayBombJack extends MemoryBus {
         }
 
         window.repaint();
+    }
+
+    public void HandlePixelPick() {
+        if (debugDisplayPixels && null != panel) {
+            Point pos = panel.getMousePosition();
+            if (null != pos) {
+
+                int realX = (pos.x * displayWidth) / panel.getWidth();
+                int realY = (pos.y * displayHeight) / panel.getHeight();
+
+                window.setTitle(realX + "," + realY + " : layer "+debugDisplayPixelFromWhere[realX + (realY * displayWidth)] +" : pixel " + String.format("%02x", debugDisplayPixel[realX + (realY * displayWidth)]) + " : RGB " + String.format("%06x", debugDisplayPixelRGB[realX + (realY * displayWidth)] & 0xffffff));
+            }
+        }
     }
 
     public boolean isVisible() {
@@ -510,6 +535,11 @@ public class DisplayBombJack extends MemoryBus {
                         latchedPixel = getContentionColouredPixel();
                     }
                     int realColour = palette[latchedPixel & 0xff];
+                    if (debugDisplayPixels) {
+                        debugDisplayPixel[displayBitmapX + (tempy*displayWidth)] = latchedPixel & 0xff;
+                        debugDisplayPixelRGB[displayBitmapX + (tempy*displayWidth)] = realColour;
+                        debugDisplayPixelFromWhere[displayBitmapX + (tempy*displayWidth)] = latchedPixelFromWhere;
+                    }
                     panel.fastSetRGB(displayBitmapX, tempy, realColour);
                 } else {
                     panel.fastSetRGB(displayBitmapX, tempy, 0);
@@ -527,6 +557,7 @@ public class DisplayBombJack extends MemoryBus {
             // Go backwards from the furthest plane first
             for (int i = layersRaw.length - 1; i >= 0; i--) {
                 int theLayer = (displayPriority >> (i * 2)) & 0x03;
+                int realLayer = theLayer;
                 theLayer = (layersRaw.length - 1) - theLayer;
                 if (theLayer >= 0 && theLayer < layersRaw.length) {
                     // Ensure each layer index is executed once
@@ -536,10 +567,12 @@ public class DisplayBombJack extends MemoryBus {
                         if (is16Colours) {
                             if ((pixel & 0x0f) != 0 || firstLayer) {
                                 latchedPixel = pixel;
+                                latchedPixelFromWhere = realLayer;
                             }
                         } else {
                             if ((pixel & 0x07) != 0 || firstLayer) {
                                 latchedPixel = pixel;
+                                latchedPixelFromWhere = realLayer;
                             }
                         }
                         cachedPixel[theLayer] = pixel;

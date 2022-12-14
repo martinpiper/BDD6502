@@ -2143,4 +2143,17 @@ public class Glue {
             audioExpansion.randomiseData(rand);
         }
     }
+
+    @And("^enable debug pixel picking$")
+    public void enableDebugPixelPicking() {
+        if (displayBombJack != null) {
+            displayBombJack.setDebugDisplayPixels(true);
+        }
+    }
+    @And("^disable debug pixel picking$")
+    public void disableDebugPixelPicking() {
+        if (displayBombJack != null) {
+            displayBombJack.setDebugDisplayPixels(false);
+        }
+    }
 }

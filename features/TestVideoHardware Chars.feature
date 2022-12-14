@@ -80,6 +80,8 @@ Feature: Tests the video character screen data conversion
     Given clear all external devices
     Given a new video display
     And enable video display bus debug output
+    And disable debug pixel picking
+    And enable debug pixel picking
     Given video display processes 24 pixels per instruction
     Given video display refresh window every 32 instructions
     Given video display add joystick to port 2
