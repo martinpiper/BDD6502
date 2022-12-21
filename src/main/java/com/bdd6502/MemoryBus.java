@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.util.Random;
 
 public abstract class MemoryBus {
+    public void setBusContention(int busContention) {
+        this.busContention = busContention;
+    }
+
     protected int busContention = 0;
     protected boolean memoryAsserted = false;
 

@@ -6,11 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayMainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayMainFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/MemoryBus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/MemoryBus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
@@ -93,7 +90,7 @@
       <recent name="com.bdd6502" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware Chars.feature @TC-4">
+  <component name="RunManager" selected="Application.TestRunner VideoHardware @Demo6B">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -440,10 +437,28 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestRunner VideoHardware @Demo6B" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @Demo6B --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/VideoHardware" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestRunner VideoHardware @Demo6C" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags @Demo6C --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/VideoHardware" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner VideoHardware @Demo7" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @Demo7 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/VideoHardware" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -462,15 +477,6 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags @RPG --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/VideoHardware" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TestRunner VideoHardware @ShadowBeastB" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
-      <module name="BDD6502" />
-      <option name="PROGRAM_PARAMETERS" value="--tags @ShadowBeastB --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/VideoHardware" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -637,6 +643,7 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.loomcom.symon.devices" />
       <option name="MAIN_CLASS_NAME" value="com.loomcom.symon.devices.UserPortTo24BitAddressTest" />
+      <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
       <method v="2">
@@ -795,10 +802,11 @@
       <item itemvalue="Application.TestRunner VideoHardware @Demo1" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo3" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo6" />
+      <item itemvalue="Application.TestRunner VideoHardware @Demo6B" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo6C" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo9" />
+      <item itemvalue="Application.TestRunner VideoHardware @Demo7" />
       <item itemvalue="Application.TestRunner VideoHardware @RPG" />
-      <item itemvalue="Application.TestRunner VideoHardware @ShadowBeastB" />
       <item itemvalue="Application.TestRunner VideoHardware @Turrican" />
       <item itemvalue="Application.TestRunner VideoHardware @Turrican_8" />
       <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
@@ -820,6 +828,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Maven.BDD6502 [install]" />
+        <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU8" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU7" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU6" />
@@ -906,16 +915,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/Bus.java</url>
           <line>305</line>
           <option name="timeStamp" value="48" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayMainFrame.java</url>
-          <line>88</line>
-          <option name="timeStamp" value="51" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayMainFrame.java</url>
-          <line>84</line>
-          <option name="timeStamp" value="52" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

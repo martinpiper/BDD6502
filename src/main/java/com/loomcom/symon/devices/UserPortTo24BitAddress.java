@@ -234,6 +234,11 @@ public class UserPortTo24BitAddress extends Device {
         for (MemoryBus device : externalDevices) {
             device.writeData(bus24Bytes[1] | (bus24Bytes[2] << 8), bus24Bytes[0], data);
         }
+
+        // To emulate the latched write passthrough from the APU its execution needs to be delayed, the RAM contention is used to emulate this
+        if (apuData != null) {
+            apuData.setBusContention(8);
+        }
     }
 
     public void emitMemoryDebugForUserport(int address, int addressEx , int data) {
@@ -362,8 +367,8 @@ public class UserPortTo24BitAddress extends Device {
             return;
         }
 
-        if (apuData.hasContention()) {
-            apuInstuctionSchedule = 0;
+        // Emulate the instruction and data arbitration by pausing on this specific cycle
+        if (apuInstuctionSchedule == 0 && apuData.hasContention()) {
             return;
         }
 
@@ -409,6 +414,9 @@ public class UserPortTo24BitAddress extends Device {
             }
         }
 
+        if (MemoryBus.addressActive(instruction , kAPU_WaitForEqualsHV)) {
+            assertThat("kAPU_WaitForEqualsHV should not write internal or external memory in the current or previous instruction", !(MemoryBus.addressActive(last_instruction, kAPU_InternalMEWR | kAPU_ExternalMEWR) && MemoryBus.addressActive(instruction, kAPU_InternalMEWR | kAPU_ExternalMEWR)));
+        }
         assertThat("kAPU_Incr_ADDRB1 should not be held high for more than one instruction", !(MemoryBus.addressActive(last_instruction , kAPU_Incr_ADDRB1) && MemoryBus.addressActive(instruction , kAPU_Incr_ADDRB1)));
         assertThat("kAPU_Incr_ADDRB2 should not be held high for more than one instruction", !(MemoryBus.addressActive(last_instruction , kAPU_Incr_ADDRB2) && MemoryBus.addressActive(instruction , kAPU_Incr_ADDRB2)));
         assertThat("kAPU_Incr_EADDR should not be held high for more than one instruction", !(MemoryBus.addressActive(last_instruction , kAPU_Incr_EADDR) && MemoryBus.addressActive(instruction , kAPU_Incr_EADDR)));
