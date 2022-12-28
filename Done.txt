@@ -806,3 +806,11 @@ Added: Given I am using C64 processor port options
 				8 layers, more compact: V9.4\APU - Routed - Tightly 2.pdsprj
 					Imported: Eight layers.LTF
 						Needed some planes created, layer pairs, and design rules signals to layers.
+
+
+
+* When there is a screen refresh any picked pixel information is refreshed
+
+
+
+* Enable/disable pixel picking with 'P' on the keyboard

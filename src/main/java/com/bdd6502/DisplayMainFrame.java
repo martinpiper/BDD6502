@@ -41,6 +41,8 @@ public class DisplayMainFrame extends JFrame implements KeyListener , MouseMotio
             pressedRight = true;
         } else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
             pressedFire = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_P) {
+            displayBombJack.setDebugDisplayPixels(!displayBombJack.isDebugDisplayPixels());
         }
     }
 

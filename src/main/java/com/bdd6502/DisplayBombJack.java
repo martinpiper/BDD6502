@@ -28,6 +28,10 @@ public class DisplayBombJack extends MemoryBus {
         this.debugDisplayPixels = debugDisplayPixels;
     }
 
+    public boolean isDebugDisplayPixels() {
+        return debugDisplayPixels;
+    }
+
     boolean debugDisplayPixels = false;
     int debugDisplayPixel[] = new int[pixelsInWholeFrame()];
     int debugDisplayPixelRGB[] = new int[pixelsInWholeFrame()];
@@ -126,6 +130,7 @@ public class DisplayBombJack extends MemoryBus {
 
     public DisplayBombJack() throws IOException {
         //enableDebugData();
+        Arrays.fill(debugDisplayPixelFromWhere, -1);
     }
 
     public void make16Colours() {
@@ -163,6 +168,7 @@ public class DisplayBombJack extends MemoryBus {
         window.add(panel);
 
         window.setVisible(true);
+        window.setTitle("Press 'P' to toggle debug pixel picking");
     }
 
     public void RepaintWindow() {
@@ -179,7 +185,7 @@ public class DisplayBombJack extends MemoryBus {
     }
 
     public void HandlePixelPick() {
-        if (debugDisplayPixels && null != panel) {
+        if (debugDisplayPixels && null != panel && window != null) {
             Point pos = panel.getMousePosition();
             if (null != pos) {
 
@@ -434,6 +440,7 @@ public class DisplayBombJack extends MemoryBus {
             pixelsSinceLastDebugWrite = 0;
         }
         if (displayX == 0 && displayY == (displayHeight - 1)) {
+            HandlePixelPick();
             if (leafFilename != null && !leafFilename.isEmpty()) {
                 try {
                     File file = new File(leafFilename + String.format("%06d", frameNumber++) + ".bmp");
