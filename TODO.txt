@@ -1,5 +1,25 @@
 ; TODO items
 
+* Hmm I wonder if I can profile 6502 code by counting cycles for every jsr until its corresponding rts...
+	Some monitor commands to:
+		start
+		stop
+		print
+		reset
+	* I will want to note the interrupt status when doing the jsr and only count cycles while it maintains the same status.
+		* And handle rti and obviously the kernal vectors
+	* This method provides a live view, partially through a subroutine. It is expensive:
+		* Whenever a jsr is encountered add it to a map.
+		* Each cycle accumulates the count in all listed jsr, with the correct status flag.
+		* When it has a corresponding rts, remove the map entry while noting the accumulated cycle count. Add the total for that jsr to the jsr's address map.
+	* This method has less performance impact:
+		* Whenever a jsr is encountered add it to a map with the current cycle count.
+		* When it has a corresponding rts, remove the map entry while noting the cycle count delta. Add the total for that jsr to the jsr's address map.
+	* When printing:
+		Print the address, label, total cycles
+
+
+
 * To help with cartridge code, in addition to: When I enable uninitialised memory read protection with immediate fail
 	Add syntax to mark certain memory ranges as initialised. For ROM/CRT ROM etc
 	@Demo6C
