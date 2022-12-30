@@ -34,6 +34,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class Glue {
+    private class ProfileData {
+        boolean isSEI = false;
+        int targetAddress;
+    }
+    static private TreeMap<Integer, ProfileData> profileDataByAddress = new TreeMap<>();
+    static private HashSet<Integer> profileDataTargets = new HashSet<>();
+    static private int[] profileDataCycles = new int[65536];
+    static private int[] profileDataCalls = new int[65536];
     static private Glue glue = null;
     static private Machine machine = null;
     static private int writingAddress = 0;
@@ -442,6 +450,9 @@ public class Glue {
     boolean wantAPUBreakOnWaitOrPC0 = false;
     public void internalCPUStep(boolean displayTrace) throws Throwable {
 
+        int beforeCycles = machine.getCpu().getClockCycles();
+        int beforeAddr = machine.getCpu().getCpuState().pc;
+
         RemoteDebugger remoteDebugger = RemoteDebugger.getRemoteDebugger();
         if (remoteDebugger != null) {
 
@@ -453,14 +464,19 @@ public class Glue {
 
             handleSuspendLoop(remoteDebugger , RemoteDebugger.kDeviceFlags_CPU);
 
-            int addr = remoteDebugger.getReceivedGotoAddress();
-            if (addr >= 0) {
+            int gotoAddr = remoteDebugger.getReceivedGotoAddress();
+            if (gotoAddr >= 0) {
                 remoteDebugger.clearReceivedGotoAddress();
-                machine.getCpu().setProgramCounter(addr);
+                machine.getCpu().setProgramCounter(gotoAddr);
+            }
+
+            if (remoteDebugger.isClearProfiling()) {
+                profileDataByAddress.clear();
+                profileDataTargets.clear();
+                Arrays.setAll(profileDataCycles, (index)->0);
+                Arrays.setAll(profileDataCalls, (index)->0);
             }
         }
-
-        Integer addr = machine.getCpu().getCpuState().pc;
 
         if (wantCPUSuspendNextReturn >= 0) {
             int tpc = machine.getCpu().getProgramCounter();
@@ -471,42 +487,82 @@ public class Glue {
             }
         }
 
-        if (remoteDebugger != null && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU) && remoteDebugger.isReceivedNext()) {
-            int tpc = machine.getCpu().getProgramCounter();
-            int tir = machine.getRam().safeInvisibleRead(tpc);
+        if (remoteDebugger != null) {
+            if (remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU) && remoteDebugger.isReceivedNext()) {
+                int tpc = machine.getCpu().getProgramCounter();
+                int tir = machine.getRam().safeInvisibleRead(tpc);
 
-            remoteDebugger.clearStepNextReturn();
+                remoteDebugger.clearStepNextReturn();
 
-            if (tir == 0x20 /*jsr opcode*/) {
-                // If jsr is next then calculate the next PC to stop after the jsr
-                tpc += 3; // Skip the opcode
-                wantCPUPCSuspendHere = tpc;
-            } else {
-                wantCPUSuspendNext = true;
+                if (tir == 0x20 /*jsr opcode*/) {
+                    // If jsr is next then calculate the next PC to stop after the jsr
+                    tpc += 3; // Skip the opcode
+                    wantCPUPCSuspendHere = tpc;
+                } else {
+                    wantCPUSuspendNext = true;
+                }
             }
         }
 
+        // Execute CPU step!
         machine.getCpu().step();
+
         if (displayTrace) {
-            if (!ignoreTraceForAddress.contains(addr)) {
-                String traceLine = getTraceLine(addr);
+            if (!ignoreTraceForAddress.contains(beforeAddr)) {
+                String traceLine = getTraceLine(beforeAddr);
                 scenario.write(traceLine);
             }
         }
 
-        if (remoteDebugger != null && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU) && remoteDebugger.isReceivedStep()) {
-            remoteDebugger.clearStepNextReturn();
-            wantCPUSuspendNextReturn = -1;
-            wantCPUPCSuspendHere = -1;
-            wantCPUSuspendNext = true;
+        int beforeOpcode = machine.getCpu().getInstruction();
+
+        if (remoteDebugger != null) {
+            if (remoteDebugger.isEnableProfiling()) {
+                // Don't count the jsr in the cycles count...
+                int cyclesDelta = machine.getCpu().getClockCycles() - beforeCycles;
+                for (Map.Entry<Integer, ProfileData> entry : profileDataByAddress.entrySet()) {
+                    Integer key = entry.getKey();
+                    ProfileData value = entry.getValue();
+                    if (value.isSEI == machine.getCpu().getIrqDisableFlag()) {
+                        profileDataCycles[value.targetAddress] += cyclesDelta;
+                    }
+                }
+
+                // Handle instruction states
+                if (beforeOpcode == 0x20) {
+                    // Note before the CPU step...
+                    if (!profileDataByAddress.containsKey(beforeAddr)) {
+                        ProfileData profileData = new ProfileData();
+                        profileData.isSEI = machine.getCpu().getIrqDisableFlag();
+                        profileData.targetAddress = machine.getCpu().getProgramCounter();
+                        profileDataByAddress.put(beforeAddr, profileData);
+                        profileDataCalls[profileData.targetAddress]++;
+                        profileDataTargets.add(profileData.targetAddress);
+                    }
+                }
+
+                if (beforeOpcode == 0x60) {
+                    int afterAddr = machine.getCpu().getCpuState().pc - 3;  // Try to find the previous jsr...
+                    profileDataByAddress.remove(afterAddr);
+                    profileCreateDebug(remoteDebugger);
+                }
+            }
+
+            if (remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU) && remoteDebugger.isReceivedStep()) {
+                remoteDebugger.clearStepNextReturn();
+                wantCPUSuspendNextReturn = -1;
+                wantCPUPCSuspendHere = -1;
+                wantCPUSuspendNext = true;
+            }
+
+            if (remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU) && remoteDebugger.isReceivedReturn()) {
+                remoteDebugger.clearStepNextReturn();
+                wantCPUSuspendNextReturn = machine.getCpu().getStackPointer();
+                wantCPUPCSuspendHere = -1;
+                wantCPUSuspendNext = false;
+            }
         }
 
-        if (remoteDebugger != null && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU) && remoteDebugger.isReceivedReturn()) {
-            remoteDebugger.clearStepNextReturn();
-            wantCPUSuspendNextReturn = machine.getCpu().getStackPointer();
-            wantCPUPCSuspendHere = -1;
-            wantCPUSuspendNext = false;
-        }
 
         traceMapByteUpdate.clear();
         traceMapByte.forEach((k, v) -> {
@@ -567,6 +623,23 @@ public class Glue {
         if ((machine.getCpu().getExtraStatus() & Cpu.Extra_YTest) == Cpu.Extra_YTest) {
             throw new Exception("Y has changed @" + machine.getCpu().getProgramCounter());
         }
+    }
+
+    private static void profileCreateDebug(RemoteDebugger remoteDebugger) {
+        String debugProfile = "";
+        for (int theAddress : profileDataTargets) {
+            debugProfile += "$" + HexUtil.wordToHex(theAddress) + " : ";
+            String foundLabel = reverseLabelMap.get(theAddress);
+            if (StringUtils.isNotEmpty(foundLabel)) {
+                debugProfile += foundLabel;
+            }
+            debugProfile += " : calls " + profileDataCalls[theAddress] + " : cycles " + profileDataCycles[theAddress];
+            if (profileDataCalls[theAddress] > 0) {
+                debugProfile += " : cycles per call " + ((float)profileDataCycles[theAddress] / profileDataCalls[theAddress]);
+            }
+            debugProfile += "\n";
+        }
+        remoteDebugger.setProfileLastResult(debugProfile);
     }
 
     private void handleSuspendLoop(RemoteDebugger remoteDebugger, int deviceFlags) throws MemoryAccessException, InterruptedException {

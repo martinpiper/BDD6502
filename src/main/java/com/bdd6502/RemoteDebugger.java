@@ -11,6 +11,26 @@ import java.net.Socket;
 import java.util.*;
 
 public class RemoteDebugger implements Runnable {
+    public void setProfileLastResult(String profileLastResult) {
+        this.profileLastResult = profileLastResult;
+    }
+
+    private String profileLastResult = "";
+
+    public boolean isClearProfiling() {
+        boolean ret = clearProfiling;
+        clearProfiling = false;
+        return ret;
+    }
+
+    private boolean clearProfiling;
+
+    public boolean isEnableProfiling() {
+        return enableProfiling;
+    }
+
+    private boolean enableProfiling = false;
+
     private RemoteDebugger() {
         setReplyReg(0,0,0,0,0,0,0,0,0,0,0, "");
     }
@@ -430,6 +450,20 @@ public class RemoteDebugger implements Runnable {
                             } catch (Exception e2) {
                                 writer.print(currentReplyPrefix);
                             }
+                            writer.flush();
+                        } else if (splits[0].equalsIgnoreCase("profile")) {
+                            if (splits[1].equalsIgnoreCase("start")) {
+                                enableProfiling = true;
+                            } else if (splits[1].equalsIgnoreCase("stop")) {
+                                enableProfiling = false;
+                            } else if (splits[1].equalsIgnoreCase("clear")) {
+                                clearProfiling = true;
+                                profileLastResult = "";
+                            } else if (splits[1].equalsIgnoreCase("print")) {
+//                                writer.println("Profiling result:");
+                                writer.println(profileLastResult);
+                            }
+                            writer.print(currentReplyPrefix);
                             writer.flush();
                         } else {
                             // Always the last case

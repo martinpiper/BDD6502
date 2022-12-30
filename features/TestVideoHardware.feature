@@ -1417,6 +1417,9 @@ Feature: Tests the video and audio hardware expansion together
     And I load labels "test.lbl"
 #    And I enable trace with indent
 
+    When enable remote debugging
+#    And wait for debugger connection
+
     # Test a very simple 6502 span update
     # Set displayed bank
     Given write data byte '0x00' to 24bit bus at '0xa100' and addressEx '0x01'
