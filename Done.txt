@@ -834,3 +834,12 @@ Added: Given I am using C64 processor port options
 		* When it has a corresponding rts, remove the map entry while noting the cycle count delta. Add the total for that jsr to the jsr's address map.
 	* When printing:
 		Print the address, label, total cycles
+
+
+
+* Add syntax to start/stop/print/test profiled code
+    Given profile start
+    Given profile clear
+    Given profile stop
+    Given profile print
+    Then property "test.BDD6502.lastProfile" must contain string " : Video_WaitVBlank : "

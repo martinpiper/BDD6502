@@ -1263,6 +1263,8 @@ Feature: Tests the video and audio hardware expansion together
     Given video display saves debug BMP images to leaf filename "target/frames/TC-11-"
 #    Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
+    Given profile start
+    Given profile clear
     And That does fail on BRK
     And I enable uninitialised memory read protection with immediate fail
     Given a user port to 24 bit bus is installed
@@ -1470,3 +1472,9 @@ Feature: Tests the video and audio hardware expansion together
     Given video display processes 24 pixels per instruction
     Given limit video display to 60 fps
     When I execute the procedure at mainLoop until return
+
+    Given profile stop
+    Given profile print
+    Then property "test.BDD6502.lastProfile" must contain string "Transform_Init : calls 1 :"
+    Then property "test.BDD6502.lastProfile" must contain string "InitialiseMachine : calls 1 :"
+    Then property "test.BDD6502.lastProfile" must contain string " : Video_WaitVBlank : "

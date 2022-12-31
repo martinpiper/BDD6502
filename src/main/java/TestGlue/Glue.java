@@ -264,6 +264,10 @@ public class Glue {
         enableuninitialisedReadProtection = false;
         enableuninitialisedReadProtectionWithFail = false;
         ignoreTraceForAddress.clear();
+
+        profileEnable = false;
+        profileClear = false;
+        initProfile();
     }
 
     @Given("^I am using C64 processor port options$")
@@ -469,13 +473,11 @@ public class Glue {
                 remoteDebugger.clearReceivedGotoAddress();
                 machine.getCpu().setProgramCounter(gotoAddr);
             }
+        }
 
-            if (remoteDebugger.isClearProfiling()) {
-                profileDataByAddress.clear();
-                profileDataTargets.clear();
-                Arrays.setAll(profileDataCycles, (index)->0);
-                Arrays.setAll(profileDataCalls, (index)->0);
-            }
+        if ((remoteDebugger != null && remoteDebugger.isClearProfiling()) || profileClear) {
+            profileClear = false;
+            initProfile();
         }
 
         if (wantCPUSuspendNextReturn >= 0) {
@@ -516,38 +518,38 @@ public class Glue {
 
         int beforeOpcode = machine.getCpu().getInstruction();
 
-        if (remoteDebugger != null) {
-            if (remoteDebugger.isEnableProfiling()) {
-                // Don't count the jsr in the cycles count...
-                int cyclesDelta = machine.getCpu().getClockCycles() - beforeCycles;
-                for (Map.Entry<Integer, ProfileData> entry : profileDataByAddress.entrySet()) {
-                    Integer key = entry.getKey();
-                    ProfileData value = entry.getValue();
-                    if (value.isSEI == machine.getCpu().getIrqDisableFlag()) {
-                        profileDataCycles[value.targetAddress] += cyclesDelta;
-                    }
-                }
-
-                // Handle instruction states
-                if (beforeOpcode == 0x20) {
-                    // Note before the CPU step...
-                    if (!profileDataByAddress.containsKey(beforeAddr)) {
-                        ProfileData profileData = new ProfileData();
-                        profileData.isSEI = machine.getCpu().getIrqDisableFlag();
-                        profileData.targetAddress = machine.getCpu().getProgramCounter();
-                        profileDataByAddress.put(beforeAddr, profileData);
-                        profileDataCalls[profileData.targetAddress]++;
-                        profileDataTargets.add(profileData.targetAddress);
-                    }
-                }
-
-                if (beforeOpcode == 0x60) {
-                    int afterAddr = machine.getCpu().getCpuState().pc - 3;  // Try to find the previous jsr...
-                    profileDataByAddress.remove(afterAddr);
-                    profileCreateDebug(remoteDebugger);
+        if ((remoteDebugger != null && remoteDebugger.isEnableProfiling()) || profileEnable) {
+            // Don't count the jsr in the cycles count...
+            int cyclesDelta = machine.getCpu().getClockCycles() - beforeCycles;
+            for (Map.Entry<Integer, ProfileData> entry : profileDataByAddress.entrySet()) {
+                Integer key = entry.getKey();
+                ProfileData value = entry.getValue();
+                if (value.isSEI == machine.getCpu().getIrqDisableFlag()) {
+                    profileDataCycles[value.targetAddress] += cyclesDelta;
                 }
             }
 
+            // Handle instruction states
+            if (beforeOpcode == 0x20) {
+                // Note before the CPU step...
+                if (!profileDataByAddress.containsKey(beforeAddr)) {
+                    ProfileData profileData = new ProfileData();
+                    profileData.isSEI = machine.getCpu().getIrqDisableFlag();
+                    profileData.targetAddress = machine.getCpu().getProgramCounter();
+                    profileDataByAddress.put(beforeAddr, profileData);
+                    profileDataCalls[profileData.targetAddress]++;
+                    profileDataTargets.add(profileData.targetAddress);
+                }
+            }
+
+            if (beforeOpcode == 0x60) {
+                int afterAddr = machine.getCpu().getCpuState().pc - 3;  // Try to find the previous jsr...
+                profileDataByAddress.remove(afterAddr);
+                profileCreateDebug(remoteDebugger);
+            }
+        }
+
+        if (remoteDebugger != null) {
             if (remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU) && remoteDebugger.isReceivedStep()) {
                 remoteDebugger.clearStepNextReturn();
                 wantCPUSuspendNextReturn = -1;
@@ -625,8 +627,17 @@ public class Glue {
         }
     }
 
+    private static void initProfile() {
+        debugProfile = "";
+        profileDataByAddress.clear();
+        profileDataTargets.clear();
+        Arrays.setAll(profileDataCycles, (index)->0);
+        Arrays.setAll(profileDataCalls, (index)->0);
+    }
+
+    static String debugProfile = "";
     private static void profileCreateDebug(RemoteDebugger remoteDebugger) {
-        String debugProfile = "";
+        debugProfile = "";
         for (int theAddress : profileDataTargets) {
             debugProfile += "$" + HexUtil.wordToHex(theAddress) + " : ";
             String foundLabel = reverseLabelMap.get(theAddress);
@@ -639,7 +650,10 @@ public class Glue {
             }
             debugProfile += "\n";
         }
-        remoteDebugger.setProfileLastResult(debugProfile);
+        System.setProperty("test.BDD6502.lastProfile", debugProfile);
+        if (remoteDebugger != null) {
+            remoteDebugger.setProfileLastResult(debugProfile);
+        }
     }
 
     private void handleSuspendLoop(RemoteDebugger remoteDebugger, int deviceFlags) throws MemoryAccessException, InterruptedException {
@@ -2228,5 +2242,29 @@ public class Glue {
         if (displayBombJack != null) {
             displayBombJack.setDebugDisplayPixels(false);
         }
+    }
+
+    static boolean profileEnable = false;
+    static boolean profileClear = false;
+
+    @Given("^profile start$")
+    public void profileStart() {
+        profileEnable = true;
+    }
+
+    @Given("^profile stop$")
+    public void profileStop() {
+        profileEnable = false;
+    }
+
+    @Given("^profile clear$")
+    public void profileClear() {
+        profileClear = true;
+    }
+
+    @Given("^profile print$")
+    public void profilePrint() {
+        profileCreateDebug(null);
+        scenario.write(debugProfile);
     }
 }
