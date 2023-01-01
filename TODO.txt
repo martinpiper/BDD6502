@@ -1,5 +1,12 @@
 ; TODO items
 
+* Profile: Possible to create a full call stack, by noting the previous caller "func1.func2.func2" etc, and storing the full name in the memory address as a map
+	So that each address can have multiple names and cycle counts
+	
+
+
+
+
 * To help with cartridge code, in addition to: When I enable uninitialised memory read protection with immediate fail
 	Add syntax to mark certain memory ranges as initialised. For ROM/CRT ROM etc
 	@Demo6C
