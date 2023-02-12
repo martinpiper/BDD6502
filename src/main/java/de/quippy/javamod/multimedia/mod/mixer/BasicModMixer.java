@@ -1498,6 +1498,14 @@ public abstract class BasicModMixer
 		byte[] buffer = new byte[applySampleRatioForIndex(realLength ,sampleIndex)];
 		for (int i = 0; i < realLength ; i++) {
 			int sourceSample = actMemo.currentSample.sample[i+5] >> 16;
+			if (sourceSample < -127) {
+				sourceSample = -127;
+			}
+			if (sourceSample > 127) {
+				sourceSample = 127;
+			}
+			// Debug: Reduce overall volume
+//			sourceSample = sourceSample / 2;
 			// Convert 8 bit signed sample data to unsigned 8 bit
 			int sample = 0x80 + sourceSample;
 			if (sample < 0) {
