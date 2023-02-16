@@ -1,5 +1,13 @@
 ; TODO items
 
+* Possible to include debug views of the full tile/char map virtual displays in other windows.
+	Include a rectangle (guide lines actually) of the area that is on the real display from their scroll positions at the current time in the debugger.
+	The scaled sprite view can include a larger unclipped render with a rectangle showing the real view screen, to help debug any clipping issues for example.
+	> Two view rectangles, the maximum extent and the current extent with the border registers.	
+
+
+
+
 * Profile: Possible to create a full call stack, by noting the previous caller "func1.func2.func2" etc, and storing the full name in the memory address as a map
 	So that each address can have multiple names and cycle counts
 	
