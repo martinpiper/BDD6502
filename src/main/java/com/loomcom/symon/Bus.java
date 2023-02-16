@@ -296,7 +296,7 @@ public class Bus {
     public void write(int address, int value) throws MemoryAccessException {
         if (processorPort) {
             if (1 == address) {
-                System.out.println("Processor port Write detected: of " + String.format("$%02X", value));
+//                System.out.println("Processor port Write detected: of " + String.format("$%02X", value));
                 theProcessorPort = value;
                 return;
             }
