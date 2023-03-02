@@ -13,7 +13,10 @@ Feature:  Code performance test
         bne start
         rts
       """
-    And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
+    And I run the command line: ..\C64\acme.exe -v3 -o test.prg --labeldump test.lbl -f cbm test.a
+    Then property "test.BDD6502.lastProcessOutput" must contain string "Parsing source file 'test.a'"
+
+
     And I load prg "test.prg"
     And I load labels "test.lbl"
 

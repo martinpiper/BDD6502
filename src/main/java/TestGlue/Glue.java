@@ -1345,6 +1345,7 @@ public class Glue {
             throw new Exception(String.format("Return code: %d with message '%s'", p.exitValue(), sb.toString()));
         }
         String returnString = String.format("After executing command line '%s' return code: %d with message '%s'\n", arg1, p.exitValue(), sb.toString());
+        System.setProperty("test.BDD6502.lastProcessOutput", returnString);
         return returnString;
     }
 
