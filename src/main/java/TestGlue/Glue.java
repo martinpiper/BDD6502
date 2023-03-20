@@ -8,6 +8,7 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 import com.loomcom.symon.util.HexUtil;
+import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -2191,9 +2192,74 @@ public class Glue {
         currentLineRead = fileReading.readLine();
     }
 
+    @Then("^expect end of file$")
+    public void expectEndOfFile() throws IOException {
+        currentLineRead = fileReading.readLine();
+        assertThat(currentLineRead, is(equalTo(null)));
+    }
+
     @Then("^expect the line to contain \"([^\"]*)\"$")
     public void expectTheLineToContain(String subString) {
         assertThat(currentLineRead, containsString(subString));
+    }
+
+    @When("^processing each line in file \"([^\"]*)\" and only output to file \"([^\"]*)\" lines after finding a line containing \"([^\"]*)\"$")
+    public void processingEachLineInFileAndOnlyOutputToFileLinesAfterFindingALineContaining(String inFilePath, String outFilePath, String lineToMatch) throws Throwable {
+        BufferedReader fileReading = new BufferedReader(new FileReader(inFilePath));
+        BufferedWriter fileWriting = new BufferedWriter(new FileWriter(outFilePath));
+        String currentLine = "";
+        do {
+            currentLine = fileReading.readLine();
+        } while (currentLine != null && !currentLine.contains(lineToMatch));
+
+        // Skip this line
+        currentLine = fileReading.readLine();
+        while(currentLine != null) {
+            fileWriting.write(currentLine);
+            currentLine = fileReading.readLine();
+            fileWriting.newLine();
+        }
+        fileReading.close();
+        fileWriting.flush();
+        fileWriting.close();
+    }
+
+    @When("^processing each line in file \"([^\"]*)\" and only output to file \"([^\"]*)\" lines that do not contain any lines from \"([^\"]*)\"$")
+    public void processingEachLineInFileAndOnlyOutputToFileLinesThatDoNotContainAnyLinesFrom(String inFilePath, String outFilePath, String matchFilePath) throws Throwable {
+        String currentLine = "";
+        BufferedReader fileReading = new BufferedReader(new FileReader(matchFilePath));
+        Set<String> toMatch = new HashSet<String>();
+        do {
+            currentLine = fileReading.readLine();
+            if (currentLine != null) {
+                toMatch.add(currentLine);
+            }
+        } while (currentLine != null);
+        fileReading.close();
+
+        fileReading = new BufferedReader(new FileReader(inFilePath));
+        BufferedWriter fileWriting = new BufferedWriter(new FileWriter(outFilePath));
+        do {
+            currentLine = fileReading.readLine();
+            if (currentLine != null) {
+                boolean matched = false;
+                for (String line : toMatch) {
+                    if (currentLine.contains(line)) {
+                        matched = true;
+                        break;
+                    }
+                }
+                if (!matched) {
+                    fileWriting.write(currentLine);
+                    currentLine = fileReading.readLine();
+                    fileWriting.newLine();
+                }
+            }
+        } while (currentLine != null);
+
+        fileReading.close();
+        fileWriting.flush();
+        fileWriting.close();
     }
 
     @Given("^a ROM from file \"([^\"]*)\" at (.*)$")

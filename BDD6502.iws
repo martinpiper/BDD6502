@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/PerformanceTesting.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/PerformanceTesting.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
@@ -91,7 +90,7 @@
       <recent name="com.bdd6502" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner features/PerformanceTesting.feature">
+  <component name="RunManager" selected="Application.TestRunner features/DataValidation.feature">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -510,6 +509,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestRunner features/DataValidation.feature" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/DataValidation.feature" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestRunner features/PerformanceTesting.feature" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
@@ -812,6 +819,7 @@
       <item itemvalue="Application.TestRunner VideoHardware @Turrican_8" />
       <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
       <item itemvalue="Application.TestRunner features/PerformanceTesting.feature" />
+      <item itemvalue="Application.TestRunner features/DataValidation.feature" />
       <item itemvalue="Application.TestRunner no parameters" />
       <item itemvalue="Application.TestRunner simple.feature @RemoteDebugger" />
       <item itemvalue="Application.TestRunner simple.feature" />
@@ -884,7 +892,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>472</line>
+          <line>473</line>
           <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -899,7 +907,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>1191</line>
+          <line>1192</line>
           <option name="timeStamp" value="40" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
