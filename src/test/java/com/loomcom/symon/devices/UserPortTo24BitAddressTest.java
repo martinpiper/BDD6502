@@ -99,7 +99,7 @@ public class UserPortTo24BitAddressTest {
     }
 
     public void addAPUCodeData(String filename) throws Exception {
-        String returnString = Glue.runProcessWithOutput("..\\C64\\acme.exe -v3 --lib ../ -o target/apu.bin --labeldump test.lbl -f plain " + filename);
+        String returnString = Glue.runProcessWithOutput("..\\C64\\acme.exe -v3 --lib ../ -o target/apu.bin --labeldump test.lbl -f plain " + filename , true);
         System.out.println(returnString);
         Glue.loadLabels("test.lbl");
 

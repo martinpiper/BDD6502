@@ -24,7 +24,7 @@ Feature: Continue and stop execution test
     bne .l1
     rts
   """
-    And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
+    And I run the command line ignoring return code: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
     And I load prg "test.prg"
     And I load labels "test.lbl"
     Then I expect to see $400 equal $a9

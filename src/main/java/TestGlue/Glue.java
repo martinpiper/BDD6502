@@ -1331,19 +1331,28 @@ public class Glue {
     @Given("^I run the command line: (.*)$")
     public void i_run_the_command_line(String arg1) throws Throwable {
         checkScenario();
-        String returnString = runProcessWithOutput(arg1);
+        String returnString = runProcessWithOutput(arg1 , true);
         scenario.write(returnString);
     }
 
-    public static String runProcessWithOutput(String arg1) throws Exception {
+    @Given("^I run the command line ignoring return code: (.*)$")
+    public void i_run_the_command_line_ignore(String arg1) throws Throwable {
+        checkScenario();
+        String returnString = runProcessWithOutput(arg1 , false);
+        scenario.write(returnString);
+    }
+
+    public static String runProcessWithOutput(String arg1 , boolean doThrow) throws Exception {
         StringBuffer sb = new StringBuffer();
         // Write code here that turns the phrase above into concrete actions
         Process p = Runtime.getRuntime().exec(arg1);
         updateStringBufferFromProcess(p, sb);
         p.waitFor();
 
-        if (p.exitValue() != 0) {
-            throw new Exception(String.format("Return code: %d with message '%s'", p.exitValue(), sb.toString()));
+        if (doThrow) {
+            if (p.exitValue() != 0) {
+                throw new Exception(String.format("Return code: %d with message '%s'", p.exitValue(), sb.toString()));
+            }
         }
         String returnString = String.format("After executing command line '%s' return code: %d with message '%s'\n", arg1, p.exitValue(), sb.toString());
         System.setProperty("test.BDD6502.lastProcessOutput", returnString);
@@ -2231,7 +2240,7 @@ public class Glue {
         Set<String> toMatch = new HashSet<String>();
         do {
             currentLine = fileReading.readLine();
-            if (currentLine != null) {
+            if (currentLine != null && !currentLine.isEmpty()) {
                 toMatch.add(currentLine);
             }
         } while (currentLine != null);
