@@ -1,7 +1,31 @@
 ; TODO items
 
+* Add graphical display of C64 screen based on VIC contents
+	https://www.c64-wiki.com/wiki/raster_time
+	Is there a need to display the video hardware and C64 VIC at the same time?
+		It would be nice...
+	Add syntax to: C64ROMs.feature
+	Existing syntax:
+		Given a new video display
+		Given limit video display to 60 fps
+	It could use a lot of the functionality used by DisplayBombJack, perhaps just add different layer types? For C64 chars/bitmap and C64 sprites
+		Also it would need to turn off the palette RAM tests
+	Probably just char screen and bitmap display for now
+	Update VIC raster H/V pos based on opcode cycle counts
+	Emulate raster position read for C64 VIC
+	handleDisplayEvents() to include the extra display
+	debuggerUpdateRegs() to include the VIC display timings in optionalExtras. displayH/displayV could also use the C64 screen timing, if displayBombJack isn't emabled.
+	InitWindow()
+	RepaintWindow()
+	Added:
+		Given a new C64 video display
+		And show C64 video window
+
+
+
+
 * Possible to include debug views of the full tile/char map virtual displays in other windows.
-	Include a rectangle (guide lines actually) of the area that is on the real display from their scroll positions at the current time in the debugger.
+	Include a rectangle (guidelines actually) of the area that is on the real display from their scroll positions at the current time in the debugger.
 	The scaled sprite view can include a larger unclipped render with a rectangle showing the real view screen, to help debug any clipping issues for example.
 	> Two view rectangles, the maximum extent and the current extent with the border registers.	
 

@@ -3,6 +3,9 @@ Feature: C64 ROM tests
   This checks the ROM addition syntax
 
   Scenario: Simple code test for C64 ROMs
+    Given a new C64 video display
+    And show C64 video window
+    #And render a C64 video display frame
     Given I have a simple overclocked 6502 system
     Given I am using C64 processor port options
     Given a ROM from file "..\..\VICE\C64\kernal" at $e000

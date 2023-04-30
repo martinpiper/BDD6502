@@ -63,6 +63,7 @@ public class Glue {
     static private boolean enableuninitialisedReadProtection = false;
     static private boolean enableuninitialisedReadProtectionWithFail = false;
     static private DisplayBombJack displayBombJack = null;
+    static private DisplayC64 displayC64 = null;
     static private AudioExpansion audioExpansion = null;
     static private UserPortTo24BitAddress userPort24BitAddress = null;
     private int pixelsPerInstruction = 8;
@@ -234,6 +235,9 @@ public class Glue {
     public void i_have_a_simple_overclocked_6502_system() throws Throwable {
         initMachine();
         machine.getCpu().setOverclock();
+        if (displayC64 != null) {
+            displayC64.setTheRAM(machine.getRam());
+        }
     }
 
     @Given("^clear all external devices$")
@@ -763,6 +767,9 @@ public class Glue {
             }
             displayBombJack.RepaintWindow();
         }
+        if (displayC64 != null && displayC64.isVisible()) {
+            displayC64.RepaintWindow();
+        }
     }
 
     private boolean testExecutionBreakPoints(RemoteDebugger remoteDebugger) {
@@ -1115,12 +1122,23 @@ public class Glue {
             if (untilPC == machine.getCpu().getProgramCounter()) {
                 break;
             }
+
+            int beforeCycles = machine.getCpu().getClockCycles();
+
             Integer addr = machine.getCpu().getCpuState().pc;
             if (displayLimitFPS > 0 && frameDelta <= 0) {
                 // If we are limiting the frames and no frame needs to be rendered then don't execute instructions
             } else {
                 internalCPUStep(displayTrace);
             }
+
+            int deltaCycles = machine.getCpu().getClockCycles() - beforeCycles;
+            if (deltaCycles > 0) {
+                if (displayC64 != null && displayC64.isVisible()) {
+                    displayC64.calculatePixelsFor(deltaCycles * 8);
+                }
+            }
+
             instructionsThisPeriod++;
             numInstructions++;
             if (maxInstructions > 0) {
@@ -1741,6 +1759,14 @@ public class Glue {
         devices.add(displayBombJack);
     }
 
+    @Given("^a new C64 video display$")
+    public void aNewC64VideoDisplay() throws IOException {
+        if (displayC64 != null) {
+            displayC64.getWindow().dispatchEvent(new WindowEvent(displayC64.getWindow(), WindowEvent.WINDOW_CLOSING));
+        }
+        displayC64 = new DisplayC64();
+    }
+
     @Given("^a new video display with 16 colours$")
     public void aNewVideoDisplay16Colours() throws IOException {
         if (displayBombJack != null) {
@@ -1795,10 +1821,21 @@ public class Glue {
         displayBombJack.InitWindow();
     }
 
+    @Given("^show C64 video window$")
+    public void showC64VideoWindow() {
+        displayC64.InitWindow();
+    }
+
     @Given("^render a video display frame$")
     public void renderAVideoDisplayFrame() {
         displayBombJack.calculateAFrame();
         displayBombJack.RepaintWindow();
+    }
+
+    @Given("^render a C64 video display frame$")
+    public void renderAC64VideoDisplayFrame() {
+        displayC64.calculateAFrame();
+        displayC64.RepaintWindow();
     }
 
     @Given("^render (.*) video display frames$")
@@ -1808,7 +1845,6 @@ public class Glue {
             displayBombJack.RepaintWindow();
         }
     }
-
 
     @Given("^render a video display until H=(.*) and V=(.*)$")
     public void renderAVideoDisplayUntilHV(String h, String v) throws ScriptException {
@@ -2283,9 +2319,20 @@ public class Glue {
 
     @Given("^add C64 hardware$")
     public void addC64Hardware() throws MemoryRangeException {
-        machine.getCpu().getBus().addDevice(new C64VICII(scenario) , 1);
+        Device device = new C64VICII(scenario);
+        if (displayC64 != null) {
+            displayC64.setTheVICII(device);
+        }
+        machine.getCpu().getBus().addDevice(device , 1);
+
         machine.getCpu().getBus().addDevice(new C64SID(scenario) , 1);
-        machine.getCpu().getBus().addDevice(new C64ColourRAM(scenario) , 1);
+
+        device = new C64ColourRAM(scenario);
+        if (displayC64 != null) {
+            displayC64.setTheColourRAM(device);
+        }
+        machine.getCpu().getBus().addDevice(device , 1);
+
         machine.getCpu().getBus().addDevice(new C64IO(scenario) , 1);
     }
 
