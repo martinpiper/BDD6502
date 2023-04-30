@@ -1109,6 +1109,12 @@ public class Glue {
                 }
             }
 
+            if (displayC64 != null && !displayC64.isVisible())
+            {
+                break;
+            }
+
+
             if (audioExpansion != null) {
                 if (instructionsPerAudioRefresh > 0) {
                     instructionsPerAudioRefreshCount--;
@@ -2000,6 +2006,16 @@ public class Glue {
         displayBombJack.writeDebugBMPsToLeafFilename(null);
     }
 
+    @Given("^C64 video display saves debug BMP images to leaf filename \"([^\"]*)\"$")
+    public void C64videoDisplaySavesDebugBMPImagesToLeafFilename(String leafFilename) throws Throwable {
+        displayC64.writeDebugBMPsToLeafFilename(leafFilename);
+    }
+
+    @Given("^C64 video display does not save debug BMP images$")
+    public void C64videoDisplayDoesNotSaveDebugBMPImages() throws Throwable {
+        displayC64.writeDebugBMPsToLeafFilename(null);
+    }
+
     static boolean bufferedImagesEqual(BufferedImage img1, BufferedImage img2) {
         if (img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight()) {
             for (int x = 0; x < img1.getWidth(); x++) {
@@ -2317,6 +2333,18 @@ public class Glue {
         machine.getCpu().getBus().addDevice(memory);
     }
 
+    @Given("^a CHARGEN ROM from file \"([^\"]*)\"$")
+    public void a_CHARGEN_ROM_from_file(String filename) throws Throwable {
+        File file = new File(filename);
+        int flen = (int) file.length();
+        Memory memory = Memory.makeROM(0 , flen - 1 , file);
+
+        if (displayC64 != null) {
+            displayC64.setTheCHARGEN(memory);
+        }
+        // Not going to add this to the device memory map
+    }
+
     @Given("^add C64 hardware$")
     public void addC64Hardware() throws MemoryRangeException {
         Device device = new C64VICII(scenario);
@@ -2333,7 +2361,11 @@ public class Glue {
         }
         machine.getCpu().getBus().addDevice(device , 1);
 
-        machine.getCpu().getBus().addDevice(new C64IO(scenario) , 1);
+        device = new C64IO(scenario);
+        if (displayC64 != null) {
+            displayC64.setTheIO(device);
+        }
+        machine.getCpu().getBus().addDevice(device , 1);
     }
 
     @Given("^randomly initialise all memory using seed (.*)$")
@@ -2389,5 +2421,10 @@ public class Glue {
     public void profilePrint() {
         profileCreateDebug(null);
         scenario.write(debugProfile);
+    }
+
+    @Given("^force C64 displayed bank to (\\d+)$")
+    public void force_C64_displayed_bank_to(int bank) throws Throwable {
+        displayC64.setForceBank(bank);
     }
 }

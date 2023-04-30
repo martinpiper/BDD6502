@@ -4,6 +4,7 @@ import com.loomcom.symon.devices.C64ColourRAM;
 import com.loomcom.symon.devices.C64VICII;
 import com.loomcom.symon.devices.Device;
 import com.loomcom.symon.devices.UserPortTo24BitAddress;
+import com.loomcom.symon.exceptions.MemoryAccessException;
 import org.apache.commons.lang3.RandomUtils;
 
 import javax.imageio.ImageIO;
@@ -18,10 +19,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import static com.bdd6502.MemoryBus.addressActive;
+
 public class DisplayC64 {
 
     JFrame window;
     QuickDrawPanel panel;
+    private int forceBank = -1;
 
     public void setTheVICII(Device theVICII) {
         this.theVICII = theVICII;
@@ -41,9 +45,21 @@ public class DisplayC64 {
 
     Device theRAM = null;
 
+
+    public void setTheIO(Device theIO) {
+        this.theIO = theIO;
+    }
+
+    Device theIO = null;
+
+    public void setTheCHARGEN(Device theCHARGEN) {
+        this.theCHARGEN = theCHARGEN;
+    }
+
+    Device theCHARGEN = null;
+
     int displayWidth = 504;
     int displayHeight = 312;
-    int cyclesPerLine = 63;
 
     public int getFrameNumberForSync() {
         return frameNumberForSync;
@@ -124,18 +140,21 @@ public class DisplayC64 {
     }
 
     public void calculatePixelsUntilVSync() {
+        refreshInternals();
         do {
             calculatePixel();
         } while (!vSync);
     }
 
     public void calculatePixelsUntil(int waitH, int waitV) {
+        refreshInternals();
         do {
             calculatePixel();
         } while (!(displayH == waitH && displayV == waitV));
     }
 
     public void calculatePixelsFor(int num) {
+        refreshInternals();
         while(num > 0) {
             calculatePixel();
             num--;
@@ -143,6 +162,7 @@ public class DisplayC64 {
     }
 
     public void calculateAFrame() {
+        refreshInternals();
         for (int i = 0; i < pixelsInWholeFrame(); i++) {
             calculatePixel();
         }
@@ -192,10 +212,61 @@ public class DisplayC64 {
     int kVIC2SpriteYBorderTop24 = 54;
     int kVIC2SpriteYBorderBottom = 250;
 
-    public void calculatePixel() {
+    int screenAddress = 0;
+    int charsBitmapAddress = 0;
+    int currentCharBits = 0;
+    int currentChar = 0;
+    int currentColour = 0;
+    boolean isMulticolour = false;
+    boolean isBitmap = false;
+    boolean isCHARROM = false;
+    int borderColour = 0;
+    int backgroundColour = 0;
+    int bankToAddress[] = {0xc000, 0x8000, 0x4000, 0x0000};
+    private void refreshInternals() {
+        try {
+            int bank = theIO.read(0x100, false) & 0x03;
+            if (forceBank >= 0) {
+                bank = forceBank;
+            }
+            int bankAddress = bankToAddress[bank];
+
+            int VIC2ScreenControlV = theVICII.read(0x11, false);
+            if (addressActive(VIC2ScreenControlV , 0b100000)) {
+                isBitmap = true;
+            } else {
+                isBitmap = false;
+            }
+            int VIC2ScreenControlH = theVICII.read(0x16, false);
+            if (addressActive(VIC2ScreenControlH , 0b10000)) {
+                isMulticolour = true;
+            } else {
+                isMulticolour = false;
+            }
+            int VIC2MemorySetup = theVICII.read(0x18, false);
+            int charMEM = VIC2MemorySetup & 0b1110;
+            if (isBitmap) {
+                charMEM = VIC2MemorySetup & 0b1110;
+            }
+            if ((bank == 1 || bank == 3) && (charMEM == 4 || charMEM == 6)) {
+                isCHARROM = true;
+                charsBitmapAddress = (charMEM & 0x02) * 0x400;
+            } else {
+                isCHARROM = false;
+                charsBitmapAddress = bankAddress + (charMEM * 0x400);
+            }
+            int screenMEM = VIC2MemorySetup >> 4;
+            screenAddress = bankAddress + (screenMEM * 0x400);
+
+            borderColour = theVICII.read(0x20, false);
+            backgroundColour = theVICII.read(0x21, false);
+        } catch (MemoryAccessException e) {
+        }
+    }
+
+    private void calculatePixel() {
         vSync = false;
 
-        // One pixel delay from U95:A
         boolean enablePixels = true;
         if ((displayH < kVIC2SpriteXBorderLeft)) {
             enablePixels = false;
@@ -212,10 +283,33 @@ public class DisplayC64 {
 
         if (enablePixels) {
             // TODO: Chars/bitmaps/sprites/background
-            panel.fastSetRGB(displayH, displayV, RandomUtils.nextInt(0, 256));
+            int xpos = displayH - kVIC2SpriteXBorderLeft;
+            if ((xpos & 0x07) == 0) {
+                xpos /= 8;
+                int ypos = displayV - kVIC2SpriteYBorderTop;
+                int yLine = ypos & 0b111;
+                ypos /= 8;
+                try {
+                    currentChar = theRAM.read(screenAddress + (ypos * 40) + xpos, false);
+
+                    if (isCHARROM) {
+                        currentCharBits = theCHARGEN.read(charsBitmapAddress + (currentChar * 8) + yLine, false);
+                    } else {
+                        currentCharBits = theRAM.read(charsBitmapAddress + (currentChar * 8) + yLine, false);
+                    }
+
+                    currentColour = theColourRAM.read((ypos * 40) + xpos, false) & 0xf;
+                } catch (MemoryAccessException e) {
+                }
+            }
+            if ( (currentCharBits & 0b10000000) == 0) {
+                panel.fastSetRGB(displayH, displayV, palette[backgroundColour]);
+            } else {
+                panel.fastSetRGB(displayH, displayV, palette[currentColour]);
+            }
+            currentCharBits = currentCharBits << 1;
         } else {
-            // TODO: Border colour
-            panel.fastSetRGB(displayH, displayV, 0);
+            panel.fastSetRGB(displayH, displayV, palette[borderColour]);
         }
 
         displayH++;
@@ -228,10 +322,9 @@ public class DisplayC64 {
             vSync = true;
 
             // Save the frame
-            frameNumberForSync++;
             if (leafFilename != null && !leafFilename.isEmpty()) {
                 try {
-                    File file = new File(leafFilename + String.format("%06d", frameNumberForSync++) + ".bmp");
+                    File file = new File(leafFilename + String.format("%06d", frameNumberForSync) + ".bmp");
                     file.mkdirs();
                     try {
                         ImageIO.write(getImage(), "bmp", file);
@@ -244,6 +337,7 @@ public class DisplayC64 {
             }
 
             RepaintWindow();
+            frameNumberForSync++;
         }
     }
 
@@ -253,5 +347,9 @@ public class DisplayC64 {
 
     public JFrame getWindow() {
         return window;
+    }
+
+    public void setForceBank(int forceBank) {
+        this.forceBank = forceBank;
     }
 }

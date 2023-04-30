@@ -1,3 +1,4 @@
+@TC-12
 Feature: C64 ROM tests
 
   This checks the ROM addition syntax
@@ -5,17 +6,23 @@ Feature: C64 ROM tests
   Scenario: Simple code test for C64 ROMs
     Given a new C64 video display
     And show C64 video window
-    #And render a C64 video display frame
     Given I have a simple overclocked 6502 system
     Given I am using C64 processor port options
     Given a ROM from file "..\..\VICE\C64\kernal" at $e000
     Given a ROM from file "..\..\VICE\C64\basic" at $a000
+    Given a CHARGEN ROM from file "..\..\VICE\C64\chargen"
     Given add C64 hardware
+
+    And render a C64 video display frame
+
 
 #    And I enable trace with indent
     # This gets to repeatedly checking the keyboard buffer: E5CD  A5 C6     LDA $C6
     When I execute the indirect procedure at $fffc until return or until PC = $E5CF
+    And C64 video display saves debug BMP images to leaf filename "target/frames/TC-12-"
+    Then render a C64 video display frame
     Then I continue executing the procedure until return or until PC = $E5CD
+    Then render a C64 video display frame
 
     # Using: https://sta.c64.org/cbm64pet.html
     # Run
@@ -40,6 +47,7 @@ Feature: C64 ROM tests
     Then I continue executing the procedure until return or until PC = $E5CD
 
     # Check for "run" and "ready." in screen memory
+    Then render a C64 video display frame
     When I hex dump memory between $400 and $800
     Then property "test.BDD6502.lastHexDump" must contain string "4f0: 12 15 0e 20"
     Then property "test.BDD6502.lastHexDump" must contain string "540: 12 05 01 04 19 2e 20"

@@ -17,10 +17,11 @@
 	debuggerUpdateRegs() to include the VIC display timings in optionalExtras. displayH/displayV could also use the C64 screen timing, if displayBombJack isn't emabled.
 	InitWindow()
 	RepaintWindow()
+	When the visual display is enabled, will need better handling of "rasterToggle = !rasterToggle;"
 	Added:
 		Given a new C64 video display
 		And show C64 video window
-
+	>> First version of the C64 display works quite well
 
 
 
