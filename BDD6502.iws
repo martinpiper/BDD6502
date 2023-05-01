@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/C64ROMs.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/C64ROMs.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayC64.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayC64.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
@@ -93,7 +91,7 @@
       <recent name="com.loomcom.symon.devices" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner VideoHardware @Demo11">
+  <component name="RunManager" selected="Application.TestRunner C64ROMs.feature">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -894,45 +892,10 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <breakpoint type="java-exception">
-          <properties class="java.lang.ArrayIndexOutOfBoundsException" package="java.lang" />
-          <option name="timeStamp" value="13" />
-        </breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/MergeNTo1.java</url>
-          <line>39</line>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>477</line>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/RemoteDebugger.java</url>
-          <line>454</line>
-          <option name="timeStamp" value="79" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java</url>
-          <line>1507</line>
-          <option name="timeStamp" value="80" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayC64.java</url>
-          <line>142</line>
-          <option name="timeStamp" value="103" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>1842</line>
-          <option name="timeStamp" value="108" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <condition expression="address==0x100" language="JAVA" />
-          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/C64IO.java</url>
-          <line>18</line>
-          <option name="timeStamp" value="112" />
+          <line>302</line>
+          <option name="timeStamp" value="114" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -949,6 +912,7 @@
         <watch expression="theVICII" />
         <watch expression="VIC2MemorySetup" />
         <watch expression="theIO" />
+        <watch expression="displayC64.theColourRAM" />
       </configuration>
     </watches-manager>
   </component>

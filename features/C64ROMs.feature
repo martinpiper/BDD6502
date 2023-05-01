@@ -186,3 +186,35 @@ Feature: C64 ROM tests
     Then property "test.BDD6502.lastHexDump" must contain string "400: 2a 03 00 00"
 
     And I disable trace
+
+
+    And I create file "test.a" with
+    """
+    !source "../C64/stdlib/stdlib.a"
+    !sal
+    * = $400
+    start
+      sei
+      lda #ProcessorPortDefault
+      sta ZPProcessorPort
+      +SetDefaultScreenLowerCase_A
+      +MVIC2MemorySetup_ScreenBitmap_A $6000 , $4000
+      sta VIC2MemorySetup
+      lda #%10
+      sta CIA2PortASerialBusVICBank
+      lda #VIC2ScreenControlVDefault | kVIC2ScreenControlVBits_Bitmap
+      sta VIC2ScreenControlV
+      rts
+    """
+    And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
+    And I load prg "test.prg"
+    And I load bin "c:\temp\t.chr" at $4000
+    And I load bin "c:\temp\t.scr" at $6000
+    And I load labels "test.lbl"
+
+    And I enable trace with indent
+    When I execute the procedure at start until return
+
+    And render a C64 video display frame
+    And render a C64 video display frame
+    And render a C64 video display frame

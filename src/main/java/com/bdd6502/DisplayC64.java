@@ -82,12 +82,18 @@ public class DisplayC64 {
 
     int displayH = 0, displayV = 0;
 
-    // https://www.c64-wiki.com/wiki/Color
     // Almost certain someone somewhere is going to disagree with these colours, they're for debug only, deal with it.
-    int palette[] = {getRGB(0,0,0) , getRGB(255, 255, 255), getRGB(136, 0, 0), getRGB(170, 255, 238),
-        getRGB(204, 68, 204), getRGB(0, 204, 85), getRGB(	0, 0, 170), getRGB(238, 238, 119),
-        getRGB(221, 136, 85), getRGB(102, 68, 0), getRGB(	255, 119, 119), getRGB(51, 51, 51),
-        getRGB(119, 119, 119), getRGB(170, 255, 102), getRGB(0, 136, 255), getRGB(187, 187, 187)
+    // https://www.c64-wiki.com/wiki/Color
+//    int palette[] = {getRGB(0,0,0) , getRGB(255, 255, 255), getRGB(136, 0, 0), getRGB(170, 255, 238),
+//        getRGB(204, 68, 204), getRGB(0, 204, 85), getRGB(	0, 0, 170), getRGB(238, 238, 119),
+//        getRGB(221, 136, 85), getRGB(102, 68, 0), getRGB(	255, 119, 119), getRGB(51, 51, 51),
+//        getRGB(119, 119, 119), getRGB(170, 255, 102), getRGB(0, 136, 255), getRGB(187, 187, 187)
+//    };
+    // VICE\C64\vice.vpl
+    int palette[] = {0x000000, 0xFFFFFF, 0x68372b, 0x70a4b2,
+            0x6f3d86, 0x588d43, 0x352879, 0xb8c76f,
+            0x6f4f25, 0x433900, 0x9a6759, 0x444444,
+            0x6c6c6c, 0x9ad284, 0x6c5eb5, 0x959595
     };
 
     String leafFilename = null;
@@ -293,9 +299,17 @@ public class DisplayC64 {
                     currentChar = theRAM.read(screenAddress + (ypos * 40) + xpos, false);
 
                     if (isCHARROM) {
-                        currentCharBits = theCHARGEN.read(charsBitmapAddress + (currentChar * 8) + yLine, false);
+                        if (isBitmap) {
+                            currentCharBits = theCHARGEN.read((charsBitmapAddress + ((xpos + (ypos * 40)) * 8) + yLine) & 0xfff, false);
+                        } else {
+                            currentCharBits = theCHARGEN.read((charsBitmapAddress + (currentChar * 8) + yLine) & 0xfff, false);
+                        }
                     } else {
-                        currentCharBits = theRAM.read(charsBitmapAddress + (currentChar * 8) + yLine, false);
+                        if (isBitmap) {
+                            currentCharBits = theRAM.read(charsBitmapAddress + ((xpos + (ypos * 40)) * 8) + yLine, false);
+                        } else {
+                            currentCharBits = theRAM.read(charsBitmapAddress + (currentChar * 8) + yLine, false);
+                        }
                     }
 
                     currentColour = theColourRAM.read((ypos * 40) + xpos, false) & 0xf;
@@ -303,9 +317,17 @@ public class DisplayC64 {
                 }
             }
             if ( (currentCharBits & 0b10000000) == 0) {
-                panel.fastSetRGB(displayH, displayV, palette[backgroundColour]);
+                if (isBitmap) {
+                    panel.fastSetRGB(displayH, displayV, palette[currentChar & 0xf]);
+                } else {
+                    panel.fastSetRGB(displayH, displayV, palette[backgroundColour]);
+                }
             } else {
-                panel.fastSetRGB(displayH, displayV, palette[currentColour]);
+                if (isBitmap) {
+                    panel.fastSetRGB(displayH, displayV, palette[(currentChar>>4) & 0xf]);
+                } else {
+                    panel.fastSetRGB(displayH, displayV, palette[currentColour]);
+                }
             }
             currentCharBits = currentCharBits << 1;
         } else {
