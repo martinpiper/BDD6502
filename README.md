@@ -53,6 +53,7 @@ This example [test case](https://github.com/martinpiper/BDD6502/blob/master/feat
 ```
 
 Code can of course be included from existing source code and tested, as this example from a [game project demonstrates](https://github.com/martinpiper/C64Public/blob/master/Citadel2/features/Score.feature) where its score routine is tested.
+[This video](https://youtu.be/-Ptq6ZY3Kxk?t=1253) demonstrates unit testing 6502 code.
 
 Syntax also exists to interface with the remote monitor in [Vice emulator](https://vice-emu.sourceforge.io/).
 This allows completed game code to be accurately emulated and verified, for example by comparing screenshots of game code as it [executes frame by frame](https://github.com/martinpiper/C64Public/blob/master/Scroller/features/VerifyByScreenshots.feature).
@@ -62,13 +63,13 @@ Syntax for test cases
 
 Syntax included in [source control](https://github.com/martinpiper/BDD6502/blob/master/target/syntax.html) along with the [built jars](https://github.com/martinpiper/BDD6502/tree/master/target).
 
-Syntax can also be extended by using a [java maven build](https://github.com/martinpiper/C64Public/blob/master/Citadel2/pom.xml) to add [extension syntax](https://github.com/martinpiper/C64Public/blob/master/Citadel2/src/test/java/MazeGlue6502/Memory.java#L54-L59)  
-
+Syntax can also be extended by using a [java maven build](https://github.com/martinpiper/C64Public/blob/master/Citadel2/pom.xml) to add [extension syntax](https://github.com/martinpiper/C64Public/blob/master/Citadel2/src/test/java/MazeGlue6502/Memory.java#L54-L59). 
+[This video](https://youtu.be/-Ptq6ZY3Kxk?t=356) gives an example of extending syntax with java code.
 
 Setup
 -----
 
-Build the jar, use the built version in the "target" directory, or download it from: https://github.com/martinpiper/BDD6502/releases
+Build the jar, or use the built version in the "[target](https://github.com/martinpiper/BDD6502/tree/master/target)" directory.
 
 If you are running the examples, you will need various files from inside this repository.
 	Get the repository https://github.com/martinpiper/C64Public and make sure the contents are place in a "C64" directory at the same level as this BDD6502 directory.
@@ -107,6 +108,8 @@ Or when using an IDE: -Dbdd6502.trace=true
 
 Music conversion
 ----------------
+
+The music conversion from MOD/XM files, commonly used on the Amiga, is mostly used with my [modular audio and video hardware](https://www.youtube.com/watch?v=MLVZav7mVcI) project. 
 
 * Convert: java -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod" "target/exportedMusic" 1 1
     Use "-Dmusic.volume=1" to include channel volume changes that are not part of frequency changes. This can produce large files, so use only when really needed.
