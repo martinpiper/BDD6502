@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/BDD6502.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -88,7 +92,7 @@
       <recent name="com.loomcom.symon.devices" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner C64ROMs.feature">
+  <component name="RunManager" selected="Application.TestRunner AutomateWindows.feature">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -218,6 +222,14 @@
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Martin Piper\Downloads\cream_of_the_earth.mod&quot; &quot;target/exportedMusic&quot; 65535 100626" />
       <option name="VM_PARAMETERS" value="-Dmusic.volume=1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner AutomateWindows.feature" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/AutomateWindows.feature" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -792,6 +804,7 @@
       <item itemvalue="Application.TestRunner -CotE" />
       <item itemvalue="Application.TestRunner BombJack" />
       <item itemvalue="Application.TestRunner C64ROMs.feature" />
+      <item itemvalue="Application.TestRunner AutomateWindows.feature" />
       <item itemvalue="Application.TestRunner printIO.feature" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
@@ -904,12 +917,6 @@
         <watch expression="apuData.apuData" language="JAVA" />
         <watch expression="instruction &amp; kAPU_IDataSelectMask" language="JAVA" />
         <watch expression="kAPU_IDataSelectRAM" language="JAVA" />
-      </configuration>
-      <configuration name="Application">
-        <watch expression="theVICII" />
-        <watch expression="VIC2MemorySetup" />
-        <watch expression="theIO" />
-        <watch expression="displayC64.theColourRAM" />
       </configuration>
     </watches-manager>
   </component>

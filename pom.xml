@@ -39,6 +39,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.mmarquee</groupId>
+            <artifactId>ui-automation</artifactId>
+            <version>0.7.0</version>
+        </dependency>
     </dependencies>
 
     <build>

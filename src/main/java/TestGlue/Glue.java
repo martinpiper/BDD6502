@@ -16,6 +16,12 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import mmarquee.automation.AutomationException;
+import mmarquee.automation.UIAutomation;
+import mmarquee.automation.controls.Application;
+import mmarquee.automation.controls.ElementBuilder;
+import mmarquee.automation.controls.MenuItem;
+import mmarquee.automation.controls.Window;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,6 +41,72 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class Glue {
+
+    Window currentWindow;
+    Application application;
+    @Given("^starting an automation process \"([^\"]*)\" with parameters \"([^\"]*)\"$")
+    public void startingAnAutomationProcessWithParameters(String name, String parameters) throws Throwable {
+        // https://mmarquee.github.io/ui-automation/docs/developer.html
+        UIAutomation automation = UIAutomation.getInstance();
+        if (parameters.isEmpty()) {
+            // Empty parameters seems to generate an error internally?
+            application = new Application(new ElementBuilder().automation(automation).applicationPath(name));
+            application.launchOrAttach();
+        } else {
+            application = new Application(new ElementBuilder().automation(automation).applicationPath(name).applicationArguments(parameters));
+            application.launchOrAttach();
+        }
+    }
+
+    @When("^automation wait for idle$")
+    public void automationWaitForIdle() {
+        application.waitForInputIdle();
+    }
+
+    @When("^automation find window from pattern \"([^\"]*)\"$")
+    public void automationFindWindowFromPattern(String arg0) throws Throwable {
+        UIAutomation automation = UIAutomation.getInstance();
+        currentWindow = automation.getDesktopWindow(Pattern.compile(arg0));
+    }
+
+    @When("^automation focus window$")
+    public void automationFocusWindow() {
+        currentWindow.focus();
+    }
+
+    @Then("^automation wait for window close$")
+    public void automationWaitForWindowClose() throws InterruptedException {
+
+        while (true) {
+            try {
+                if (!currentWindow.isEnabled()) break;
+            } catch (AutomationException e) {
+                System.out.println("Window closed!");
+                return;
+            }
+            Thread.sleep(1000);
+            System.out.println("Waiting for window...");
+        }
+    }
+
+    MenuItem currentMenuItem;
+    @When("^automation expand main menu item \"([^\"]*)\"$")
+    public void automationExpandMainMenuItem(String name) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        currentMenuItem = currentWindow.getMainMenu().getMenuItem(name);
+        currentMenuItem.expand();
+    }
+
+    @When("^automation click current menu item \"([^\"]*)\"$")
+    public void automationClickCurrentMenuItem(String pattern) throws Throwable {
+        List<MenuItem> items = currentMenuItem.getItems();
+        for (MenuItem item : items) {
+            System.out.println(item.getName());
+        }
+        currentMenuItem = currentMenuItem.getMenuItem(Pattern.compile(pattern));
+        currentMenuItem.click();
+    }
+
     private class ProfileData {
         boolean isSEI = false;
         int targetAddress;
