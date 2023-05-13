@@ -58,6 +58,11 @@ public class Glue {
         }
     }
 
+    @Given("^starting an automation process \"([^\"]*)\" with parameters: (.*)$")
+    public void startingAnAutomationProcessWithParametersC(String arg0, String arg1) throws Throwable {
+        startingAnAutomationProcessWithParameters(arg0, arg1);
+    }
+
     @When("^automation wait for idle$")
     public void automationWaitForIdle() {
         application.waitForInputIdle();
