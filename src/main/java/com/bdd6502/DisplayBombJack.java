@@ -95,6 +95,8 @@ public class DisplayBombJack extends MemoryBus {
     }
 
     boolean enableDisplay = false;  // Default to be display off, this helps ensure startup code correctly sets this option
+    boolean enableBackground = false;
+    int backgroundColour = 0;
     int latchedPixel = 0;
     int palette[] = new int[256];
     Random random = new Random();
@@ -267,6 +269,12 @@ public class DisplayBombJack extends MemoryBus {
 
         // This logic now exists on the video layer hardware
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters) {
+            if ((data & 0x10) > 0) {
+                enableBackground = true;
+            } else {
+                enableBackground = false;
+            }
+
             if ((data & 0x20) > 0) {
                 enableDisplay = true;
             } else {
@@ -305,6 +313,10 @@ public class DisplayBombJack extends MemoryBus {
                         enableLayerFlags[i] = false;
                     }
                 }
+            }
+
+            if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0b) {
+                backgroundColour = data;
             }
         }
 
@@ -610,6 +622,11 @@ public class DisplayBombJack extends MemoryBus {
                 firstLayer = false;
                 layerIndex++;
             }
+        }
+
+        if (withOverscan && enableBackground && (latchedPixel & 0x0f) == 0) {
+            latchedPixel = backgroundColour;
+            latchedPixelFromWhere = -2;
         }
 
         displayX++;
