@@ -1899,6 +1899,16 @@ public class Glue {
         displayBombJack.setCallbackAPU(userPort24BitAddress);
     }
 
+    @Given("^APU clock divider (\\d+)$")
+    public void apu_clock_divider(int divider) throws Throwable {
+        userPort24BitAddress.setSetAPUClockDivider(divider);
+    }
+
+    @Given("^APU memory clock divider (\\d+)$")
+    public void apu_memory_clock_divider(int divider) throws Throwable {
+        userPort24BitAddress.setSetAPUMemoryClockDivider(divider);
+    }
+
     @Given("^show video window$")
     public void showVideoWindow() {
         displayBombJack.InitWindow();

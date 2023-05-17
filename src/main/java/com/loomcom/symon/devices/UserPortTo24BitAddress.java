@@ -237,7 +237,7 @@ public class UserPortTo24BitAddress extends Device {
 
         // To emulate the latched write passthrough from the APU its execution needs to be delayed, the RAM contention is used to emulate this
         if (apuData != null) {
-            apuData.setBusContention(8);
+            apuData.setBusContention(8 * setAPUMemoryClockDivider);
         }
     }
 
@@ -353,12 +353,38 @@ public class UserPortTo24BitAddress extends Device {
 
     boolean apuEnableDebug = false;
 
+    public void setSetAPUClockDivider(int setAPUClockDivider) {
+        this.setAPUClockDivider = setAPUClockDivider;
+    }
+
+    // These are the defaults from the hardware
+    int setAPUClockDivider = 1; // VIDCLK
+    int countAPUClockDivider = 0;
+
+    public void setSetAPUMemoryClockDivider(int setAPUMemoryClockDivider) {
+        this.setAPUMemoryClockDivider = setAPUMemoryClockDivider;
+    }
+
+    int setAPUMemoryClockDivider = 2; // VIDCLK / 2
+
+
     public void calculatePixel() {
         if (!enableAPU || apuData == null) {
             return;
         }
 
         apuData.ageContention();
+
+        countAPUClockDivider--;
+        if (countAPUClockDivider <= 0) {
+            countAPUClockDivider = setAPUClockDivider;
+            calculatePixelInternal();
+        }
+    }
+    public void calculatePixelInternal() {
+        if (!enableAPU || apuData == null) {
+            return;
+        }
 
         apuCheckTriggers();
 
