@@ -1,14 +1,29 @@
 package com.bdd6502;
 
 import com.replicanet.cukesplus.Main;
+import com.sun.jna.platform.win32.User32;
+import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.platform.win32.WinUser;
+import com.sun.jna.ptr.PointerByReference;
 import de.quippy.javamod.multimedia.MultimediaContainer;
 import de.quippy.javamod.multimedia.MultimediaContainerManager;
 import de.quippy.javamod.multimedia.mod.ModMixer;
 import de.quippy.javamod.system.Helpers;
+import mmarquee.automation.ControlType;
+import mmarquee.automation.Element;
+import mmarquee.automation.UIAutomation;
+import mmarquee.automation.controls.*;
+import mmarquee.automation.controls.Window;
+import mmarquee.automation.pattern.Text;
+import mmarquee.uiautomation.TreeScope;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
+import java.util.List;
 
 
 public class TestRunner {
@@ -63,6 +78,88 @@ public class TestRunner {
     }
 
     public static void main(String args[]) throws Exception {
+        if (args.length >= 1 && args[0].compareToIgnoreCase("--scan") == 0) {
+            UIAutomation automation = UIAutomation.getInstance();
+            List<Window> windows = automation.getDesktopWindows();
+            for (Window window : windows) {
+                System.out.println(">>>> Window");
+                System.out.println(window.toString());
+                System.out.println(window.getName());
+                System.out.println(window.getClassName());
+
+                // https://github.com/mmarquee/ui-automation
+                // https://mmarquee.github.io/ui-automation/docs/developer.html
+
+                try {
+                    Document document = window.getDocument(0);
+                    System.out.println("Document " + document.getText());
+                } catch (Exception e) {}
+
+                // https://learn.microsoft.com/en-us/windows/win32/winauto/inspect-objects
+                // C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x86\inspect.exe
+
+
+                // https://learn.microsoft.com/en-us/dotnet/api/system.windows.automation.treescope?view=windowsdesktop-7.0
+                TreeScope scope = new TreeScope(TreeScope.SUBTREE);
+
+//                Class c = Class.forName("mmarquee.automation.controls.Window");
+                Class c = Class.forName("mmarquee.automation.controls.AutomationBase");
+                Method method = c.getDeclaredMethod("findAll", TreeScope.class , PointerByReference.class);
+                method.setAccessible(true);
+                Object retObj = method.invoke(window, scope, automation.createTrueCondition());
+                List<Element> elements = (List<Element>) retObj;
+
+                System.out.println("Num elements " + elements.size());
+                for (Element element : elements) {
+                    System.out.println(">>>> Element");
+                    System.out.println(element.toString());
+                    System.out.println(element.getName());
+                    System.out.println(element.getClassName());
+                    System.out.println(element.getFullDescription());
+
+                    try {
+                        ElementBuilder eb = new ElementBuilder(element);
+                        TextBox textBox = new TextBox(eb);
+                        System.out.println("TextBox " + textBox.getValueFromIAccessible());
+                    } catch (Exception e) {}
+
+                    try {
+                        ElementBuilder eb = new ElementBuilder(element);
+                        EditBox editBox = new EditBox(eb);
+                        System.out.println("EditBox " + editBox.getText());
+                    } catch (Exception e) {}
+
+                    try {
+                        Text t = new Text(element);
+                        System.out.println("Text " + t.getText());
+                    } catch (Exception e) {}
+
+
+//                    WinDef.HWND hwnd = window.getNativeWindowHandle();
+//                    User32.INSTANCE.PostMessage(hwnd, 0,0,0);
+                    // com.sun.jna.platform.win32
+                    // WinUser.WM_KEYDOWN
+
+                    // Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    // System.out.println(clipboard.getData(DataFlavor.stringFlavor));
+
+                    /*
+                    List<Element> elements2 = element.findAll(scope, automation.createTrueCondition());
+                    System.out.println("Num elements2 " + elements.size());
+                    for (Element element2 : elements2) {
+                        System.out.println(">>>> Element2");
+                        System.out.println(element2.toString());
+                        System.out.println(element2.getName());
+                        System.out.println(element2.getClassName());
+                        System.out.println(element2.getFullDescription());
+                    }
+                    */
+
+                }
+
+            }
+            return;
+        }
         if (args.length >= 1 && args[0].compareToIgnoreCase("--execVideoTest") == 0) {
             DisplayBombJack displayBombJack = new DisplayBombJack();
 //            displayBombJack.writeDebugBMPsToLeafFilename("target/frames/execVideoTest-");
