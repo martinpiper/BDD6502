@@ -843,3 +843,8 @@ Added: Given I am using C64 processor port options
     Given profile stop
     Given profile print
     Then property "test.BDD6502.lastProfile" must contain string " : Video_WaitVBlank : "
+
+
+
+* Add APU write wait indicator in debug
+	<<Wait RAM>> will be seen in the APU debug output if the external (user port or APU) memory write causes data to pass through or to the APU

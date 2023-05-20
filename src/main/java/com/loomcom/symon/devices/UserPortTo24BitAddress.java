@@ -603,7 +603,11 @@ public class UserPortTo24BitAddress extends Device {
         }
 
         String output = "";
-        output += kAPUDEBUG + ">> PC: " + Integer.toHexString(currentPC) + " : " + instructionString.trim() + "\n";
+        String isSchedule = " : schedule ";
+        if (apuData.hasContention()) {
+            isSchedule = " : schedule <<Wait RAM>> ";
+        }
+        output += kAPUDEBUG + ">> PC: " + Integer.toHexString(currentPC) + isSchedule + apuInstuctionSchedule + " : " + instructionString.trim() + "\n";
         output += kAPUDEBUG + "Wait8: " + Integer.toHexString(apuWait8) + " Wait16: " + Integer.toHexString(apuWait16) + " Wait24: " + Integer.toHexString(apuWait24) + " : ";
         output += "RH8: " + Integer.toHexString(displayBombJack.getDisplayH() & 0xff) + " RH16: " + Integer.toHexString((displayBombJack.getDisplayH() >> 8) & 0xff) + " RV24: " + Integer.toHexString(displayBombJack.getDisplayV() & 0xff) + "\n";
         output += kAPUDEBUG + selectADDRB1 + "ADDRB1: " + Integer.toHexString(apuADDRB1) + " Contents: " + Integer.toHexString(apuData.getApuData()[(apuADDRB1-1) & 0x1fff] & 0xff) + " >" + Integer.toHexString(apuData.getApuData()[apuADDRB1 & 0x1fff] & 0xff) + "< " + Integer.toHexString(apuData.getApuData()[(apuADDRB1 + 1) & 0x1fff] & 0xff) + " : ";

@@ -6,7 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -88,7 +92,7 @@
       <recent name="com.loomcom.symon.devices" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner --scan">
+  <component name="RunManager" selected="Application.TestRunner VideoHardware @Demo6">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -681,34 +685,34 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserPortTo24BitAddressTest.checkAPU6" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="UserPortTo24BitAddressTest.checkAPU1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="BDD6502" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.loomcom.symon.devices.C64ColourRAM" />
+          <option name="PATTERN" value="com.loomcom.symon.devices.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="com.loomcom.symon.devices" />
       <option name="MAIN_CLASS_NAME" value="com.loomcom.symon.devices.UserPortTo24BitAddressTest" />
-      <option name="METHOD_NAME" value="checkAPU6" />
+      <option name="METHOD_NAME" value="checkAPU1" />
       <option name="TEST_OBJECT" value="method" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserPortTo24BitAddressTest.checkAPU7" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="UserPortTo24BitAddressTest.checkAPU6" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="BDD6502" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.loomcom.symon.devices.C64ColourRAM" />
+          <option name="PATTERN" value="com.loomcom.symon.devices.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="com.loomcom.symon.devices" />
       <option name="MAIN_CLASS_NAME" value="com.loomcom.symon.devices.UserPortTo24BitAddressTest" />
-      <option name="METHOD_NAME" value="checkAPU7" />
+      <option name="METHOD_NAME" value="checkAPU6" />
       <option name="TEST_OBJECT" value="method" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
       <method v="2">
@@ -854,19 +858,19 @@
       <item itemvalue="Cucumber Java.Simple ALL" />
       <item itemvalue="Cucumber Java.Trace Test" />
       <item itemvalue="JUnit.JUnit all" />
+      <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU1" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU6" />
-      <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU7" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU8" />
       <item itemvalue="Maven.BDD6502 [install]" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Maven.BDD6502 [install]" />
-        <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
-        <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU8" />
-        <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU7" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU6" />
+        <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
+        <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU1" />
+        <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU8" />
       </list>
     </recent_temporary>
   </component>
@@ -918,20 +922,20 @@
           <option name="timeStamp" value="115" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
-          <line>371</line>
-          <option name="timeStamp" value="116" />
+          <url>file://$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java</url>
+          <line>375</line>
+          <option name="timeStamp" value="120" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java</url>
+          <line>370</line>
+          <option name="timeStamp" value="121" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="JUnit">
-        <watch expression="calculationMap" />
-        <watch expression="reverseLabelMap" language="JAVA" />
-        <watch expression="apuDataReg" />
-        <watch expression="apuData.apuData" language="JAVA" />
-        <watch expression="instruction &amp; kAPU_IDataSelectMask" language="JAVA" />
-        <watch expression="kAPU_IDataSelectRAM" language="JAVA" />
+        <watch expression="debugState" />
       </configuration>
     </watches-manager>
   </component>

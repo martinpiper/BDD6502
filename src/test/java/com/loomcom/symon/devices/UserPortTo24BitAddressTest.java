@@ -337,17 +337,54 @@ public class UserPortTo24BitAddressTest {
         assertThat(apu.apuData.getApuData()[9] , is(equalTo((byte)0x00)));
         assertThat(apu.apuData.getApuData()[10] , is(equalTo((byte)0x00)));
 
-        display.calculateAFrame();
 
+        display.calculateAFrame();
         assertThat(memoryAddressByteSequence, is(empty()));
 
-        // No APU reset
+
         apu.apuData.writeData(0x2000, 0x02, 0x01);
         apu.apuData.writeData(0x2000, 0x02, 0x03);
 
+        // Check APU step by step execution behaviour
+        apu.calculatePixel();
+        assertThat(apu.apuInstuctionSchedule , is(equalTo(1)));
+        assertThat(apu.apuPC , is(equalTo(0)));
+        apu.calculatePixel();
+        assertThat(apu.apuInstuctionSchedule , is(equalTo(2)));
+        assertThat(apu.apuPC , is(equalTo(0)));
+        apu.calculatePixel();
+        assertThat(apu.apuInstuctionSchedule , is(equalTo(3)));
+        assertThat(apu.apuPC , is(equalTo(0)));
+        apu.calculatePixel();
+        assertThat(apu.apuInstuctionSchedule , is(equalTo(4)));
+        assertThat(apu.apuPC , is(equalTo(0)));
+        apu.calculatePixel();
+        assertThat(apu.apuInstuctionSchedule , is(equalTo(5)));
+        assertThat(apu.apuPC , is(equalTo(1)));
+        apu.calculatePixel();
+        assertThat(apu.apuInstuctionSchedule , is(equalTo(6)));
+        assertThat(apu.apuPC , is(equalTo(1)));
+        String debugState = apu.getDebugOutputLastState();
+        assertThat(debugState , not(containsString("<<Wait RAM>>")));
+
+        // Simulate a write from the user port to somewhere in the 24 bit address space, to cause APU and data bus contention
+        apu.writeMemoryBusWithState(0);
+        // And then the schedule loops
+        apu.calculatePixel();
+        assertThat(apu.apuInstuctionSchedule , is(equalTo(0)));
+        assertThat(apu.apuPC , is(equalTo(1)));
+        debugState = apu.getDebugOutputLastState();
+        assertThat(debugState , containsString("<<Wait RAM>>"));
+
+        apu.calculatePixel();
+        assertThat(apu.apuInstuctionSchedule , is(equalTo(0)));
+        assertThat(apu.apuPC , is(equalTo(1)));
+        debugState = apu.getDebugOutputLastState();
+        assertThat(debugState , containsString("<<Wait RAM>>"));
+
         display.calculatePixelsUntil(0, 0);
 
-        assertThat(memoryAddressByteSequence, is(empty()));
+        assertThat(memoryAddressByteSequence, is(contains(new Pair<Integer,Integer>(0,0))));
 
         assertThat(apu.apuData.getApuData()[0] , is(equalTo((byte)0x10)));
         assertThat(apu.apuData.getApuData()[1] , is(equalTo((byte)0x10)));
