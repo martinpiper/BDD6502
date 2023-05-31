@@ -848,3 +848,22 @@ Added: Given I am using C64 processor port options
 
 * Add APU write wait indicator in debug
 	<<Wait RAM>> will be seen in the APU debug output if the external (user port or APU) memory write causes data to pass through or to the APU
+
+
+
+
+* Emulation to hardware difference
+	Using the below in Demo6, the left and right border are the same
+		jsr Video_SetAddressVideoOverscanExtentRegisters
+    	lda #kBus24Bit_VideoLayer_OverscanExtent_Default
+    	sta CIA2PortBRS232
+    >> But using kBus24Bit_VideoLayer_OverscanExtent_Wide the left border on hardware seems to be missing one pixel, this might be the TV
+    	kBus24Bit_VideoLayer_OverscanExtent_Wide		= $39
+    	Using $49 the hardware is the same as the emulation, so ignore this, it is probably the TV or the conversion box...
+    		The video conversion box test card actually outputs a slightly wider signal than the large TV displays. The smaller display shows this
+    	Using the smaller display kBus24Bit_VideoLayer_OverscanExtent_Wide is the same as the emulation, so the large TV is trimming the display
+    	Using $29, which is too far left, does not show any extra picture on the large TV
+    		The smaller display actualy shows an extra 4 pixels compared to the TV, but still not exactly the same as the emulation
+    	Using $2a the smaller display actually shows ~4 pixels more to the left and right edge
+    		Created kBus24Bit_VideoLayer_OverscanExtent_UnsafeWide	= $2a for this
+    		This matches precisely the video conversion box output border extent
