@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/BDD6502.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
@@ -54,6 +52,8 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Work/BDD6502/features&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.fileTypes&quot;
   }
@@ -796,7 +796,6 @@
     </configuration>
     <list>
       <item itemvalue="Application.TestRunner --execAudioTest" />
-      <item itemvalue="Application.TestRunner --scan" />
       <item itemvalue="Application.TestRunner --execVideoTest" />
       <item itemvalue="Application.TestRunner --exportmod Biffe" />
       <item itemvalue="Application.TestRunner --exportmod SotB (1)" />
@@ -810,11 +809,11 @@
       <item itemvalue="Application.TestRunner --exportmod blood money" />
       <item itemvalue="Application.TestRunner --exportmod" />
       <item itemvalue="Application.TestRunner --playmod" />
+      <item itemvalue="Application.TestRunner --scan" />
       <item itemvalue="Application.TestRunner -CotE" />
+      <item itemvalue="Application.TestRunner AutomateWindows.feature" />
       <item itemvalue="Application.TestRunner BombJack" />
       <item itemvalue="Application.TestRunner C64ROMs.feature" />
-      <item itemvalue="Application.TestRunner AutomateWindows.feature" />
-      <item itemvalue="Application.TestRunner printIO.feature" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5" />
@@ -836,21 +835,22 @@
       <item itemvalue="Application.TestRunner Tusari2" />
       <item itemvalue="Application.TestRunner UninitialisedMemory.feature simple.feature" />
       <item itemvalue="Application.TestRunner UninitialisedMemory.feature" />
+      <item itemvalue="Application.TestRunner VideoHardware @Demo11" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo1" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo3" />
-      <item itemvalue="Application.TestRunner VideoHardware @Demo6" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo6B" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo6C" />
-      <item itemvalue="Application.TestRunner VideoHardware @Demo9" />
-      <item itemvalue="Application.TestRunner VideoHardware @Demo11" />
+      <item itemvalue="Application.TestRunner VideoHardware @Demo6" />
       <item itemvalue="Application.TestRunner VideoHardware @Demo7" />
+      <item itemvalue="Application.TestRunner VideoHardware @Demo9" />
       <item itemvalue="Application.TestRunner VideoHardware @RPG" />
       <item itemvalue="Application.TestRunner VideoHardware @Turrican" />
       <item itemvalue="Application.TestRunner VideoHardware @Turrican_8" />
       <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
-      <item itemvalue="Application.TestRunner features/PerformanceTesting.feature" />
       <item itemvalue="Application.TestRunner features/DataValidation.feature" />
+      <item itemvalue="Application.TestRunner features/PerformanceTesting.feature" />
       <item itemvalue="Application.TestRunner no parameters" />
+      <item itemvalue="Application.TestRunner printIO.feature" />
       <item itemvalue="Application.TestRunner simple.feature @RemoteDebugger" />
       <item itemvalue="Application.TestRunner simple.feature" />
       <item itemvalue="Cucumber Java.All features" />
@@ -858,8 +858,8 @@
       <item itemvalue="Cucumber Java.Simple ALL" />
       <item itemvalue="Cucumber Java.Trace Test" />
       <item itemvalue="JUnit.JUnit all" />
-      <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU1" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
+      <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU1" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU6" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU8" />
       <item itemvalue="Maven.BDD6502 [install]" />
@@ -931,11 +931,34 @@
           <line>370</line>
           <option name="timeStamp" value="121" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
+          <line>321</line>
+          <option name="timeStamp" value="122" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/info/cukes/cucumber-core/1.2.4/cucumber-core-1.2.4.jar!/cucumber/runtime/Runtime.class</url>
+          <line>298</line>
+          <option name="timeStamp" value="124" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/info/cukes/cucumber-core/1.2.4/cucumber-core-1.2.4.jar!/cucumber/runtime/model/StepContainer.class</url>
+          <line>46</line>
+          <option name="timeStamp" value="125" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/info/cukes/cucumber-core/1.2.4/cucumber-core-1.2.4.jar!/cucumber/runtime/model/StepContainer.class</url>
+          <line>31</line>
+          <option name="timeStamp" value="126" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="JUnit">
         <watch expression="debugState" />
+      </configuration>
+      <configuration name="Application">
+        <watch expression="reporter" />
       </configuration>
     </watches-manager>
   </component>
