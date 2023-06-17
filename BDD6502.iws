@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
@@ -91,9 +92,18 @@
       <recent name="com.loomcom.symon.devices" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature">
+  <component name="RunManager" selected="Maven.BDD6502 [install] (1)">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="C64 stdlib" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue macros --glue TestGlue features" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../c64/stdlib" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -718,23 +728,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserPortTo24BitAddressTest.checkAPU8" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="BDD6502" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.loomcom.symon.devices.C64ColourRAM" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.loomcom.symon.devices" />
-      <option name="MAIN_CLASS_NAME" value="com.loomcom.symon.devices.UserPortTo24BitAddressTest" />
-      <option name="METHOD_NAME" value="checkAPU8" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <option name="TEST_OBJECT" value="class" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
@@ -747,6 +740,32 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="BDD6502 [install] (1)" type="MavenRunConfiguration" factoryName="Maven" temporary="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="clean" />
+                <option value="install" />
+              </list>
+            </option>
+            <option name="pomFileName" value="pom.xml" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
     </configuration>
     <configuration name="BDD6502 [install]" type="MavenRunConfiguration" factoryName="Maven" temporary="true">
       <MavenSettings>
@@ -813,6 +832,7 @@
       <item itemvalue="Application.TestRunner AutomateWindows.feature" />
       <item itemvalue="Application.TestRunner BombJack" />
       <item itemvalue="Application.TestRunner C64ROMs.feature" />
+      <item itemvalue="Application.C64 stdlib" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5" />
@@ -860,16 +880,16 @@
       <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU1" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU6" />
-      <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU8" />
+      <item itemvalue="Maven.BDD6502 [install] (1)" />
       <item itemvalue="Maven.BDD6502 [install]" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Maven.BDD6502 [install]" />
+        <item itemvalue="Maven.BDD6502 [install] (1)" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU6" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU1" />
-        <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU8" />
       </list>
     </recent_temporary>
   </component>
@@ -950,6 +970,26 @@
           <line>31</line>
           <option name="timeStamp" value="126" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/com/replicanet/cukesplus-core/0.0.2-SNAPSHOT/cukesplus-core-0.0.2-SNAPSHOT.jar!/com/replicanet/cukesplus/FeatureMacroProcessor.class</url>
+          <line>415</line>
+          <option name="timeStamp" value="132" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/com/replicanet/cukesplus-core/0.0.2-SNAPSHOT/cukesplus-core-0.0.2-SNAPSHOT.jar!/com/replicanet/cukesplus/FeatureMacroProcessor.class</url>
+          <line>420</line>
+          <option name="timeStamp" value="133" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/com/replicanet/cukesplus-core/0.0.2-SNAPSHOT/cukesplus-core-0.0.2-SNAPSHOT.jar!/com/replicanet/cukesplus/FeatureMacroProcessor.class</url>
+          <line>410</line>
+          <option name="timeStamp" value="134" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/com/replicanet/cukesplus-core/0.0.2-SNAPSHOT/cukesplus-core-0.0.2-SNAPSHOT.jar!/com/replicanet/cukesplus/FeatureMacroProcessor.class</url>
+          <line>456</line>
+          <option name="timeStamp" value="135" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
@@ -957,7 +997,8 @@
         <watch expression="debugState" />
       </configuration>
       <configuration name="Application">
-        <watch expression="reporter" />
+        <watch expression="workLower" />
+        <watch expression="macro" />
       </configuration>
     </watches-manager>
   </component>
