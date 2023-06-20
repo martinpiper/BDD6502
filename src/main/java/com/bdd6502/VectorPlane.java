@@ -8,7 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class VectorPlane extends DisplayLayer {
-    int addressRegisters = 0xa000, addressExRegisters = 0x01;
+    int addressRegisters = 0xa100, addressExRegisters = 0x01;
     int addressPlane0 = 0x0000, addressExPlane0 = 0x02;
     byte plane0[] = new byte[0x2000];
     byte plane1[] = new byte[0x2000];

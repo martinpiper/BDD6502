@@ -283,14 +283,22 @@ Feature: Tests the video and audio hardware expansion together
     Given add a Mode7 layer with registers at '0xa000' and addressEx '0x08'
     And the layer has 16 colours
     And the layer has overscan
+
     Given add a Tiles layer with registers at '0x9e00' and screen addressEx '0x80' and planes addressEx '0x40'
     And the layer has 16 colours
     And the layer has overscan
-    Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
+
+    Given add a 2-to-1 merge layer with registers at '0xa202'
     And the layer has 16 colours
     And the layer has overscan
+      Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
+      And the layer has 16 colours
+      And the layer has overscan
+      Given add a Chars V4.0 layer with registers at '0x8800' and screen addressEx '0x80' and planes addressEx '0x20'
+      And the layer has 16 colours
+      And the layer has overscan
 
-    Given add a 2-to-1 merge layer
+    Given add a 2-to-1 merge layer with registers at '0xa200'
     And the layer has 16 colours
     And the layer has overscan
       Given add a Sprites layer with registers at '0x9800' and addressEx '0x10'
@@ -353,6 +361,11 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x01' to 24bit bus at '0xa007' and addressEx '0x01'
     Given write data byte '0x1f' to 24bit bus at '0xa015' and addressEx '0x01'
 
+    # Second chars layer small scroll offset
+    Given write data byte '0x04' to 24bit bus at '0x8801' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8802' and addressEx '0x01'
+    Given write data byte '0x04' to 24bit bus at '0x8803' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8804' and addressEx '0x01'
 
     # Setup some graphics
     # While it would be possible to use 32x32 sprite mode for the top half of the player, there are 16x16 sprite tile optimisations that reduce duplicate tiles
@@ -445,6 +458,27 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x0f' to 24bit bus at '0xa015' and addressEx '0x01'
     Given render a video display until vsync
 
+    # Now verify combination layer behaviour
+    Given write data byte '0x00' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given render a video display frame
+
+    Given write data byte '0x30' to 24bit bus at '0xa201' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x01' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x02' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x03' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given render a video display frame
+
+
 #    When display until window closed
 
     Then expect image "testdata/TC-8-000000.bmp" to be identical to "target/frames/TC-8-000000.bmp"
@@ -456,6 +490,15 @@ Feature: Tests the video and audio hardware expansion together
     Then expect image "testdata/TC-8-000006.bmp" to be identical to "target/frames/TC-8-000006.bmp"
     Then expect image "testdata/TC-8-000007.bmp" to be identical to "target/frames/TC-8-000007.bmp"
     Then expect image "testdata/TC-8-000008.bmp" to be identical to "target/frames/TC-8-000008.bmp"
+
+    Then expect image "testdata/TC-8-000009.bmp" to be identical to "target/frames/TC-8-000009.bmp"
+    Then expect image "testdata/TC-8-000010.bmp" to be identical to "target/frames/TC-8-000010.bmp"
+    Then expect image "testdata/TC-8-000011.bmp" to be identical to "target/frames/TC-8-000011.bmp"
+    Then expect image "testdata/TC-8-000012.bmp" to be identical to "target/frames/TC-8-000012.bmp"
+    Then expect image "testdata/TC-8-000013.bmp" to be identical to "target/frames/TC-8-000013.bmp"
+    Then expect image "testdata/TC-8-000014.bmp" to be identical to "target/frames/TC-8-000014.bmp"
+    Then expect image "testdata/TC-8-000015.bmp" to be identical to "target/frames/TC-8-000015.bmp"
+    Then expect image "testdata/TC-8-000016.bmp" to be identical to "target/frames/TC-8-000016.bmp"
 
 
 

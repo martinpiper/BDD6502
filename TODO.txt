@@ -14,7 +14,7 @@
 	Update VIC raster H/V pos based on opcode cycle counts
 	Emulate raster position read for C64 VIC
 	handleDisplayEvents() to include the extra display
-	debuggerUpdateRegs() to include the VIC display timings in optionalExtras. displayH/displayV could also use the C64 screen timing, if displayBombJack isn't emabled.
+	debuggerUpdateRegs() to include the VIC display timings in optionalExtras. displayH/displayV could also use the C64 screen timing, if displayBombJack isn't enabled.
 	InitWindow()
 	RepaintWindow()
 	When the visual display is enabled, will need better handling of "rasterToggle = !rasterToggle;"

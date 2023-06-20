@@ -2026,9 +2026,9 @@ public class Glue {
         displayBombJack.addLayer(new VectorPlane(valueToInt(addressRegisters), valueToInt(addressExMap)));
     }
 
-    @Given("^add a 2-to-1 merge layer$")
-    public void add2to1MergeLayer() throws ScriptException {
-        displayBombJack.addLayer(new MergeNTo1(2));
+    @Given("^add a 2-to-1 merge layer with registers at '(.*)'$")
+    public void add2to1MergeLayerWithRegistersAt(String addressRegisters) throws ScriptException {
+        displayBombJack.addLayer(new MergeNTo1(2,valueToInt(addressRegisters)));
     }
 
     @Given("^the layer has 16 colours$")
