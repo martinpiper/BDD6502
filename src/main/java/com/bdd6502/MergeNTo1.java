@@ -12,6 +12,7 @@ public class MergeNTo1 extends DisplayLayer {
     int addIndex = 0;
 
     byte[] registers = new byte[0x02];
+    boolean enableDither = false;
 
     public MergeNTo1(int numlayers, int addressRegisters) {
         assertThat(numlayers, is(equalTo(2)));
@@ -31,6 +32,13 @@ public class MergeNTo1 extends DisplayLayer {
 
         if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= (addressRegisters) && address < (addressRegisters + registers.length)) {
             registers[(address-addressRegisters) & 0x01] = data;
+
+            if ((registers[0] & 0x04) == 0x04) {
+                enableDither = true;
+            } else {
+                enableDither = false;
+            }
+
         }
 
         for (int i = 0 ; i < displayLayers.length ; i++) {
@@ -89,6 +97,10 @@ public class MergeNTo1 extends DisplayLayer {
 
         latchedPixel ^= registers[1];
 
+        if (enableDither && ((displayH ^ displayV) & 0x01) == 0x01) {
+            latchedPixel &= 0xf0;
+        }
+
         return latchedPixel;
     }
 
@@ -118,6 +130,7 @@ public class MergeNTo1 extends DisplayLayer {
         for (DisplayLayer displayLayer : displayLayers) {
             displayLayer.randomiseData(rand);
         }
+        enableDither = rand.nextBoolean();
     }
 
 }

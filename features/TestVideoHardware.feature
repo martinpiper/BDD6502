@@ -478,6 +478,16 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x03' to 24bit bus at '0xa200' and addressEx '0x01'
     Given render a video display frame
 
+    # Dithering
+    Given write data byte '0x00' to 24bit bus at '0xa201' and addressEx '0x01'
+    Given write data byte '0x04' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x05' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x06' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x07' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given render a video display frame
 
 #    When display until window closed
 
@@ -499,6 +509,10 @@ Feature: Tests the video and audio hardware expansion together
     Then expect image "testdata/TC-8-000014.bmp" to be identical to "target/frames/TC-8-000014.bmp"
     Then expect image "testdata/TC-8-000015.bmp" to be identical to "target/frames/TC-8-000015.bmp"
     Then expect image "testdata/TC-8-000016.bmp" to be identical to "target/frames/TC-8-000016.bmp"
+    Then expect image "testdata/TC-8-000017.bmp" to be identical to "target/frames/TC-8-000017.bmp"
+    Then expect image "testdata/TC-8-000018.bmp" to be identical to "target/frames/TC-8-000018.bmp"
+    Then expect image "testdata/TC-8-000019.bmp" to be identical to "target/frames/TC-8-000019.bmp"
+    Then expect image "testdata/TC-8-000020.bmp" to be identical to "target/frames/TC-8-000020.bmp"
 
 
 
