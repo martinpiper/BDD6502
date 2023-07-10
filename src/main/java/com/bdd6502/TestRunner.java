@@ -797,7 +797,7 @@ public class TestRunner {
         if (args.length == 0) {
             // Use a default command line if it's missing one
 //			String temp = "--monochrome --format pretty --format json:cucumber.json --glue TestGlue features";
-            String temp = "--tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue macros --glue TestGlue features";
+            String temp = "--tags ~@ignore --monochrome --format pretty --format html:target/cucumber --plugin json:target/report1.json --glue macros --glue TestGlue features";
             System.out.println("Using default command line options: " + temp);
             args = temp.split(" ");
         }
