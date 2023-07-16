@@ -1,7 +1,6 @@
 ; TODO items
 
-* Make sure the default window size has rendered pixels that are square, so the regular dithering is consistent
-	This can be forced over the whole screen area by adding a suitable output pixel xor value to the merge control register
+* Dither in emulation should match the hardware...
 
 
 

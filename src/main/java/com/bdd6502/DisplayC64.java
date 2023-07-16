@@ -108,7 +108,8 @@ public class DisplayC64 {
     }
 
     public void InitWindow() {
-        InitWindow(800, (800 * displayHeight) / displayWidth);
+        double scale = 2.0f;
+        InitWindow((int)(displayWidth * scale), (int)(displayHeight * scale));
     }
 
     public void InitWindow(int width, int height) {

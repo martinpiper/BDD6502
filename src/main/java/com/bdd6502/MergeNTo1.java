@@ -97,7 +97,7 @@ public class MergeNTo1 extends DisplayLayer {
 
         latchedPixel ^= registers[1];
 
-        if (enableDither && ((displayH ^ displayV) & 0x01) == 0x01) {
+        if (enableDither && ((displayH ^ displayV) & 0x01) == 0x00) {
             latchedPixel &= 0xf0;
         }
 

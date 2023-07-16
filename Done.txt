@@ -867,3 +867,13 @@ Added: Given I am using C64 processor port options
     	Using $2a the smaller display actually shows ~4 pixels more to the left and right edge
     		Created kBus24Bit_VideoLayer_OverscanExtent_UnsafeWide	= $2a for this
     		This matches precisely the video conversion box output border extent
+
+
+
+
+* Make sure the default window size has rendered pixels that are square, so the regular dithering is consistent
+	This can be forced over the whole screen area by adding a suitable output pixel xor value to the merge control register
+		jsr Video_SetAddressMergeLayer
+		+MBus24Bit_Send8BitValue kBus24Bit_MergeLayer_Register_Control_Dither
+		+MBus24Bit_Send8BitValue $0f
+	Added a better scale (2x) in com.bdd6502.DisplayBombJack.InitWindow()
