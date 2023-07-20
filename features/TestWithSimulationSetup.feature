@@ -366,3 +366,52 @@ Feature: Test with the simulation setup
     Then expect image "testdata/TC-14-000039.bmp" to be identical to "target/frames/TC-14-000039.bmp"
 
     Then expect image "testdata/TC-14-000040.bmp" to be identical to "target/frames/TC-14-000040.bmp"
+
+
+
+  Scenario: Validate with simulation output
+    Then expect image "C:\work\BombJack\output\debug00000000.bmp" to be identical to "target/frames/TC-14-000000.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000001.bmp" to be identical to "target/frames/TC-14-000001.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000002.bmp" to be identical to "target/frames/TC-14-000002.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000003.bmp" to be identical to "target/frames/TC-14-000003.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000004.bmp" to be identical to "target/frames/TC-14-000004.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000005.bmp" to be identical to "target/frames/TC-14-000005.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000006.bmp" to be identical to "target/frames/TC-14-000006.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000007.bmp" to be identical to "target/frames/TC-14-000007.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000008.bmp" to be identical to "target/frames/TC-14-000008.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000009.bmp" to be identical to "target/frames/TC-14-000009.bmp"
+
+    Then expect image "C:\work\BombJack\output\debug00000010.bmp" to be identical to "target/frames/TC-14-000010.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000011.bmp" to be identical to "target/frames/TC-14-000011.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000012.bmp" to be identical to "target/frames/TC-14-000012.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000013.bmp" to be identical to "target/frames/TC-14-000013.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000014.bmp" to be identical to "target/frames/TC-14-000014.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000015.bmp" to be identical to "target/frames/TC-14-000015.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000016.bmp" to be identical to "target/frames/TC-14-000016.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000017.bmp" to be identical to "target/frames/TC-14-000017.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000018.bmp" to be identical to "target/frames/TC-14-000018.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000019.bmp" to be identical to "target/frames/TC-14-000019.bmp"
+
+    Then expect image "C:\work\BombJack\output\debug00000020.bmp" to be identical to "target/frames/TC-14-000020.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000021.bmp" to be identical to "target/frames/TC-14-000021.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000022.bmp" to be identical to "target/frames/TC-14-000022.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000023.bmp" to be identical to "target/frames/TC-14-000023.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000024.bmp" to be identical to "target/frames/TC-14-000024.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000025.bmp" to be identical to "target/frames/TC-14-000025.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000026.bmp" to be identical to "target/frames/TC-14-000026.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000027.bmp" to be identical to "target/frames/TC-14-000027.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000028.bmp" to be identical to "target/frames/TC-14-000028.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000029.bmp" to be identical to "target/frames/TC-14-000029.bmp"
+
+    Then expect image "C:\work\BombJack\output\debug00000030.bmp" to be identical to "target/frames/TC-14-000030.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000031.bmp" to be identical to "target/frames/TC-14-000031.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000032.bmp" to be identical to "target/frames/TC-14-000032.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000033.bmp" to be identical to "target/frames/TC-14-000033.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000034.bmp" to be identical to "target/frames/TC-14-000034.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000035.bmp" to be identical to "target/frames/TC-14-000035.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000036.bmp" to be identical to "target/frames/TC-14-000036.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000037.bmp" to be identical to "target/frames/TC-14-000037.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000038.bmp" to be identical to "target/frames/TC-14-000038.bmp"
+    Then expect image "C:\work\BombJack\output\debug00000039.bmp" to be identical to "target/frames/TC-14-000039.bmp"
+
+    Then expect image "C:\work\BombJack\output\debug00000040.bmp" to be identical to "target/frames/TC-14-000040.bmp"

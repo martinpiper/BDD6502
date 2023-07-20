@@ -6,127 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000000.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000001.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000001.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000002.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000002.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000003.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000003.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000004.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000004.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000005.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000005.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000006.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000006.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000007.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000007.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000008.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000008.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000009.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000009.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000010.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000010.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000011.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000011.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000012.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000012.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000013.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000013.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000014.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000014.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000015.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000015.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000016.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000016.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000017.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000017.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000018.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000018.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000019.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000019.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000020.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000020.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000021.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000021.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000022.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000022.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000023.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000023.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000024.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000024.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000025.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000025.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000026.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000026.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000027.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000027.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000028.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000028.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000029.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000029.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000030.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000030.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000031.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000031.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-1-000032.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-1-000032.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000000.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000001.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000001.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000002.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000002.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000003.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000003.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000004.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000004.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000005.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000005.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000006.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000006.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000007.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000007.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-11-000008.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-11-000008.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000000.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000001.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000001.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000002.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000002.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000003.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000003.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000004.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000004.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000005.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000005.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000006.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000006.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000007.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000007.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000008.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000008.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000009.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000009.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000010.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000010.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000011.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000011.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000012.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000012.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000013.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000013.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000014.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000014.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000015.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000015.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000016.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000016.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000017.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000017.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000018.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000018.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000019.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000019.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000020.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000020.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000021.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000021.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000022.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000022.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000023.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000023.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000024.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000024.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000025.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000025.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000026.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000026.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000027.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000027.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000028.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000028.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000029.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000029.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000030.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000030.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000031.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000031.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000032.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000032.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000033.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000033.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000034.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000034.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000035.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000035.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000036.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000036.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000037.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000037.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000038.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000038.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000039.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000039.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-14-000040.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-14-000040.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-6-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-6-000000.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-7-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-7-000000.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-7-000001.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-7-000001.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000000.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000001.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000001.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000002.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000002.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000003.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000003.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000004.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000004.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000005.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000005.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000006.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000006.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000007.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000007.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000008.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000008.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000009.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000009.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000010.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000010.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000011.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000011.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000012.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000012.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000013.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000013.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000014.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000014.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000015.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000015.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000016.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000016.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000017.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000017.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000018.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000018.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000019.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000019.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000020.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000020.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-9-000000.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-9-000000.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-9-000010.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-9-000010.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-9-000020.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-9-000020.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-9-000030.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-9-000030.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-9-000040.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-9-000040.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-9-000050.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-9-000050.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-9-000060.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-9-000060.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-9-000070.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-9-000070.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-9-000080.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-9-000080.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-9-000090.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-9-000090.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-9-000100.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-9-000100.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestWithSimulationSetup.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestWithSimulationSetup.feature" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -213,7 +93,7 @@
       <recent name="com.loomcom.symon.devices" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature">
+  <component name="RunManager" selected="Application.Feature editor">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -225,6 +105,15 @@
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue macros --glue TestGlue features" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../c64/stdlib" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Feature editor" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags ~@ignore --monochrome --format pretty --plugin html:target/cucumber --plugin json:target/report1.json --glue macros --glue TestGlue features" />
+      <option name="VM_PARAMETERS" value="-Dcom.replicanet.cukesplus.server.featureEditor=1" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -364,19 +253,10 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TestRunner AutomateWindows.feature" type="Application" factoryName="Application">
+    <configuration name="TestRunner AutomateWindows.feature (1)" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/AutomateWindows.feature" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TestRunner BombJack" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
-      <module name="BDD6502" />
-      <option name="PROGRAM_PARAMETERS" value="--tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../BombJack" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -707,6 +587,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestRunner in BombJack" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../BombJack" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestRunner no parameters" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
@@ -975,8 +864,9 @@
       <item itemvalue="Application.TestRunner --playmod" />
       <item itemvalue="Application.TestRunner --scan" />
       <item itemvalue="Application.TestRunner -CotE" />
-      <item itemvalue="Application.TestRunner AutomateWindows.feature" />
-      <item itemvalue="Application.TestRunner BombJack" />
+      <item itemvalue="Application.Feature editor" />
+      <item itemvalue="Application.TestRunner AutomateWindows.feature (1)" />
+      <item itemvalue="Application.TestRunner in BombJack" />
       <item itemvalue="Application.TestRunner C64ROMs.feature" />
       <item itemvalue="Application.C64 stdlib" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
