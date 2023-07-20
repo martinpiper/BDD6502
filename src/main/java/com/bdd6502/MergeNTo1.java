@@ -149,11 +149,12 @@ public class MergeNTo1 extends DisplayLayer {
 
         latchedPixel ^= registers[1];
 
-        // dither is also latched for the pipeline
-        latchedDither = ((displayH ^ displayV) & 0x01);
         if (enableDither && (latchedDither == ditherPhase)) {
             latchedPixel &= 0xf0;
         }
+
+        // dither is also latched for the pipeline
+        latchedDither = ((displayH ^ displayV) & 0x01);
 
         return returnPixel;
     }
