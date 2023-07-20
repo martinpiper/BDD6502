@@ -546,7 +546,8 @@ public class DisplayBombJack extends MemoryBus {
             if (displayBitmapY == 24) {
                 enablePixels = false;
             }
-            int tempy = displayBitmapY;
+            // Adjust to match emulation and simulation
+            int tempy = displayBitmapY - 8;
             // Make sure the rendering position is in the screen
             if (displayBitmapX >= 0 && tempy >= 0 && displayBitmapX < panel.fastGetWidth() && tempy < panel.fastGetHeight()) {
                 // Delayed due to pixel latching in the output mixer 8B2 and 7A2

@@ -877,3 +877,7 @@ Added: Given I am using C64 processor port options
 		+MBus24Bit_Send8BitValue kBus24Bit_MergeLayer_Register_Control_Dither
 		+MBus24Bit_Send8BitValue $0f
 	Added a better scale (2x) in com.bdd6502.DisplayBombJack.InitWindow()
+
+
+
+* The rendered video hardware output needs to be moved up 8 pixels to match with the simulation output and also the APU raster values in @Demo6 sky colour changes (for the above line)
