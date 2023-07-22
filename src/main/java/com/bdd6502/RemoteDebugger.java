@@ -1,8 +1,6 @@
 package com.bdd6502;
 
 import TestGlue.Glue;
-import com.loomcom.symon.devices.UserPortTo24BitAddress;
-import javafx.util.Pair;
 
 import javax.script.ScriptException;
 import java.io.*;
