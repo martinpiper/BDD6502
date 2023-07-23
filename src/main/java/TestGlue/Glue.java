@@ -1573,10 +1573,11 @@ public class Glue {
         BufferedReader br = new BufferedReader(new FileReader(arg1));
         String line;
         while ((line = br.readLine()) != null) {
+            if (line.trim().isEmpty()) continue;
             String[] splits = line.split("=");
             splits[0] = splits[0].trim();
             String[] splits2 = splits[1].split(";");
-            splits2[0].trim();
+            splits2[0] = splits2[0].trim();
             if (StringUtils.isNumeric(splits[0])) {
                 // If the value is numeric this will affect the operation of valueToInt so we avoid this by adding a prefix underscore
                 splits[0] = "_" + splits[0];
