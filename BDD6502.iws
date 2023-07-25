@@ -94,7 +94,7 @@
       <recent name="com.loomcom.symon.devices" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-1">
+  <component name="RunManager" selected="Application.TestRunner simple.feature">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
