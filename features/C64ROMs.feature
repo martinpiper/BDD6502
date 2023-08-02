@@ -218,3 +218,7 @@ Feature: C64 ROM tests
     And render a C64 video display frame
     And render a C64 video display frame
     And render a C64 video display frame
+
+
+    Then expect image "testdata/TC-12-000109.bmp" to be identical to "target/frames/TC-12-000109.bmp"
+    Then expect image "testdata/TC-12-000112.bmp" to be identical to "target/frames/TC-12-000112.bmp"
