@@ -6,10 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/DataValidation.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/DataValidation.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000009.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000009.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000010.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000010.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000011.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000011.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000012.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000012.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000013.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000013.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000014.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000014.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000015.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000015.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000016.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000016.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000017.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000017.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000018.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000018.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000019.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000019.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000020.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000020.bmp" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -96,7 +105,7 @@
       <recent name="com.loomcom.symon.devices" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner features/DataValidation.feature">
+  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-8 overscan">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">

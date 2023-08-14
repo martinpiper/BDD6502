@@ -344,6 +344,11 @@ Feature: Tests the video and audio hardware expansion together
     # Disable all layers
     Given write data byte '0x00' to 24bit bus at '0x9e0a' and addressEx '0x01'
 
+    Given write data byte '0x60' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0xa201' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0xa202' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0xa203' and addressEx '0x01'
+
     # Enable display with tiles and borders
     Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
     Given write data byte '0x70' to 24bit bus at '0x9e01' and addressEx '0x01'
@@ -459,34 +464,64 @@ Feature: Tests the video and audio hardware expansion together
     Given render a video display until vsync
 
     # Now verify combination layer behaviour
-    Given write data byte '0x00' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0xa200' and addressEx '0x01'
     Given render a video display frame
-    Given write data byte '0x01' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x61' to 24bit bus at '0xa200' and addressEx '0x01'
     Given render a video display frame
-    Given write data byte '0x02' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x62' to 24bit bus at '0xa200' and addressEx '0x01'
     Given render a video display frame
-    Given write data byte '0x03' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x63' to 24bit bus at '0xa200' and addressEx '0x01'
     Given render a video display frame
 
     Given write data byte '0x30' to 24bit bus at '0xa201' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0xa200' and addressEx '0x01'
     Given render a video display frame
-    Given write data byte '0x01' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x61' to 24bit bus at '0xa200' and addressEx '0x01'
     Given render a video display frame
-    Given write data byte '0x02' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x62' to 24bit bus at '0xa200' and addressEx '0x01'
     Given render a video display frame
-    Given write data byte '0x03' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x63' to 24bit bus at '0xa200' and addressEx '0x01'
     Given render a video display frame
 
     # Dithering
     Given write data byte '0x00' to 24bit bus at '0xa201' and addressEx '0x01'
-    Given write data byte '0x04' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x64' to 24bit bus at '0xa200' and addressEx '0x01'
     Given render a video display frame
-    Given write data byte '0x05' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x65' to 24bit bus at '0xa200' and addressEx '0x01'
     Given render a video display frame
-    Given write data byte '0x06' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x66' to 24bit bus at '0xa200' and addressEx '0x01'
     Given render a video display frame
-    Given write data byte '0x07' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x67' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given render a video display frame
+
+    # With phases
+    Given write data byte '0x00' to 24bit bus at '0xa201' and addressEx '0x01'
+    Given write data byte '0xe4' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x64' to 24bit bus at '0xa202' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0xe5' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0xe4' to 24bit bus at '0xa202' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0xe6' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x84' to 24bit bus at '0xa202' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0xe7' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0xe4' to 24bit bus at '0xa202' and addressEx '0x01'
+    Given render a video display frame
+
+    # With visible flags
+    Given write data byte '0x00' to 24bit bus at '0xa201' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0xa202' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x20' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0xa202' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x40' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0xa202' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x60' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0xa202' and addressEx '0x01'
     Given render a video display frame
 
 #    When display until window closed
@@ -513,7 +548,11 @@ Feature: Tests the video and audio hardware expansion together
     Then expect image "testdata/TC-8-000018.bmp" to be identical to "target/frames/TC-8-000018.bmp"
     Then expect image "testdata/TC-8-000019.bmp" to be identical to "target/frames/TC-8-000019.bmp"
     Then expect image "testdata/TC-8-000020.bmp" to be identical to "target/frames/TC-8-000020.bmp"
-
+    # With phases
+    Then expect image "testdata/TC-8-000021.bmp" to be identical to "target/frames/TC-8-000021.bmp"
+    Then expect image "testdata/TC-8-000022.bmp" to be identical to "target/frames/TC-8-000022.bmp"
+    Then expect image "testdata/TC-8-000023.bmp" to be identical to "target/frames/TC-8-000023.bmp"
+    Then expect image "testdata/TC-8-000024.bmp" to be identical to "target/frames/TC-8-000024.bmp"
 
 
 
