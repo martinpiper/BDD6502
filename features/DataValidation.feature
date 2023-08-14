@@ -21,7 +21,7 @@ Feature: Tests data validation syntax
     Then expect the next line to contain "line 5"
     Then expect the next line to contain "line 6"
     Then expect end of file
-
+    Given close current file
 
 
   Scenario: Tests file reconciliation syntax

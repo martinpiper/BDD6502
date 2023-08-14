@@ -2329,6 +2329,11 @@ public class Glue {
         fileReading = new BufferedReader(new FileReader(filePath));
     }
 
+    @Given("^close current file$")
+    public void close_current_file() throws IOException {
+        fileReading.close();
+    }
+
     String currentLineRead;
     @Then("^expect the next line to contain \"([^\"]*)\"$")
     public void expect_the_next_line_to_contain(String subString) throws IOException {
