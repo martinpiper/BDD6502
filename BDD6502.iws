@@ -6,19 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000009.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000009.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000010.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000010.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000011.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000011.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000012.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000012.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000013.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000013.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000014.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000014.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000015.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000015.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000016.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000016.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000017.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000017.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000018.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000018.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000019.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000019.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-8-000020.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-8-000020.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -105,9 +94,18 @@
       <recent name="com.loomcom.symon.devices" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-8 overscan">
+  <component name="RunManager" selected="Application.C64 TapeTool">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="C64 TapeTool" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue macros --glue TestGlue features" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/IRQTape/TapeTool" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -583,6 +581,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestRunner assemble.feature" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/assemble.feature" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestRunner features/DataValidation.feature" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
@@ -634,7 +640,7 @@
     <configuration name="TestRunner simple.feature" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
-      <option name="PROGRAM_PARAMETERS" value="--tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/simple.feature" />
+      <option name="PROGRAM_PARAMETERS" value="--monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/simple.feature" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -881,6 +887,7 @@
       <item itemvalue="Application.TestRunner in BombJack" />
       <item itemvalue="Application.TestRunner C64ROMs.feature" />
       <item itemvalue="Application.C64 stdlib" />
+      <item itemvalue="Application.C64 TapeTool" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5" />
@@ -923,6 +930,7 @@
       <item itemvalue="Application.TestRunner printIO.feature" />
       <item itemvalue="Application.TestRunner simple.feature @RemoteDebugger" />
       <item itemvalue="Application.TestRunner simple.feature" />
+      <item itemvalue="Application.TestRunner assemble.feature" />
       <item itemvalue="Cucumber Java.All features" />
       <item itemvalue="Cucumber Java.Compare Test" />
       <item itemvalue="Cucumber Java.Simple ALL" />
@@ -985,6 +993,11 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
           <line>162</line>
           <option name="timeStamp" value="143" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
+          <line>2260</line>
+          <option name="timeStamp" value="145" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
