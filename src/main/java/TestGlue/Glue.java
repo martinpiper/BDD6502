@@ -2239,6 +2239,10 @@ public class Glue {
             scenario.write("Got monitor reply: " + reply);
         }
 
+        System.setProperty("test.BDD6502.previousMonitorReply", System.getProperty("test.BDD6502.lastMonitorReply", ""));
+
+        System.setProperty("test.BDD6502.lastMonitorReply", reply);
+
         return reply;
     }
 
