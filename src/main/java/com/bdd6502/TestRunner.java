@@ -20,6 +20,7 @@ import mmarquee.uiautomation.TreeScope;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -605,26 +606,13 @@ public class TestRunner {
 //            loaded.createNewMixer().startPlayback();
             String filename = args[2];
             loaded.createNewMixer().fastExport(filename, Integer.parseInt(args[3]), Integer.parseInt(args[4]));
-            int bestLen = 6;
-            int bestSize = -1;
+            compressDataFile(filename + ModMixer.EVENTS_BIN , filename + ModMixer.EVENTS_CMP);
 
-            // Try various thresholds
-            for (int i = 3 ; i < 30 ; i++) {
-                System.out.println("Testing length threshold: " + i);
-                int theSize = CompressData.compressMusicData(filename , i);
-                if (bestSize == -1 || theSize < bestSize) {
-                    System.out.println("** New best");
-                    bestSize = theSize;
-                    bestLen = i;
-                }
-                // Early out if the best size is increasing too far beyond the current best
-                if (theSize > (bestSize + (bestSize/10))) {
-                    break;
-                }
-            }
+            System.exit(0);
+        }
 
-            System.out.println("Best length threshold: " + bestLen);
-            CompressData.compressMusicData(filename , bestLen);
+        if (args.length >= 1 && args[0].compareToIgnoreCase("--compressData") == 0) {
+            compressDataFile(args[1] , args[2]);
 
             System.exit(0);
         }
@@ -806,5 +794,28 @@ public class TestRunner {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
+    }
+
+    private static void compressDataFile(String inputFilename, String outputFilename) throws IOException {
+        int bestLen = 6;
+        int bestSize = -1;
+
+        // Try various thresholds
+        for (int i = 3 ; i < 30 ; i++) {
+            System.out.println("Testing length threshold: " + i);
+            int theSize = CompressData.compressMusicData(inputFilename,outputFilename, i);
+            if (bestSize == -1 || theSize < bestSize) {
+                System.out.println("** New best");
+                bestSize = theSize;
+                bestLen = i;
+            }
+            // Early out if the best size is increasing too far beyond the current best
+            if (theSize > (bestSize + (bestSize/10))) {
+                break;
+            }
+        }
+
+        System.out.println("Best length threshold: " + bestLen);
+        CompressData.compressMusicData(inputFilename, outputFilename, bestLen);
     }
 }

@@ -8,8 +8,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 public class CompressData {
-    public static int compressMusicData(String filename , int lengthThreshold) throws IOException {
-        byte[] bytes = Files.readAllBytes(Paths.get(filename + ModMixer.EVENTS_BIN));
+    public static int compressMusicData(String inputFilename , String outputFilename , int lengthThreshold) throws IOException {
+        byte[] bytes = Files.readAllBytes(Paths.get(inputFilename));
         int [] byteFrequency = new int[256];
         // Calculate which escape byte to use by picking the least used byte in the input stream
         for (int i = 0 ; i < bytes.length ; i++) {
@@ -62,7 +62,7 @@ public class CompressData {
 
             // If we encounter an escape byte then encode it
             if (bytes[i] == escapeByte) {
-                System.out.println("escape byte at " + i);
+//                System.out.println("escape byte at " + i);
                 // Handle a run of escape bytes?
                 int nextBytesPos = i;
                 int runLength = 0;
@@ -91,8 +91,8 @@ public class CompressData {
         headerBytes[2] = (byte)(originalLength >> 16);
         headerBytes[3] = escapeByte;
 
-        Files.write(Paths.get(filename + ModMixer.EVENTS_CMP),headerBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-        Files.write(Paths.get(filename + ModMixer.EVENTS_CMP),bytes, StandardOpenOption.APPEND);
+        Files.write(Paths.get(outputFilename),headerBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        Files.write(Paths.get(outputFilename),bytes, StandardOpenOption.APPEND);
 
         return bytes.length;
     }
