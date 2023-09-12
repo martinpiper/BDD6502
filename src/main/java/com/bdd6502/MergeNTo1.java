@@ -50,7 +50,7 @@ public class MergeNTo1 extends DisplayLayer {
     @Override
     public void writeData(int address, int addressEx, byte data) {
 
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= (addressRegisters) && address < (addressRegisters + registers.length)) {
+        if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters) && address < (addressRegisters + registers.length)) {
             registers[(address-addressRegisters) & 0x01] = data;
 
             if (MemoryBus.addressActive(registers[0] , 0x04)) {

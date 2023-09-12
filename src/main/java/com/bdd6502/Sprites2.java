@@ -67,13 +67,13 @@ public class Sprites2 extends DisplayLayer {
     public void writeData(int address, int addressEx, byte data) {
 /*
         // No control register logic now...
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x100)) {
+        if (addressExActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x100)) {
             if ((data & 0x01) > 0) {
             } else {
             }
         }
 */
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= (addressRegisters + 0x00) && address < (addressRegisters + 0x200)) {
+        if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters + 0x00) && address < (addressRegisters + 0x200)) {
             busContention = display.getBusContentionPixels();
             int spriteIndex = (address - addressRegisters) / 0x08;
             switch (address & 0x07) {
@@ -114,7 +114,7 @@ public class Sprites2 extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (MemoryBus.addressActive(addressEx, addressExPlane0)) {
+        if (addressExActive(addressEx, addressExPlane0)) {
             busContention = display.getBusContentionPixels();
             if (MemoryBus.addressActive(address, addressPlane0)) {
                 plane0[address & 0x1fff] = data;
@@ -134,10 +134,10 @@ public class Sprites2 extends DisplayLayer {
     @Override
     public void setAddressBus(int address, int addressEx) {
         memoryAsserted = false;
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= (addressRegisters + 0x00) && address < (addressRegisters + 0x200)) {
+        if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters + 0x00) && address < (addressRegisters + 0x200)) {
 //            memoryAsserted = true;
         }
-        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
+        if (addressExActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
 //            memoryAsserted = true;
         }
     }
@@ -352,7 +352,7 @@ public class Sprites2 extends DisplayLayer {
     private void advanceSprite() {
         drawingSpriteState = 0;
         drawingSpriteIndex++;
-        drawingSpriteIndex &= 0xff;
+        drawingSpriteIndex &= kNumSprites-1;
     }
 
     @Override

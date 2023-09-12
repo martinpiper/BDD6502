@@ -1027,6 +1027,8 @@ public class Glue {
         }
     }
 
+    Set<Integer> pauseUntilNewVBlank = null;
+
     public void executeProcedureAtForNoMoreThanInstructionsUntilPC(String arg1, String arg2, String arg3) throws Throwable {
         checkScenario();
 
@@ -1208,7 +1210,17 @@ public class Glue {
 
             int beforeCycles = machine.getCpu().getClockCycles();
 
+            // Try to avoid CPU wasting time
             Integer addr = machine.getCpu().getCpuState().pc;
+
+            if (pauseUntilNewVBlank != null && displayBombJack != null && !displayBombJack.extEXTWANTIRQ() && !pauseUntilNewVBlank.isEmpty()) {
+                if (pauseUntilNewVBlank.contains(addr)) {
+                    while (!displayBombJack.extEXTWANTIRQ()) {
+                        displayBombJack.calculatePixel();
+                    }
+                }
+            }
+
             if (displayLimitFPS > 0 && frameDelta <= 0) {
                 // If we are limiting the frames and no frame needs to be rendered then don't execute instructions
             } else {
@@ -2032,6 +2044,11 @@ public class Glue {
         displayBombJack.addLayer(new MergeNTo1(2,valueToInt(addressRegisters)));
     }
 
+    @Given("^the layer uses exact address matching$")
+    public void makeExactEBBSAddress() throws ScriptException {
+        displayBombJack.getLastLayerAdded().makeExactEBBSAddress();
+    }
+
     @Given("^the layer has 16 colours$")
     public void make16Colours() throws ScriptException {
         displayBombJack.getLastLayerAdded().make16Colours();
@@ -2523,5 +2540,16 @@ public class Glue {
     @Given("^force C64 displayed bank to (\\d+)$")
     public void force_C64_displayed_bank_to(int bank) throws Throwable {
         displayC64.setForceBank(bank);
+    }
+
+    @Given("^avoid CPU wait during VBlank for address \"([^\"]*)\"$")
+    public void avoid_CPU_wait_during_VBlank_for_address(String arg1) throws Throwable {
+        int potential = valueToInt(arg1);
+        if (potential >= 0) {
+            if (pauseUntilNewVBlank == null) {
+                pauseUntilNewVBlank = new HashSet<>();
+            }
+            pauseUntilNewVBlank.add(potential);
+        }
     }
 }

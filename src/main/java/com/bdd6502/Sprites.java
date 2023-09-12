@@ -42,7 +42,7 @@ public class Sprites extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x200)) {
+        if (addressExActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x200)) {
             lo32 = data & 0x0f;
             if (!withOverscan) {
                 if ((data & 0x10) > 0) {
@@ -52,7 +52,7 @@ public class Sprites extends DisplayLayer {
                 }
             }
         }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x201)) {
+        if (addressExActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x201)) {
             hi32 = data & 0x0f;
         }
 
@@ -60,7 +60,7 @@ public class Sprites extends DisplayLayer {
         if (withOverscan) {
             registerOffset = 0;
         }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= (addressRegisters + registerOffset) && address < (addressRegisters + 0x60 + registerOffset)) {
+        if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters + registerOffset) && address < (addressRegisters + 0x60 + registerOffset)) {
             busContention = display.getBusContentionPixels();
             int spriteIndex = (address - (addressRegisters + registerOffset)) / 4;
             switch (address & 0x03) {
@@ -85,7 +85,7 @@ public class Sprites extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (MemoryBus.addressActive(addressEx, addressExPlane0)) {
+        if (addressExActive(addressEx, addressExPlane0)) {
             busContention = display.getBusContentionPixels();
             if (MemoryBus.addressActive(address, addressPlane0)) {
                 plane0[address & 0x1fff] = data;
@@ -105,16 +105,16 @@ public class Sprites extends DisplayLayer {
     @Override
     public void setAddressBus(int address, int addressEx) {
         memoryAsserted = false;
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= (addressRegisters + 0x20) && address < (addressRegisters + 0x80)) {
+        if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters + 0x20) && address < (addressRegisters + 0x80)) {
 //            memoryAsserted = true;
         }
-        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
+        if (addressExActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
 //            memoryAsserted = true;
         }
-        if (MemoryBus.addressActive(addressEx, addressExPlane1) && MemoryBus.addressActive(address, addressPlane1)) {
+        if (addressExActive(addressEx, addressExPlane1) && MemoryBus.addressActive(address, addressPlane1)) {
 //            memoryAsserted = true;
         }
-        if (MemoryBus.addressActive(addressEx, addressExPlane2) && MemoryBus.addressActive(address, addressPlane2)) {
+        if (addressExActive(addressEx, addressExPlane2) && MemoryBus.addressActive(address, addressPlane2)) {
 //            memoryAsserted = true;
         }
     }

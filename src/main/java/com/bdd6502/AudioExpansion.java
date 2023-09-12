@@ -104,7 +104,7 @@ public class AudioExpansion extends MemoryBus implements Runnable {
     @Override
     public void writeData(int address, int addressEx, byte data) {
         // No contention, this will use latches, many of them
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && (address >= addressRegisters) && (address < (addressRegisters + (numVoices * voiceSize)))) {
+        if (addressExActive(addressEx, addressExRegisters) && (address >= addressRegisters) && (address < (addressRegisters + (numVoices * voiceSize)))) {
             int voice = (address - addressRegisters) / voiceSize;
             int voiceSection = (address - addressRegisters) % voiceSize;
             switch (voiceSection) {
@@ -147,7 +147,7 @@ public class AudioExpansion extends MemoryBus implements Runnable {
             }
         }
 
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + (numVoices * voiceSize) + 1) {
+        if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + (numVoices * voiceSize) + 1) {
             for (int i = 0 ; i < numVoices ; i++) {
                 // Reset clear in latches
                 if ((data & (1 << i)) == 0) {
@@ -165,7 +165,7 @@ public class AudioExpansion extends MemoryBus implements Runnable {
 
         // HW: Full 64K for sample memory, must use a proper selector
         // Some contention here as this uses banks of RAM
-        if (MemoryBus.addressActive(addressEx, addressExSampleBank)) {
+        if (addressExActive(addressEx, addressExSampleBank)) {
             busContention = 8;
             sampleRAM[address] = data;
         }

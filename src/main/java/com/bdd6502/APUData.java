@@ -48,7 +48,7 @@ public class APUData extends MemoryBus {
     @Override
     public void writeData(int address, int addressEx, byte data) {
         // Some contention here as this uses banks of RAM
-        if (MemoryBus.addressActive(addressEx, addressExRegisters)) {
+        if (addressExActive(addressEx, addressExRegisters)) {
             if (debugData != null) {
                 debugData.printf("d$%04x%02x%02x\n", address, addressEx, data);
                 debugData.flush();
@@ -71,7 +71,7 @@ public class APUData extends MemoryBus {
     @Override
     public void setAddressBus(int address, int addressEx) {
         memoryAsserted = false;
-        if (MemoryBus.addressActive(addressEx, addressExRegisters)) {
+        if (addressExActive(addressEx, addressExRegisters)) {
             if (MemoryBus.addressActive(address, addressRegisters)) {
                 memoryAsserted = true;
             }

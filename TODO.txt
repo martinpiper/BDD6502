@@ -1,7 +1,10 @@
 ; TODO items
 
-* Dither in emulation should match the hardware...
-
+* Video_WaitVBlank could use a special case to avoid executing the CPU until the vblank happens when encountering this label
+	pauseUntilNewVBlank
+	But it's not working well...
+	Is it because it's not keeping track of the pixels or cycles?
+	Check the call path to calculatePixel()
 
 
 

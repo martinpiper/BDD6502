@@ -886,3 +886,9 @@ Added: Given I am using C64 processor port options
 
 
 * Added "--compressData <input filename> <output filename>" as a general compression option.
+
+
+
+
+* Dither in emulation should match the hardware...
+	It does now

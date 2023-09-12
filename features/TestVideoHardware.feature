@@ -575,9 +575,11 @@ Feature: Tests the video and audio hardware expansion together
     Given a user port to 24 bit bus is installed
 #    Given add a GetBackground layer fetching from layer index '1'
     Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
+    And the layer uses exact address matching
     And the layer has 16 colours
     And the layer has overscan
     Given add a Sprites layer with registers at '0x9800' and addressEx '0x10'
+    And the layer uses exact address matching
     And the layer has 16 colours
     And the layer has overscan
     Given show video window

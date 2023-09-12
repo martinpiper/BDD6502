@@ -64,7 +64,7 @@ public class Chars extends DisplayLayer {
     @Override
     public void writeData(int address, int addressEx, byte data) {
         if (!isV4_0) {
-            if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x1f)) {
+            if (addressExActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x1f)) {
                 busContention = display.getBusContentionPixels();
 
                 if (!is16Colours) {
@@ -74,16 +74,16 @@ public class Chars extends DisplayLayer {
                 displayDisable = MemoryBus.addressActive(data , 0x02);
             }
 
-            if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x400)) {
+            if (addressExActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x400)) {
                 busContention = display.getBusContentionPixels();
                 screenData[address & 0x3ff] = data;
             }
-            if (MemoryBus.addressActive(addressEx, addressExColour) && address >= addressColour && address < (addressColour + 0x400)) {
+            if (addressExActive(addressEx, addressExColour) && address >= addressColour && address < (addressColour + 0x400)) {
                 busContention = display.getBusContentionPixels();
                 colourData[address & 0x3ff] = data;
             }
         } else {
-            if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x1f)) {
+            if (addressExActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x1f)) {
                 // No bus contention with latches
                 if ((address & 0x1f) == 0x00) {
                     if (!is16Colours) {
@@ -117,12 +117,12 @@ public class Chars extends DisplayLayer {
                 }
             }
 
-            if (MemoryBus.addressActive(addressEx, addressExScreenV4_0) && address >= addressScreenV4_0 && address < (addressScreenV4_0 + 0x2000)) {
+            if (addressExActive(addressEx, addressExScreenV4_0) && address >= addressScreenV4_0 && address < (addressScreenV4_0 + 0x2000)) {
                 busContention = display.getBusContentionPixels();
                 screenDataV4_0[address & 0x1fff] = data;
             }
             if (withOverscan) {
-                if (MemoryBus.addressActive(addressEx, addressExScreenV8_0) && address >= addressScreenV8_0 && address < (addressScreenV8_0 + 0x2000)) {
+                if (addressExActive(addressEx, addressExScreenV8_0) && address >= addressScreenV8_0 && address < (addressScreenV8_0 + 0x2000)) {
                     busContention = display.getBusContentionPixels();
                     screenDataV8_0[address & 0x1fff] = data;
                 }
@@ -130,7 +130,7 @@ public class Chars extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (MemoryBus.addressActive(addressEx, addressExPlane0)) {
+        if (addressExActive(addressEx, addressExPlane0)) {
             busContention = display.getBusContentionPixels();
             if (MemoryBus.addressActive(address, addressPlane0)) {
                 plane0[address & 0x1fff] = data;
@@ -150,14 +150,14 @@ public class Chars extends DisplayLayer {
     @Override
     public void setAddressBus(int address, int addressEx) {
         memoryAssertedScreenRAM = false;
-        if (MemoryBus.addressActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x400)) {
+        if (addressExActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x400)) {
             memoryAssertedScreenRAM = true;
         }
-        if (MemoryBus.addressActive(addressEx, addressExColour) && address >= addressColour && address < (addressColour + 0x400)) {
+        if (addressExActive(addressEx, addressExColour) && address >= addressColour && address < (addressColour + 0x400)) {
             memoryAssertedScreenRAM = true;
         }
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (MemoryBus.addressActive(addressEx, addressExPlane0)) {
+        if (addressExActive(addressEx, addressExPlane0)) {
             memoryAssertedPlane = true;
         } else {
             memoryAssertedPlane = false;

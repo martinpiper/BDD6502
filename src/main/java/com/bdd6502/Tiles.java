@@ -40,7 +40,7 @@ public class Tiles extends DisplayLayer {
     @Override
     public void writeData(int address, int addressEx, byte data) {
         if (!withOverscan) {
-            if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x00) {
+            if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x00) {
                 if ((data & 0x10) > 0) {
                     enableTiles = true;
                 } else {
@@ -48,24 +48,24 @@ public class Tiles extends DisplayLayer {
                 }
             }
         }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x01) {
+        if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x01) {
             scrollX = (scrollX & 0x0f00) | (data & 0xff);
         }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x02) {
+        if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x02) {
             scrollX = (scrollX & 0x00ff) | ((data & 0x0f) << 8);
         }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x03) {
+        if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x03) {
             scrollY = (scrollY & 0x0f00) | (data & 0xff);
         }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x04) {
+        if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x04) {
             scrollY = (scrollY & 0x00ff) | ((data & 0x0f) << 8);
         }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x07) {
+        if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x07) {
             backgroundColour = data & 0xff;
 //            System.out.println("BG change " + data + " " + display.displayH + " " + display.displayV + " " + display.getFrameNumberForSync());
         }
 
-        if (MemoryBus.addressActive(addressEx, addressExScreen) && MemoryBus.addressActive(address, addressScreen)) {
+        if (addressExActive(addressEx, addressExScreen) && MemoryBus.addressActive(address, addressScreen)) {
             busContention = display.getBusContentionPixels();
             if (MemoryBus.addressActive(address, 0x1000)) {
                 colourData[address & 0xfff] = data;
@@ -75,7 +75,7 @@ public class Tiles extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (MemoryBus.addressActive(addressEx, addressExPlane0)) {
+        if (addressExActive(addressEx, addressExPlane0)) {
             busContention = display.getBusContentionPixels();
             if (MemoryBus.addressActive(address, addressPlane0)) {
                 plane0[address & 0x1fff] = data;
@@ -95,16 +95,16 @@ public class Tiles extends DisplayLayer {
     @Override
     public void setAddressBus(int address, int addressEx) {
         memoryAsserted = false;
-        if (MemoryBus.addressActive(addressEx, addressExScreen) && MemoryBus.addressActive(address, addressScreen)) {
+        if (addressExActive(addressEx, addressExScreen) && MemoryBus.addressActive(address, addressScreen)) {
             memoryAsserted = true;
         }
-        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
+        if (addressExActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
 //            memoryAsserted = true;
         }
-        if (MemoryBus.addressActive(addressEx, addressExPlane1) && MemoryBus.addressActive(address, addressPlane1)) {
+        if (addressExActive(addressEx, addressExPlane1) && MemoryBus.addressActive(address, addressPlane1)) {
 //            memoryAsserted = true;
         }
-        if (MemoryBus.addressActive(addressEx, addressExPlane2) && MemoryBus.addressActive(address, addressPlane2)) {
+        if (addressExActive(addressEx, addressExPlane2) && MemoryBus.addressActive(address, addressPlane2)) {
 //            memoryAsserted = true;
         }
     }

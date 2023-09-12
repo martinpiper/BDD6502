@@ -37,7 +37,7 @@ public class VectorPlane extends DisplayLayer {
     public void writeData(int address, int addressEx, byte data) {
 
         // No control register logic now...
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x00)) {
+        if (addressExActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x00)) {
             if ((data & 0x01) > 0) {
                 onScreenBank = true;
             } else {
@@ -52,7 +52,7 @@ public class VectorPlane extends DisplayLayer {
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (MemoryBus.addressActive(addressEx, addressExPlane0)) {
+        if (addressExActive(addressEx, addressExPlane0)) {
             if(!MemoryBus.addressActive(address, 0x8000)) {
                 // The RAMs will only be in contention if they are being used to draw the frame
                 // This is not strictly hardware accurate if the visible bank is switched during the contention period, but for emulation it will suffice
@@ -87,10 +87,10 @@ public class VectorPlane extends DisplayLayer {
     @Override
     public void setAddressBus(int address, int addressEx) {
         memoryAsserted = false;
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address >= (addressRegisters) && address < (addressRegisters + 0x200)) {
+        if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters) && address < (addressRegisters + 0x200)) {
 //            memoryAsserted = true;
         }
-        if (MemoryBus.addressActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
+        if (addressExActive(addressEx, addressExPlane0) && MemoryBus.addressActive(address, addressPlane0)) {
 //            memoryAsserted = true;
         }
     }

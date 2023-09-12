@@ -41,116 +41,118 @@ public class Mode7 extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters) {
-            dx = (dx & 0xffff00) | (data & 0xff);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x01) {
-            dx = (dx & 0xff00ff) | ((data & 0xff) << 8);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x02) {
-            dx = (dx & 0x00ffff) | ((data & 0xff) << 16);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x03) {
-            dxy = (dxy & 0xffff00) | (data & 0xff);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x04) {
-            dxy = (dxy & 0xff00ff) | ((data & 0xff) << 8);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x05) {
-            dxy = (dxy & 0x00ffff) | ((data & 0xff) << 16);
-        }
-
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x06) {
-            dy = (dy & 0xffff00) | (data & 0xff);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x07) {
-            dy = (dy & 0xff00ff) | ((data & 0xff) << 8);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x08) {
-            dy = (dy & 0x00ffff) | ((data & 0xff) << 16);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x09) {
-            dyx = (dyx & 0xffff00) | (data & 0xff);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0a) {
-            dyx = (dyx & 0xff00ff) | ((data & 0xff) << 8);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0b) {
-            dyx = (dyx & 0x00ffff) | ((data & 0xff) << 16);
-        }
-
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0c) {
-            xorg = (xorg & 0xffff00) | (data & 0xff);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0d) {
-            xorg = (xorg & 0xff00ff) | ((data & 0xff) << 8);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0e) {
-            xorg = (xorg & 0x00ffff) | ((data & 0xff) << 16);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0f) {
-            yorg = (yorg & 0xffff00) | (data & 0xff);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x10) {
-            yorg = (yorg & 0xff00ff) | ((data & 0xff) << 8);
-        }
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x11) {
-            yorg = (yorg & 0x00ffff) | ((data & 0xff) << 16);
-        }
-
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x14) {
-            backgroundColour = data & 0xff;
-        }
-
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x15) {
-            flagRegisterX = false;
-            flagRegisterXY = false;
-            flagRegisterY = false;
-            flagRegisterYX = false;
-            if (!withOverscan) {
-                flagDisplayEnable = false;
-                if ((data & 0x01) > 0) {
-                    flagDisplayEnable = true;
-                }
-                if ((data & 0x02) > 0) {
-                    flagRegisterX = true;
-                }
-                if ((data & 0x04) > 0) {
-                    flagRegisterXY = true;
-                }
-                if ((data & 0x08) > 0) {
-                    flagRegisterY = true;
-                }
-                if ((data & 0x10) > 0) {
-                    flagRegisterYX = true;
-                }
-            } else {
-                if ((data & 0x01) > 0) {
-                    flagRegisterX = true;
-                }
-                if ((data & 0x02) > 0) {
-                    flagRegisterXY = true;
-                }
-                if ((data & 0x04) > 0) {
-                    flagRegisterY = true;
-                }
-                if ((data & 0x08) > 0) {
-                    flagRegisterYX = true;
-                }
+        if (addressExActive(addressEx, addressExRegisters)) {
+            if (address == addressRegisters) {
+                dx = (dx & 0xffff00) | (data & 0xff);
             }
-            handleRegisterFlags();
+            if (address == addressRegisters + 0x01) {
+                dx = (dx & 0xff00ff) | ((data & 0xff) << 8);
+            }
+            if (address == addressRegisters + 0x02) {
+                dx = (dx & 0x00ffff) | ((data & 0xff) << 16);
+            }
+            if (address == addressRegisters + 0x03) {
+                dxy = (dxy & 0xffff00) | (data & 0xff);
+            }
+            if (address == addressRegisters + 0x04) {
+                dxy = (dxy & 0xff00ff) | ((data & 0xff) << 8);
+            }
+            if (address == addressRegisters + 0x05) {
+                dxy = (dxy & 0x00ffff) | ((data & 0xff) << 16);
+            }
+
+            if (address == addressRegisters + 0x06) {
+                dy = (dy & 0xffff00) | (data & 0xff);
+            }
+            if (address == addressRegisters + 0x07) {
+                dy = (dy & 0xff00ff) | ((data & 0xff) << 8);
+            }
+            if (address == addressRegisters + 0x08) {
+                dy = (dy & 0x00ffff) | ((data & 0xff) << 16);
+            }
+            if (address == addressRegisters + 0x09) {
+                dyx = (dyx & 0xffff00) | (data & 0xff);
+            }
+            if (address == addressRegisters + 0x0a) {
+                dyx = (dyx & 0xff00ff) | ((data & 0xff) << 8);
+            }
+            if (address == addressRegisters + 0x0b) {
+                dyx = (dyx & 0x00ffff) | ((data & 0xff) << 16);
+            }
+
+            if (address == addressRegisters + 0x0c) {
+                xorg = (xorg & 0xffff00) | (data & 0xff);
+            }
+            if (address == addressRegisters + 0x0d) {
+                xorg = (xorg & 0xff00ff) | ((data & 0xff) << 8);
+            }
+            if (address == addressRegisters + 0x0e) {
+                xorg = (xorg & 0x00ffff) | ((data & 0xff) << 16);
+            }
+            if (address == addressRegisters + 0x0f) {
+                yorg = (yorg & 0xffff00) | (data & 0xff);
+            }
+            if (address == addressRegisters + 0x10) {
+                yorg = (yorg & 0xff00ff) | ((data & 0xff) << 8);
+            }
+            if (address == addressRegisters + 0x11) {
+                yorg = (yorg & 0x00ffff) | ((data & 0xff) << 16);
+            }
+
+            if (address == addressRegisters + 0x14) {
+                backgroundColour = data & 0xff;
+            }
+
+            if (address == addressRegisters + 0x15) {
+                flagRegisterX = false;
+                flagRegisterXY = false;
+                flagRegisterY = false;
+                flagRegisterYX = false;
+                if (!withOverscan) {
+                    flagDisplayEnable = false;
+                    if ((data & 0x01) > 0) {
+                        flagDisplayEnable = true;
+                    }
+                    if ((data & 0x02) > 0) {
+                        flagRegisterX = true;
+                    }
+                    if ((data & 0x04) > 0) {
+                        flagRegisterXY = true;
+                    }
+                    if ((data & 0x08) > 0) {
+                        flagRegisterY = true;
+                    }
+                    if ((data & 0x10) > 0) {
+                        flagRegisterYX = true;
+                    }
+                } else {
+                    if ((data & 0x01) > 0) {
+                        flagRegisterX = true;
+                    }
+                    if ((data & 0x02) > 0) {
+                        flagRegisterXY = true;
+                    }
+                    if ((data & 0x04) > 0) {
+                        flagRegisterY = true;
+                    }
+                    if ((data & 0x08) > 0) {
+                        flagRegisterYX = true;
+                    }
+                }
+                handleRegisterFlags();
+            }
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
-        if (MemoryBus.addressActive(addressEx, addressExMap) && MemoryBus.addressActive(address, addressMap)) {
+        if (addressExActive(addressEx, addressExMap) && MemoryBus.addressActive(address, addressMap)) {
             busContention = display.getBusContentionPixels();
             screenData[address & 0x1fff] = data;
         }
-        if (MemoryBus.addressActive(addressEx, addressExTiles0) && MemoryBus.addressActive(address, addressTiles0)) {
+        if (addressExActive(addressEx, addressExTiles0) && MemoryBus.addressActive(address, addressTiles0)) {
             busContention = display.getBusContentionPixels();
             tiles[address & 0x1fff] = data;
         }
-        if (MemoryBus.addressActive(addressEx, addressExTiles1) && MemoryBus.addressActive(address, addressTiles1)) {
+        if (addressExActive(addressEx, addressExTiles1) && MemoryBus.addressActive(address, addressTiles1)) {
             busContention = display.getBusContentionPixels();
             tiles[(address & 0x1fff) + 0x2000] = data;
         }
@@ -159,13 +161,13 @@ public class Mode7 extends DisplayLayer {
     @Override
     public void setAddressBus(int address, int addressEx) {
         memoryAsserted = false;
-        if (MemoryBus.addressActive(addressEx, addressExMap) && MemoryBus.addressActive(address, addressMap)) {
+        if (addressExActive(addressEx, addressExMap) && MemoryBus.addressActive(address, addressMap)) {
 //            memoryAsserted = true;
         }
-        if (MemoryBus.addressActive(addressEx, addressExTiles0) && MemoryBus.addressActive(address, addressTiles0)) {
+        if (addressExActive(addressEx, addressExTiles0) && MemoryBus.addressActive(address, addressTiles0)) {
 //            memoryAsserted = true;
         }
-        if (MemoryBus.addressActive(addressEx, addressExTiles1) && MemoryBus.addressActive(address, addressTiles1)) {
+        if (addressExActive(addressEx, addressExTiles1) && MemoryBus.addressActive(address, addressTiles1)) {
 //            memoryAsserted = true;
         }
     }

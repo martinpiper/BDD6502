@@ -18,18 +18,30 @@ public abstract class MemoryBus {
         return addressEx < 0x2000;
     }
 
-    public static boolean addressActive(int addressEx, int selector) {
+    public boolean addressExActive(int addressEx, int selector) {
+        if (isExactEBBSAddress) {
+            return addressEx == selector;
+        }
         if ((addressEx & selector) > 0) {
             return true;
         }
         return false;
     }
 
-    public static boolean addressActive(long addressEx, long selector) {
-        if ((addressEx & selector) > 0) {
+    public static boolean addressActive(int address, int selector) {
+        if ((address & selector) > 0) {
             return true;
         }
         return false;
+    }
+
+    public static boolean addressActive(long address, long selector) {
+        return addressActive((int)address,(int)selector);
+    }
+
+    protected boolean isExactEBBSAddress = false;
+    public void makeExactEBBSAddress() {
+        isExactEBBSAddress = true;
     }
 
     public void ageContention() {

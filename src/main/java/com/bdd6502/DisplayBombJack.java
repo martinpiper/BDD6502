@@ -269,7 +269,7 @@ public class DisplayBombJack extends MemoryBus {
         }
 
         // This logic now exists on the video layer hardware
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters) {
+        if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters) {
             if ((data & 0x10) > 0) {
                 enableBackground = true;
             } else {
@@ -297,16 +297,16 @@ public class DisplayBombJack extends MemoryBus {
             }
         }
 
-        if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x08) {
+        if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x08) {
             displayPriority = data;
         }
 
         if (withOverscan) {
-            if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x09) {
+            if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x09) {
                 overscanBorderExtent = data;
             }
 
-            if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0a) {
+            if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0a) {
                 for (int i = 0; i < enableLayerFlags.length && i < 8; i++) {
                     if ((data & (1 << ((enableLayerFlags.length - 1) - i))) > 0) {
                         enableLayerFlags[i] = true;
@@ -316,7 +316,7 @@ public class DisplayBombJack extends MemoryBus {
                 }
             }
 
-            if (MemoryBus.addressActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0b) {
+            if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0b) {
                 backgroundColour = data;
             }
         }
