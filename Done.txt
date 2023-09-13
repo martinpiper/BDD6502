@@ -892,3 +892,11 @@ Added: Given I am using C64 processor port options
 
 * Dither in emulation should match the hardware...
 	It does now
+
+
+
+* Exact address matching emulation
+	And the display uses exact address matching
+	And the audio expansion uses exact address matching
+	And the APU uses exact address matching
+	And the layer uses exact address matching

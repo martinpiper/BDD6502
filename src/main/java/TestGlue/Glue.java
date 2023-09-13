@@ -1910,9 +1910,10 @@ public class Glue {
         devices.add(audioExpansion);
     }
 
+    APUData apuData;
     @Given("^enable APU mode$")
     public void enableAPUMode() throws IOException {
-        APUData apuData = new APUData();
+        apuData = new APUData();
         devices.add(apuData);
         userPort24BitAddress.setEnableAPU(displayBombJack , apuData);
         displayBombJack.setCallbackAPU(userPort24BitAddress);
@@ -2054,6 +2055,22 @@ public class Glue {
     public void makeExactEBBSAddress() throws ScriptException {
         displayBombJack.getLastLayerAdded().makeExactEBBSAddress();
     }
+
+    @Given("^the display uses exact address matching$")
+    public void makeDisplayExactEBBSAddress() throws ScriptException {
+        displayBombJack.makeExactEBBSAddress();
+    }
+
+    @Given("^the audio expansion uses exact address matching$")
+    public void makeAudioExpansionExactEBBSAddress() throws ScriptException {
+        audioExpansion.makeExactEBBSAddress();
+    }
+
+    @Given("^the APU uses exact address matching$")
+    public void makeAPUExactEBBSAddress() throws ScriptException {
+        apuData.makeExactEBBSAddress();
+    }
+
 
     @Given("^the layer has 16 colours$")
     public void make16Colours() throws ScriptException {

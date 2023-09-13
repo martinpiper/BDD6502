@@ -4,8 +4,10 @@ Feature: Tests the video and audio hardware expansion together
   Scenario: Full display test with sprites, borders, contention, chars, tiles, and mode7, and sample play
     Given clear all external devices
     Given a new video display
+    And the display uses exact address matching
     And enable video display bus debug output
     Given a new audio expansion
+    And the audio expansion uses exact address matching
     Given video display processes 8 pixels per instruction
     Given video display refresh window every 32 instructions
     Given video display does not save debug BMP images
@@ -19,6 +21,7 @@ Feature: Tests the video and audio hardware expansion together
     Given a user port to 24 bit bus is installed
     And enable user port bus debug output
     And enable APU mode
+    And the APU uses exact address matching
     # Hardware defaults
     And APU clock divider 1
     And APU memory clock divider 2
@@ -561,8 +564,10 @@ Feature: Tests the video and audio hardware expansion together
   Scenario: Sprites 32x32 mode select test
     Given clear all external devices
     Given a new video display with overscan and 16 colours
+    And the display uses exact address matching
     And enable video display bus debug output
     Given a new audio expansion
+    And the audio expansion uses exact address matching
     Given video display processes 8 pixels per instruction
     Given video display refresh window every 32 instructions
     Given video display does not save debug BMP images
