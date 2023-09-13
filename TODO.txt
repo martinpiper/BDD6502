@@ -5,6 +5,10 @@
 	But it's not working well...
 	Is it because it's not keeping track of the pixels or cycles?
 	Check the call path to calculatePixel()
+	>> Because Video_WaitVBlank did a read before the main wait, to syn to the next real vsync :D
+		Which almost always caused a double wait
+	>> e.g. use:
+		Given avoid CPU wait during VBlank for address "Video_WaitVBlank_startGuard"
 
 
 

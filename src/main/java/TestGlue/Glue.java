@@ -1069,6 +1069,7 @@ public class Glue {
         }
 
         long frameDelta = 0;
+        int instructionsAvoided = 0;
         // Pushing lots of 0 onto the stack will eventually return to address 1
         while (machine.getCpu().getProgramCounter() > 1) {
             frameDelta = 0;
@@ -1117,7 +1118,8 @@ public class Glue {
                         instructionsPerFrame /= displayLimitFPS;
                         long pixelsShortfall = displayBombJack.pixelsInWholeFrame() - (instructionsPerFrame * pixelsPerInstruction);
                         long instructionsShortfall = pixelsShortfall / pixelsPerInstruction;
-                        System.out.println("Rendered FPS = " + (displayBombJack.getFrameNumberForSync() - lastFramesCount) + " frameDelta = " + frameDelta + " period=" + periodMillis + " instructionsThisPeriod=" + instructionsThisPeriod + " instructionsPerFrame=" + instructionsPerFrame + " instructionsShortfall=" + instructionsShortfall);
+                        System.out.println("Rendered FPS = " + (displayBombJack.getFrameNumberForSync() - lastFramesCount) + " frameDelta = " + frameDelta + " period=" + periodMillis + " instructionsThisPeriod=" + instructionsThisPeriod + " instructionsPerFrame=" + instructionsPerFrame + " instructionsShortfall=" + instructionsShortfall + " instructionsAvoided=" + instructionsAvoided);
+                        instructionsAvoided = 0;
                     }
                     lastFramesCount = displayBombJack.getFrameNumberForSync();
                     instructionsThisPeriod = 0;
@@ -1188,6 +1190,7 @@ public class Glue {
                 }
             }
 
+            /// Ensure that closing the display causes the execution to stop
             if (displayC64 != null && !displayC64.isVisible())
             {
                 break;
@@ -1213,18 +1216,21 @@ public class Glue {
             // Try to avoid CPU wasting time
             Integer addr = machine.getCpu().getCpuState().pc;
 
-            if (pauseUntilNewVBlank != null && displayBombJack != null && !displayBombJack.extEXTWANTIRQ() && !pauseUntilNewVBlank.isEmpty()) {
-                if (pauseUntilNewVBlank.contains(addr)) {
-                    while (!displayBombJack.extEXTWANTIRQ()) {
-                        displayBombJack.calculatePixel();
-                    }
-                }
-            }
-
             if (displayLimitFPS > 0 && frameDelta <= 0) {
                 // If we are limiting the frames and no frame needs to be rendered then don't execute instructions
             } else {
-                internalCPUStep(displayTrace);
+                boolean skipInstruction = false;
+                if (pauseUntilNewVBlank != null && displayBombJack != null && !displayBombJack.extEXTWANTIRQ() && !pauseUntilNewVBlank.isEmpty()) {
+                    if (pauseUntilNewVBlank.contains(addr)) {
+                        skipInstruction = true;
+//                        displayBombJack.calculatePixelsUntilEXTWANTIRQ();
+                    }
+                }
+                if (!skipInstruction) {
+                    internalCPUStep(displayTrace);
+                } else {
+                    instructionsAvoided++;
+                }
             }
 
             int deltaCycles = machine.getCpu().getClockCycles() - beforeCycles;

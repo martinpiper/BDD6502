@@ -8,7 +8,7 @@ class QuickDrawPanel extends JPanel {
     BufferedImage image;
     Dimension size = new Dimension();
     int[] rawPixels = null;
-    boolean isCached = false;
+    volatile boolean isCached = false;
     int width , height;
 
     public QuickDrawPanel(int width, int height) {
@@ -29,8 +29,9 @@ class QuickDrawPanel extends JPanel {
     }
 
     public void fastSetRGB(int x, int y, int rgb) {
+        int pos = x + (y*width);
         isCached = false;
-        rawPixels[x + (y*width)] = rgb;
+        rawPixels[pos] = rgb;
     }
 
     protected void AttachImage(BufferedImage image) {

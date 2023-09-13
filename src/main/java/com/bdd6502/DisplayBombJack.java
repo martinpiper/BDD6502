@@ -130,6 +130,12 @@ public class DisplayBombJack extends MemoryBus {
         extEXTWANTIRQFlag = false;
     }
 
+    public void calculatePixelsUntilEXTWANTIRQ() {
+        while (!extEXTWANTIRQFlag) {
+            calculatePixel();
+        }
+    }
+
     public DisplayBombJack() throws IOException {
         //enableDebugData();
         Arrays.fill(debugDisplayPixelFromWhere, -1);
