@@ -29,6 +29,7 @@ import com.loomcom.symon.util.HexUtil;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class Memory extends Device {
 
@@ -40,6 +41,30 @@ public class Memory extends Device {
     private boolean[] assertOnWrite;
     private boolean[] assertOnRead;
     private boolean[] assertOnExec;
+
+    class ExpectEntry {
+        int start;
+        int end;
+        int address;
+        int value;
+
+        public ExpectEntry(int start, int end, int address, int value) {
+            this.start = start;
+            this.end = end;
+            this.address = address;
+            this.value = value;
+        }
+    }
+
+    private LinkedList<ExpectEntry> expectWrites = new LinkedList<>();
+
+    public void addExpectWrite(int start, int end, int address, int value) {
+        // Only include the intended writes in the memory address range...
+        if (address >= start && address <= end) {
+            value = value & 0xff;   // Remove any signed nonsense
+            expectWrites.add(new ExpectEntry(start, end, address, value));
+        }
+    }
 
     private boolean uninitialisedReadOccured;
 
@@ -78,6 +103,20 @@ public class Memory extends Device {
     }
 
     public void write(int address, int data) throws MemoryAccessException {
+        if (!expectWrites.isEmpty()) {
+            ExpectEntry next = expectWrites.getFirst();
+            if (address >= next.address && address <= next.end) {
+                if (address == next.address) {
+                    if (data == next.value) {
+                        expectWrites.removeFirst();
+                    } else {
+                        throw new MemoryAccessException("Write at: " + HexUtil.wordToHex(address) + " with value: " + HexUtil.byteToHex(data) + " was expected to be value: " + HexUtil.byteToHex(next.value));
+                    }
+                } else {
+                    throw new MemoryAccessException("Write at: " + HexUtil.wordToHex(address) + " with value: " + HexUtil.byteToHex(data) + " was expected to be address: " + HexUtil.wordToHex(next.address) + " value: " + HexUtil.byteToHex(next.value));
+                }
+            }
+        }
         if (assertOnWrite[address]) {
             throw new MemoryAccessException("Write exception at: " + HexUtil.wordToHex(address));
         }

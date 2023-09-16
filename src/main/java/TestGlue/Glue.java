@@ -22,6 +22,7 @@ import mmarquee.automation.controls.Application;
 import mmarquee.automation.controls.ElementBuilder;
 import mmarquee.automation.controls.MenuItem;
 import mmarquee.automation.controls.Window;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -111,6 +112,8 @@ public class Glue {
         currentMenuItem = currentMenuItem.getMenuItem(Pattern.compile(pattern));
         currentMenuItem.click();
     }
+
+
 
     private class ProfileData {
         boolean isSEI = false;
@@ -771,7 +774,7 @@ public class Glue {
                         start++;
                     }
                 }
-                if (userPort24BitAddress.isEnableAPU() && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_APU)) {
+                if (userPort24BitAddress != null && userPort24BitAddress.isEnableAPU() && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_APU)) {
                     byte[] memory = userPort24BitAddress.getAPUDataMemory();
                     int i = 0;
                     while (start <= end) {
@@ -2575,4 +2578,44 @@ public class Glue {
             pauseUntilNewVBlank.add(potential);
         }
     }
+
+    @Then("^for memory from \"([^\"]*)\" to \"([^\"]*)\" expect a write to \"([^\"]*)\" with value \"([^\"]*)\"$")
+    public void forMemoryBetweenAndExpectAWriteToWithValue(String startAddress, String endAddress, String toAddress, String value) throws Throwable {
+        int start = valueToInt(startAddress);
+        int end = valueToInt(endAddress);
+        int to = valueToInt(toAddress);
+        int ivalue = valueToInt(value);
+
+        machine.getRam().addExpectWrite(start, end, to, ivalue);
+    }
+
+    byte lastBinaryData[];
+
+
+    @Given("^load binary file \"([^\"]*)\" into temporary memory$")
+    public void loadBinaryFileIntoTemporaryMemory(String arg0) throws Throwable {
+        lastBinaryData = FileUtils.readFileToByteArray(new File(arg0));
+    }
+
+    @And("^trim \"([^\"]*)\" bytes from the start of temporary memory$")
+    public void trimBytesFromTheStartOfTemporaryMemory(String numBytes) throws Throwable {
+        int ivalue = valueToInt(numBytes);
+        lastBinaryData = Arrays.copyOfRange(lastBinaryData,ivalue , lastBinaryData.length);
+    }
+
+    @Then("^for memory from \"([^\"]*)\" to \"([^\"]*)\" expect writes at \"([^\"]*)\" with temporary memory$")
+    public void forMemoryFromToExpectWritesAtWithTemporaryMemory(String startAddress, String endAddress, String toAddress) throws Throwable {
+        int start = valueToInt(startAddress);
+        int end = valueToInt(endAddress);
+        int to = valueToInt(toAddress);
+
+        for (byte value : lastBinaryData) {
+            machine.getRam().addExpectWrite(start, end, to, value);
+            to++;
+        }
+
+
+    }
+
+
 }

@@ -900,3 +900,15 @@ Added: Given I am using C64 processor port options
 	And the audio expansion uses exact address matching
 	And the APU uses exact address matching
 	And the layer uses exact address matching
+
+
+
+
+* When trying to debug failing code, it would be useful to had syntax to read expected memory for comparison to be used for stores into memory.
+	Then break on the first instance of a store not matching the expected memory.
+	This would allow the CPU history to be inspected etc.
+	New syntax:
+		Then for memory from "$500" to "$510" expect a write to "$500" with value "$a2"
+		Given load binary file "test.prg" into temporary memory
+		And trim "2" bytes from the start of temporary memory
+		Then for memory from "$500" to "$510" expect writes at "$500" with temporary memory
