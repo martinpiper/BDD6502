@@ -1,5 +1,14 @@
 ; TODO items
 
+* Write test summary html containing:
+		75 Scenarios (75 passed)
+		2345 Steps (2345 passed)
+		2m31.238s
+	And a link to the full report.
+	
+
+
+
 * Video_WaitVBlank could use a special case to avoid executing the CPU until the vblank happens when encountering this label
 	pauseUntilNewVBlank
 	But it's not working well...
