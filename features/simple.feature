@@ -116,3 +116,25 @@ Feature: Simple 6502 code test
     And skip line
     Then expect the next line to contain "Given I am using C64 processor port options"
     Then expect the line to contain "Added: "
+
+  @TC-3-1
+  Scenario: Saves memory and validates expected file data
+    Given I have a simple overclocked 6502 system
+    And I start writing memory at $400
+    And I write the following hex bytes
+      | 00 01 02 03 04 05 06 07 |
+    And I start writing memory at $410
+    And I write the following hex bytes
+      | 00 01 02 03 04 05 06 07 |
+    When save 6502 memory without two byte header from "$400" to "$408" to file "target/mem1.bin"
+    When save 6502 memory without two byte header from "$410" to "$418" to file "target/mem2.bin"
+    Then assert that file "target/mem1.bin" is binary equal to file "target/mem2.bin"
+    Given set property "test.a" equal to the file size of "target/mem1.bin"
+    Then assert that "${test.a}" is equal to "8"
+
+    When save 6502 memory with two byte header from "$400" to "$408" to file "target/mem1.bin"
+    When save 6502 memory with two byte header from "$400" to "$408" to file "target/mem2.bin"
+    Then assert that file "target/mem1.bin" is binary equal to file "target/mem2.bin"
+    Given set property "test.a" equal to the file size of "target/mem1.bin"
+    Then assert that "${test.a}" is equal to "10"
+

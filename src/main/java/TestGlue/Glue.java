@@ -8,6 +8,7 @@ import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 import com.loomcom.symon.util.HexUtil;
+import com.replicanet.cukesplus.PropertiesResolution;
 import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -25,6 +26,7 @@ import mmarquee.automation.controls.Window;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.xpath.VariableStack;
 
 import javax.imageio.ImageIO;
 import javax.script.ScriptEngine;
@@ -2617,5 +2619,31 @@ public class Glue {
 
     }
 
+    @When("^save 6502 memory without two byte header from \"([^\"]*)\" to \"([^\"]*)\" to file \"([^\"]*)\"$")
+    public void save_memory_without_two_byte_header_from_until_to_file(String startAddress, String endAddress, String filename) throws Throwable {
+        int start = valueToInt(PropertiesResolution.resolveInput(scenario,startAddress));
+        int end = valueToInt(PropertiesResolution.resolveInput(scenario,endAddress));
 
+        FileOutputStream fileOutputStream = FileUtils.openOutputStream(new File(PropertiesResolution.resolveInput(scenario, filename)));
+        for (int address = start ; address < end ; address++) {
+            int value = machine.getRam().read(address , false);
+            fileOutputStream.write(value);
+        }
+        fileOutputStream.close();
+    }
+
+    @When("^save 6502 memory with two byte header from \"([^\"]*)\" to \"([^\"]*)\" to file \"([^\"]*)\"$")
+    public void save_memory_with_two_byte_header_from_until_to_file(String startAddress, String endAddress, String filename) throws Throwable {
+        int start = valueToInt(PropertiesResolution.resolveInput(scenario,startAddress));
+        int end = valueToInt(PropertiesResolution.resolveInput(scenario,endAddress));
+
+        FileOutputStream fileOutputStream = FileUtils.openOutputStream(new File(PropertiesResolution.resolveInput(scenario, filename)));
+        fileOutputStream.write(start & 0xff);
+        fileOutputStream.write((start>>8) & 0xff);
+        for (int address = start ; address < end ; address++) {
+            int value = machine.getRam().read(address , false);
+            fileOutputStream.write(value);
+        }
+        fileOutputStream.close();
+    }
 }

@@ -912,3 +912,11 @@ Added: Given I am using C64 processor port options
 		Given load binary file "test.prg" into temporary memory
 		And trim "2" bytes from the start of temporary memory
 		Then for memory from "$500" to "$510" expect writes at "$500" with temporary memory
+
+
+
+
+* Save C64 memory range with optional 2 byte header
+    When save 6502 memory with two byte header from "$410" to "$418" to file "target/mem2.bin"
+    When save 6502 memory without two byte header from "$410" to "$418" to file "target/mem2.bin"
+    Then assert that file "target/mem1.bin" is binary equal to file "target/mem2.bin"

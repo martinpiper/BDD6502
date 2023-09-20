@@ -1,10 +1,5 @@
 ; TODO items
 
-* Save C64 memory range with optional 2 byte header
-
-
-
-
 * Video_WaitVBlank could use a special case to avoid executing the CPU until the vblank happens when encountering this label
 	pauseUntilNewVBlank
 	But it's not working well...
