@@ -1,5 +1,10 @@
 ; TODO items
 
+* Pixel picking, when enabled, could display the 7x7/5x5 pixels under the mouse cursor in the off-screen border area as a zoomed in view.
+
+
+
+
 * Write test summary html containing:
 		75 Scenarios (75 passed)
 		2345 Steps (2345 passed)
