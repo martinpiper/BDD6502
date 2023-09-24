@@ -1,5 +1,11 @@
 ; TODO items
 
+* Like the real audio hardware, allow some mixing between left/right channels. They're not completely separated.
+	Make it variable in syntax.
+
+
+
+
 * Pixel picking, when enabled, could display the 7x7/5x5 pixels under the mouse cursor in the off-screen border area as a zoomed in view.
 
 

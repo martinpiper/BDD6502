@@ -1681,8 +1681,7 @@ Feature: Tests the video and audio hardware expansion together
 
 
   @TC-15 @ignore
-  Scenario: Test chars image conversion output
-    # Mostly duplicates TestData_DebugBackgroundColourChoice.txt
+  Scenario: Test chars image conversion output 2
     Given clear all external devices
     Given a new video display with overscan and 16 colours
     And enable video display bus debug output
