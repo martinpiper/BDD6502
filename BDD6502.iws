@@ -49,19 +49,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Work/BDD6502/BDD6502.ipr&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Work/BDD6502/BDD6502.ipr",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.new.ui"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.loomcom.symon.devices" />
@@ -101,7 +100,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner simple.feature @TC-3-1">
+  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-15">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -420,6 +419,14 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags @TC-14 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner TestVideoHardware.feature  @TC-15" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @TC-15 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/TestVideoHardware.feature" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -941,6 +948,7 @@
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-10 Sprites3 (Scaled rotated)" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-13 background colour" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-15" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-1" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-11" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-6" />
