@@ -52,6 +52,12 @@ Feature: C64 ROM tests
     Then property "test.BDD6502.lastHexDump" must contain string "4f0: 12 15 0e 20"
     Then property "test.BDD6502.lastHexDump" must contain string "540: 12 05 01 04 19 2e 20"
 
+    # Debug test
+#    Given I enable trace with indent
+    Given add C64 display window to C64 keyboard buffer hook
+    Given add C64 regular IRQ trigger of "100000" cycles
+#    Then I continue executing the procedure until return
+
     # Now explicitly check the various processor port expected behaviours
     And I create file "test.a" with
     """

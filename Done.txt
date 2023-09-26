@@ -920,3 +920,12 @@ Added: Given I am using C64 processor port options
     When save 6502 memory with two byte header from "$410" to "$418" to file "target/mem2.bin"
     When save 6502 memory without two byte header from "$410" to "$418" to file "target/mem2.bin"
     Then assert that file "target/mem1.bin" is binary equal to file "target/mem2.bin"
+
+
+
+* C64 keyboard buffer hook: Given add C64 display window to C64 keyboard buffer hook
+
+
+
+
+* Add syntax to handle regularly triggered IRQ: Given add C64 regular IRQ trigger of "100000" cycles

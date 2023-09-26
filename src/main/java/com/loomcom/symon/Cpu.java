@@ -933,7 +933,8 @@ public class Cpu implements InstructionTable {
      */
     private void handleInterrupt(int returnPc, int vectorLow, int vectorHigh) throws MemoryAccessException {
         // Set the break flag before pushing.
-        setBreakFlag();
+        // MPi: Not for the usual case of the C64 handling its IRQ
+//        setBreakFlag();
         // Push program counter + 1 onto the stack
         stackPush((returnPc >> 8) & 0xff); // PC high byte
         stackPush(returnPc & 0xff);        // PC low byte

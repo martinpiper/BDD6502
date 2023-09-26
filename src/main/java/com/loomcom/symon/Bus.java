@@ -270,6 +270,10 @@ public class Bus {
     int crtBank = 0;
     int crtEasyFlashControl = 0;
     public int read(int address, boolean logRead) throws MemoryAccessException {
+        if (processorPort && 0x0001 == address) {
+            // Return the contents of the processor port if it is active
+            return theProcessorPort;
+        }
         if (processorPort && crtActive) {
             int pp = theProcessorPort & 0b111;
             if (0b111 == pp || 0b011 == pp) {
@@ -295,7 +299,7 @@ public class Bus {
 
     public void write(int address, int value) throws MemoryAccessException {
         if (processorPort) {
-            if (1 == address) {
+            if (0x0001 == address) {
 //                System.out.println("Processor port Write detected: of " + String.format("$%02X", value));
                 theProcessorPort = value;
                 return;

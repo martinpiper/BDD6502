@@ -10,6 +10,8 @@ import org.apache.commons.lang3.RandomUtils;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
@@ -17,13 +19,44 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Random;
 
 import static com.bdd6502.MemoryBus.addressActive;
 
 public class DisplayC64 {
 
-    JFrame window;
+    class DisplayFrame extends JFrame implements KeyListener {
+
+        public boolean anyPendingKeys() {
+            return !typed.isEmpty();
+        }
+        public KeyEvent getTyped() {
+            if (typed.isEmpty()) {
+                return null;
+            }
+            return typed.pop();
+        }
+
+        LinkedList<KeyEvent> typed = new LinkedList<>();
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+            typed.add(e);
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+
+        }
+    }
+
+    DisplayFrame window;
     QuickDrawPanel panel;
     private int forceBank = -1;
 
@@ -107,6 +140,11 @@ public class DisplayC64 {
     public DisplayC64() throws IOException {
     }
 
+    boolean enableKeyboardBufferHook = false;
+    public void enableKeyboardBufferHook() {
+        enableKeyboardBufferHook = true;
+    }
+
     public void InitWindow() {
         double scale = 2.0f;
         InitWindow((int)(displayWidth * scale), (int)(displayHeight * scale));
@@ -114,7 +152,8 @@ public class DisplayC64 {
 
     public void InitWindow(int width, int height) {
         // Testing window drawing in a loop for eventual graphics updates
-        window = new JFrame();
+        window = new DisplayFrame();
+        window.addKeyListener(window);
         window.getContentPane().setPreferredSize(new Dimension(width, height));
         window.pack();
 
@@ -231,6 +270,61 @@ public class DisplayC64 {
     int backgroundColour = 0;
     int bankToAddress[] = {0xc000, 0x8000, 0x4000, 0x0000};
     private void refreshInternals() {
+        try {
+            if (enableKeyboardBufferHook) {
+                if (window.anyPendingKeys()) {
+                    int data = theRAM.read(0xc6 , false);
+                    // Only inject keys when the C64 keyboard buffer is empty
+                    if (data == 0) {
+                        KeyEvent typed = window.getTyped();
+                        if (typed != null) {
+                            theRAM.write(0xc6, 1);
+                            char theChar = typed.getKeyChar();
+                            if (Character.isDigit(theChar)) {
+                                theRAM.write(0x277, theChar);
+                            } else if (theChar >= 'a' && theChar <= 'z') {
+                                theRAM.write(0x277, 0x41 + (theChar - 'a'));
+                            } else if (theChar >= 'A' && theChar <= 'Z') {
+                                theRAM.write(0x277, 0x61 + (theChar - 'A'));
+                            } else if (theChar == '\b') {
+                                theRAM.write(0x277, 0x14);
+                            } else if (theChar == 27) {
+                                // It's escape...
+                                // TODO: This isn't handling runstop
+                                theRAM.write(0x277, 0x03);
+                            } else if (theChar == '\n') {
+                                theRAM.write(0x277, 0x0d);
+                            } else if (theChar == ' ') {
+                                theRAM.write(0x277, 0x20);
+                            } else if (theChar == '!') {
+                                theRAM.write(0x277, 0x21);
+                            } else if (theChar == '"') {
+                                theRAM.write(0x277, 0x22);
+                            } else if (theChar == '(') {
+                                theRAM.write(0x277, 0x28);
+                            } else if (theChar == ')') {
+                                theRAM.write(0x277, 0x29);
+                            } else if (theChar == '*') {
+                                theRAM.write(0x277, 0x2a);
+                            } else if (theChar == '+') {
+                                theRAM.write(0x277, 0x2b);
+                            } else if (theChar == ',') {
+                                theRAM.write(0x277, 0x2c);
+                            } else if (theChar == ':') {
+                                theRAM.write(0x277, 0x3a);
+                            } else if (theChar == ';') {
+                                theRAM.write(0x277, 0x3b);
+                            } else if (theChar == '=') {
+                                theRAM.write(0x277, 0x3d);
+                            } else if (theChar == '?') {
+                                theRAM.write(0x277, 0x3f);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
         try {
             int bank = theIO.read(0x100, false) & 0x03;
             if (forceBank >= 0) {

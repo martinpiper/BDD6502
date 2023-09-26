@@ -36,6 +36,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
+import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -115,6 +116,18 @@ public class Glue {
         currentMenuItem.click();
     }
 
+    @Given("^add C64 display window to C64 keyboard buffer hook$")
+    public void addC64DisplayWindowToCKeyboardBufferHook() {
+        displayC64.enableKeyboardBufferHook();
+    }
+
+    int regularTimedIRQCyclesReset = 0;
+    int regularTimedIRQCycles = 0;
+    @Given("^add C64 regular IRQ trigger of \"(.*)\" cycles$")
+    public void addC64RegularIRQTriggerOfCyccles(String cycles) throws ParseException, ScriptException {
+        regularTimedIRQCyclesReset = valueToInt(PropertiesResolution.resolveInput(scenario, cycles));
+        regularTimedIRQCycles = regularTimedIRQCyclesReset;
+    }
 
 
     private class ProfileData {
@@ -1242,6 +1255,15 @@ public class Glue {
             if (deltaCycles > 0) {
                 if (displayC64 != null && displayC64.isVisible()) {
                     displayC64.calculatePixelsFor(deltaCycles * 8);
+                }
+
+                if (regularTimedIRQCyclesReset > 0) {
+                    regularTimedIRQCycles -= deltaCycles;
+                    if (regularTimedIRQCycles < 0) {
+                        regularTimedIRQCycles = regularTimedIRQCyclesReset;
+                        machine.getCpu().clearBreakFlag();
+                        machine.getCpu().assertIrq();
+                    }
                 }
             }
 
