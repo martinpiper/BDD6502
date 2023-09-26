@@ -2,6 +2,11 @@
 
 * Like the real audio hardware, allow some mixing between left/right channels. They're not completely separated.
 	Make it variable in syntax.
+	
+	
+	
+* For the scaled sprites layers (normal and rotated) add some debug that will show how much time is used (or free) for each scanline up until it reaches the end of sprite list
+	** Add an option to debug break the debugger if the time runs out?
 
 
 
