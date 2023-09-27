@@ -8,6 +8,7 @@ Feature: Tests the video and audio hardware expansion together
     Given a new video display
     And enable video display bus debug output
     Given a new audio expansion
+    And audio mix 85
     And audio refresh window every 32 instructions
     And audio refresh window every 0 instructions
     And audio refresh is independent

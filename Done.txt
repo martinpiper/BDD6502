@@ -929,3 +929,11 @@ Added: Given I am using C64 processor port options
 
 
 * Add syntax to handle regularly triggered IRQ: Given add C64 regular IRQ trigger of "100000" cycles
+
+
+
+
+* Like the real audio hardware, allow some mixing between left/right channels. They're not completely separated.
+	Make it variable in syntax.
+	Given audio mix 85
+	    This adds a left/right mix of 33% (0.33333 * 256 = 85)

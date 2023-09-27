@@ -186,18 +186,56 @@ public class AudioExpansion extends MemoryBus implements Runnable {
 
     }
 
+    public void setMix(int mix) {
+        this.mix = mix;
+    }
+
+    int mix = 0;
     public boolean calculateSamples() {
         if (line.available() < sampleBuffer.length) {
             return false;
         }
         calculateBalancedSamples(0);
         calculateBalancedSamples(1);
+        if (mix > 0) {
+            applyMix(mix);
+        }
         line.write(sampleBuffer,0,sampleBuffer.length);
         try {
             outSamples.write(sampleBuffer,0,sampleBuffer.length);
         } catch (IOException e) {
         }
         return true;
+    }
+
+    void applyMix(int mix) {
+        for (int i = 0 ; i < sampleBuffer.length ; i+=2) {
+            int left = sampleBuffer[i] & 0xff;
+            left -= 0x80;
+
+            int right = sampleBuffer[i+1] & 0xff;
+            right -= 0x80;
+
+            int newLeft = left + ((right * mix)/255);
+            int newRight = right + ((left * mix)/255);
+
+            newLeft += 0x80;
+            newRight += 0x80;
+
+            if (newLeft > 255) {
+                newLeft = 255;
+            } else if (newLeft < 0) {
+                newLeft = 0;
+            }
+            sampleBuffer[i] = (byte)(newLeft & 0xff);
+
+            if (newRight > 255) {
+                newRight = 255;
+            } else if (newRight < 0) {
+                newRight = 0;
+            }
+            sampleBuffer[i+1] = (byte)(newRight & 0xff);
+        }
     }
 
     public void calculateBalancedSamples(int offset) {

@@ -1936,8 +1936,12 @@ public class Glue {
         audioExpansion.start();
         devices.add(audioExpansion);
     }
+    @Given("^audio mix (.*)$")
+    public void audioMix(int mix) throws IOException {
+        audioExpansion.setMix(mix);
+    }
 
-    APUData apuData;
+        APUData apuData;
     @Given("^enable APU mode$")
     public void enableAPUMode() throws IOException {
         apuData = new APUData();
