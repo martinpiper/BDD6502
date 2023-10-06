@@ -937,3 +937,7 @@ Added: Given I am using C64 processor port options
 	Make it variable in syntax.
 	Given audio mix 85
 	    This adds a left/right mix of 33% (0.33333 * 256 = 85)
+
+
+
+* Fix DisplayC64 null references if there is no CHARGEN ROM attached

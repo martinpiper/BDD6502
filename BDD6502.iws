@@ -8,9 +8,8 @@
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestAudioHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestAudioHardware.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayC64.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayC64.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/MemoryBus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/MemoryBus.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
@@ -110,7 +109,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestAudioHardware.feature">
+  <component name="RunManager" selected="Application.TestRunner VideoHardware @Demo6C">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -804,7 +803,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserPortTo24BitAddressTest.checkAPU1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="UserPortTo24BitAddressTest.checkAPU4" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="BDD6502" />
       <extension name="coverage">
         <pattern>
@@ -814,7 +813,7 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.loomcom.symon.devices" />
       <option name="MAIN_CLASS_NAME" value="com.loomcom.symon.devices.UserPortTo24BitAddressTest" />
-      <option name="METHOD_NAME" value="checkAPU1" />
+      <option name="METHOD_NAME" value="checkAPU4" />
       <option name="TEST_OBJECT" value="method" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
       <method v="2">
@@ -1006,8 +1005,8 @@
       <item itemvalue="Cucumber Java.Simple ALL" />
       <item itemvalue="Cucumber Java.Trace Test" />
       <item itemvalue="JUnit.JUnit all" />
+      <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU4" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
-      <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU1" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU6" />
       <item itemvalue="Maven.BDD6502 [install] (1)" />
       <item itemvalue="Maven.BDD6502 [install]" />
@@ -1015,10 +1014,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Maven.BDD6502 [install]" />
+        <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU4" />
         <item itemvalue="Maven.BDD6502 [install] (1)" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU6" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
-        <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU1" />
       </list>
     </recent_temporary>
   </component>
@@ -1060,11 +1059,6 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
-          <line>396</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java</url>
           <line>356</line>
           <option name="timeStamp" value="44" />
@@ -1073,6 +1067,16 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion.java</url>
           <line>211</line>
           <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
+          <line>767</line>
+          <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
+          <line>694</line>
+          <option name="timeStamp" value="49" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

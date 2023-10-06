@@ -22,14 +22,14 @@ public abstract class MemoryBus {
         if (isExactEBBSAddress) {
             return addressEx == selector;
         }
-        if ((addressEx & selector) > 0) {
+        if ((addressEx & selector) != 0) {
             return true;
         }
         return false;
     }
 
     public static boolean addressActive(int address, int selector) {
-        if ((address & selector) > 0) {
+        if ((address & selector) != 0) {
             return true;
         }
         return false;

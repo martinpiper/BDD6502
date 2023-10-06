@@ -393,7 +393,7 @@ public class DisplayC64 {
                 try {
                     currentChar = theRAM.read(screenAddress + (ypos * 40) + xpos, false);
 
-                    if (isCHARROM) {
+                    if (isCHARROM && theCHARGEN != null) {
                         if (isBitmap) {
                             currentCharBits = theCHARGEN.read((charsBitmapAddress + ((xpos + (ypos * 40)) * 8) + yLine) & 0xfff, false);
                         } else {
@@ -415,18 +415,18 @@ public class DisplayC64 {
                 if (isBitmap) {
                     panel.fastSetRGB(displayH, displayV, palette[currentChar & 0xf]);
                 } else {
-                    panel.fastSetRGB(displayH, displayV, palette[backgroundColour]);
+                    panel.fastSetRGB(displayH, displayV, palette[backgroundColour & 0x0f]);
                 }
             } else {
                 if (isBitmap) {
                     panel.fastSetRGB(displayH, displayV, palette[(currentChar>>4) & 0xf]);
                 } else {
-                    panel.fastSetRGB(displayH, displayV, palette[currentColour]);
+                    panel.fastSetRGB(displayH, displayV, palette[currentColour & 0x0f]);
                 }
             }
             currentCharBits = currentCharBits << 1;
         } else {
-            panel.fastSetRGB(displayH, displayV, palette[borderColour]);
+            panel.fastSetRGB(displayH, displayV, palette[borderColour & 0x0f]);
         }
 
         displayH++;
