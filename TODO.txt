@@ -1,10 +1,5 @@
 ; TODO items
 
-* C64 and Video display should open side by side...
-
-
-
-
 * APU: kAPU_IDataRegLoad4 is not being disassembled?!
 
 

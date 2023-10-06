@@ -347,6 +347,11 @@ public class Glue {
         }
         audioExpansion = null;
         userPort24BitAddress = null;
+
+        if (displayC64 != null) {
+            displayC64.getWindow().dispatchEvent(new WindowEvent(displayBombJack.getWindow(), WindowEvent.WINDOW_CLOSING));
+        }
+        displayC64 = null;
     }
 
     public void initMachine() throws MemoryRangeException, MemoryAccessException {
@@ -1963,6 +1968,10 @@ public class Glue {
     @Given("^show video window$")
     public void showVideoWindow() {
         displayBombJack.InitWindow();
+
+        if (displayC64 != null && displayC64.getWindow() != null) {
+            displayBombJack.getWindow().move(displayC64.getWindow().getWidth() , 0);
+        }
     }
 
     @Given("^show C64 video window$")

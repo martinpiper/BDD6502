@@ -941,3 +941,7 @@ Added: Given I am using C64 processor port options
 
 
 * Fix DisplayC64 null references if there is no CHARGEN ROM attached
+
+
+
+* C64 and Video display should open side by side
