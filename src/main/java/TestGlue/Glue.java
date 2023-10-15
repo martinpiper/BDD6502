@@ -9,6 +9,7 @@ import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 import com.loomcom.symon.util.HexUtil;
 import com.replicanet.cukesplus.PropertiesResolution;
+import com.sun.org.apache.xpath.internal.operations.Variable;
 import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -37,6 +38,9 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
 import java.text.ParseException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -196,7 +200,13 @@ public class Glue {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
+        startLifetimeTimeout = null;
+        remoteMonitorLifetimeTimeout = -1;
+        remoteMonitorTimeout = -1;
     }
     static public int valueToIntFast(String valueIn) throws ScriptException {
         return valueToIntFast(valueIn , 10);
@@ -1474,6 +1484,8 @@ public class Glue {
     // assemble.feature
     @Given("^I create file \"(.*?)\" with$")
     public void i_create_file_with(String arg1, String arg2) throws Throwable {
+        arg1 = PropertiesResolution.resolveInput(scenario , arg1);
+        arg2 = PropertiesResolution.resolveInput(scenario , arg2);
         BufferedWriter out = new BufferedWriter(new FileWriter(arg1));
         out.write(arg2);
         out.close();
@@ -2283,8 +2295,25 @@ public class Glue {
         remoteMonitor = new Socket(host, port);
     }
 
-    public void sendMonitorCommand(String command) throws IOException, InterruptedException {
+    int remoteMonitorTimeout = -1;
+    @Given ("^set monitor reply timeout and continue to \"([^\"]*)\" seconds$")
+    public void setMonitorTimeoutToSeconds(String seconds) throws Throwable {
+        int iSeconds = Integer.parseInt(PropertiesResolution.resolveInput(scenario,seconds));
+        remoteMonitorTimeout = iSeconds;
+    }
+
+    int remoteMonitorLifetimeTimeout = -1;
+    Instant startLifetimeTimeout = null;
+    @Given ("^set monitor lifetime timeout and error to \"([^\"]*)\" seconds$")
+    public void setMonitorLifetimeTimeoutToSeconds(String seconds) throws Throwable {
+        int iSeconds = Integer.parseInt(PropertiesResolution.resolveInput(scenario,seconds));
+        remoteMonitorLifetimeTimeout = iSeconds;
+        startLifetimeTimeout = Instant.now();
+    }
+
+    public void sendMonitorCommand(String command) throws IOException, InterruptedException, ParseException {
         command = command.replace("%WCD%",System.getProperty("user.dir").replace("/", "\\"));
+        command = PropertiesResolution.resolveInput(scenario , command);
         // Make sure the input is empty first
         getMonitorReply();
         // This space padding is needed because of a bug in Vice remote monitor, the EOL at the end is important for commands with different length to be parsed correctly
@@ -2294,10 +2323,23 @@ public class Glue {
     }
 
     public void waitMonitorReply() throws IOException, InterruptedException {
+        Instant start = Instant.now();
         Thread.sleep(100);  // Urghh, why do we have to? :D
         InputStream is = remoteMonitor.getInputStream();
 
         while (is.available() == 0) {
+            if (remoteMonitorTimeout >= 0) {
+                long secondsElapsed = Duration.between(start,Instant.now()).getSeconds();
+                if (secondsElapsed > remoteMonitorTimeout) {
+                    return;
+                }
+            }
+            if (startLifetimeTimeout != null && remoteMonitorLifetimeTimeout > 0) {
+                long secondsElapsed = Duration.between(startLifetimeTimeout,Instant.now()).getSeconds();
+                if (secondsElapsed > remoteMonitorLifetimeTimeout) {
+                    throw new InterruptedException("remote monitor lifetime timeout exceeded");
+                }
+            }
             Thread.sleep(10);
         }
     }
@@ -2319,7 +2361,7 @@ public class Glue {
             scenario.write("Got monitor reply: " + reply);
         }
 
-        System.setProperty("test.BDD6502.previousMonitorReply", System.getProperty("test.BDD6502.lastMonitorReply", ""));
+        System.setProperty("test.BDD6502.previousMonitorReply", System  .getProperty("test.BDD6502.lastMonitorReply", ""));
 
         System.setProperty("test.BDD6502.lastMonitorReply", reply);
 
@@ -2407,9 +2449,32 @@ public class Glue {
         System.out.println("<< Got debugger command");
     }
 
-    BufferedReader fileReading;
+    static BufferedWriter fileWriting;
+    @Given("^open file \"([^\"]*)\" for writing$")
+    public void open_file_for_writing(String outFilePath) throws Throwable {
+        outFilePath = PropertiesResolution.resolveInput(scenario, outFilePath);
+        fileWriting = new BufferedWriter(new FileWriter(outFilePath));
+    }
+
+    @When("^write to the file a line \"([^\"]*)\"$")
+    public void write_to_the_file_a_line(String text) throws Throwable {
+        text = PropertiesResolution.resolveInput(scenario, text);
+        fileWriting.write(text);
+        fileWriting.newLine();
+        fileWriting.flush();
+    }
+
+    @When("^close the writing file$")
+    public void close_the_writing_file() throws Throwable {
+        fileWriting.close();
+        fileWriting = null;
+    }
+
+    static BufferedReader fileReading;
     @Given("^open file \"([^\"]*)\" for reading$")
-    public void open_file_for_reading(String filePath) throws FileNotFoundException {
+    public void open_file_for_reading(String filePath) throws FileNotFoundException, ParseException {
+        filePath = PropertiesResolution.resolveInput(scenario, filePath);
+
         fileReading = new BufferedReader(new FileReader(filePath));
     }
 
@@ -2420,7 +2485,7 @@ public class Glue {
 
     String currentLineRead;
     @Then("^expect the next line to contain \"([^\"]*)\"$")
-    public void expect_the_next_line_to_contain(String subString) throws IOException {
+    public void expect_the_next_line_to_contain(String subString) throws IOException, ParseException {
         currentLineRead = fileReading.readLine();
         expectTheLineToContain(subString);
     }
@@ -2437,12 +2502,17 @@ public class Glue {
     }
 
     @Then("^expect the line to contain \"([^\"]*)\"$")
-    public void expectTheLineToContain(String subString) {
+    public void expectTheLineToContain(String subString) throws ParseException {
+        subString = PropertiesResolution.resolveInput(scenario, subString);
         assertThat(currentLineRead, containsString(subString));
     }
 
     @When("^processing each line in file \"([^\"]*)\" and only output to file \"([^\"]*)\" lines after finding a line containing \"([^\"]*)\"$")
     public void processingEachLineInFileAndOnlyOutputToFileLinesAfterFindingALineContaining(String inFilePath, String outFilePath, String lineToMatch) throws Throwable {
+        inFilePath = PropertiesResolution.resolveInput(scenario, inFilePath);
+        outFilePath = PropertiesResolution.resolveInput(scenario, outFilePath);
+        lineToMatch = PropertiesResolution.resolveInput(scenario, lineToMatch);
+
         BufferedReader fileReading = new BufferedReader(new FileReader(inFilePath));
         BufferedWriter fileWriting = new BufferedWriter(new FileWriter(outFilePath));
         String currentLine = "";
@@ -2464,6 +2534,10 @@ public class Glue {
 
     @When("^processing each line in file \"([^\"]*)\" and only output to file \"([^\"]*)\" lines that do not contain any lines from \"([^\"]*)\"$")
     public void processingEachLineInFileAndOnlyOutputToFileLinesThatDoNotContainAnyLinesFrom(String inFilePath, String outFilePath, String matchFilePath) throws Throwable {
+        inFilePath = PropertiesResolution.resolveInput(scenario, inFilePath);
+        outFilePath = PropertiesResolution.resolveInput(scenario, outFilePath);
+        matchFilePath = PropertiesResolution.resolveInput(scenario, matchFilePath);
+
         String currentLine = "";
         BufferedReader fileReading = new BufferedReader(new FileReader(matchFilePath));
         Set<String> toMatch = new HashSet<String>();

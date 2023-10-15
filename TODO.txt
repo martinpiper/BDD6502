@@ -231,3 +231,7 @@
 
 
 * Try to convert the PC to the nearest function label+XXX value by reading the debugger PDB output
+
+
+
+* scenario.write uses a lot of memory for large text dumps. Override this to shorten or summarise a large textual dump and link to an external file for the full version instead.

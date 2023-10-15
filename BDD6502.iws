@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/DataValidation.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/DataValidation.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
@@ -108,7 +108,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner VideoHardware @Demo6C">
+  <component name="RunManager" selected="Application.C64FindCode">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -129,6 +129,15 @@
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue macros --glue TestGlue features" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../c64/stdlib" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="C64FindCode" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue macros --glue TestGlue features" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64FindCode/" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -991,6 +1000,7 @@
       <item itemvalue="Application.TestRunner VideoHardware @Turrican" />
       <item itemvalue="Application.TestRunner VideoHardware @Turrican_8" />
       <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
+      <item itemvalue="Application.C64FindCode" />
       <item itemvalue="Application.TestRunner features/DataValidation.feature" />
       <item itemvalue="Application.TestRunner features/PerformanceTesting.feature" />
       <item itemvalue="Application.TestRunner no parameters" />
@@ -1058,24 +1068,19 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java</url>
-          <line>356</line>
-          <option name="timeStamp" value="44" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
-          <line>767</line>
-          <option name="timeStamp" value="48" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
-          <line>694</line>
-          <option name="timeStamp" value="49" />
+          <url>jar://$MAVEN_REPOSITORY$/com/replicanet/cukesplus-core/0.0.2-SNAPSHOT/cukesplus-core-0.0.2-SNAPSHOT.jar!/TestGlue/Conditional.class</url>
+          <line>147</line>
+          <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>1888</line>
-          <option name="timeStamp" value="51" />
+          <line>2460</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
+          <line>2468</line>
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -1088,6 +1093,8 @@
         <watch expression="state.pc" language="JAVA" />
         <watch expression="state.ir" language="JAVA" />
         <watch expression="state.sp" language="JAVA" />
+        <watch expression="is" language="JAVA" />
+        <watch expression="remoteMonitor.getRemoteSocketAddress()" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

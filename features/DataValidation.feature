@@ -51,3 +51,19 @@ Feature: Tests data validation syntax
     Given open file "target/out.txt" for reading
     Then expect the next line to contain "line 5"
     Then expect end of file
+
+
+  Scenario: Tests file writing syntax
+
+    Given open file "target/out.txt" for writing
+    When write to the file a line "line 1"
+    When write to the file a line "line 2"
+    When write to the file a line "line 3"
+    When close the writing file
+
+    Given open file "target/out.txt" for reading
+    Then expect the next line to contain "line 1"
+    Then expect the next line to contain "line 2"
+    Then expect the next line to contain "line 3"
+    Then expect end of file
+    Given close current file
