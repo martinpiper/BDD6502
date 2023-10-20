@@ -2012,13 +2012,13 @@ public class Glue {
     }
 
     @Given("^render a video display until H=(.*) and V=(.*)$")
-    public void renderAVideoDisplayUntilHV(String h, String v) throws ScriptException {
+    public void renderAVideoDisplayUntilHV(String h, String v) throws Exception {
         displayBombJack.calculatePixelsUntil(valueToInt(h),valueToInt(v));
         displayBombJack.RepaintWindow();
     }
 
     @Given("^render a video display until vsync$")
-    public void renderAVideoDisplayUntilVSync() throws ScriptException {
+    public void renderAVideoDisplayUntilVSync() throws Exception {
         displayBombJack.calculatePixelsUntilVSync();
         displayBombJack.RepaintWindow();
     }

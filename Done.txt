@@ -37,7 +37,7 @@ Added: Given I am using C64 processor port options
 			Does it skip the next sprite?
 				Yes
 			What about the odd numbers sprites for the ranges?
-				No, not the lines into 5R 5S
+				No, note the lines into 5R 5S
 		Also the sprite frame, does it multiply the sprite frame to ensure it is aligned?
 			Yes, it multiplies by 4
 			What is the sprite layout?

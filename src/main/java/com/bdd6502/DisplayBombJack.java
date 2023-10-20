@@ -340,15 +340,25 @@ public class DisplayBombJack extends MemoryBus {
         }
     }
 
-    public void calculatePixelsUntilVSync() {
+    public void calculatePixelsUntilVSync() throws Exception {
+        int timeout = pixelsInWholeFrame() * 2;
         do {
             calculatePixel();
+            timeout--;
+            if (timeout < 0) {
+                throw new Exception("The VSync is not triggering, the video generation is probably disabled");
+            }
         } while (_vSync);
     }
 
-    public void calculatePixelsUntil(int waitH, int waitV) {
+    public void calculatePixelsUntil(int waitH, int waitV) throws Exception {
+        int timeout = pixelsInWholeFrame() * 2;
         do {
             calculatePixel();
+            timeout--;
+            if (timeout < 0) {
+                throw new Exception("The wait value is not triggering, it is probably out of range or the video generation is disabled");
+            }
         } while (!(displayHExternal == waitH && displayVExternal == waitV));
     }
 
