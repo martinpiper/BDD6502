@@ -50,6 +50,7 @@ import static org.hamcrest.Matchers.*;
 
 public class Glue {
 
+    public static final double kVideoClockMHz = 12.096;
     Window currentWindow;
     Application application;
     @Given("^starting an automation process \"([^\"]*)\" with parameters \"([^\"]*)\"$")
@@ -2077,6 +2078,12 @@ public class Glue {
         displayBombJack.addLayer(new Sprites(valueToInt(addressRegisters), valueToInt(addressEx)));
     }
 
+    @Given("^add a Sprites V9.5 layer with registers at '(.*)' and addressEx '(.*)' and running at (.*)MHz$")
+    public void addASprites95LayerWithRegistersAtXAndAddressExX(String addressRegisters, String addressEx, String MHz) throws ScriptException {
+        double clockMultiplier = Double.parseDouble(MHz) / kVideoClockMHz;
+        displayBombJack.addLayer(new Sprites(valueToInt(addressRegisters), valueToInt(addressEx), clockMultiplier));
+    }
+
     @Given("^add a Sprites2 layer with registers at '(.*)' and addressEx '(.*)'$")
     public void addASprites2LayerWithRegistersAtXAndAddressExX(String addressRegisters, String addressEx) throws ScriptException {
         displayBombJack.addLayer(new Sprites2(valueToInt(addressRegisters), valueToInt(addressEx)));
@@ -2084,7 +2091,7 @@ public class Glue {
 
     @Given("^add a Sprites2 layer with registers at '(.*)' and addressEx '(.*)' and running at (.*)MHz$")
     public void addASprites2LayerWithRegistersAtXAndAddressExXMHz(String addressRegisters, String addressEx , String MHz) throws ScriptException {
-        double clockMultiplier = Double.parseDouble(MHz) / 12.096;
+        double clockMultiplier = Double.parseDouble(MHz) / kVideoClockMHz;
         displayBombJack.addLayer(new Sprites2(valueToInt(addressRegisters), valueToInt(addressEx) , clockMultiplier));
     }
 

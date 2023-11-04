@@ -18,14 +18,18 @@ public class Sprites extends DisplayLayer {
     int lo32 = 0, hi32 = 0;
     boolean spriteEnable = false;
     boolean skipNextSprite = false;
-    int spriteX[] = new int[24];
-    int spriteY[] = new int[24];
-    int spriteFrame[] = new int[24];
-    int spritePalette[] = new int[24];
+    int spriteX[] = new int[64];
+    int spriteY[] = new int[64];
+    int spriteFrame[] = new int[64];
+    int spritePalette[] = new int[64];
     int fetchingPixel = 0;
     int onScreen = 0;
 
     int calculatedRasters[][] = new int[2][512];
+
+    boolean calculationUsesSeparateClock = false;
+    double clockMultiplier = 1.0;
+    double clockAccumulator = 0.0;
 
     public Sprites() {
     }
@@ -38,6 +42,19 @@ public class Sprites extends DisplayLayer {
         this.addressExPlane0 = addressExPlane0;
         this.addressExPlane1 = addressExPlane0;
         this.addressExPlane2 = addressExPlane0;
+    }
+
+    public Sprites(int addressRegisters, int addressExPlane0, double clockMultiplier) {
+        assertThat(addressRegisters, is(greaterThanOrEqualTo(0x8000)));
+        assertThat(addressRegisters, is(lessThan(0xc000)));
+        assertThat(addressRegisters & 0x7ff, is(equalTo(0x0000)));
+        assertThat(clockMultiplier, is(greaterThanOrEqualTo(1.0)));
+        this.addressRegisters = addressRegisters;
+        this.addressExPlane0 = addressExPlane0;
+        this.addressExPlane1 = addressExPlane0;
+        this.addressExPlane2 = addressExPlane0;
+        this.clockMultiplier = clockMultiplier;
+        this.calculationUsesSeparateClock = true;
     }
 
     @Override
@@ -60,7 +77,7 @@ public class Sprites extends DisplayLayer {
         if (withOverscan) {
             registerOffset = 0;
         }
-        if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters + registerOffset) && address < (addressRegisters + 0x60 + registerOffset)) {
+        if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters + registerOffset) && address < (addressRegisters + 0x100 + registerOffset)) {
             busContention = display.getBusContentionPixels();
             int spriteIndex = (address - (addressRegisters + registerOffset)) / 4;
             switch (address & 0x03) {
@@ -119,21 +136,53 @@ public class Sprites extends DisplayLayer {
         }
     }
 
+    int internalScanDisplayH = 0;
+    int lastSpriteClocked = 24;
+    int lastSpriteClockedPixels = 16;
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
         if (withOverscan) {
             spriteEnable = enableLayer;
         }
 
-        handleSpriteSchedule(displayH, displayV);
+        if (!calculationUsesSeparateClock) {
+            handleSpriteSchedule(displayH, displayV);
 
-        // Output calculated data
-        // Adjust for the extra timing
-        // Emulate the sprite scan read counters 6A/6B/6C/6D
-        if (displayH == 0x08) {
-            fetchingPixel = 0;
-            onScreen = displayV & 1;
+            // Output calculated data
+            // Adjust for the extra timing
+            // Emulate the sprite scan read counters 6A/6B/6C/6D
+            if (displayH == 0x08) {
+                fetchingPixel = 0;
+                onScreen = displayV & 1;
+            }
+        } else {
+            // Output calculated data
+            // Adjust for the extra timing
+            if (displayH == 0x00) {
+                onScreen = displayV & 1;
+                int adjustmentOffset = 8;
+                // Account for fractional clock skew between scanlines
+                if (clockAccumulator >= 0.5) {
+                    adjustmentOffset++;
+                }
+                lastSpriteClocked = (int)(((384 * clockMultiplier)-adjustmentOffset) / 16);
+                lastSpriteClockedPixels = (int)(((384 * clockMultiplier)-adjustmentOffset) % 16);
+            }
+
+            // To emulate the longer delayed line start
+            if (displayH <= 0x02) {
+                internalScanDisplayH = 0;
+                fetchingPixel = 0;
+            }
+
+            clockAccumulator += clockMultiplier;
+            while (clockAccumulator >= 1.0) {
+                handleSpriteSchedule(internalScanDisplayH, displayV);
+                clockAccumulator -= 1.0;
+                internalScanDisplayH++;
+            }
         }
+
         if (withOverscan) {
             if (fetchingPixel >= 0x180 ) {
                 return 0;
@@ -144,6 +193,10 @@ public class Sprites extends DisplayLayer {
             }
         }
         int finalPixel = calculatedRasters[onScreen][fetchingPixel];
+        if (calculationUsesSeparateClock && fetchingPixel <= 1) {
+            // Emulate the contention pixels at the start of the scanline due to clock differences
+            finalPixel = display.getContentionColouredPixel();
+        }
         // And progressively clear the output pixel, like the hardware does
         calculatedRasters[onScreen][fetchingPixel++] = 0;
 
@@ -173,7 +226,11 @@ public class Sprites extends DisplayLayer {
         // Although the sprite registers are initially loaded at 0x180, there is a second read at 0x188
         // This accounts for the low ENABLEPIXELS at 0x189
         // So shift the entire schedule back by 8 to make the maths easier
-        displayH -= 0x08;
+        if (!calculationUsesSeparateClock) {
+            displayH -= 0x08;
+        } else {
+            // Nothing to do here
+        }
         // Not time yet to update the sprite
         if ((displayH < 0) || (displayH & 0x0f) != 0) {
             return;
@@ -230,13 +287,23 @@ public class Sprites extends DisplayLayer {
             spriteSizeY = 16;
         }
 
-        if (withOverscan) {
-            // Adjust last sprite for hardware behaviour
-            if (spriteIndex == 22 && spriteSizeXSpan == 32) {
-                spriteSizeXSpan = 24;
+        if (!calculationUsesSeparateClock) {
+            if (withOverscan) {
+                // Adjust last sprite for hardware behaviour
+                if (spriteIndex == 22 && spriteSizeXSpan == 32) {
+                    spriteSizeXSpan = 24;
+                }
+                else if (spriteIndex == 23 && spriteSizeXSpan == 16) {
+                    spriteSizeXSpan = 8;
+                }
             }
-            if (spriteIndex == 23 && spriteSizeXSpan == 16) {
-                spriteSizeXSpan = 8;
+        } else {
+            // Sprite width is determined by remaining clocks in the scanline
+            if (spriteIndex == lastSpriteClocked-1 && spriteSizeXSpan == 32) {
+                spriteSizeXSpan = 16 + lastSpriteClockedPixels;
+            }
+            else if (spriteIndex == lastSpriteClocked && spriteSizeXSpan == 16) {
+                spriteSizeXSpan = lastSpriteClockedPixels;
             }
         }
 
