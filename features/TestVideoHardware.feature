@@ -1380,6 +1380,7 @@ Feature: Tests the video and audio hardware expansion together
     And the layer has 16 colours
     And the layer has overscan
     Given add a Sprites V9.5 layer with registers at '0x9800' and addressEx '0x10' and running at 16MHz
+#    Given add a Sprites V9.5 layer with registers at '0x9800' and addressEx '0x10' and running at 12.096MHz
     And the layer uses exact address matching
     And the layer has 16 colours
     And the layer has overscan
@@ -1408,7 +1409,7 @@ Feature: Tests the video and audio hardware expansion together
 
     # Wide overscan can use 0x2b which has a couple of chars on the left masked for scrolling and hits the right edge _HSYNC
     # Use the 320 wide settings
-#    Given write data byte '0x29' to 24bit bus at '0x9e09' and addressEx '0x01'
+    Given write data byte '0x29' to 24bit bus at '0x9e09' and addressEx '0x01'
     # Enable display
     Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
 
