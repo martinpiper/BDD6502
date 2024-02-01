@@ -951,3 +951,7 @@ Added: Given I am using C64 processor port options
 * Need to support Sprites V9.5 layer, which includes the option to clock the pixels at a different clock rate.
     @TC-9-95
     Given add a Sprites V9.5 layer with registers at '0x9800' and addressEx '0x10' and running at 16MHz
+	
+	
+	
+* CPU cycle count to variable: machine.getCpu().getClockCycles()

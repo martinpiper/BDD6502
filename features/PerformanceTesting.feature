@@ -43,5 +43,7 @@ Feature:  Code performance test
     Given I set register X to 3
     When I execute the procedure at start until return
     Then I expect the cycle count to be no more than 32 cycles
+    Given set the variable "test.cycles" equal to the cycle count
+    Then assert that "${test.cycles}" contains text "32"
 
     Given I disable trace

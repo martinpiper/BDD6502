@@ -134,6 +134,12 @@ public class Glue {
         regularTimedIRQCycles = regularTimedIRQCyclesReset;
     }
 
+    @Given("^set the variable \"([^\"]*)\" equal to the cycle count$")
+    public void setTheVariableEqualToTheCycleCount(String name) throws Throwable {
+        name = PropertiesResolution.resolveInput(scenario, name);
+        System.setProperty(name , Integer.toString(machine.getCpu().getClockCycles()));
+    }
+
 
     private class ProfileData {
         boolean isSEI = false;
