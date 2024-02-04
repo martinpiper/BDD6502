@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/PerformanceTesting.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/PerformanceTesting.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
@@ -108,7 +107,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner features/PerformanceTesting.feature">
+  <component name="RunManager" selected="Application.C64FindCode">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -136,7 +135,7 @@
     <configuration name="C64FindCode" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
-      <option name="PROGRAM_PARAMETERS" value="--monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue macros --glue TestGlue features" />
+      <option name="PROGRAM_PARAMETERS" value="--monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue macros --glue TestGlue features/FindFailingTapes.feature" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64FindCode/" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -1098,12 +1097,12 @@
         <watch expression="debugState" />
       </configuration>
       <configuration name="Application">
-        <watch expression="state" language="JAVA" />
-        <watch expression="state.pc" language="JAVA" />
-        <watch expression="state.ir" language="JAVA" />
-        <watch expression="state.sp" language="JAVA" />
-        <watch expression="is" language="JAVA" />
-        <watch expression="remoteMonitor.getRemoteSocketAddress()" language="JAVA" />
+        <watch expression="previousReply" language="JAVA" />
+        <watch expression="System.getProperty(&quot;test.BDD6502.lastMonitorReply&quot;)" language="JAVA" />
+        <watch expression="System.getProperty(&quot;test.BDD6502.previousMonitorReply&quot;)" language="JAVA" />
+        <watch expression="input" language="JAVA" />
+        <watch expression="input.substring(0, lastOpeningPos)" language="JAVA" />
+        <watch expression="input.substring(closingPos + 1)" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

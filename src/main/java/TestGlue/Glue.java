@@ -1883,6 +1883,9 @@ public class Glue {
 
     @When("^property \"([^\"]*)\" is set to string \"([^\"]*)\"$")
     public void property_is_set_to(String arg1, String arg2) throws Throwable {
+        arg1 = PropertiesResolution.resolveInput(scenario, arg1);
+        arg2 = PropertiesResolution.resolveInput(scenario, arg2);
+
         System.setProperty(arg1, arg2);
         devicesUpdateProperties();
     }
@@ -1895,11 +1898,17 @@ public class Glue {
 
     @Then("^property \"([^\"]*)\" must contain string \"([^\"]*)\"$")
     public void property_must_contain(String arg1, String arg2) throws Throwable {
+        arg1 = PropertiesResolution.resolveInput(scenario, arg1);
+        arg2 = PropertiesResolution.resolveInput(scenario, arg2);
+
         assertThat(System.getProperty(arg1), containsString(arg2));
     }
 
     @Then("^property \"([^\"]*)\" must contain string ignoring whitespace \"([^\"]*)\"$")
     public void property_must_contain_ignoring_whitespace(String arg1, String arg2) throws Throwable {
+        arg1 = PropertiesResolution.resolveInput(scenario, arg1);
+        arg2 = PropertiesResolution.resolveInput(scenario, arg2);
+
         assertThat(System.getProperty(arg1).replaceAll("\\s+", ""), containsString(arg2.replaceAll("\\s+", "")));
     }
 
@@ -2370,13 +2379,33 @@ public class Glue {
             reply += fragment;
         }
 
+        reply = reply.trim();
+
         if (!reply.isEmpty()) {
             scenario.write("Got monitor reply: " + reply);
+
+            String previousReply2 = System.getProperty("test.BDD6502.previousMonitorReply", "");
+//            scenario.write("previousMonitorReply test2 = " + previousReply2);
+            if (!previousReply2.isEmpty()) {
+                System.setProperty("test.BDD6502.previousMonitorReply2", previousReply2);
+//                scenario.write("previousMonitorReply2 = " + previousReply2);
+            }
+
+//            scenario.write("WIBBLE 2");
+            String previousReply = System.getProperty("test.BDD6502.lastGoodMonitorReply", "");
+//            scenario.write("previousMonitorReply test = " + previousReply);
+            if (!previousReply.isEmpty()) {
+                System.setProperty("test.BDD6502.previousMonitorReply", previousReply);
+//                scenario.write("previousMonitorReply = " + previousReply);
+            }
+
+            System.setProperty("test.BDD6502.lastGoodMonitorReply", reply);
+//            scenario.write("lastGoodMonitorReply = " + reply);
+
         }
 
-        System.setProperty("test.BDD6502.previousMonitorReply", System  .getProperty("test.BDD6502.lastMonitorReply", ""));
-
         System.setProperty("test.BDD6502.lastMonitorReply", reply);
+//        scenario.write("lastMonitorReply = " + reply);
 
         return reply;
     }

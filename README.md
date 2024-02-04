@@ -58,6 +58,7 @@ Code can of course be included from existing source code and tested, as this exa
 Syntax also exists to interface with the remote monitor in [Vice emulator](https://vice-emu.sourceforge.io/).
 This allows completed game code to be accurately emulated and verified, for example by comparing screenshots of game code as it [executes frame by frame](https://github.com/martinpiper/C64Public/blob/master/Scroller/features/VerifyByScreenshots.feature).
 The properties "test.BDD6502.previousMonitorReply" and "test.BDD6502.lastMonitorReply" are updated during this syntax, which allows for further validations.
+The property "test.BDD6502.lastGoodMonitorReply" is set to any non-empty reply and "test.BDD6502.previousMonitorReply2" is set to the previous "test.BDD6502.lastGoodMonitorReply" value.
 
 
 Syntax for test cases
