@@ -235,3 +235,13 @@
 
 
 * scenario.write uses a lot of memory for large text dumps. Override this to shorten or summarise a large textual dump and link to an external file for the full version instead.
+
+
+
+
+* Create a test scenario that contains syntax to generate permutations code
+	This is to allow permutations of data to be tested and find optimal code sequences within short blocks of code
+	Syntax can run features/scenarios/tags to validate the permutations and note the cycle timings or code size, or any other metric, of working code blocks
+	Add syntax to enable algorithmic bit twiddling of input data, by emitting extra code.
+	Depending on the test scenarios being executed, they can test only the code fragment and score it with cycle timings for example.
+	
