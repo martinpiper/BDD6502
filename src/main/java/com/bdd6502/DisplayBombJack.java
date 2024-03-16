@@ -100,6 +100,9 @@ public class DisplayBombJack extends MemoryBus {
     int latchedPixel = 0;
     int palette[] = new int[256];
     byte paletteMemory[] = new byte[512];
+    int paletteBitsRed = 4;
+    int paletteBitsGreen = 4;
+    int paletteBitsBlue = 4;
     Random random = new Random();
     String leafFilename = null;
     int lastDataWritten = 0;
@@ -272,7 +275,10 @@ public class DisplayBombJack extends MemoryBus {
             int theColourValue = ((int) paletteMemory[index<<1]) & 0xff;
             theColourValue |= (((int) paletteMemory[(index<<1)+1]) & 0xff) << 8;
 
-            Color colour = new Color((theColourValue & 0x0f) << 4 , ((theColourValue >> 4) & 0x0f) << 4 , ((theColourValue >> 8) & 0x0f) << 4);
+            // RGB 444
+//            Color colour = new Color((theColourValue & 0x0f) << 4 , ((theColourValue >> 4) & 0x0f) << 4 , ((theColourValue >> 8) & 0x0f) << 4);
+            // RGB 565
+            Color colour = new Color((theColourValue & ((1<<paletteBitsRed)-1)) << (8-paletteBitsRed) , ((theColourValue >> paletteBitsRed) & ((1<<paletteBitsGreen)-1)) << (8-paletteBitsGreen) , ((theColourValue >> (paletteBitsRed + paletteBitsGreen)) & ((1<<paletteBitsBlue)-1)) << (8-paletteBitsBlue));
 
             // Store the real colour value in the palette cache
             palette[index] = colour.getRGB();
@@ -709,5 +715,11 @@ public class DisplayBombJack extends MemoryBus {
 
         displayPriority = rand.nextInt();
         randomiseHelper(rand , enableLayerFlags);
+    }
+
+    public void setRGBColour(int r, int g, int b) {
+        paletteBitsRed = r;
+        paletteBitsGreen = g;
+        paletteBitsBlue = b;
     }
 }

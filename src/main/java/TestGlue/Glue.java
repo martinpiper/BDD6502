@@ -1921,6 +1921,11 @@ public class Glue {
         devices.add(displayBombJack);
     }
 
+    @Given("^set the video display to RGB colour (\\d+) (\\d+) (\\d+)$")
+    public void set_the_video_display_to_RGB_colour(int r, int g, int b) throws Throwable {
+        displayBombJack.setRGBColour(r,g,b);
+    }
+
     @Given("^a new C64 video display$")
     public void aNewC64VideoDisplay() throws IOException {
         if (displayC64 != null) {

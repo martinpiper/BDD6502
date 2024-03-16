@@ -959,3 +959,8 @@ Added: Given I am using C64 processor port options
 
 
 * Improved the palette emulation by maintaining real palette memory and the palette cached RGB value separately.
+
+
+
+* Add: Given set the video display to RGB colour 5 6 5
+    Default is: Given set the video display to RGB colour 4 4 4
