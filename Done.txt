@@ -955,3 +955,7 @@ Added: Given I am using C64 processor port options
 	
 	
 * CPU cycle count to variable: machine.getCpu().getClockCycles()
+
+
+
+* Improved the palette emulation by maintaining real palette memory and the palette cached RGB value separately.

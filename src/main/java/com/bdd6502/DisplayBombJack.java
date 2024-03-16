@@ -99,6 +99,7 @@ public class DisplayBombJack extends MemoryBus {
     int backgroundColour = 0;
     int latchedPixel = 0;
     int palette[] = new int[256];
+    byte paletteMemory[] = new byte[512];
     Random random = new Random();
     String leafFilename = null;
     int lastDataWritten = 0;
@@ -263,15 +264,18 @@ public class DisplayBombJack extends MemoryBus {
         lastDataWritten = data;
         if (addressActive(addressEx, addressExPalette) && address >= addressPalette && address < (addressPalette + 0x200)) {
             busContentionPalette = getBusContentionPixels();
+            // Update the real memory first
+            paletteMemory[address & 0x1ff] = data;
+
+            // Then calculate the updated colour value from the memory
             int index = (address & 0x1ff) >> 1;
-            Color colour = new Color(palette[index]);
-            if ((address & 0x01) == 0x01) {
-                colour = new Color(colour.getRed(), colour.getGreen(), (data & 0x0f) << 4);
-                palette[index] = colour.getRGB();
-            } else {
-                colour = new Color((data & 0x0f) << 4, data & 0xf0, colour.getBlue());
-                palette[index] = colour.getRGB();
-            }
+            int theColourValue = ((int) paletteMemory[index<<1]) & 0xff;
+            theColourValue |= (((int) paletteMemory[(index<<1)+1]) & 0xff) << 8;
+
+            Color colour = new Color((theColourValue & 0x0f) << 4 , ((theColourValue >> 4) & 0x0f) << 4 , ((theColourValue >> 8) & 0x0f) << 4);
+
+            // Store the real colour value in the palette cache
+            palette[index] = colour.getRGB();
         }
 
         // This logic now exists on the video layer hardware
@@ -697,6 +701,8 @@ public class DisplayBombJack extends MemoryBus {
         }
 
         randomiseHelper(rand , palette);
+        randomiseHelper(rand , paletteMemory);
+
         borderX = rand.nextBoolean();
         borderY = rand.nextBoolean();
         overscanBorderExtent = rand.nextInt();
