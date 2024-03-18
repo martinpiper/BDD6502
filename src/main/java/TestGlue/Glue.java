@@ -1926,6 +1926,12 @@ public class Glue {
         displayBombJack.setRGBColour(r,g,b);
     }
 
+    @Given("^set the video display with (\\d+) palette banks$")
+    public void set_the_video_display_with_palette_banks(int numBanks) throws Throwable {
+        displayBombJack.setPaletteBanks(numBanks);
+    }
+
+
     @Given("^a new C64 video display$")
     public void aNewC64VideoDisplay() throws IOException {
         if (displayC64 != null) {

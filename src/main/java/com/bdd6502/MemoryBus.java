@@ -112,12 +112,34 @@ public abstract class MemoryBus {
         }
     }
 
+    static void randomiseHelper(Random rand , byte[][] values) {
+        if (values == null) {
+            return;
+        }
+        for (int j = 0 ; j < values.length ; j++) {
+            for (int i = 0; i < values[j].length; i++) {
+                values[j][i] = (byte) rand.nextInt();
+            }
+        }
+    }
+
     static void randomiseHelper(Random rand , int[] values) {
         if (values == null) {
             return;
         }
         for (int i = 0 ; i < values.length ; i++) {
             values[i] = rand.nextInt();
+        }
+    }
+
+    static void randomiseHelper(Random rand , int[][] values) {
+        if (values == null) {
+            return;
+        }
+        for (int j = 0 ; j < values.length ; j++) {
+            for (int i = 0; i < values[j].length; i++) {
+                values[j][i] = rand.nextInt();
+            }
         }
     }
 

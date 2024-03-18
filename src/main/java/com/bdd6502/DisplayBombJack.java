@@ -23,6 +23,8 @@ public class DisplayBombJack extends MemoryBus {
     final int displayWidth = 384;
     final int displayHeight = 264;
     private int latchedPixelFromWhere = -1;
+    private int numPaletteBanks = 0;
+    private int paletteBank = 0;
 
     public void setDebugDisplayPixels(boolean debugDisplayPixels) {
         this.debugDisplayPixels = debugDisplayPixels;
@@ -98,8 +100,8 @@ public class DisplayBombJack extends MemoryBus {
     boolean enableBackground = false;
     int backgroundColour = 0;
     int latchedPixel = 0;
-    int palette[] = new int[256];
-    byte paletteMemory[] = new byte[512];
+    int palette[][] = new int[256][256];
+    byte paletteMemory[][] = new byte[256][512];
     int paletteBitsRed = 4;
     int paletteBitsGreen = 4;
     int paletteBitsBlue = 4;
@@ -268,12 +270,12 @@ public class DisplayBombJack extends MemoryBus {
         if (addressActive(addressEx, addressExPalette) && address >= addressPalette && address < (addressPalette + 0x200)) {
             busContentionPalette = getBusContentionPixels();
             // Update the real memory first
-            paletteMemory[address & 0x1ff] = data;
+            paletteMemory[paletteBank][address & 0x1ff] = data;
 
             // Then calculate the updated colour value from the memory
             int index = (address & 0x1ff) >> 1;
-            int theColourValue = ((int) paletteMemory[index<<1]) & 0xff;
-            theColourValue |= (((int) paletteMemory[(index<<1)+1]) & 0xff) << 8;
+            int theColourValue = ((int) paletteMemory[paletteBank][index<<1]) & 0xff;
+            theColourValue |= (((int) paletteMemory[paletteBank][(index<<1)+1]) & 0xff) << 8;
 
             // RGB 444
 //            Color colour = new Color((theColourValue & 0x0f) << 4 , ((theColourValue >> 4) & 0x0f) << 4 , ((theColourValue >> 8) & 0x0f) << 4);
@@ -281,7 +283,7 @@ public class DisplayBombJack extends MemoryBus {
             Color colour = new Color((theColourValue & ((1<<paletteBitsRed)-1)) << (8-paletteBitsRed) , ((theColourValue >> paletteBitsRed) & ((1<<paletteBitsGreen)-1)) << (8-paletteBitsGreen) , ((theColourValue >> (paletteBitsRed + paletteBitsGreen)) & ((1<<paletteBitsBlue)-1)) << (8-paletteBitsBlue));
 
             // Store the real colour value in the palette cache
-            palette[index] = colour.getRGB();
+            palette[paletteBank][index] = colour.getRGB();
         }
 
         // This logic now exists on the video layer hardware
@@ -334,6 +336,12 @@ public class DisplayBombJack extends MemoryBus {
 
             if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0b) {
                 backgroundColour = data;
+            }
+
+            if (numPaletteBanks > 0) {
+                if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0c) {
+                    paletteBank = data;
+                }
             }
         }
 
@@ -581,7 +589,7 @@ public class DisplayBombJack extends MemoryBus {
                     if (busContentionPalette > 0) {
                         latchedPixel = getContentionColouredPixel();
                     }
-                    int realColour = palette[latchedPixel & 0xff];
+                    int realColour = palette[paletteBank][latchedPixel & 0xff];
                     if (debugDisplayPixels) {
                         debugDisplayPixel[displayBitmapX + (tempy*displayWidth)] = latchedPixel & 0xff;
                         debugDisplayPixelRGB[displayBitmapX + (tempy*displayWidth)] = realColour;
@@ -715,11 +723,19 @@ public class DisplayBombJack extends MemoryBus {
 
         displayPriority = rand.nextInt();
         randomiseHelper(rand , enableLayerFlags);
+
+        if (numPaletteBanks > 0) {
+            paletteBank = rand.nextInt() & (numPaletteBanks - 1);
+        }
     }
 
     public void setRGBColour(int r, int g, int b) {
         paletteBitsRed = r;
         paletteBitsGreen = g;
         paletteBitsBlue = b;
+    }
+
+    public void setPaletteBanks(int numBanks) {
+        numPaletteBanks = numBanks;
     }
 }

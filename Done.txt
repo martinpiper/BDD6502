@@ -964,3 +964,10 @@ Added: Given I am using C64 processor port options
 
 * Add: Given set the video display to RGB colour 5 6 5
     Default is: Given set the video display to RGB colour 4 4 4
+
+
+
+* Add: Given set the video display with 8 palette banks
+    Default is: Given set the video display with 0 palette banks
+        Which disables the palette banks feature entirely.
+
