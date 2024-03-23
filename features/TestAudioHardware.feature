@@ -6,6 +6,8 @@ Feature: Tests the video and audio hardware expansion together
 
     Given clear all external devices
     Given a new video display
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And enable video display bus debug output
     Given a new audio expansion
     And audio mix 85

@@ -6,6 +6,8 @@ Feature: Test with the simulation setup
   Scenario: Using the simulation layer setup
     Given clear all external devices
     Given a new video display with overscan and 16 colours
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And enable video display bus debug output
     Given video display processes 8 pixels per instruction
     Given video display refresh window every 32 instructions

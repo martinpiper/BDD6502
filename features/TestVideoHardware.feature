@@ -4,6 +4,8 @@ Feature: Tests the video and audio hardware expansion together
   Scenario: Full display test with sprites, borders, contention, chars, tiles, and mode7, and sample play
     Given clear all external devices
     Given a new video display
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And the display uses exact address matching
     And enable video display bus debug output
     Given a new audio expansion
@@ -150,6 +152,8 @@ Feature: Tests the video and audio hardware expansion together
   Scenario: Full 16 colour display test with sprites, borders, contention, chars, tiles, and mode7
     Given clear all external devices
     Given a new video display with 16 colours
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And enable video display bus debug output
     Given a new audio expansion
     Given video display processes 8 pixels per instruction
@@ -270,6 +274,8 @@ Feature: Tests the video and audio hardware expansion together
   Scenario: Full overscan 16 colour display test with sprites, chars, tiles, and mode7
     Given clear all external devices
     Given a new video display with overscan and 16 colours
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And enable video display bus debug output
     Given a new audio expansion
     Given video display processes 8 pixels per instruction
@@ -564,6 +570,8 @@ Feature: Tests the video and audio hardware expansion together
   Scenario: Sprites 32x32 mode select test
     Given clear all external devices
     Given a new video display with overscan and 16 colours
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And the display uses exact address matching
     And enable video display bus debug output
     Given a new audio expansion
@@ -1360,6 +1368,8 @@ Feature: Tests the video and audio hardware expansion together
   Scenario: Sprites V9.5 32x32 mode select test
     Given clear all external devices
     Given a new video display with overscan and 16 colours
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And the display uses exact address matching
     And enable video display bus debug output
     Given a new audio expansion
@@ -2203,6 +2213,8 @@ Feature: Tests the video and audio hardware expansion together
   Scenario: Vector display test
     Given clear all external devices
     Given a new video display with overscan and 16 colours
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And enable video display bus debug output
     Given video display processes 8 pixels per instruction
     Given video display refresh window every 32 instructions
@@ -2439,6 +2451,8 @@ Feature: Tests the video and audio hardware expansion together
     # Mostly duplicates TestData_DebugBackgroundColourChoice.txt
     Given clear all external devices
     Given a new video display with overscan and 16 colours
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And enable video display bus debug output
     Given a new audio expansion
     Given video display processes 8 pixels per instruction
@@ -2526,6 +2540,8 @@ Feature: Tests the video and audio hardware expansion together
   Scenario: Test chars image conversion output 2
     Given clear all external devices
     Given a new video display with overscan and 16 colours
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And enable video display bus debug output
     Given a new audio expansion
     Given video display processes 8 pixels per instruction

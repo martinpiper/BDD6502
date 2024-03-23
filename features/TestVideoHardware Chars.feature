@@ -10,6 +10,8 @@ Feature: Tests the video character screen data conversion
   Scenario: Chars display test
     Given clear all external devices
     Given a new video display
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And enable video display bus debug output
     Given video display processes 8 pixels per instruction
     Given video display refresh window every 32 instructions
@@ -44,6 +46,8 @@ Feature: Tests the video character screen data conversion
   Scenario: Chars display test with simple user port bus code
     Given clear all external devices
     Given a new video display
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And enable video display bus debug output
     Given video display processes 24 pixels per instruction
     Given video display refresh window every 32 instructions
@@ -79,6 +83,8 @@ Feature: Tests the video character screen data conversion
   Scenario: Chars display test with full user port bus code
     Given clear all external devices
     Given a new video display
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And enable video display bus debug output
     And disable debug pixel picking
     And enable debug pixel picking
@@ -114,6 +120,8 @@ Feature: Tests the video character screen data conversion
   Scenario: Chars V4.0+ display test
     Given clear all external devices
     Given a new video display with 16 colours
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
     And enable video display bus debug output
     Given video display processes 8 pixels per instruction
     Given video display refresh window every 32 instructions

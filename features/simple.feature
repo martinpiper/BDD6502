@@ -10,7 +10,7 @@ Feature: Simple 6502 code test
     Then assert that "($c100 - $c080) <= 60" is false
 
     Given I have a simple overclocked 6502 system
-    When I fill memory with $00
+    When I fill memory with $ff
     And I start writing memory at $400
     And I write the following hex bytes
       | 78 ee 20 d0 60 4c 01 04 |
