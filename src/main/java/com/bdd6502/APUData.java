@@ -88,6 +88,7 @@ public class APUData extends MemoryBus {
     public void randomiseData(Random rand) {
         randomiseHelper(rand , apuInstructions);
         randomiseHelper(rand , apuData);
-        randomiseHelper(rand , apuRegisters);
+        // With randomly initialised state, we do not want the APU to be enabled and report errors in memory that has not been initialised yet
+//        randomiseHelper(rand , apuRegisters);
     }
 }

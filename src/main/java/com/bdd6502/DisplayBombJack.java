@@ -725,7 +725,8 @@ public class DisplayBombJack extends MemoryBus {
         randomiseHelper(rand , enableLayerFlags);
 
         if (numPaletteBanks > 0) {
-            paletteBank = rand.nextInt() & (numPaletteBanks - 1);
+            // With randomly initialised state, we do not want the palette bank to be different when using the feature to send palette data compared to the code using the default 0 bank
+//            paletteBank = rand.nextInt() & (numPaletteBanks - 1);
         }
     }
 
