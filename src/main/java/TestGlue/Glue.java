@@ -141,6 +141,7 @@ public class Glue {
     }
 
 
+
     private class ProfileData {
         boolean isSEI = false;
         int targetAddress;
@@ -2525,6 +2526,7 @@ public class Glue {
 
     static BufferedReader fileReading;
     HashSet<String> fileReadingIgnoreLinesContains;
+    boolean ignoreEmptyLines = false;
     @Given("^open file \"([^\"]*)\" for reading$")
     public void open_file_for_reading(String filePath) throws FileNotFoundException, ParseException {
         filePath = PropertiesResolution.resolveInput(scenario, filePath);
@@ -2532,6 +2534,7 @@ public class Glue {
         fileReading = new BufferedReader(new FileReader(filePath));
 
         fileReadingIgnoreLinesContains = new HashSet<>();
+        ignoreEmptyLines = false;
     }
 
     @Given("^close current file$")
@@ -2544,21 +2547,36 @@ public class Glue {
         fileReadingIgnoreLinesContains.add(text);
     }
 
+    @When("^ignoring empty lines$")
+    public void ignoringEmptyLines() {
+        ignoreEmptyLines = true;
+    }
+
     String currentLineRead;
     @Then("^expect the next line to contain \"([^\"]*)\"$")
     public void expect_the_next_line_to_contain(String subString) throws IOException, ParseException {
         currentLineRead = fileReading.readLine();
+        currentLineRead = currentLineRead.trim();
 
         boolean isContains = false;
         do {
             isContains = false;
+
             for (String testContains : fileReadingIgnoreLinesContains) {
-                if (currentLineRead.contains(testContains)) {
+                if (null != currentLineRead && currentLineRead.contains(testContains)) {
                     currentLineRead = fileReading.readLine();
+                    currentLineRead = currentLineRead.trim();
                     isContains = true;
                 }
             }
+
+            if (ignoreEmptyLines && null != currentLineRead && currentLineRead.isEmpty()) {
+                currentLineRead = fileReading.readLine();
+                currentLineRead = currentLineRead.trim();
+                isContains = true;
+            }
         } while (isContains);
+
 
         expectTheLineToContain(subString);
     }

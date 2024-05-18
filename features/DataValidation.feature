@@ -20,6 +20,7 @@ Feature: Tests data validation syntax
 
     Given open file "target/out.txt" for reading
     When ignoring lines that contain "ignore"
+    When ignoring empty lines
     Then expect the next line to contain "line 4"
     Then expect the next line to contain "line 5"
     Then expect the next line to contain "line 6"
