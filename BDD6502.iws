@@ -6,10 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/APUData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/APUData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/DataValidation.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/DataValidation.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -107,7 +105,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature">
+  <component name="RunManager" selected="Application.TestRunner features/DataValidation.feature">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -264,6 +262,15 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\marti\\Downloads\blood_money_title.mod&quot; &quot;target/exportedMusic&quot; 1 3" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner --exportmod cream of the earth" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Users\Marti\Downloads\cream_of_the_earth.mod&quot; &quot;target/exportedMusic&quot; 65535 100626" />
+      <option name="VM_PARAMETERS" value="-Dmusic.volume=1" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -967,6 +974,7 @@
       <item itemvalue="Application.TestRunner --exportmod (4) fnkyldrt.mod" />
       <item itemvalue="Application.TestRunner --exportmod blood money" />
       <item itemvalue="Application.TestRunner --exportmod" />
+      <item itemvalue="Application.TestRunner --exportmod cream of the earth" />
       <item itemvalue="Application.TestRunner --playmod" />
       <item itemvalue="Application.TestRunner --scan" />
       <item itemvalue="Application.TestRunner --compressData" />

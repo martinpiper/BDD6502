@@ -10,13 +10,16 @@ Feature: Tests data validation syntax
       line 2
       line 3
       line 4
+      ignore this
       line 5
+      ignore this as well
       line 6
       """
 
     When processing each line in file "target/in.txt" and only output to file "target/out.txt" lines after finding a line containing "line 3"
 
     Given open file "target/out.txt" for reading
+    When ignoring lines that contain "ignore"
     Then expect the next line to contain "line 4"
     Then expect the next line to contain "line 5"
     Then expect the next line to contain "line 6"

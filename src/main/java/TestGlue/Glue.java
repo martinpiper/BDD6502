@@ -2524,11 +2524,14 @@ public class Glue {
     }
 
     static BufferedReader fileReading;
+    HashSet<String> fileReadingIgnoreLinesContains;
     @Given("^open file \"([^\"]*)\" for reading$")
     public void open_file_for_reading(String filePath) throws FileNotFoundException, ParseException {
         filePath = PropertiesResolution.resolveInput(scenario, filePath);
 
         fileReading = new BufferedReader(new FileReader(filePath));
+
+        fileReadingIgnoreLinesContains = new HashSet<>();
     }
 
     @Given("^close current file$")
@@ -2536,10 +2539,27 @@ public class Glue {
         fileReading.close();
     }
 
+    @When("^ignoring lines that contain \"([^\"]*)\"$")
+    public void ignoringLinesThatContain(String text) throws Throwable {
+        fileReadingIgnoreLinesContains.add(text);
+    }
+
     String currentLineRead;
     @Then("^expect the next line to contain \"([^\"]*)\"$")
     public void expect_the_next_line_to_contain(String subString) throws IOException, ParseException {
         currentLineRead = fileReading.readLine();
+
+        boolean isContains = false;
+        do {
+            isContains = false;
+            for (String testContains : fileReadingIgnoreLinesContains) {
+                if (currentLineRead.contains(testContains)) {
+                    currentLineRead = fileReading.readLine();
+                    isContains = true;
+                }
+            }
+        } while (isContains);
+
         expectTheLineToContain(subString);
     }
 
