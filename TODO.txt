@@ -245,3 +245,7 @@
 	Add syntax to enable algorithmic bit twiddling of input data, by emitting extra code.
 	Depending on the test scenarios being executed, they can test only the code fragment and score it with cycle timings for example.
 	
+	
+	
+* Need syntax to try up to N times to match a line in a file...
+	For data debug output in transition...
