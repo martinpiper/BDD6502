@@ -141,7 +141,6 @@ public class Glue {
     }
 
 
-
     private class ProfileData {
         boolean isSEI = false;
         int targetAddress;
@@ -2555,6 +2554,12 @@ public class Glue {
     String currentLineRead;
     @Then("^expect the next line to contain \"([^\"]*)\"$")
     public void expect_the_next_line_to_contain(String subString) throws IOException, ParseException {
+        getNextLineForComparison();
+
+        expectTheLineToContain(subString);
+    }
+
+    private void getNextLineForComparison() throws IOException {
         currentLineRead = fileReading.readLine();
         currentLineRead = currentLineRead.trim();
 
@@ -2576,9 +2581,38 @@ public class Glue {
                 isContains = true;
             }
         } while (isContains);
+    }
 
+    @Then("^accounting for transient values expect the next line to contain \"([^\"]*)\"$")
+    public void accountingForTransientValuesExpectTheNextLineToContain(String subString) throws Throwable {
+        subString = PropertiesResolution.resolveInput(scenario, subString);
 
-        expectTheLineToContain(subString);
+        getNextLineForComparison();
+
+        if(currentLineRead.contains(subString)) {
+            return;
+        }
+
+        String line1 = currentLineRead;
+        getNextLineForComparison();
+        String line2 = currentLineRead;
+
+        // Ensure no named transient signals, i.e. those before any remaining $
+        int pos1 = line1.lastIndexOf('$');
+        int pos2 = line2.lastIndexOf('$');
+        assertThat("Named signals should not be transient: " + line1 + " : " + line2, pos1, is(equalTo(pos2)));
+
+        if (pos1 >= 0 && pos2 >= 0) {
+            String namedSignals1 = line1.substring(0, pos1);
+            String namedSignals2 = line2.substring(0, pos2);
+
+            assertThat(namedSignals1, is(equalTo(namedSignals2)));
+
+            assertThat(line2, containsString(subString));
+        }
+
+        // Ensure the second line read is OK
+        assertThat(line2, containsString(subString));
     }
 
     @And("^skip line$")

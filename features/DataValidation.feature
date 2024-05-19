@@ -71,3 +71,71 @@ Feature: Tests data validation syntax
     Then expect the next line to contain "line 3"
     Then expect end of file
     Given close current file
+
+  Scenario: Tests syntax for handling typical captured transition signals from the DigitalData model
+    Given I create file "target/in.txt" with
+      """
+      ;@time:0.000096
+      ;recordSenseChange:$00000051
+      d=PTPA2 | PT_PC | $000000d7
+      ;@time:0.000096
+      ;recordSenseChange:$00000082
+      d=PTPA2 | PT_PC | $00000055
+      ;@time:0.000097
+      ;recordSenseChange:$00010000
+      d=PTPA2 | $00000055
+      ;@time:0.000098
+      ;recordSenseChange:$00010000
+      d=PTPA2 | PT_PC | $00000055
+      ;@time:0.000099
+      ;recordSenseChange:$00000022
+      d=PTPA2 | PT_PC | $00000077
+      ;@time:0.000099
+      ;recordSenseChange:$00000011
+      d=PTPA2 | PT_PC | $00000066
+      ;@time:0.000100
+      ;recordSenseChange:$00010000
+      d=PTPA2 | $00000066
+      ;@time:0.000101
+      ;recordSenseChange:$00010000
+      d=PTPA2 | PT_PC | $00000066
+      ;@time:0.000102
+      ;recordSenseChange:$00000011
+      d=PTPA2 | PT_PC | $00000077
+      ;@time:0.000103
+      ;recordSenseChange:$00010000
+      d=PTPA2 | $00000077
+      ;@time:0.000104
+      ;recordSenseChange:$00010000
+      d=PTPA2 | PT_PC | $00000077
+      ;@time:0.000105
+      ;recordSenseChange:$00000088
+      d=PTPA2 | PT_PC | $000000ff
+      ;@time:0.000105
+      ;recordSenseChange:$00000077
+      d=PTPA2 | PT_PC | $00000088
+      ;@time:0.000106
+      ;recordSenseChange:$00010000
+      d=PTPA2 | $00000088
+      ;@time:0.000107
+      ;recordSenseChange:$00010000
+      d=PTPA2 | PT_PC | $00000088
+      """
+
+    Given open file "target/in.txt" for reading
+    When ignoring lines that contain ";"
+    When ignoring lines that contain "."
+    When ignoring empty lines
+    Then accounting for transient values expect the next line to contain "d=PTPA2 | PT_PC | $00000055"
+    Then accounting for transient values expect the next line to contain "d=PTPA2 | $00000055"
+    Then accounting for transient values expect the next line to contain "d=PTPA2 | PT_PC | $00000055"
+    Then accounting for transient values expect the next line to contain "d=PTPA2 | PT_PC | $00000066"
+    Then accounting for transient values expect the next line to contain "d=PTPA2 | $00000066"
+    Then accounting for transient values expect the next line to contain "d=PTPA2 | PT_PC | $00000066"
+    Then accounting for transient values expect the next line to contain "d=PTPA2 | PT_PC | $00000077"
+    Then accounting for transient values expect the next line to contain "d=PTPA2 | $00000077"
+    Then accounting for transient values expect the next line to contain "d=PTPA2 | PT_PC | $00000077"
+    Then accounting for transient values expect the next line to contain "d=PTPA2 | PT_PC | $00000088"
+    Then accounting for transient values expect the next line to contain "d=PTPA2 | $00000088"
+    Then accounting for transient values expect the next line to contain "d=PTPA2 | PT_PC | $00000088"
+
