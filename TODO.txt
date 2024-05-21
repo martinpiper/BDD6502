@@ -249,3 +249,20 @@
 	
 * Need syntax to try up to N times to match a line in a file...
 	For data debug output in transition...
+
+
+
+
+* Add debugger option to warn/break if updating sprite registers as the sprite is being rendered. Would help catch APU updates when the wrong sprite timing is being used.
+
+
+
+
+* Command and button to display MegaWang sprite hardware registers, and easy to read (dec/hex) sprite debug output
+	Flag which sprites are being drawn on the current visible scanline for the Y pos
+	Also indicate the sprite being rendered, for the scanline cycle schedule.
+	e.g.
+		On scanline 20 and hpos 20... note the sprite Y coordinates are inverted
+		Sprite 0 9800 : pos 23 , >>224<< full height frame 3 palette 2
+		>> Sprite 1 9800 : pos 67 , 124 frame 3 palette 2
+	Show as many sprites as the clock rate allows, indicate the partial number of pixels on the last sprite.
