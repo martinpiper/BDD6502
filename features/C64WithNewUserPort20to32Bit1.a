@@ -1,0 +1,74 @@
+kBus24Bit_VideoLayer_HasOverscan=1
+kBus24Bit_VideoLayer_ExpandedPalettes = 1
+
+!ct pet
+!sal
+!pdb "target/t.pdb"
+!source "C64/stdlib/stdlib.a"
+!source "C64/stdlib/LongBranches.a"
+!source "C64/stdlib/PETSCII.a"
+!source "BombJack/stdlib/Bus24Bit_Macros.a"
+!source "BombJack/stdlib/Video_Macros.a"
+
+
+*=$800
+!zn
+TestInterface
+	sei
+	lda #ProcessorPortDefault
+	jsr InitialiseMachine
+	+M_RAMTAS
+	+InitKERNALStringDisplay_AXY
+	jsr CINT
+	+SetDefaultScreenLowerCase_A
+
+    +MBASICTextPrint .bootedC64
+
+	jsr Bus24Bit_Init
+	jsr APU_ResetDisable
+
+	jsr HardwareTest_VideoPattern0
+    +MBASICTextPrint .testPatternDone
+
+    lda #$cf
+    jsr DisplayHex_Byte_A
+
+	jsr Video_WaitVBlank
+
+    rts
+
+.bootedC64
+!pet CHR_White , "C64 Booted" , CHR_Return , 0
+.testPatternDone
+!pet "HardwareTest VideoPattern0" , CHR_Return , 0
+
+.hexTab
+!pet "0123456789ABCDEF"
+
+DisplayHex_Byte_A
+    pha
+    lsr
+    lsr
+    lsr
+    lsr
+    tax
+    lda .hexTab,x
+    jsr CHROUT
+    pla
+    and #%1111
+    tax
+    lda .hexTab,x
+    jmp CHROUT
+
+
+
+Initialise_NoPreserveStack = 1
+Initialise_NoIRQServiceRoutine = 1
+Initialise_NoMACROWaitForTheLastScan = 1
+!source "C64/stdlib/Initialise.a"
+!source "BombJack/stdlib/Bus24Bit.a"
+!source "BombJack/stdlib/Video.a"
+!source "BombJack/stdlib/HardwareTest.a"
+!source "BombJack/stdlib/APU_Macros.a"
+!source "BombJack/stdlib/APU.a"
+
