@@ -25,11 +25,13 @@ public class UserPortTo24BitAddress extends Device {
     int bus24State = 0;
     boolean bus24CountEnabled = false;
     int bus24Bytes[] = new int[4];
+    int bus32Latches[] = new int[16];
     List<MemoryBus> externalDevices = new LinkedList<>();
     boolean simpleMode = false;
     boolean simpleModeLastMEWR = true;
     boolean simpleModeLastLatchCLK = true;
     PrintWriter debugData = null;
+    boolean add32Bit1Mode = false;
 
     public boolean isEnableAPU() {
         return enableAPU;
@@ -66,7 +68,7 @@ public class UserPortTo24BitAddress extends Device {
     static UserPortTo24BitAddress thisInstance;
 
     public UserPortTo24BitAddress(Scenario scenario) throws MemoryRangeException {
-        super(0xdd00, 0xdd0f, "UserPortTo24BitAddress");
+        super(0xdc00, 0xddff, "UserPortTo24BitAddress");
         mScenario = scenario;
 
         propertiesUpdated();
@@ -115,11 +117,85 @@ public class UserPortTo24BitAddress extends Device {
         this.simpleMode = simpleMode;
     }
 
+    public void setAdd32Bit1Mode(boolean add32Bit1Mode) {
+        this.add32Bit1Mode = add32Bit1Mode;
+    }
+
+    int CIA1Registers[] = new int[16];
+    int CIA2TimerAControl = 0;
     @Override
     public void write(int address, int data) throws MemoryAccessException {
-        int register = address & 0x0f;
+        int register = address & 0x10f;
         switch (register) {
-            case 0:
+            case 0x000:
+            case 0x001:
+            case 0x002:
+            case 0x003:
+            case 0x004:
+            case 0x005:
+            case 0x006:
+            case 0x007:
+            case 0x008:
+            case 0x009:
+            case 0x00a:
+            case 0x00b:
+            case 0x00c:
+            case 0x00d:
+            case 0x00e:
+            case 0x00f:
+                CIA1Registers[register] = data;
+                break;
+            case 0x100:
+                if (add32Bit1Mode) {
+                    // Decode in LSB bit order:
+                    // .SP1 = $01
+                    // .SP2 = $02
+                    // .SERIALATN = $04
+                    // .PA2 = $08
+                    int latchAddress = 0;
+                    // SP1
+                    if ((CIA1Registers[0x0e] & 0x40) == 0) {
+                        latchAddress |= 0x01;
+                    }
+                    // SP2
+                    if ((CIA2TimerAControl & 0x40) == 0) {
+                        latchAddress |= 0x02;
+                    }
+                    // SERIALATN
+                    if ((registerDDRPortA & 0x08) == 0x08) {
+                        if ((data & 0x08) == 0) {
+                            latchAddress |= 0x04;
+                        }
+                    }
+                    // PA2
+                    if ((registerDDRPortA & 0x04) == 0x04) {
+                        if ((data & 0x04) == 0) {
+                            latchAddress |= 0x08;
+                        }
+                    }
+
+                    bus32Latches[latchAddress] = data;
+
+                    // TODO: Check the internal logic based on latches
+
+                    if ((bus32Latches[0x07] & 0x80) == 0x80) {
+                        // Reset done
+                        switch (bus32Latches[0x07] & 0x03) {
+                            case 0:
+                                // Pass-through
+                                break;
+                            case 1:
+                                // RAM
+                                return;
+                            case 2:
+                                // RAM
+                                return;
+                            case 3:
+                                // RAM
+                                return;
+                        }
+                    }
+                }
                 if ((registerDDRPortA & 0x04) == 0x04) {
                     if ((data & 0x04) == 0) {
                         if (simpleMode) {
@@ -150,7 +226,7 @@ public class UserPortTo24BitAddress extends Device {
                     }
                 }
                 break;
-            case 1:
+            case 0x101:
                 if (registerDDRPortB == 0xff) {
                     if (simpleMode) {
                         boolean clock = (data & 0x08) == 0x08;
@@ -216,11 +292,14 @@ public class UserPortTo24BitAddress extends Device {
                     }
                 }
                 break;
-            case 2:
+            case 0x102:
                 registerDDRPortA = data;
                 break;
-            case 3:
+            case 0x103:
                 registerDDRPortB = data;
+                break;
+            case 0x10e:
+                CIA2TimerAControl = data;
                 break;
             default:
                 break;
@@ -266,12 +345,30 @@ public class UserPortTo24BitAddress extends Device {
 
     @Override
     public int read(int address, boolean logRead) throws MemoryAccessException {
-        int register = address & 0x0f;
+        int register = address & 0x10f;
         switch (register) {
             default:
                 return 0;
 
-            case 0x0d:
+            case 0x000:
+            case 0x001:
+            case 0x002:
+            case 0x003:
+            case 0x004:
+            case 0x005:
+            case 0x006:
+            case 0x007:
+            case 0x008:
+            case 0x009:
+            case 0x00a:
+            case 0x00b:
+            case 0x00c:
+            case 0x00d:
+            case 0x00e:
+            case 0x00f:
+                return CIA1Registers[register];
+
+            case 0x10d:
                 // A double read can happen, once for the log, once for the CPU
                 // We ignore the first read
                 int ret = 0x0;

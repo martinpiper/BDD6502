@@ -6,6 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/C64WithNewUserPort20to32Bit1.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/C64WithNewUserPort20to32Bit1.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/C64WithNewUserPort20to32Bit1.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/C64WithNewUserPort20to32Bit1.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -1055,11 +1061,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
         <item itemvalue="Maven.BDD6502 [install]" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU4" />
         <item itemvalue="Maven.BDD6502 [install] (1)" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU6" />
-        <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
       </list>
     </recent_temporary>
   </component>
@@ -1119,6 +1125,16 @@
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
           <line>2038</line>
           <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
+          <line>182</line>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
+          <line>154</line>
+          <option name="timeStamp" value="30" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

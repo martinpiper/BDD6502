@@ -32,8 +32,11 @@ TestInterface
 
     lda #$cf
     jsr DisplayHex_Byte_A
+    lda #CHR_Return
+    jsr CHROUT
 
 	jsr Video_WaitVBlank
+	+MBASICTextPrint .gotVBlank
 
     rts
 
@@ -41,6 +44,8 @@ TestInterface
 !pet CHR_White , "C64 Booted" , CHR_Return , 0
 .testPatternDone
 !pet "HardwareTest VideoPattern0" , CHR_Return , 0
+.gotVBlank
+!pet "Got VBLank" , CHR_Return , 0
 
 .hexTab
 !pet "0123456789ABCDEF"

@@ -2064,6 +2064,12 @@ public class Glue {
         userPort24BitAddress.setSimpleMode(true);
     }
 
+    @Given("^a user port to 32 bit interface and 24 bit bus is installed$")
+    public void aUserportTo32BitInterfaceAnd24BitIsInstalled() throws MemoryRangeException {
+        aUserportToBitBusIsInstalled();
+        userPort24BitAddress.setAdd32Bit1Mode(true);
+    }
+
     @Given("^the layer has overscan$")
     public void theLayerHasOverscan() {
         displayBombJack.getLastLayerAdded().setWithOverscan(true);
