@@ -25,6 +25,15 @@ public class UserPortTo24BitAddress extends Device {
     int bus24State = 0;
     boolean bus24CountEnabled = false;
     int bus24Bytes[] = new int[4];
+    final int kbus32_latch7_SelectMask=0x03;
+    final int kbus32_latch7_Passthrough=0x00;
+    final int kbus32_latch7_RAM=0x01;
+    final int kbus32_latch7_PassthroughDisable=0x02;
+    final int kbus32_latch7_Disabled=0x03;
+    final int kbus32_latch7_InternalPA2=0x04;
+    final int kbus32_latch7_FastDMAStart=0x08;
+    final int kbus32_latch7_ResetDone=0x80;
+    int bus32LatchAddress = 0;
     int bus32Latches[] = new int[16];
     int bus32FastDMACounter = 0;
     boolean bus32FastDMAStart = false;
@@ -152,25 +161,21 @@ public class UserPortTo24BitAddress extends Device {
                 if (add32Bit1Mode) {
                     bus24CIA2PortASerialBusVICBank = data & registerDDRPortA;
 
-                    if ((bus32Latches[7] & 0x80) == 0x80) {
+                    if ((bus32Latches[7] & kbus32_latch7_ResetDone) == kbus32_latch7_ResetDone) {
                         // Reset done
-                        switch (bus32Latches[7] & 0x03) {
-                            case 0:
-                                // Pass-through
+                        switch (bus32Latches[7] & kbus32_latch7_SelectMask) {
+                            case kbus32_latch7_Passthrough:
                                 break;
-                            case 1:
-                                // RAM
+                            case kbus32_latch7_RAM:
                                 return;
-                            case 2:
-                                // RAM
+                            case kbus32_latch7_PassthroughDisable:
                                 return;
-                            case 3:
-                                // RAM
+                            case kbus32_latch7_Disabled:
                                 return;
                         }
                     }
-
                 }
+
                 if ((registerDDRPortA & 0x04) == 0x04) {
                     if ((data & 0x04) == 0) {
                         if (simpleMode) {
@@ -209,52 +214,23 @@ public class UserPortTo24BitAddress extends Device {
                         // .SP2 = $02
                         // .SERIALATN = $04
                         // .PA2 = $08
-                        int latchAddress = 0;
-                        // SP1
-                        if ((CIA1Registers[0x0e] & 0x40) == 0) {
-                            latchAddress |= 0x01;
-                        }
-                        // SP2
-                        if ((CIA2TimerAControl & 0x40) == 0) {
-                            latchAddress |= 0x02;
-                        }
-                        // SERIALATN
-                        if ((registerDDRPortA & 0x08) == 0x08) {
-                            if ((bus24CIA2PortASerialBusVICBank & 0x08) == 0) {
-                                latchAddress |= 0x04;
-                            }
-                        } else {
-                            // Input to tri-state = float high
-                            latchAddress |= 0x04;
-                        }
-                        // PA2
-                        if ((registerDDRPortA & 0x04) == 0x04) {
-                            if ((bus24CIA2PortASerialBusVICBank & 0x04) == 0x04) {
-                                latchAddress |= 0x08;
-                            }
-                        } else {
-                            // Input to tri-state = float high
-                            latchAddress |= 0x08;
-                        }
 
-                        bus32Latches[latchAddress] = data;
+                        Bus32LatchAddressCalculate();
+
+                        bus32Latches[bus32LatchAddress] = data;
 
                         Bus32ApplyLogic();
 
-                        if ((bus32Latches[7] & 0x80) == 0x80) {
+                        if ((bus32Latches[7] & kbus32_latch7_ResetDone) == kbus32_latch7_ResetDone) {
                             // Reset done
-                            switch (bus32Latches[7] & 0x03) {
-                                case 0:
-                                    // Pass-through
+                            switch (bus32Latches[7] & kbus32_latch7_SelectMask) {
+                                case kbus32_latch7_Passthrough:
                                     break;
-                                case 1:
-                                    // RAM
+                                case kbus32_latch7_RAM:
                                     return;
-                                case 2:
-                                    // RAM
+                                case kbus32_latch7_PassthroughDisable:
                                     return;
-                                case 3:
-                                    // RAM
+                                case kbus32_latch7_Disabled:
                                     return;
                             }
                         }
@@ -338,9 +314,39 @@ public class UserPortTo24BitAddress extends Device {
         }
     }
 
+    private void Bus32LatchAddressCalculate() {
+        bus32LatchAddress = 0;
+        // SP1
+        if ((CIA1Registers[0x0e] & 0x40) == 0) {
+            bus32LatchAddress |= 0x01;
+        }
+        // SP2
+        if ((CIA2TimerAControl & 0x40) == 0) {
+            bus32LatchAddress |= 0x02;
+        }
+        // SERIALATN
+        if ((registerDDRPortA & 0x08) == 0x08) {
+            if ((bus24CIA2PortASerialBusVICBank & 0x08) == 0) {
+                bus32LatchAddress |= 0x04;
+            }
+        } else {
+            // Input to tri-state = float high
+            bus32LatchAddress |= 0x04;
+        }
+        // PA2
+        if ((registerDDRPortA & 0x04) == 0x04) {
+            if ((bus24CIA2PortASerialBusVICBank & 0x04) == 0x04) {
+                bus32LatchAddress |= 0x08;
+            }
+        } else {
+            // Input to tri-state = float high
+            bus32LatchAddress |= 0x08;
+        }
+    }
+
     private void Bus32ApplyLogic() {
         // Check the internal logic based on latches
-        if ( (bus32Latches[7] & 0x80) == 0) {
+        if ( (bus32Latches[7] & kbus32_latch7_ResetDone) == 0) {
             bus32Latches[0] = 0;
             bus32Latches[1] = 0;
             bus32Latches[2] = 0;
