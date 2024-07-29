@@ -70,7 +70,7 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     And I enable trace with indent
     When ignore address Video_WaitVBlank_startGuard to Video_WaitVBlank_endGuard for trace
 
-    When I execute the procedure at TestInterface until return
+    When I execute the procedure at TestInterface_Passthrough until return
 
     And render a video display frame
     And render a C64 video display frame

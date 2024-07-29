@@ -166,12 +166,16 @@ public class UserPortTo24BitAddress extends Device {
                         if ((data & 0x08) == 0) {
                             latchAddress |= 0x04;
                         }
+                    } else {
+                        latchAddress |= 0x04;
                     }
                     // PA2
                     if ((registerDDRPortA & 0x04) == 0x04) {
-                        if ((data & 0x04) == 0) {
+                        if ((data & 0x04) == 0x04) {
                             latchAddress |= 0x08;
                         }
+                    } else {
+                        latchAddress |= 0x08;
                     }
 
                     bus32Latches[latchAddress] = data;

@@ -13,7 +13,7 @@ kBus24Bit_VideoLayer_ExpandedPalettes = 1
 
 *=$800
 !zn
-TestInterface
+TestInterface_Passthrough
 	sei
 	lda #ProcessorPortDefault
 	jsr InitialiseMachine
@@ -72,6 +72,7 @@ Initialise_NoIRQServiceRoutine = 1
 Initialise_NoMACROWaitForTheLastScan = 1
 !source "C64/stdlib/Initialise.a"
 !source "BombJack/stdlib/Bus24Bit.a"
+;!source "BombJack/stdlib/Bus20To32Bit1.a"
 !source "BombJack/stdlib/Video.a"
 !source "BombJack/stdlib/HardwareTest.a"
 !source "BombJack/stdlib/APU_Macros.a"
