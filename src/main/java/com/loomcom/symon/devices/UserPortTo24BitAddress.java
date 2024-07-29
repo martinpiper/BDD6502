@@ -26,12 +26,15 @@ public class UserPortTo24BitAddress extends Device {
     boolean bus24CountEnabled = false;
     int bus24Bytes[] = new int[4];
     int bus32Latches[] = new int[16];
+    int bus32FastDMACounter = 0;
+    boolean bus32FastDMAStart = false;
     List<MemoryBus> externalDevices = new LinkedList<>();
     boolean simpleMode = false;
     boolean simpleModeLastMEWR = true;
     boolean simpleModeLastLatchCLK = true;
     PrintWriter debugData = null;
     boolean add32Bit1Mode = false;
+    private int bus24CIA2PortASerialBusVICBank = 0;
 
     public boolean isEnableAPU() {
         return enableAPU;
@@ -147,46 +150,11 @@ public class UserPortTo24BitAddress extends Device {
                 break;
             case 0x100:
                 if (add32Bit1Mode) {
-                    // Decode in LSB bit order:
-                    // .SP1 = $01
-                    // .SP2 = $02
-                    // .SERIALATN = $04
-                    // .PA2 = $08
-                    int latchAddress = 0;
-                    // SP1
-                    if ((CIA1Registers[0x0e] & 0x40) == 0) {
-                        latchAddress |= 0x01;
-                    }
-                    // SP2
-                    if ((CIA2TimerAControl & 0x40) == 0) {
-                        latchAddress |= 0x02;
-                    }
-                    // SERIALATN
-                    if ((registerDDRPortA & 0x08) == 0x08) {
-                        if ((data & 0x08) == 0) {
-                            latchAddress |= 0x04;
-                        }
-                    } else {
-                        // Input to tri-state = float high
-                        latchAddress |= 0x04;
-                    }
-                    // PA2
-                    if ((registerDDRPortA & 0x04) == 0x04) {
-                        if ((data & 0x04) == 0x04) {
-                            latchAddress |= 0x08;
-                        }
-                    } else {
-                        // Input to tri-state = float high
-                        latchAddress |= 0x08;
-                    }
+                    bus24CIA2PortASerialBusVICBank = data & registerDDRPortA;
 
-                    bus32Latches[latchAddress] = data;
-
-                    // TODO: Check the internal logic based on latches
-
-                    if ((bus32Latches[0x07] & 0x80) == 0x80) {
+                    if ((bus32Latches[7] & 0x80) == 0x80) {
                         // Reset done
-                        switch (bus32Latches[0x07] & 0x03) {
+                        switch (bus32Latches[7] & 0x03) {
                             case 0:
                                 // Pass-through
                                 break;
@@ -201,6 +169,7 @@ public class UserPortTo24BitAddress extends Device {
                                 return;
                         }
                     }
+
                 }
                 if ((registerDDRPortA & 0x04) == 0x04) {
                     if ((data & 0x04) == 0) {
@@ -234,6 +203,63 @@ public class UserPortTo24BitAddress extends Device {
                 break;
             case 0x101:
                 if (registerDDRPortB == 0xff) {
+                    if (add32Bit1Mode) {
+                        // Decode in LSB bit order:
+                        // .SP1 = $01
+                        // .SP2 = $02
+                        // .SERIALATN = $04
+                        // .PA2 = $08
+                        int latchAddress = 0;
+                        // SP1
+                        if ((CIA1Registers[0x0e] & 0x40) == 0) {
+                            latchAddress |= 0x01;
+                        }
+                        // SP2
+                        if ((CIA2TimerAControl & 0x40) == 0) {
+                            latchAddress |= 0x02;
+                        }
+                        // SERIALATN
+                        if ((registerDDRPortA & 0x08) == 0x08) {
+                            if ((bus24CIA2PortASerialBusVICBank & 0x08) == 0) {
+                                latchAddress |= 0x04;
+                            }
+                        } else {
+                            // Input to tri-state = float high
+                            latchAddress |= 0x04;
+                        }
+                        // PA2
+                        if ((registerDDRPortA & 0x04) == 0x04) {
+                            if ((bus24CIA2PortASerialBusVICBank & 0x04) == 0x04) {
+                                latchAddress |= 0x08;
+                            }
+                        } else {
+                            // Input to tri-state = float high
+                            latchAddress |= 0x08;
+                        }
+
+                        bus32Latches[latchAddress] = data;
+
+                        Bus32ApplyLogic();
+
+                        if ((bus32Latches[7] & 0x80) == 0x80) {
+                            // Reset done
+                            switch (bus32Latches[7] & 0x03) {
+                                case 0:
+                                    // Pass-through
+                                    break;
+                                case 1:
+                                    // RAM
+                                    return;
+                                case 2:
+                                    // RAM
+                                    return;
+                                case 3:
+                                    // RAM
+                                    return;
+                            }
+                        }
+                    }
+
                     if (simpleMode) {
                         boolean clock = (data & 0x08) == 0x08;
                         if (!clock) {
@@ -309,6 +335,20 @@ public class UserPortTo24BitAddress extends Device {
                 break;
             default:
                 break;
+        }
+    }
+
+    private void Bus32ApplyLogic() {
+        // Check the internal logic based on latches
+        if ( (bus32Latches[7] & 0x80) == 0) {
+            bus32Latches[0] = 0;
+            bus32Latches[1] = 0;
+            bus32Latches[2] = 0;
+            bus32Latches[8] = 0;
+            bus32Latches[9] = 0;
+            bus32Latches[10] = 0;
+            bus32FastDMACounter = 0;
+            bus32FastDMAStart = false;
         }
     }
 

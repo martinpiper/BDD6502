@@ -87,6 +87,7 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     Then expect the next line to contain "d$9a010100"
     Given close current file
 
+    When I execute the procedure at Bus20To32Bit1_Init until return
 
 #    When rendering the video until window closed
 
