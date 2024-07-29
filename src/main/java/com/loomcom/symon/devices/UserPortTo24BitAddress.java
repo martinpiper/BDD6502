@@ -167,6 +167,7 @@ public class UserPortTo24BitAddress extends Device {
                             latchAddress |= 0x04;
                         }
                     } else {
+                        // Input to tri-state = float high
                         latchAddress |= 0x04;
                     }
                     // PA2
@@ -175,6 +176,7 @@ public class UserPortTo24BitAddress extends Device {
                             latchAddress |= 0x08;
                         }
                     } else {
+                        // Input to tri-state = float high
                         latchAddress |= 0x08;
                     }
 
