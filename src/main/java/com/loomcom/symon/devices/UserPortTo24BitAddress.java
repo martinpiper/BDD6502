@@ -3,6 +3,8 @@ package com.loomcom.symon.devices;
 import com.bdd6502.APUData;
 import com.bdd6502.DisplayBombJack;
 import com.bdd6502.MemoryBus;
+import com.bdd6502.MemoryInternal;
+import com.loomcom.symon.MemoryRange;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.util.HexUtil;
@@ -37,6 +39,8 @@ public class UserPortTo24BitAddress extends Device {
     int bus32Latches[] = new int[16];
     int bus32FastDMACounter = 0;
     boolean bus32FastDMAStart = false;
+
+    List<MemoryInternal> bus32MemoryBlocks = new LinkedList<>();
     List<MemoryBus> externalDevices = new LinkedList<>();
     boolean simpleMode = false;
     boolean simpleModeLastMEWR = true;
@@ -218,6 +222,22 @@ public class UserPortTo24BitAddress extends Device {
                         Bus32LatchAddressCalculate();
 
                         bus32Latches[bus32LatchAddress] = data;
+
+                        Bus32ApplyLogic();
+
+                        //
+                        if (bus32LatchAddress == 6) {
+                            int currentAddress = bus32Latches[0] | (bus32Latches[1] << 8) | (bus32Latches[2] << 16);
+                            for (MemoryInternal memory: bus32MemoryBlocks) {
+                                if (memory.includes(currentAddress)) {
+                                    memory.getMemory().write(currentAddress,data - memory.startAddress);
+                                }
+                            }
+                            currentAddress++;
+                            bus32Latches[0] = currentAddress & 0xff;
+                            bus32Latches[1] = (currentAddress >> 8) & 0xff;
+                            bus32Latches[2] = (currentAddress >> 16) & 0xff;
+                        }
 
                         Bus32ApplyLogic();
 
@@ -1071,5 +1091,9 @@ public class UserPortTo24BitAddress extends Device {
         if (apuWait24 == displayV && (apuWait16 & 0x01) == (displayH & 0x100)>>8 && apuWait8 == (displayH & 0xff)) {
             apuHitWait = true;
         }
+    }
+
+    public void addMemoryAt(int iAddress, int iSize) throws MemoryRangeException {
+        bus32MemoryBlocks.add(new MemoryInternal(iAddress,iAddress + iSize));
     }
 }

@@ -2070,6 +2070,13 @@ public class Glue {
         userPort24BitAddress.setAdd32Bit1Mode(true);
     }
 
+    @Given("^add to the 32 bit interface a bank of memory at address '(.*)' and size '(.*)'$")
+    public void add_to_the_bit_interface_a_bank_of_memory_at_address_x_and_size_x(String address, String size) throws Throwable {
+        int iAddress = valueToInt(address);
+        int iSize = valueToInt(size);
+        userPort24BitAddress.addMemoryAt(iAddress, iSize);
+    }
+
     @Given("^the layer has overscan$")
     public void theLayerHasOverscan() {
         displayBombJack.getLastLayerAdded().setWithOverscan(true);

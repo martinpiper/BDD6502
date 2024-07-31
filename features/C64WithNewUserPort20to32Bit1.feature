@@ -90,6 +90,7 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     Given close current file
 
     When I execute the procedure at Bus20To32Bit1_Init until return
+    When I execute the procedure at TestInterface_WriteRAM until return
 
 #    When rendering the video until window closed
 

@@ -65,6 +65,15 @@ DisplayHex_Byte_A
     lda .hexTab,x
     jmp CHROUT
 
+TestInterface_WriteRAM
+    jsr Bus20To32Bit1_SetLatch6
+    ldx #0
+.l1
+    lda TestInterface_Passthrough,x
+    +MBus24Bit_Send8BitValueFromA
+    inx
+    bne .l1
+    rts
 
 
 Initialise_NoPreserveStack = 1
