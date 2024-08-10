@@ -1,5 +1,6 @@
 kBus24Bit_VideoLayer_HasOverscan=1
 kBus24Bit_VideoLayer_ExpandedPalettes = 1
+kBus24Bit_SpritesMaxNum = 32
 
 !ct pet
 !sal
@@ -22,15 +23,50 @@ start
 	jsr TestInterface_Passthrough
 	jsr Bus20To32Bit1_Init
 	jsr TestInterface_WriteRAM
+	jsr TestInterface_ReadRAM
 .il1
 	inc VIC2BorderColour
 	jmp .il1
+
+
+; If brk is encountered, then display a useful error
+.errorMessage
+	+MBASICTextPrint .errorMessageText
+	; Display the stack
+	pla
+	jsr DisplayHex_Byte_A
+	pla
+	jsr DisplayHex_Byte_A
+	pla
+	jsr DisplayHex_Byte_A
+	pla
+	jsr DisplayHex_Byte_A
+	; Lo then hi of encountered brk address plus a couple of bytes
+	pla
+	jsr DisplayHex_Byte_A
+	pla
+	jsr DisplayHex_Byte_A
+.il2
+	inc VIC2BorderColour
+.il3
+	inx
+	bne .il3
+	iny
+	bne .il3
+	jmp .il2
+
+.errorMessageText
+!pet CHR_Red , "** ERROR **" , CHR_Return , 0
+
+
 
 TestInterface_Passthrough
 	+M_RAMTAS
 	+InitKERNALStringDisplay_AXY
 	jsr CINT
 	+SetDefaultScreenLowerCase_A
+
+	+MWordValueToAddress_A .errorMessage , BRKServiceRoutineLo
 
 	+MBASICTextPrint .bootedC64
 
@@ -60,6 +96,9 @@ TestInterface_Passthrough
 .writeDataComplete
 !pet "Write data complete" , CHR_Return , 0
 
+.readDataComplete
+!pet "Read data complete" , CHR_Return , 0
+
 .hexTab
 !pet "0123456789ABCDEF"
 
@@ -88,6 +127,31 @@ TestInterface_WriteRAM
 	bne .l1
 
 	+MBASICTextPrint .writeDataComplete
+
+	rts
+
+
+TestInterface_ReadRAM
+	jsr Bus20To32Bit1_ShortReset
+
+	jsr Bus20To32Bit1_ReadMode
+	jsr Bus20To32Bit1_SetLatch5
+
+	ldx #0
+.l2
+	+MBus24Bit_Get8BitValueToA
+	cmp TestInterface_Passthrough,x
+	beq .ok1
+	; This useful, during the unit test it causes a test failure, using a real C64 an error message is displayed
+	brk
+	;+MDebugBreak
+.ok1	
+	inx
+	bne .l2
+
+	jsr Bus20To32Bit1_WriteMode
+
+	+MBASICTextPrint .readDataComplete
 
 	rts
 

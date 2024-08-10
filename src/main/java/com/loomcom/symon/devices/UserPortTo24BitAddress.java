@@ -214,34 +214,25 @@ public class UserPortTo24BitAddress extends Device {
             case 0x101: // CIA2PortBRS232
                 if (registerDDRPortB == 0xff) {
                     if (add32Bit1Mode) {
-                        // Decode in LSB bit order:
-                        // .SP1 = $01
-                        // .SP2 = $02
-                        // .SERIALATN = $04
-                        // .PA2 = $08
-
                         Bus32LatchAddressCalculate();
 
                         bus32Latches[bus32LatchAddress] = data;
 
                         Bus32ApplyLogic();
 
-                        //
-                        if (bus32LatchAddress == 6) {
-                            Bus32CalculateOffsets();
-                            for (MemoryInternal memory: bus32MemoryBlocks) {
-                                if (memory.includes(bus32CurrentAddress)) {
-                                    memory.getMemory().write(bus32CurrentAddress,data - memory.startAddress);
-                                }
-                            }
-                            bus32CurrentAddress++;
-                            Bus32OffsetsToLatches();
-                        }
-
-                        Bus32ApplyLogic();
-
                         if ((bus32Latches[7] & kbus32_latch7_ResetDone) == kbus32_latch7_ResetDone) {
                             // Reset done
+                            if (bus32LatchAddress == 6) {
+                                Bus32CalculateOffsets();
+                                for (MemoryInternal memory: bus32MemoryBlocks) {
+                                    if (memory.includes(bus32CurrentAddress)) {
+                                        memory.getMemory().write(bus32CurrentAddress - memory.startAddress,data);
+                                    }
+                                }
+                                bus32CurrentAddress++;
+                                Bus32OffsetsToLatches();
+                            }
+
                             switch (bus32Latches[7] & kbus32_latch7_SelectMask) {
                                 case kbus32_latch7_Passthrough:
                                     break;
@@ -252,6 +243,7 @@ public class UserPortTo24BitAddress extends Device {
                                 case kbus32_latch7_Disabled:
                                     return;
                             }
+
                         }
                     }
 
@@ -317,6 +309,8 @@ public class UserPortTo24BitAddress extends Device {
                             }
                         }
                     }
+                } else {
+                    throw new MemoryAccessException("registerDDRPortB != 0xff on write");
                 }
                 break;
             case 0x102:
@@ -344,6 +338,12 @@ public class UserPortTo24BitAddress extends Device {
     }
 
     private void Bus32LatchAddressCalculate() {
+        // Decode in LSB bit order:
+        // .SP1 = $01
+        // .SP2 = $02
+        // .SERIALATN = $04
+        // .PA2 = $08
+
         bus32LatchAddress = 0;
         // SP1
         if ((CIA1Registers[0x0e] & 0x40) == 0) {
@@ -448,7 +448,47 @@ public class UserPortTo24BitAddress extends Device {
             case 0x00e:
             case 0x00f:
                 return CIA1Registers[register];
+            case 0x101:
+                if (!logRead) {
+                    // CPU emulation does a fake read before a write. Which might be technically correct for RAM but this is the user port, which complicates error detection with the DDR.
+                    return 0xff;
+                }
+                int toReturn = 0xff;
+                if (registerDDRPortB == 0x00) {
+                    if (add32Bit1Mode) {
+                        Bus32LatchAddressCalculate();
 
+                        Bus32ApplyLogic();
+
+                        if ((bus32Latches[7] & kbus32_latch7_ResetDone) == kbus32_latch7_ResetDone) {
+                            // Reset done
+                            if (bus32LatchAddress == 5) {
+                                Bus32CalculateOffsets();
+                                for (MemoryInternal memory : bus32MemoryBlocks) {
+                                    if (memory.includes(bus32CurrentAddress)) {
+                                        toReturn = memory.getMemory().read(bus32CurrentAddress - memory.startAddress(), false);
+                                    }
+                                }
+                                bus32CurrentAddress++;
+                                Bus32OffsetsToLatches();
+                            }
+
+                            switch (bus32Latches[7] & kbus32_latch7_SelectMask) {
+                                case kbus32_latch7_Passthrough:
+                                    break;
+                                case kbus32_latch7_RAM:
+                                    return 0xff;
+                                case kbus32_latch7_PassthroughDisable:
+                                    return 0xff;
+                                case kbus32_latch7_Disabled:
+                                    return 0xff;
+                            }
+                        }
+                    }
+                } else {
+                    throw new MemoryAccessException("registerDDRPortB != 0 on read");
+                }
+                return toReturn;
             case 0x10d:
                 // A double read can happen, once for the log, once for the CPU
                 // We ignore the first read
