@@ -48,6 +48,7 @@ public class UserPortTo24BitAddress extends Device {
     PrintWriter debugData = null;
     boolean add32Bit1Mode = false;
     private int bus24CIA2PortASerialBusVICBank = 0;
+    private int bus32CurrentAddress;
 
     public boolean isEnableAPU() {
         return enableAPU;
@@ -161,7 +162,7 @@ public class UserPortTo24BitAddress extends Device {
             case 0x00f:
                 CIA1Registers[register] = data;
                 break;
-            case 0x100:
+            case 0x100: // CIA2PortASerialBusVICBank
                 if (add32Bit1Mode) {
                     bus24CIA2PortASerialBusVICBank = data & registerDDRPortA;
 
@@ -210,7 +211,7 @@ public class UserPortTo24BitAddress extends Device {
                     }
                 }
                 break;
-            case 0x101:
+            case 0x101: // CIA2PortBRS232
                 if (registerDDRPortB == 0xff) {
                     if (add32Bit1Mode) {
                         // Decode in LSB bit order:
@@ -227,16 +228,14 @@ public class UserPortTo24BitAddress extends Device {
 
                         //
                         if (bus32LatchAddress == 6) {
-                            int currentAddress = bus32Latches[0] | (bus32Latches[1] << 8) | (bus32Latches[2] << 16);
+                            Bus32CalculateOffsets();
                             for (MemoryInternal memory: bus32MemoryBlocks) {
-                                if (memory.includes(currentAddress)) {
-                                    memory.getMemory().write(currentAddress,data - memory.startAddress);
+                                if (memory.includes(bus32CurrentAddress)) {
+                                    memory.getMemory().write(bus32CurrentAddress,data - memory.startAddress);
                                 }
                             }
-                            currentAddress++;
-                            bus32Latches[0] = currentAddress & 0xff;
-                            bus32Latches[1] = (currentAddress >> 8) & 0xff;
-                            bus32Latches[2] = (currentAddress >> 16) & 0xff;
+                            bus32CurrentAddress++;
+                            Bus32OffsetsToLatches();
                         }
 
                         Bus32ApplyLogic();
@@ -332,6 +331,16 @@ public class UserPortTo24BitAddress extends Device {
             default:
                 break;
         }
+    }
+
+    private void Bus32OffsetsToLatches() {
+        bus32Latches[0] = bus32CurrentAddress & 0xff;
+        bus32Latches[1] = (bus32CurrentAddress >> 8) & 0xff;
+        bus32Latches[2] = (bus32CurrentAddress >> 16) & 0xff;
+    }
+
+    private void Bus32CalculateOffsets() {
+        bus32CurrentAddress = bus32Latches[0] | (bus32Latches[1] << 8) | (bus32Latches[2] << 16);
     }
 
     private void Bus32LatchAddressCalculate() {

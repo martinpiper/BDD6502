@@ -13,32 +13,42 @@ kBus24Bit_VideoLayer_ExpandedPalettes = 1
 
 *=$800
 !zn
-TestInterface_Passthrough
+; The code "start" entry which initialises the stack is not called before this, which is fine for unit testing
+; When running on a real C64 the "start" entry initialises the machine properly
+start
 	sei
 	lda #ProcessorPortDefault
 	jsr InitialiseMachine
+	jsr TestInterface_Passthrough
+	jsr Bus20To32Bit1_Init
+	jsr TestInterface_WriteRAM
+.il1
+	inc VIC2BorderColour
+	jmp .il1
+
+TestInterface_Passthrough
 	+M_RAMTAS
 	+InitKERNALStringDisplay_AXY
 	jsr CINT
 	+SetDefaultScreenLowerCase_A
 
-    +MBASICTextPrint .bootedC64
+	+MBASICTextPrint .bootedC64
 
 	jsr Bus24Bit_Init
 	jsr APU_ResetDisable
 
 	jsr HardwareTest_VideoPattern0
-    +MBASICTextPrint .testPatternDone
+	+MBASICTextPrint .testPatternDone
 
-    lda #$cf
-    jsr DisplayHex_Byte_A
-    lda #CHR_Return
-    jsr CHROUT
+	lda #$cf
+	jsr DisplayHex_Byte_A
+	lda #CHR_Return
+	jsr CHROUT
 
 	jsr Video_WaitVBlank
 	+MBASICTextPrint .gotVBlank
 
-    rts
+	rts
 
 .bootedC64
 !pet CHR_White , "C64 Booted" , CHR_Return , 0
@@ -47,33 +57,39 @@ TestInterface_Passthrough
 .gotVBlank
 !pet "Got VBLank" , CHR_Return , 0
 
+.writeDataComplete
+!pet "Write data complete" , CHR_Return , 0
+
 .hexTab
 !pet "0123456789ABCDEF"
 
 DisplayHex_Byte_A
-    pha
-    lsr
-    lsr
-    lsr
-    lsr
-    tax
-    lda .hexTab,x
-    jsr CHROUT
-    pla
-    and #%1111
-    tax
-    lda .hexTab,x
-    jmp CHROUT
+	pha
+	lsr
+	lsr
+	lsr
+	lsr
+	tax
+	lda .hexTab,x
+	jsr CHROUT
+	pla
+	and #%1111
+	tax
+	lda .hexTab,x
+	jmp CHROUT
 
 TestInterface_WriteRAM
-    jsr Bus20To32Bit1_SetLatch6
-    ldx #0
+	jsr Bus20To32Bit1_SetLatch6
+	ldx #0
 .l1
-    lda TestInterface_Passthrough,x
-    +MBus24Bit_Send8BitValueFromA
-    inx
-    bne .l1
-    rts
+	lda TestInterface_Passthrough,x
+	+MBus24Bit_Send8BitValueFromA
+	inx
+	bne .l1
+
+	+MBASICTextPrint .writeDataComplete
+
+	rts
 
 
 Initialise_NoPreserveStack = 1
