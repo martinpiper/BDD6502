@@ -24,6 +24,7 @@ start
 	jsr Bus20To32Bit1_Init
 	jsr TestInterface_WriteRAM
 	jsr TestInterface_ReadRAM
+	jsr TestInterface_ReadRAMWithOffset
 .il1
 	inc VIC2BorderColour
 	jmp .il1
@@ -99,6 +100,13 @@ TestInterface_Passthrough
 .readDataComplete
 !pet "Read data complete" , CHR_Return , 0
 
+.readDataWithOffsetComplete1
+!pet "Read data with offset complete1" , CHR_Return , 0
+
+.readDataWithOffsetComplete2
+!pet "Read data with offset complete2" , CHR_Return , 0
+
+
 .hexTab
 !pet "0123456789ABCDEF"
 
@@ -117,14 +125,21 @@ DisplayHex_Byte_A
 	lda .hexTab,x
 	jmp CHROUT
 
+
 TestInterface_WriteRAM
 	jsr Bus20To32Bit1_SetLatch6
+	
 	ldx #0
 .l1
 	lda TestInterface_Passthrough,x
 	+MBus24Bit_Send8BitValueFromA
 	inx
 	bne .l1
+.l12
+	lda TestInterface_Passthrough + $100,x
+	+MBus24Bit_Send8BitValueFromA
+	inx
+	bne .l12
 
 	+MBASICTextPrint .writeDataComplete
 
@@ -145,13 +160,70 @@ TestInterface_ReadRAM
 	; This useful, during the unit test it causes a test failure, using a real C64 an error message is displayed
 	brk
 	;+MDebugBreak
-.ok1	
+.ok1
 	inx
 	bne .l2
 
 	jsr Bus20To32Bit1_WriteMode
 
 	+MBASICTextPrint .readDataComplete
+
+	rts
+
+
+
+TestInterface_ReadRAMWithOffset
+	jsr Bus20To32Bit1_ShortReset
+
+	jsr Bus20To32Bit1_SetLatch8
+	+MBus24Bit_Send8BitValue $40
+	
+	jsr Bus20To32Bit1_ReadMode
+
+	; This should work in read or write mode
+	jsr Bus20To32Bit1_SetLatch3
+	+MBus24Bit_Get8BitValueToA
+	jsr DisplayHex_Byte_A	; Might be interesting to see
+
+	jsr Bus20To32Bit1_SetLatch5
+	
+	ldx #0
+.l2b
+	+MBus24Bit_Get8BitValueToA
+	cmp TestInterface_Passthrough + $40,x
+	beq .ok1b
+	; This useful, during the unit test it causes a test failure, using a real C64 an error message is displayed
+	brk
+	;+MDebugBreak
+.ok1b
+	inx
+	cpx #$20
+	bne .l2b
+	+MBASICTextPrint .readDataWithOffsetComplete1
+
+	; This should work in read or write mode
+	jsr Bus20To32Bit1_SetLatch3
+	+MBus24Bit_Get8BitValueToA
+	jsr DisplayHex_Byte_A	; Might be interesting to see
+
+	jsr Bus20To32Bit1_SetLatch5
+
+	ldx #0
+.l2b2
+	+MBus24Bit_Get8BitValueToA
+	cmp TestInterface_Passthrough + $40 + $20 + $40,x
+	beq .ok1b2
+	; This useful, during the unit test it causes a test failure, using a real C64 an error message is displayed
+	brk
+	;+MDebugBreak
+.ok1b2
+	inx
+	cpx #$20
+	bne .l2b2
+
+	+MBASICTextPrint .readDataWithOffsetComplete2
+
+	jsr Bus20To32Bit1_WriteMode
 
 	rts
 

@@ -92,6 +92,7 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     When I execute the procedure at Bus20To32Bit1_Init until return
     When I execute the procedure at TestInterface_WriteRAM until return
     When I execute the procedure at TestInterface_ReadRAM until return
+    When I execute the procedure at TestInterface_ReadRAMWithOffset until return
 
     And render a video display frame
     And render a C64 video display frame

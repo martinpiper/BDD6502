@@ -49,6 +49,7 @@ public class UserPortTo24BitAddress extends Device {
     boolean add32Bit1Mode = false;
     private int bus24CIA2PortASerialBusVICBank = 0;
     private int bus32CurrentAddress;
+    private int bus32AddAddress;
 
     public boolean isEnableAPU() {
         return enableAPU;
@@ -222,7 +223,12 @@ public class UserPortTo24BitAddress extends Device {
 
                         if ((bus32Latches[7] & kbus32_latch7_ResetDone) == kbus32_latch7_ResetDone) {
                             // Reset done
-                            if (bus32LatchAddress == 6) {
+                            if (bus32LatchAddress == 3) {
+                                Bus32CalculateOffsets();
+                                bus32CurrentAddress+=bus32AddAddress;
+                                Bus32OffsetsToLatches();
+                            }
+                            else if (bus32LatchAddress == 6) {
                                 Bus32CalculateOffsets();
                                 for (MemoryInternal memory: bus32MemoryBlocks) {
                                     if (memory.includes(bus32CurrentAddress)) {
@@ -335,6 +341,7 @@ public class UserPortTo24BitAddress extends Device {
 
     private void Bus32CalculateOffsets() {
         bus32CurrentAddress = bus32Latches[0] | (bus32Latches[1] << 8) | (bus32Latches[2] << 16);
+        bus32AddAddress = bus32Latches[8] | (bus32Latches[9] << 8) | (bus32Latches[10] << 16);
     }
 
     private void Bus32LatchAddressCalculate() {
@@ -462,7 +469,12 @@ public class UserPortTo24BitAddress extends Device {
 
                         if ((bus32Latches[7] & kbus32_latch7_ResetDone) == kbus32_latch7_ResetDone) {
                             // Reset done
-                            if (bus32LatchAddress == 5) {
+                            if (bus32LatchAddress == 3) {
+                                Bus32CalculateOffsets();
+                                bus32CurrentAddress+=bus32AddAddress;
+                                Bus32OffsetsToLatches();
+                            }
+                            else if (bus32LatchAddress == 5) {
                                 Bus32CalculateOffsets();
                                 for (MemoryInternal memory : bus32MemoryBlocks) {
                                     if (memory.includes(bus32CurrentAddress)) {
