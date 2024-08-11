@@ -25,8 +25,12 @@ start
 	jsr TestInterface_WriteRAM
 	jsr TestInterface_ReadRAM
 	jsr TestInterface_ReadRAMWithOffset
+	+WaitForFire_A
 .il1
+	+MACROWaitForTheLastScan_A
 	inc VIC2BorderColour
+	jsr TestInterface_ScrollScreen
+	dec VIC2BorderColour
 	jmp .il1
 
 
@@ -222,6 +226,55 @@ TestInterface_ReadRAMWithOffset
 	bne .l2b2
 
 	+MBASICTextPrint .readDataWithOffsetComplete2
+
+	jsr Bus20To32Bit1_WriteMode
+
+	rts
+
+
+
+!zn
+.startOffset
+	+MLittleEndian24Bit 0
+
+TestInterface_ScrollScreen
+	; Screen then colour info, two bytes increment per step
+	+MIncAddr24 .startOffset , .startOffset + 1 , .startOffset + 2
+	+MIncAddr24 .startOffset , .startOffset + 1 , .startOffset + 2
+
+	jsr Bus20To32Bit1_ShortReset
+
+	jsr Bus20To32Bit1_SetLatch0
+	+MBus24Bit_Send8BitValueFromAddress .startOffset
+	jsr Bus20To32Bit1_SetLatch1
+	+MBus24Bit_Send8BitValueFromAddress .startOffset + 1
+	jsr Bus20To32Bit1_SetLatch2
+	+MBus24Bit_Send8BitValueFromAddress .startOffset + 2
+	
+	jsr Bus20To32Bit1_SetLatch8
+	+MBus24Bit_Send8BitValue 0
+	jsr Bus20To32Bit1_SetLatch9
+	+MBus24Bit_Send8BitValue $40
+	jsr Bus20To32Bit1_SetLatch10
+	+MBus24Bit_Send8BitValue 0
+	
+	jsr Bus20To32Bit1_ReadMode
+	jsr Bus20To32Bit1_SetLatch5
+	
+!for .y , VIC2ScreenCharsHeight {
+!for .x , VIC2ScreenCharsWidth {
+	+MBus24Bit_Get8BitValueToA
+	sta SCREENRAM + (.x-1) + ((.y-1) * VIC2ScreenCharsWidth)
+	+MBus24Bit_Get8BitValueToA
+	sta COLOURRAM + (.x-1) + ((.y-1) * VIC2ScreenCharsWidth)
+}
+	; This should work in read or write mode
+	jsr Bus20To32Bit1_SetLatch3
+	+MBus24Bit_Get8BitValueToA
+
+	jsr Bus20To32Bit1_SetLatch5
+}
+
 
 	jsr Bus20To32Bit1_WriteMode
 
