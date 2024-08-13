@@ -103,7 +103,7 @@ public abstract class MemoryBus {
 
     abstract public void randomiseData(Random rand);
 
-    static void randomiseHelper(Random rand , byte[] values) {
+    public static void randomiseHelper(Random rand , byte[] values) {
         if (values == null) {
             return;
         }
@@ -112,7 +112,7 @@ public abstract class MemoryBus {
         }
     }
 
-    static void randomiseHelper(Random rand , byte[][] values) {
+    public static void randomiseHelper(Random rand , byte[][] values) {
         if (values == null) {
             return;
         }
@@ -123,7 +123,7 @@ public abstract class MemoryBus {
         }
     }
 
-    static void randomiseHelper(Random rand , int[] values) {
+    public static void randomiseHelper(Random rand , int[] values) {
         if (values == null) {
             return;
         }
@@ -132,7 +132,7 @@ public abstract class MemoryBus {
         }
     }
 
-    static void randomiseHelper(Random rand , int[][] values) {
+    public static void randomiseHelper(Random rand , int[][] values) {
         if (values == null) {
             return;
         }
@@ -143,7 +143,7 @@ public abstract class MemoryBus {
         }
     }
 
-    static void randomiseHelper(Random rand , boolean[] values) {
+    public static void randomiseHelper(Random rand , boolean[] values) {
         if (values == null) {
             return;
         }

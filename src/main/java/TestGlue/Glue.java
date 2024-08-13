@@ -2773,6 +2773,9 @@ public class Glue {
         if (audioExpansion != null) {
             audioExpansion.randomiseData(rand);
         }
+        if (userPort24BitAddress != null) {
+            userPort24BitAddress.randomiseData(rand);
+        }
     }
 
     @And("^enable debug pixel picking$")

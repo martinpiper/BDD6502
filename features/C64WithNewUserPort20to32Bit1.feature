@@ -95,10 +95,16 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     When I execute the procedure at TestInterface_ReadRAMWithOffset until return
     When I execute the procedure at TestInterface_ScrollScreen until return
     And render a C64 video display frame
+    When I execute the procedure at TestInterface_ScrollScreenInput_Left until return
+    When I execute the procedure at TestInterface_ScrollScreenInput_Up until return
     When I execute the procedure at TestInterface_ScrollScreen until return
     And render a C64 video display frame
+    When I execute the procedure at TestInterface_ScrollScreenInput_Left until return
+    When I execute the procedure at TestInterface_ScrollScreenInput_Up until return
     When I execute the procedure at TestInterface_ScrollScreen until return
     And render a C64 video display frame
+    When I execute the procedure at TestInterface_ScrollScreenInput_Left until return
+    When I execute the procedure at TestInterface_ScrollScreenInput_Up until return
     When I execute the procedure at TestInterface_ScrollScreen until return
     And render a C64 video display frame
 

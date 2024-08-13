@@ -31,6 +31,7 @@ start
 	inc VIC2BorderColour
 	jsr TestInterface_ScrollScreen
 	dec VIC2BorderColour
+	jsr TestInterface_ScrollScreenInput
 	jmp .il1
 
 
@@ -238,10 +239,6 @@ TestInterface_ReadRAMWithOffset
 	+MLittleEndian24Bit 0
 
 TestInterface_ScrollScreen
-	; Screen then colour info, two bytes increment per step
-	+MIncAddr24 .startOffset , .startOffset + 1 , .startOffset + 2
-	+MIncAddr24 .startOffset , .startOffset + 1 , .startOffset + 2
-
 	jsr Bus20To32Bit1_ShortReset
 
 	jsr Bus20To32Bit1_SetLatch0
@@ -251,10 +248,12 @@ TestInterface_ScrollScreen
 	jsr Bus20To32Bit1_SetLatch2
 	+MBus24Bit_Send8BitValueFromAddress .startOffset + 2
 	
+	; $7b0 = ($400 - 40)*2
+	; Giving a 1024 x 1024 virtual screen scroll
 	jsr Bus20To32Bit1_SetLatch8
-	+MBus24Bit_Send8BitValue 0
+	+MBus24Bit_Send8BitValue $b0
 	jsr Bus20To32Bit1_SetLatch9
-	+MBus24Bit_Send8BitValue $40
+	+MBus24Bit_Send8BitValue $07
 	jsr Bus20To32Bit1_SetLatch10
 	+MBus24Bit_Send8BitValue 0
 	
@@ -279,6 +278,32 @@ TestInterface_ScrollScreen
 	jsr Bus20To32Bit1_WriteMode
 
 	rts
+
+.plus2
+	+MLittleEndian24Bit 2
+.plus2048
+	+MLittleEndian24Bit 2048
+
+TestInterface_ScrollScreenInput
+	+TestForPortBitsLoop_A CIA1KeyboardColumnJoystickA , JoystickBits_Left , .notLeft
+TestInterface_ScrollScreenInput_Left
+	+MAdd24To24ToOut .startOffset , .plus2 , .startOffset
+.notLeft
+	+TestForPortBitsLoop_A CIA1KeyboardColumnJoystickA , JoystickBits_Right , .notRight
+TestInterface_ScrollScreenInput_Right
+	+MSub24To24ToOut .startOffset , .plus2 , .startOffset
+.notRight
+
+	+TestForPortBitsLoop_A CIA1KeyboardColumnJoystickA , JoystickBits_Up , .notUp
+TestInterface_ScrollScreenInput_Up
+	+MAdd24To24ToOut .startOffset , .plus2048 , .startOffset
+.notUp
+	+TestForPortBitsLoop_A CIA1KeyboardColumnJoystickA , JoystickBits_Down , .notDown
+TestInterface_ScrollScreenInput_Down
+	+MSub24To24ToOut .startOffset , .plus2048 , .startOffset
+.notDown
+	rts
+
 
 
 Initialise_NoPreserveStack = 1

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -1156,5 +1157,11 @@ public class UserPortTo24BitAddress extends Device {
 
     public void addMemoryAt(int iAddress, int iSize) throws MemoryRangeException {
         bus32MemoryBlocks.add(new MemoryInternal(iAddress,iAddress + iSize));
+    }
+
+    public void randomiseData(Random rand) {
+        for (MemoryInternal ram : bus32MemoryBlocks) {
+            MemoryBus.randomiseHelper(rand , ram.getMemory().getDmaAccess());
+        }
     }
 }
