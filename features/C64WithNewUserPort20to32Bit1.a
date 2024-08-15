@@ -35,7 +35,7 @@ start
 	inc VIC2BorderColour
 	jsr TestInterface_DMATransfer
 	inc VIC2BorderColour
-;	jmp .tl1
+	jmp .tl1
 
 	+WaitForFire_A
 .il1
@@ -83,6 +83,11 @@ TestInterface_Passthrough
 	+InitKERNALStringDisplay_AXY
 	jsr CINT
 	+SetDefaultScreenLowerCase_A
+	
+	+MACROCIAIRQControlDisable_A
+	+MACROVICIRQCIATimerControlDisable_A
+	+MACROAckAllIRQs_A
+	sei
 
 	+MWordValueToAddress_A .errorMessage , BRKServiceRoutineLo
 
@@ -198,11 +203,6 @@ TestInterface_WriteRAMLong
 TestInterface_DMATransfer
 	jsr Bus20To32Bit1_ShortReset
 
-	jsr Video_WaitVBlank
-	jsr Video_WaitVBlank
-	jsr Video_StartRasterTimers
-	+MBus24Bit_WaitUntilRasterY 128
-
 	
 	; jsr Video_SetAddressPalette : This won't work because it uses the 24 bit interface but we cannot twiddle PA2 and also set latch7...
 	; Reset the 24 bit interface
@@ -229,6 +229,12 @@ TestInterface_DMATransfer
 	+MBus24Bit_Send8BitValue $80
 	jsr Bus20To32Bit1_SetLatch12
 	+MBus24Bit_Send8BitValue $fe
+
+
+	jsr Video_WaitVBlank
+	jsr Video_WaitVBlank
+	jsr Video_StartRasterTimers
+	+MBus24Bit_WaitUntilRasterY 128
 
 
 	jsr Bus20To32Bit1_SetLatch7

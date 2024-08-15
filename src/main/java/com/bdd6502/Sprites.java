@@ -170,7 +170,7 @@ public class Sprites extends DisplayLayer {
             }
 
             // To emulate the longer delayed line start
-            if (displayH <= 0x02) {
+            if (displayH <= 0x01) {
                 internalScanDisplayH = 0;
                 fetchingPixel = 0;
             }

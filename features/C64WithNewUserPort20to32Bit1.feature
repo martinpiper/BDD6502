@@ -51,7 +51,8 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     Given add a Sprites2 layer with registers at '0x9200' and addressEx '0x08' and running at 14.31818MHz
     And the layer has 16 colours
     And the layer has overscan
-    Given add a Sprites layer with registers at '0x9800' and addressEx '0x10'
+#    Given add a Sprites layer with registers at '0x9800' and addressEx '0x10'
+    Given add a Sprites V9.5 layer with registers at '0x9800' and addressEx '0x10' and running at 16MHz
     And the layer has 16 colours
     And the layer has overscan
 

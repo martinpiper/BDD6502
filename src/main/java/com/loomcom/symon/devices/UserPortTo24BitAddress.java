@@ -659,7 +659,7 @@ public class UserPortTo24BitAddress extends Device {
     int setAPUMemoryClockDivider = 2; // VIDCLK / 2
 
     double clockAccumulator = 0.0;
-    final double clockAccumulatorByteTime = 4.0;    // TODO: Adjust to match hardware
+    final double clockAccumulatorByteTime = 8.0;    // Adjusted to match hardware. Four ticks of VIDCLK/2
     public void calculatePixel() {
         if (add32Bit1Mode) {
             clockAccumulator += bus32clockMultiplier;
