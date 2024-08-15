@@ -28,6 +28,7 @@ start
 	jsr TestInterface_WriteRAM
 	jsr TestInterface_ReadRAM
 	jsr TestInterface_ReadRAMWithOffset
+	jsr TestInterface_WriteRAMLong
 .tl1
 	inc VIC2BorderColour
 	+WaitForFire_A
@@ -35,7 +36,7 @@ start
 	jsr TestInterface_DMATransfer
 	inc VIC2BorderColour
 ;	jmp .tl1
-	jsr TestInterface_WriteRAMLong
+
 	+WaitForFire_A
 .il1
 	+MACROWaitForTheLastScan_A
@@ -237,8 +238,8 @@ TestInterface_DMATransfer
 	jsr Bus20To32Bit1_SetLatch13
 	
 .dmal1
-	inc VIC2BorderColour
-	+MBus24Bit_Get8BitValueToA
+;	inc VIC2BorderColour
+;	+MBus24Bit_Get8BitValueToA
 ;	bne .dmal1
 	
 	jsr Bus20To32Bit1_WriteMode

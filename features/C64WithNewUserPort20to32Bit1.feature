@@ -29,7 +29,7 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     And C64 video display saves debug BMP images to leaf filename "target/frames/TC-16-C64-"
     Given property "bdd6502.bus24.trace" is set to string "true"
 #    Given I enable trace
-    And I enable trace with indent
+#    And I enable trace with indent
     Given I have a simple overclocked 6502 system
     Given I am using C64 processor port options
     Given a ROM from file "C:\VICE\C64\kernal" at $e000
@@ -93,8 +93,8 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     When I execute the procedure at TestInterface_WriteRAM until return
     When I execute the procedure at TestInterface_ReadRAM until return
     When I execute the procedure at TestInterface_ReadRAMWithOffset until return
-    When I execute the procedure at TestInterface_DMATransfer until return
     When I execute the procedure at TestInterface_WriteRAMLong until return
+    When I execute the procedure at TestInterface_DMATransfer until return
     When I execute the procedure at TestInterface_ScrollScreen until return
     And render a C64 video display frame
     When I execute the procedure at TestInterface_ScrollScreenInput_Left until return
