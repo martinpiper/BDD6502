@@ -115,7 +115,7 @@ public class DisplayBombJack extends MemoryBus {
     int pixelsSinceLastDebugWrite = 0;
     int pixelsSinceLastDebugWriteMax = 16;
     boolean is16Colours = false;
-    UserPortTo24BitAddress callbackAPU = null;
+    UserPortTo24BitAddress callbackUserPort = null;
     int overscanBorderExtent = 0;
 
     public boolean getVSync() {
@@ -157,8 +157,8 @@ public class DisplayBombJack extends MemoryBus {
         debugData.println("d0");
     }
 
-    public void setCallbackAPU(UserPortTo24BitAddress apu) {
-        callbackAPU = apu;
+    public void setCallbackUserPort(UserPortTo24BitAddress userPort) {
+        callbackUserPort = userPort;
     }
 
     public int getBusContentionPixels() {
@@ -474,11 +474,11 @@ public class DisplayBombJack extends MemoryBus {
             displayVExternal = displayV;
         }
 
-        if (callbackAPU != null) {
+        if (callbackUserPort != null) {
             // Each pixel by default, has two VIDCLK transitions, so the APU needs two ticks
             // Using JP10
-            callbackAPU.calculatePixel();
-            callbackAPU.calculatePixel();
+            callbackUserPort.calculatePixel();
+            callbackUserPort.calculatePixel();
         }
 
         // Save the frame
@@ -568,8 +568,8 @@ public class DisplayBombJack extends MemoryBus {
                 debugData.println("^-$01");
                 debugData.println("d$0");
                 debugData.flush();
-                if (callbackAPU != null) {
-                    callbackAPU.signalVBlank();
+                if (callbackUserPort != null) {
+                    callbackUserPort.signalVBlank();
                 }
             }
         }

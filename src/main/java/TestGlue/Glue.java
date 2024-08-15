@@ -9,8 +9,6 @@ import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 import com.loomcom.symon.util.HexUtil;
 import com.replicanet.cukesplus.PropertiesResolution;
-import com.sun.org.apache.xpath.internal.operations.Variable;
-import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -27,7 +25,6 @@ import mmarquee.automation.controls.Window;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.xpath.VariableStack;
 
 import javax.imageio.ImageIO;
 import javax.script.ScriptEngine;
@@ -40,7 +37,6 @@ import java.net.Socket;
 import java.text.ParseException;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1991,7 +1987,6 @@ public class Glue {
         apuData = new APUData();
         devices.add(apuData);
         userPort24BitAddress.setEnableAPU(displayBombJack , apuData);
-        displayBombJack.setCallbackAPU(userPort24BitAddress);
     }
 
     @Given("^APU clock divider (\\d+)$")
@@ -2056,6 +2051,7 @@ public class Glue {
         userPort24BitAddress.addDevice(displayBombJack);
         userPort24BitAddress.addDevice(audioExpansion);
         machine.getBus().addDevice(userPort24BitAddress);
+        displayBombJack.setCallbackUserPort(userPort24BitAddress);
     }
 
     @Given("^a simple user port to 24 bit bus is installed$")
@@ -2064,10 +2060,12 @@ public class Glue {
         userPort24BitAddress.setSimpleMode(true);
     }
 
-    @Given("^a user port to 32 bit interface and 24 bit bus is installed$")
-    public void aUserportTo32BitInterfaceAnd24BitIsInstalled() throws MemoryRangeException {
+    @Given("^a user port to 32 bit interface running at (.*)MHz and 24 bit bus is installed$")
+    public void aUserportTo32BitInterfaceAnd24BitIsInstalled(String MHz) throws MemoryRangeException {
+        double clockMultiplier = Double.parseDouble(MHz) / kVideoClockMHz;
         aUserportToBitBusIsInstalled();
         userPort24BitAddress.setAdd32Bit1Mode(true);
+        userPort24BitAddress.setClockMultiplier(clockMultiplier);
     }
 
     @Given("^add to the 32 bit interface a bank of memory at address '(.*)' and size '(.*)'$")

@@ -4,7 +4,6 @@ import com.bdd6502.APUData;
 import com.bdd6502.DisplayBombJack;
 import com.bdd6502.MemoryBus;
 import com.bdd6502.MemoryInternal;
-import com.loomcom.symon.MemoryRange;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.util.HexUtil;
@@ -40,6 +39,7 @@ public class UserPortTo24BitAddress extends Device {
     int bus32Latches[] = new int[16];
     int bus32FastDMACounter = 0;
     boolean bus32FastDMAStart = false;
+    double bus32clockMultiplier = 1.0f;
 
     List<MemoryInternal> bus32MemoryBlocks = new LinkedList<>();
     List<MemoryBus> externalDevices = new LinkedList<>();
@@ -188,8 +188,7 @@ public class UserPortTo24BitAddress extends Device {
                         if (simpleMode) {
                             simpleModeLastMEWR = false;
                         } else {
-                            bus24State = 0;
-                            bus24CountEnabled = false;
+                            bus24SetPA2Low();
                             if (busTrace) {
                                 System.out.println("Bus24 reset");
                             }
@@ -205,7 +204,7 @@ public class UserPortTo24BitAddress extends Device {
                                 }
                             }
                         } else {
-                            bus24CountEnabled = true;
+                            bus24SetPA2High();
                             if (busTrace) {
                                 System.out.println("Bus24 ready");
                             }
@@ -217,6 +216,15 @@ public class UserPortTo24BitAddress extends Device {
                 if (registerDDRPortB == 0xff) {
                     if (add32Bit1Mode) {
                         Bus32LatchAddressCalculate();
+
+                        if ((bus32Latches[7] & kbus32_latch7_ResetDone) == kbus32_latch7_ResetDone) {
+                            if (bus32LatchAddress == 7) {
+                                if ((bus32Latches[bus32LatchAddress] & kbus32_latch7_FastDMAStart) == 0 && (data & kbus32_latch7_FastDMAStart) == kbus32_latch7_FastDMAStart) {
+                                    // Only start on the positive edge
+                                    bus32FastDMAStart = true;
+                                }
+                            }
+                        }
 
                         bus32Latches[bus32LatchAddress] = data;
 
@@ -239,13 +247,24 @@ public class UserPortTo24BitAddress extends Device {
                                 bus32CurrentAddress++;
                                 Bus32OffsetsToLatches();
                             }
+                            else if (bus32LatchAddress == 4) {
+                                if ((bus32Latches[7] & kbus32_latch7_SelectMask) == kbus32_latch7_PassthroughDisable) {
+                                    bus24WriteByte(data);
+                                } else {
+                                    throw new MemoryAccessException("Trying to write to latch 4 but kbus32_latch7_PassthroughDisable is not set");
+                                }
+                            }
 
                             switch (bus32Latches[7] & kbus32_latch7_SelectMask) {
                                 case kbus32_latch7_Passthrough:
                                     break;
                                 case kbus32_latch7_RAM:
-                                    return;
                                 case kbus32_latch7_PassthroughDisable:
+                                    if ((bus32Latches[7] & kbus32_latch7_InternalPA2) == kbus32_latch7_InternalPA2) {
+                                        bus24SetPA2High();
+                                    } else {
+                                        bus24SetPA2Low();
+                                    }
                                     return;
                                 case kbus32_latch7_Disabled:
                                     return;
@@ -299,22 +318,7 @@ public class UserPortTo24BitAddress extends Device {
                             }
                         }
                     } else {
-                        if (bus24CountEnabled) {
-                            if (bus24State == 3) {
-                                writeMemoryBusWithState(data);
-                                bus24Bytes[1]++;
-                                if (bus24Bytes[1] == 256) {
-                                    bus24Bytes[1] = 0;
-                                    bus24Bytes[2]++;
-                                }
-                            } else {
-                                bus24Bytes[bus24State] = data;
-                                if (busTrace) {
-                                    System.out.println("Bus24 received " + bus24State + " : " + data);
-                                }
-                                bus24State++;
-                            }
-                        }
+                        bus24WriteByte(data);
                     }
                 } else {
                     throw new MemoryAccessException("registerDDRPortB != 0xff on write");
@@ -334,6 +338,34 @@ public class UserPortTo24BitAddress extends Device {
         }
     }
 
+    private void bus24SetPA2High() {
+        bus24CountEnabled = true;
+    }
+
+    private void bus24SetPA2Low() {
+        bus24State = 0;
+        bus24CountEnabled = false;
+    }
+
+    private void bus24WriteByte(int data) {
+        if (bus24CountEnabled) {
+            if (bus24State == 3) {
+                writeMemoryBusWithState(data);
+                bus24Bytes[1]++;
+                if (bus24Bytes[1] == 256) {
+                    bus24Bytes[1] = 0;
+                    bus24Bytes[2]++;
+                }
+            } else {
+                bus24Bytes[bus24State] = data;
+                if (busTrace) {
+                    System.out.println("Bus24 received " + bus24State + " : " + data);
+                }
+                bus24State++;
+            }
+        }
+    }
+
     private void Bus32OffsetsToLatches() {
         bus32Latches[0] = bus32CurrentAddress & 0xff;
         bus32Latches[1] = (bus32CurrentAddress >> 8) & 0xff;
@@ -343,6 +375,15 @@ public class UserPortTo24BitAddress extends Device {
     private void Bus32CalculateOffsets() {
         bus32CurrentAddress = bus32Latches[0] | (bus32Latches[1] << 8) | (bus32Latches[2] << 16);
         bus32AddAddress = bus32Latches[8] | (bus32Latches[9] << 8) | (bus32Latches[10] << 16);
+    }
+
+    private void Bus32CalculateDMACounter() {
+        bus32FastDMACounter = bus32Latches[11] | (bus32Latches[12] << 8);
+    }
+
+    private void Bus32DMACounterToLatches() {
+        bus32Latches[11] = bus32FastDMACounter & 0xff;
+        bus32Latches[12] = (bus32FastDMACounter >> 8) & 0xff;
     }
 
     private void Bus32LatchAddressCalculate() {
@@ -390,6 +431,8 @@ public class UserPortTo24BitAddress extends Device {
             bus32Latches[8] = 0;
             bus32Latches[9] = 0;
             bus32Latches[10] = 0;
+            bus32Latches[11] = 0;
+            bus32Latches[12] = 0;
             bus32FastDMACounter = 0;
             bus32FastDMAStart = false;
         }
@@ -461,6 +504,7 @@ public class UserPortTo24BitAddress extends Device {
                     // CPU emulation does a fake read before a write. Which might be technically correct for RAM but this is the user port, which complicates error detection with the DDR.
                     return 0xff;
                 }
+
                 int toReturn = 0xff;
                 if (registerDDRPortB == 0x00) {
                     if (add32Bit1Mode) {
@@ -479,11 +523,27 @@ public class UserPortTo24BitAddress extends Device {
                                 Bus32CalculateOffsets();
                                 for (MemoryInternal memory : bus32MemoryBlocks) {
                                     if (memory.includes(bus32CurrentAddress)) {
-                                        toReturn = memory.getMemory().read(bus32CurrentAddress - memory.startAddress(), false);
+                                        try {
+                                            toReturn = memory.getMemory().read(bus32CurrentAddress - memory.startAddress(), false);
+                                        } catch (MemoryAccessException ignored) {
+                                        }
+                                        break;
                                     }
                                 }
                                 bus32CurrentAddress++;
                                 Bus32OffsetsToLatches();
+
+
+                                if ((bus32Latches[7] & kbus32_latch7_SelectMask) == kbus32_latch7_RAM) {
+                                    bus24WriteByte(toReturn);
+                                }
+                            }
+                            else if (bus32LatchAddress == 13) {
+                                toReturn = 0;
+                                if (bus32FastDMAStart) {
+                                    toReturn |= 0x01;
+                                }
+                                return toReturn;
                             }
 
                             switch (bus32Latches[7] & kbus32_latch7_SelectMask) {
@@ -598,8 +658,43 @@ public class UserPortTo24BitAddress extends Device {
 
     int setAPUMemoryClockDivider = 2; // VIDCLK / 2
 
-
+    double clockAccumulator = 0.0;
+    final double clockAccumulatorByteTime = 4.0;    // TODO: Adjust to match hardware
     public void calculatePixel() {
+        if (add32Bit1Mode) {
+            clockAccumulator += bus32clockMultiplier;
+            while (clockAccumulator >= clockAccumulatorByteTime) {
+                clockAccumulator -= clockAccumulatorByteTime;
+
+                if (bus32FastDMAStart) {
+                    int toReturn = 0xff;
+                    if ((bus32Latches[7] & kbus32_latch7_SelectMask) == kbus32_latch7_RAM) {
+                        // Read the internal RAM
+                        Bus32CalculateOffsets();
+                        for (MemoryInternal memory : bus32MemoryBlocks) {
+                            if (memory.includes(bus32CurrentAddress)) {
+                                try {
+                                    toReturn = memory.getMemory().read(bus32CurrentAddress - memory.startAddress(), false);
+                                    break;
+                                } catch (MemoryAccessException ignored) {
+                                }
+                            }
+                        }
+                        bus32CurrentAddress++;
+                        Bus32OffsetsToLatches();
+                    } else {
+                        assertThat("DMA in progress but kbus32_latch7_RAM is not set, so this DMA doesn't make sense!" , false);
+                    }
+                    bus24WriteByte(toReturn);
+                    Bus32CalculateDMACounter();
+                    bus32FastDMACounter++;
+                    if ((bus32FastDMACounter & 0xffff) == 0) {
+                        bus32FastDMAStart = false;
+                    }
+                    Bus32DMACounterToLatches();
+                }
+            }
+        }
         if (!enableAPU || apuData == null) {
             return;
         }
@@ -732,7 +827,7 @@ public class UserPortTo24BitAddress extends Device {
     }
 
     public void signalVBlank() {
-        if (debugData != null) {
+        if (debugData != null && displayBombJack != null) {
             debugData.println("; Frame " + displayBombJack.getFrameNumberForSync());
             debugData.println("d$0");
             debugData.println("^-$01");
@@ -1163,5 +1258,9 @@ public class UserPortTo24BitAddress extends Device {
         for (MemoryInternal ram : bus32MemoryBlocks) {
             MemoryBus.randomiseHelper(rand , ram.getMemory().getDmaAccess());
         }
+    }
+
+    public void setClockMultiplier(double clockMultiplier) {
+        bus32clockMultiplier = clockMultiplier;
     }
 }

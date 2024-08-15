@@ -93,7 +93,7 @@ public class UserPortTo24BitAddressTest {
         APUData apuData = new APUData();
         apuData.enableDebugData();
         apu.setEnableAPU(display , apuData);
-        display.setCallbackAPU(apu);
+        display.setCallbackUserPort(apu);
 
         return display;
     }

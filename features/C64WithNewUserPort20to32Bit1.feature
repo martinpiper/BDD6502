@@ -28,7 +28,8 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     Given video display saves debug BMP images to leaf filename "target/frames/TC-16-"
     And C64 video display saves debug BMP images to leaf filename "target/frames/TC-16-C64-"
     Given property "bdd6502.bus24.trace" is set to string "true"
-    Given I enable trace
+#    Given I enable trace
+    And I enable trace with indent
     Given I have a simple overclocked 6502 system
     Given I am using C64 processor port options
     Given a ROM from file "C:\VICE\C64\kernal" at $e000
@@ -37,7 +38,7 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     Given add C64 hardware
 #    When I enable uninitialised memory read protection with immediate fail
     * That does fail on BRK
-    Given a user port to 32 bit interface and 24 bit bus is installed
+    Given a user port to 32 bit interface running at 1.0MHz and 24 bit bus is installed
     And add to the 32 bit interface a bank of memory at address '0x0' and size '0x100000'
     And add to the 32 bit interface a bank of memory at address '0x100000' and size '0x100000'
     And enable user port bus debug output
@@ -69,7 +70,6 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
 
     And I load prg "test.prg"
     And I load labels "test.lbl"
-    And I enable trace with indent
     When ignore address Video_WaitVBlank_startGuard to Video_WaitVBlank_endGuard for trace
 
     When I execute the procedure at TestInterface_Passthrough until return
@@ -93,6 +93,8 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     When I execute the procedure at TestInterface_WriteRAM until return
     When I execute the procedure at TestInterface_ReadRAM until return
     When I execute the procedure at TestInterface_ReadRAMWithOffset until return
+    When I execute the procedure at TestInterface_DMATransfer until return
+    When I execute the procedure at TestInterface_WriteRAMLong until return
     When I execute the procedure at TestInterface_ScrollScreen until return
     And render a C64 video display frame
     When I execute the procedure at TestInterface_ScrollScreenInput_Left until return

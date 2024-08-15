@@ -22,9 +22,20 @@ start
 	jsr InitialiseMachine
 	jsr TestInterface_Passthrough
 	jsr Bus20To32Bit1_Init
+	; This should re-init any screen if the 32 bit interface is stuck with DMA
+	jsr TestInterface_Passthrough
+	jsr Bus20To32Bit1_Init
 	jsr TestInterface_WriteRAM
 	jsr TestInterface_ReadRAM
 	jsr TestInterface_ReadRAMWithOffset
+.tl1
+	inc VIC2BorderColour
+	+WaitForFire_A
+	inc VIC2BorderColour
+	jsr TestInterface_DMATransfer
+	inc VIC2BorderColour
+;	jmp .tl1
+	jsr TestInterface_WriteRAMLong
 	+WaitForFire_A
 .il1
 	+MACROWaitForTheLastScan_A
@@ -102,6 +113,12 @@ TestInterface_Passthrough
 .writeDataComplete
 !pet "Write data complete" , CHR_Return , 0
 
+.writeDataLongComplete
+!pet "Write data long complete" , CHR_Return , 0
+
+.completeDMA
+!pet "DMA complete" , CHR_Return , 0
+
 .readDataComplete
 !pet "Read data complete" , CHR_Return , 0
 
@@ -147,6 +164,85 @@ TestInterface_WriteRAM
 	bne .l12
 
 	+MBASICTextPrint .writeDataComplete
+
+	rts
+
+
+
+TestInterface_WriteRAMLong
+	jsr Bus20To32Bit1_ShortReset
+
+	jsr Bus20To32Bit1_SetLatch6
+
+	ldy #0
+	ldx #0
+.la1
+	tya
+	+MBus24Bit_Send8BitValueFromA
+	txa
+	lsr
+	lsr
+	+MBus24Bit_Send8BitValueFromA
+	inx
+	bne .la1
+	iny
+	bne .la1
+
+	+MBASICTextPrint .writeDataLongComplete
+
+	rts
+
+
+
+TestInterface_DMATransfer
+	jsr Bus20To32Bit1_ShortReset
+
+	jsr Video_WaitVBlank
+	jsr Video_WaitVBlank
+	jsr Video_StartRasterTimers
+	+MBus24Bit_WaitUntilRasterY 128
+
+	
+	; jsr Video_SetAddressPalette : This won't work because it uses the 24 bit interface but we cannot twiddle PA2 and also set latch7...
+	; Reset the 24 bit interface
+	jsr Bus20To32Bit1_SetLatch7
+	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_PassthroughDisable
+	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_PassthroughDisable | kBus20To32Bit1_latch7_InternalPA2
+	; Set the palette address using the direct byte
+	jsr Bus20To32Bit1_SetLatch4
+;	+MBus24Bit_SetAddressNoReset_A kBus24Bit_VideoLayer_EBBS , kBus24Bit_VideoLayer_Palette
+	+MBus24Bit_SetAddressNoReset_A kBus24Bit_CharScreenMap_EBBS , kBus24Bit_CharScreenMap + (kBus24Bit_CharScreenWidth * 4)
+
+	; Read a couple of bytes from internal RAM and also redirect that to the 24 bit interface
+	jsr Bus20To32Bit1_SetLatch7
+	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_RAM | kBus20To32Bit1_latch7_InternalPA2
+	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_RAM | kBus20To32Bit1_latch7_InternalPA2
+	jsr Bus20To32Bit1_ReadMode
+	jsr Bus20To32Bit1_SetLatch5
+	+MBus24Bit_Get8BitValueToA
+	+MBus24Bit_Get8BitValueToA
+
+	; Setup a DMA
+	jsr Bus20To32Bit1_WriteMode
+	jsr Bus20To32Bit1_SetLatch11
+	+MBus24Bit_Send8BitValue $80
+	jsr Bus20To32Bit1_SetLatch12
+	+MBus24Bit_Send8BitValue $fe
+
+
+	jsr Bus20To32Bit1_SetLatch7
+	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_RAM | kBus20To32Bit1_latch7_InternalPA2 | kBus20To32Bit1_latch7_FastDMAStart
+
+	jsr Bus20To32Bit1_ReadMode
+	jsr Bus20To32Bit1_SetLatch13
+	
+.dmal1
+	inc VIC2BorderColour
+	+MBus24Bit_Get8BitValueToA
+;	bne .dmal1
+	
+	jsr Bus20To32Bit1_WriteMode
+	+MBASICTextPrint .completeDMA
 
 	rts
 
@@ -287,20 +383,20 @@ TestInterface_ScrollScreen
 TestInterface_ScrollScreenInput
 	+TestForPortBitsLoop_A CIA1KeyboardColumnJoystickA , JoystickBits_Left , .notLeft
 TestInterface_ScrollScreenInput_Left
-	+MAdd24To24ToOut .startOffset , .plus2 , .startOffset
+	+MSub24To24ToOut .startOffset , .plus2 , .startOffset
 .notLeft
 	+TestForPortBitsLoop_A CIA1KeyboardColumnJoystickA , JoystickBits_Right , .notRight
 TestInterface_ScrollScreenInput_Right
-	+MSub24To24ToOut .startOffset , .plus2 , .startOffset
+	+MAdd24To24ToOut .startOffset , .plus2 , .startOffset
 .notRight
 
 	+TestForPortBitsLoop_A CIA1KeyboardColumnJoystickA , JoystickBits_Up , .notUp
 TestInterface_ScrollScreenInput_Up
-	+MAdd24To24ToOut .startOffset , .plus2048 , .startOffset
+	+MSub24To24ToOut .startOffset , .plus2048 , .startOffset
 .notUp
 	+TestForPortBitsLoop_A CIA1KeyboardColumnJoystickA , JoystickBits_Down , .notDown
 TestInterface_ScrollScreenInput_Down
-	+MSub24To24ToOut .startOffset , .plus2048 , .startOffset
+	+MAdd24To24ToOut .startOffset , .plus2048 , .startOffset
 .notDown
 	rts
 
