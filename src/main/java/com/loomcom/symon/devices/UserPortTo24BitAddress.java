@@ -543,6 +543,7 @@ public class UserPortTo24BitAddress extends Device {
                                 if (bus32FastDMAStart) {
                                     toReturn |= 0x01;
                                 }
+                                toReturn |= 0xfe;   // The rest of the signals are floating high
                                 return toReturn;
                             }
 

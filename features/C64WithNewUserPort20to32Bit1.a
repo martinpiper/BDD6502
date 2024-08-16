@@ -35,7 +35,7 @@ start
 	inc VIC2BorderColour
 	jsr TestInterface_DMATransfer
 	inc VIC2BorderColour
-;	jmp .tl1
+	jmp .tl1
 
 	+WaitForFire_A
 .il1
@@ -244,9 +244,10 @@ TestInterface_DMATransfer
 	jsr Bus20To32Bit1_SetLatch13
 	
 .dmal1
-;	inc VIC2BorderColour
-;	+MBus24Bit_Get8BitValueToA
-;	bne .dmal1
+	inc VIC2BorderColour
+	+MBus24Bit_Get8BitValueToA
+	and #kBus20To32Bit1_latch13_DMAInProgress
+	bne .dmal1
 	
 	jsr Bus20To32Bit1_WriteMode
 	+MBASICTextPrint .completeDMA
