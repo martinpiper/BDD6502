@@ -6,6 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/C64WithNewUserPort20to32Bit1.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/C64WithNewUserPort20to32Bit1.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/C64WithNewUserPort20to32Bit1.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/C64WithNewUserPort20to32Bit1.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayC64.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayC64.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/C64VICII.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/C64VICII.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -104,7 +111,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner VideoHardware @Demo9">
+  <component name="RunManager" selected="Application.TestRunner C64WithNewUserPort20to32Bit1.feature">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -1110,11 +1117,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java</url>
           <line>563</line>
           <option name="timeStamp" value="21" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites.java</url>
-          <line>167</line>
-          <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>

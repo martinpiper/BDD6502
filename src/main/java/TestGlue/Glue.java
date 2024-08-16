@@ -2734,15 +2734,15 @@ public class Glue {
 
     @Given("^add C64 hardware$")
     public void addC64Hardware() throws MemoryRangeException {
-        Device device = new C64VICII(scenario);
+        C64VICII deviceVIC = new C64VICII(scenario);
         if (displayC64 != null) {
-            displayC64.setTheVICII(device);
+            displayC64.setTheVICII(deviceVIC);
         }
-        machine.getCpu().getBus().addDevice(device , 1);
+        machine.getCpu().getBus().addDevice(deviceVIC , 1);
 
         machine.getCpu().getBus().addDevice(new C64SID(scenario) , 1);
 
-        device = new C64ColourRAM(scenario);
+        Device device = new C64ColourRAM(scenario);
         if (displayC64 != null) {
             displayC64.setTheColourRAM(device);
         }

@@ -35,7 +35,7 @@ start
 	inc VIC2BorderColour
 	jsr TestInterface_DMATransfer
 	inc VIC2BorderColour
-	jmp .tl1
+;	jmp .tl1
 
 	+WaitForFire_A
 .il1

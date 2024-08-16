@@ -60,11 +60,11 @@ public class DisplayC64 {
     QuickDrawPanel panel;
     private int forceBank = -1;
 
-    public void setTheVICII(Device theVICII) {
+    public void setTheVICII(C64VICII theVICII) {
         this.theVICII = theVICII;
     }
 
-    Device theVICII = null;
+    C64VICII theVICII = null;
 
     public void setTheColourRAM(Device theColourRAM) {
         this.theColourRAM = theColourRAM;
@@ -332,6 +332,7 @@ public class DisplayC64 {
             }
             int bankAddress = bankToAddress[bank];
 
+            theVICII.setRasterLineFromDisplay(displayV);
             int VIC2ScreenControlV = theVICII.read(0x11, false);
             if (addressActive(VIC2ScreenControlV , 0b100000)) {
                 isBitmap = true;
