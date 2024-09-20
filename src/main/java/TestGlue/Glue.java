@@ -1672,6 +1672,8 @@ public class Glue {
 
     @When("^I hex dump memory between (.+) and (.+)$")
     public void i_hex_dump_memory_between_$c_and_$c(String start, String end) throws Throwable {
+        start = PropertiesResolution.resolveInput(scenario, start);
+        end = PropertiesResolution.resolveInput(scenario, end);
         checkScenario();
         int addrStart = valueToInt(start);
         int addrEnd = valueToInt(end);

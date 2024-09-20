@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/C64WithNewUserPort20to32Bit1.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/C64WithNewUserPort20to32Bit1.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/syntax.html" beforeDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -105,7 +108,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner C64WithNewUserPort20to32Bit1.feature">
+  <component name="RunManager" selected="Application.TestRunner C64ROMs.feature">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -740,6 +743,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestingCompressionTweaks Decompression &quot;features\CheckSelfExtraction.feature" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue macros --glue TestGlue features\CheckSelfExtraction.feature" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../TestingCompressionTweaks/Decompression" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <method v="2">
@@ -1018,6 +1030,7 @@
       <item itemvalue="Application.TestRunner TestVideoHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature @TC-9-95" />
       <item itemvalue="Application.Decompression &quot;features\CheckReferenceU.feature" />
+      <item itemvalue="Application.TestingCompressionTweaks Decompression &quot;features\CheckSelfExtraction.feature" />
       <item itemvalue="Application.TestRunner Tusari2" />
       <item itemvalue="Application.TestRunner UninitialisedMemory.feature simple.feature" />
       <item itemvalue="Application.TestRunner UninitialisedMemory.feature" />
@@ -1114,7 +1127,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>2033</line>
+          <line>2035</line>
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -1136,6 +1149,11 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
           <line>537</line>
           <option name="timeStamp" value="78" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
+          <line>1677</line>
+          <option name="timeStamp" value="79" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
