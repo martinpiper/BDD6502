@@ -2139,6 +2139,11 @@ public class Glue {
         displayBombJack.addLayer(new Sprites3(valueToInt(addressRegisters), valueToInt(addressEx)));
     }
 
+    @Given("^add a Sprites4 layer with registers at '(.*)' and addressEx '(.*)'$")
+    public void addASprites4LayerWithRegistersAtXAndAddressExX(String addressRegisters, String addressEx) throws ScriptException {
+        displayBombJack.addLayer(new Sprites4(valueToInt(addressRegisters), valueToInt(addressEx)));
+    }
+
     @Given("^add a Vector layer with registers at '(.*)' and addressEx '(.*)'$")
     public void addAVectorDisplayWithRegistersAtXaAndAddressExX(String addressRegisters, String addressExMap) throws ScriptException {
         displayBombJack.addLayer(new VectorPlane(valueToInt(addressRegisters), valueToInt(addressExMap)));

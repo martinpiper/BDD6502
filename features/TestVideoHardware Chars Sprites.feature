@@ -489,3 +489,114 @@ Feature: Tests the video character screen data conversion and sprites
 #    Then expect image "testdata/TC-10-000000.bmp" to be identical to "target/frames/TC-10-000000.bmp"
 #    Then expect image "testdata/TC-10-000001.bmp" to be identical to "target/frames/TC-10-000001.bmp"
 
+
+
+  @TC-17
+  Scenario: Testing Sprites4 layer
+    Given clear all external devices
+    Given a new video display with overscan and 16 colours
+    And the display uses exact address matching
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
+    And enable video display bus debug output
+    Given video display processes 24 pixels per instruction
+    Given video display refresh window every 32 instructions
+    Given video display saves debug BMP images to leaf filename "target/frames/TC-17-"
+    Given video display add joystick to port 2
+#    Given video display does not save debug BMP images
+#    Given property "bdd6502.bus24.trace" is set to string "true"
+    Given I have a simple overclocked 6502 system
+    Given a user port to 24 bit bus is installed
+    Given add a StaticColour layer for palette index '0x07'
+    And the layer has 16 colours
+    And the layer has overscan
+    And the layer uses exact address matching
+    Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
+    And the layer has 16 colours
+    And the layer has overscan
+    And the layer uses exact address matching
+    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x08'
+    And the layer has 16 colours
+    And the layer has overscan
+    And the layer uses exact address matching
+    Given show video window
+    Given limit video display to 60 fps
+
+    # Palette
+    Given write data from file "C:\Work\ImageToBitplane\target\chars512_paletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledPaletteData4.bin" to 24bit bus at '0x9d60' and addressEx '0x01'
+
+
+    # Sprites4 data
+    # Turrican Scaled
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledSprites4.bin" to 24bit bus at '0x0000' and addressEx '0x08'
+
+    # Chars
+    # oldbridge char screen with rgbfactor 512
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_plane0.bin" to 24bit bus at '0x2000' and addressEx '0x20'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_plane1.bin" to 24bit bus at '0x4000' and addressEx '0x20'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_plane2.bin" to 24bit bus at '0x8000' and addressEx '0x20'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_plane3.bin" to 24bit bus at '0x0000' and addressEx '0x20'
+    # Chars screen
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_scr.bin" to 24bit bus at '0x4000' and addressEx '0x80'
+    Given write data from file "C:\Work\ImageToBitplane\target\chars1024_scr.bin2" to 24bit bus at '0x8000' and addressEx '0x80'
+
+    # Enable display
+    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
+    # Default display priority
+    Given write data byte '0xe4' to 24bit bus at '0x9e08' and addressEx '0x01'
+    # Overscan control
+    Given write data byte '0x29' to 24bit bus at '0x9e09' and addressEx '0x01'
+    # Just enable Sprites4, not the chars
+    Given write data byte '0x01' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    # All layers
+#    Given write data byte '0x07' to 24bit bus at '0x9e0a' and addressEx '0x01'
+
+    # Sprites4 registers
+    # Sprites support X and Y flips
+    # Palette | 0x10 = MSBX | 0x20 = MSBY | 0x40 = flipX | 0x80 = flipY
+    # Y pos
+    # Y size (in screen pixels, regardless of scale)
+    # X pos
+    # X size (in screen pixels, regardless of scale)
+    # Sprite address (16 bits) (note address divided by 2)
+    # Y inv scale (*32)
+    # X inv scale (*32)
+    # Sprite stride-1 (note address divided by 2)
+    Given write data byte '0x0b' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x8801' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x8802' and addressEx '0x01'
+    Given write data byte '0xc0' to 24bit bus at '0x8803' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x8804' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8805' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8806' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x8807' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x8808' and addressEx '0x01'
+    Given write data byte '0x1f' to 24bit bus at '0x8809' and addressEx '0x01'
+
+    Given write data byte '0x0b' to 24bit bus at '0x880a' and addressEx '0x01'
+    Given write data byte '0x0c' to 24bit bus at '0x880b' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880c' and addressEx '0x01'
+    Given write data byte '0x18' to 24bit bus at '0x880d' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880e' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880f' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8810' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8811' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8812' and addressEx '0x01'
+    Given write data byte '0x1f' to 24bit bus at '0x8813' and addressEx '0x01'
+
+    # Terminate the sprite list
+    Given write data byte '0x00' to 24bit bus at '0x8814' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8815' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8816' and addressEx '0x01'
+
+    Given render a video display frame
+#    When display until window closed
+
+    Given render a video display frame
+#    Given render 256 video display frames
+    When display until window closed
+
+#    Then expect image "testdata/TC-10-000000.bmp" to be identical to "target/frames/TC-10-000000.bmp"
+#    Then expect image "testdata/TC-10-000001.bmp" to be identical to "target/frames/TC-10-000001.bmp"
+

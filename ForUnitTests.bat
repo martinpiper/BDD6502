@@ -8,6 +8,8 @@ java -jar ..\..\..\ImageToBitplane\target\imagetobitplane-1.0-SNAPSHOT-jar-with-
 rem Turrican Scaled
 java -jar ..\..\..\ImageToBitplane\target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar --rgbshift 5 6 5 --newpalettes --palettesize 16 --forcergb 255 0 255 --image "Turrican/player.png" --tilewh 32 32 --imagequantize 16 --palettequantize 16 --nostacking --outputscaled ../tmp/TurricanScaledSprites --outputsprites ../tmp/TurricanScaledSpritesSheet.txt --outputpalettes ../tmp/TurricanScaledPaletteData.bin --convertwritepass
 
+java -jar ..\..\..\ImageToBitplane\target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar --rgbshift 5 6 5 --newpalettes --palettesize 16 --forcergb 255 0 255 --image "Turrican/player.png" --tilewh 64 64 --imagequantize 16 --palettequantize 16 --nostacking --outputscaled4 ../tmp/TurricanScaledSprites4 --outputsprites ../tmp/TurricanScaledSpritesSheet4.txt --outputpalettes ../tmp/TurricanScaledPaletteData4.bin --convertwritepass
+
 popd
 
 

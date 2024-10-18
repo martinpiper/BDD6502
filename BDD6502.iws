@@ -6,10 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ForUnitTests.bat" beforeDir="false" afterPath="$PROJECT_DIR$/ForUnitTests.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/syntax.html" beforeDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -108,7 +109,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner C64ROMs.feature">
+  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-17 Sprites4 (New Scaled)">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -257,6 +258,22 @@
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\work\c64\VideoHardware\assets\fnkyldrt.mod&quot; &quot;target/exportedMusic&quot; 1 1" />
       <option name="VM_PARAMETERS" value="-Dmusic.volume=1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner --exportmod (4)" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;c:\temp\t.xm&quot; &quot;target/exportedMusicTemp&quot; 1 1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner --exportmod (5)" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\Backups\OldMachines\OldMachineBackup\D\Downloads\aceman_-_mortal_combat.xm&quot; &quot;target/exportedMusicTemp&quot; 1 1" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -469,6 +486,14 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags @TC-15 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/TestVideoHardware.feature" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner TestVideoHardware.feature  @TC-17 Sprites4 (New Scaled)" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @TC-17 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -981,6 +1006,12 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.C64 TapeTool" />
+      <item itemvalue="Application.C64 stdlib" />
+      <item itemvalue="Application.C64FindCode" />
+      <item itemvalue="Application.Decompression &quot;features\CheckReferenceU.feature" />
+      <item itemvalue="Application.Feature editor" />
+      <item itemvalue="Application.TestRunner --compressData" />
       <item itemvalue="Application.TestRunner --execAudioTest" />
       <item itemvalue="Application.TestRunner --execVideoTest" />
       <item itemvalue="Application.TestRunner --exportmod Biffe" />
@@ -992,20 +1023,17 @@
       <item itemvalue="Application.TestRunner --exportmod (2)" />
       <item itemvalue="Application.TestRunner --exportmod (3)" />
       <item itemvalue="Application.TestRunner --exportmod (4) fnkyldrt.mod" />
+      <item itemvalue="Application.TestRunner --exportmod (4)" />
+      <item itemvalue="Application.TestRunner --exportmod (5)" />
       <item itemvalue="Application.TestRunner --exportmod blood money" />
-      <item itemvalue="Application.TestRunner --exportmod" />
       <item itemvalue="Application.TestRunner --exportmod cream of the earth" />
+      <item itemvalue="Application.TestRunner --exportmod" />
       <item itemvalue="Application.TestRunner --playmod" />
       <item itemvalue="Application.TestRunner --scan" />
-      <item itemvalue="Application.TestRunner --compressData" />
       <item itemvalue="Application.TestRunner -CotE" />
-      <item itemvalue="Application.Feature editor" />
       <item itemvalue="Application.TestRunner AutomateWindows.feature (1)" />
-      <item itemvalue="Application.TestRunner in BombJack" />
       <item itemvalue="Application.TestRunner C64ROMs.feature" />
       <item itemvalue="Application.TestRunner C64WithNewUserPort20to32Bit1.feature" />
-      <item itemvalue="Application.C64 stdlib" />
-      <item itemvalue="Application.C64 TapeTool" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars Sprites.feature @TC-5" />
@@ -1017,20 +1045,19 @@
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature @TC-4" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-10 Sprites3 (Scaled rotated)" />
-      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-13 background colour" />
-      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-15" />
-      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-12" />
-      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-1" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-17 Sprites4 (New Scaled)" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-11" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-12" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-13 background colour" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-14" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-15" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-1" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-6" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-7 Sprites2 (Scaled)" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-8 overscan" />
-      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-14" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-9 sprites 32x32 control" />
-      <item itemvalue="Application.TestRunner TestVideoHardware.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature @TC-9-95" />
-      <item itemvalue="Application.Decompression &quot;features\CheckReferenceU.feature" />
-      <item itemvalue="Application.TestingCompressionTweaks Decompression &quot;features\CheckSelfExtraction.feature" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature" />
       <item itemvalue="Application.TestRunner Tusari2" />
       <item itemvalue="Application.TestRunner UninitialisedMemory.feature simple.feature" />
       <item itemvalue="Application.TestRunner UninitialisedMemory.feature" />
@@ -1048,22 +1075,23 @@
       <item itemvalue="Application.TestRunner VideoHardware @Turrican" />
       <item itemvalue="Application.TestRunner VideoHardware @Turrican_8" />
       <item itemvalue="Application.TestRunner VideoHardware AnimationEngine.feature" />
-      <item itemvalue="Application.C64FindCode" />
+      <item itemvalue="Application.TestRunner assemble.feature" />
       <item itemvalue="Application.TestRunner features/DataValidation.feature" />
       <item itemvalue="Application.TestRunner features/PerformanceTesting.feature" />
+      <item itemvalue="Application.TestRunner in BombJack" />
       <item itemvalue="Application.TestRunner no parameters" />
       <item itemvalue="Application.TestRunner printIO.feature" />
       <item itemvalue="Application.TestRunner simple.feature @RemoteDebugger" />
-      <item itemvalue="Application.TestRunner simple.feature" />
       <item itemvalue="Application.TestRunner simple.feature @TC-3-1" />
-      <item itemvalue="Application.TestRunner assemble.feature" />
+      <item itemvalue="Application.TestRunner simple.feature" />
+      <item itemvalue="Application.TestingCompressionTweaks Decompression &quot;features\CheckSelfExtraction.feature" />
       <item itemvalue="Cucumber Java.All features" />
       <item itemvalue="Cucumber Java.Compare Test" />
       <item itemvalue="Cucumber Java.Simple ALL" />
       <item itemvalue="Cucumber Java.Trace Test" />
       <item itemvalue="JUnit.JUnit all" />
-      <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU4" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
+      <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU4" />
       <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU6" />
       <item itemvalue="Maven.BDD6502 [install] (1)" />
       <item itemvalue="Maven.BDD6502 [install]" />
@@ -1126,11 +1154,6 @@
           <option name="timeStamp" value="21" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>2035</line>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
           <line>562</line>
           <option name="timeStamp" value="50" />
@@ -1155,6 +1178,91 @@
           <line>1677</line>
           <option name="timeStamp" value="79" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/loader/tracker/XMMod.java</url>
+          <line>189</line>
+          <option name="timeStamp" value="85" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/loader/tracker/XMMod.java</url>
+          <line>241</line>
+          <option name="timeStamp" value="86" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/loader/tracker/XMMod.java</url>
+          <line>126</line>
+          <option name="timeStamp" value="91" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/loader/tracker/XMMod.java</url>
+          <line>274</line>
+          <option name="timeStamp" value="92" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/loader/tracker/XMMod.java</url>
+          <line>286</line>
+          <option name="timeStamp" value="95" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/loader/tracker/XMMod.java</url>
+          <line>359</line>
+          <option name="timeStamp" value="97" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/loader/tracker/XMMod.java</url>
+          <line>351</line>
+          <option name="timeStamp" value="98" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/loader/tracker/XMMod.java</url>
+          <line>107</line>
+          <option name="timeStamp" value="99" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/loader/tracker/XMMod.java</url>
+          <line>309</line>
+          <option name="timeStamp" value="100" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/loader/tracker/XMMod.java</url>
+          <line>332</line>
+          <option name="timeStamp" value="101" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/loader/tracker/XMMod.java</url>
+          <line>412</line>
+          <option name="timeStamp" value="102" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/loader/Module.java</url>
+          <line>949</line>
+          <option name="timeStamp" value="103" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java</url>
+          <line>323</line>
+          <option name="timeStamp" value="105" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java</url>
+          <line>344</line>
+          <option name="timeStamp" value="112" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java</url>
+          <line>216</line>
+          <option name="timeStamp" value="115" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java</url>
+          <line>150</line>
+          <option name="timeStamp" value="116" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java</url>
+          <line>164</line>
+          <option name="timeStamp" value="117" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
@@ -1162,14 +1270,12 @@
         <watch expression="debugState" />
       </configuration>
       <configuration name="Application">
-        <watch expression="bus32Latches" />
-        <watch expression="bus32MemoryBlocks" />
-        <watch expression="bus32CurrentAddress" />
-        <watch expression="bus24State" language="JAVA" />
-        <watch expression="bus24CountEnabled" language="JAVA" />
-        <watch expression="bus32Latches[7] &amp; kbus32_latch7_SelectMask" language="JAVA" />
-        <watch expression="bus32FastDMACounter" language="JAVA" />
-        <watch expression="bus32FastDMAStart" language="JAVA" />
+        <watch expression="drawingSpriteState" />
+        <watch expression="spritePalette" />
+        <watch expression="spriteY" />
+        <watch expression="spriteSizeY" />
+        <watch expression="calculatedFrames[offScreen][(currentSpriteY * 512) + currentSpriteXWorking]" language="JAVA" />
+        <watch expression="currentSpriteY" />
       </configuration>
     </watches-manager>
   </component>
