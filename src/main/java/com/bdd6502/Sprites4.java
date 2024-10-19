@@ -11,15 +11,17 @@ public class Sprites4 extends DisplayLayer {
     int addressExPlane0 = 0x08;
     byte[] plane0 = new byte[0x10000];
     final int kNumSprites = 128;    // TODO: Could be more
-    int[] spriteX = new int[kNumSprites];
-    int[] spriteY = new int[kNumSprites];
-    int[] spriteSizeX = new int[kNumSprites];
-    int[] spriteSizeY = new int[kNumSprites];
-    int[] spriteScaleXInv = new int[kNumSprites];
-    int[] spriteScaleYInv = new int[kNumSprites];
-    int[] spriteAddress = new int[kNumSprites];
-    int[] spriteStride = new int[kNumSprites];
-    int[] spritePalette = new int[kNumSprites];
+    int drawingWith = 0;
+    int writingTo = 1;
+    int[][] spriteX = new int[2][kNumSprites];
+    int[][] spriteY = new int[2][kNumSprites];
+    int[][] spriteSizeX = new int[2][kNumSprites];
+    int[][] spriteSizeY = new int[2][kNumSprites];
+    int[][] spriteScaleXInv = new int[2][kNumSprites];
+    int[][] spriteScaleYInv = new int[2][kNumSprites];
+    int[][] spriteAddress = new int[2][kNumSprites];
+    int[][] spriteStride = new int[2][kNumSprites];
+    int[][] spritePalette = new int[2][kNumSprites];
 
     boolean prevVSYNC = false;
 
@@ -73,47 +75,65 @@ public class Sprites4 extends DisplayLayer {
 */
         if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters) && address < (addressRegisters + 0x800)) {
             busContention = display.getBusContentionPixels();
-            int spriteIndex = (address - addressRegisters) / 0x0a;
-            switch ((address - addressRegisters) % 0x0a) {
+            int latchedValuesDetect = address - addressRegisters;
+            if (latchedValuesDetect < 8) {
+                switch (latchedValuesDetect) {
+                    case 0:
+                        if (!triggerBufferSwap && (data & 0x01) == 0x01)
+                        {
+                            triggerBufferSwap = true;
+                        }
+                        break;
+                    default:
+                        // TODO: Clipping/extent values
+                        return;
+                }
+
+                return;
+            }
+            latchedValuesDetect -= 8;
+
+            int spriteIndex = latchedValuesDetect / 0x0a;
+            switch (latchedValuesDetect % 0x0a) {
                 case 0:
                 default: {
-                    spritePalette[spriteIndex] = data & 0xff;
+                    spritePalette[writingTo][spriteIndex] = data & 0xff;
                     break;
                 }
                 case 1: {
-                    spriteY[spriteIndex] = data & 0xff;
+                    spriteY[writingTo][spriteIndex] = data & 0xff;
                     break;
                 }
                 case 2: {
-                    spriteSizeY[spriteIndex] = data & 0xff;
+                    spriteSizeY[writingTo][spriteIndex] = data & 0xff;
                     break;
                 }
                 case 3: {
-                    spriteX[spriteIndex] = data & 0xff;
+                    spriteX[writingTo][spriteIndex] = data & 0xff;
                     break;
                 }
                 case 4: {
-                    spriteSizeX[spriteIndex] = data & 0xff;
+                    spriteSizeX[writingTo][spriteIndex] = data & 0xff;
                     break;
                 }
                 case 5: {
-                    spriteAddress[spriteIndex] = (spriteAddress[spriteIndex] & 0xff00) | (data & 0xff);
+                    spriteAddress[writingTo][spriteIndex] = (spriteAddress[writingTo][spriteIndex] & 0xff00) | (data & 0xff);
                     break;
                 }
                 case 6: {
-                    spriteAddress[spriteIndex] = (spriteAddress[spriteIndex] & 0xff) | ((data & 0xff) << 8);
+                    spriteAddress[writingTo][spriteIndex] = (spriteAddress[writingTo][spriteIndex] & 0xff) | ((data & 0xff) << 8);
                     break;
                 }
                 case 7: {
-                    spriteScaleYInv[spriteIndex] = data & 0xff;
+                    spriteScaleYInv[writingTo][spriteIndex] = data & 0xff;
                     break;
                 }
                 case 8: {
-                    spriteScaleXInv[spriteIndex] = data & 0xff;
+                    spriteScaleXInv[writingTo][spriteIndex] = data & 0xff;
                     break;
                 }
                 case 9: {
-                    spriteStride[spriteIndex] = data & 0xff;
+                    spriteStride[writingTo][spriteIndex] = data & 0xff;
                     break;
                 }
             }
@@ -151,6 +171,12 @@ public class Sprites4 extends DisplayLayer {
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
             reachedEndOfLine = false;
+
+            if (triggerBufferSwap) {
+                drawingWith = 1 - drawingWith;
+                writingTo = 1 - writingTo;
+                triggerBufferSwap = false;
+            }
         }
         prevVSYNC = _vSync;
         // To emulate the longer delayed line start
@@ -207,17 +233,17 @@ public class Sprites4 extends DisplayLayer {
 
             case 1:
                 // Palette bits also used for X&Y MSB
-                currentSpritePalette = spritePalette[drawingSpriteIndex];
+                currentSpritePalette = spritePalette[drawingWith][drawingSpriteIndex];
                 drawingSpriteState++;
                 break;
 
             case 3:
-                currentSpriteY = spriteY[drawingSpriteIndex] | ((currentSpritePalette & 0x20) << 3);
+                currentSpriteY = spriteY[drawingWith][drawingSpriteIndex] | ((currentSpritePalette & 0x20) << 3);
                 drawingSpriteState++;
                 break;
 
             case 5:
-                currentSpriteSizeY = spriteSizeY[drawingSpriteIndex];
+                currentSpriteSizeY = spriteSizeY[drawingWith][drawingSpriteIndex];
                 drawingSpriteState++;
                 break;
 
@@ -232,27 +258,27 @@ public class Sprites4 extends DisplayLayer {
                 break;
 
             case 7:
-                currentSpriteX = spriteX[drawingSpriteIndex] | ((currentSpritePalette & 0x10) << 4);
+                currentSpriteX = spriteX[drawingWith][drawingSpriteIndex] | ((currentSpritePalette & 0x10) << 4);
                 drawingSpriteState++;
                 break;
 
             case 9:
-                currentSpriteSizeX = spriteSizeX[drawingSpriteIndex];
+                currentSpriteSizeX = spriteSizeX[drawingWith][drawingSpriteIndex];
                 drawingSpriteState++;
                 break;
 
             case 13:
-                currentSpriteAddress = spriteAddress[drawingSpriteIndex] << 1;
+                currentSpriteAddress = spriteAddress[drawingWith][drawingSpriteIndex] << 1;
                 drawingSpriteState++;
                 break;
 
             case 15:
-                currentSpriteScaleYInv = spriteScaleYInv[drawingSpriteIndex];
+                currentSpriteScaleYInv = spriteScaleYInv[drawingWith][drawingSpriteIndex];
                 drawingSpriteState++;
                 break;
 
             case 17:
-                currentSpriteScaleXInv = spriteScaleXInv[drawingSpriteIndex];
+                currentSpriteScaleXInv = spriteScaleXInv[drawingWith][drawingSpriteIndex];
                 currentSpriteYPixel = currentSpriteScaleYInv / 2;
                 currentSpriteXPixel = currentSpriteScaleXInv / 2;
 
@@ -260,7 +286,7 @@ public class Sprites4 extends DisplayLayer {
                 break;
 
             case 19:
-                currentSpriteStride = spriteStride[drawingSpriteIndex];
+                currentSpriteStride = spriteStride[drawingWith][drawingSpriteIndex];
                 drawingSpriteState++;
                 break;
 

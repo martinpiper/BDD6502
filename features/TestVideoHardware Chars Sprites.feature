@@ -556,6 +556,9 @@ Feature: Tests the video character screen data conversion and sprites
 #    Given write data byte '0x07' to 24bit bus at '0x9e0a' and addressEx '0x01'
 
     # Sprites4 registers
+    # Zero flag
+    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+
     # Sprites support X and Y flips
     # Palette | 0x10 = MSBX | 0x20 = MSBY | 0x40 = flipX | 0x80 = flipY
     # Y pos
@@ -567,46 +570,49 @@ Feature: Tests the video character screen data conversion and sprites
     # X inv scale (*32)
     # Sprite stride-1
     # Midddle, right, crouching left, no scale
-    Given write data byte '0x1b' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x80' to 24bit bus at '0x8801' and addressEx '0x01'
-    Given write data byte '0x40' to 24bit bus at '0x8802' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x8803' and addressEx '0x01'
-    Given write data byte '0x40' to 24bit bus at '0x8804' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8805' and addressEx '0x01'
-    Given write data byte '0x08' to 24bit bus at '0x8806' and addressEx '0x01'
-    Given write data byte '0x20' to 24bit bus at '0x8807' and addressEx '0x01'
-    Given write data byte '0x20' to 24bit bus at '0x8808' and addressEx '0x01'
-    Given write data byte '0x3f' to 24bit bus at '0x8809' and addressEx '0x01'
+    Given write data byte '0x1b' to 24bit bus at '0x8808' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x8809' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x880a' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x880b' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x880c' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880d' and addressEx '0x01'
+    Given write data byte '0x08' to 24bit bus at '0x880e' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x880f' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x8810' and addressEx '0x01'
+    Given write data byte '0x3f' to 24bit bus at '0x8811' and addressEx '0x01'
 
     # Top left, standing left, double size
-    Given write data byte '0x0b' to 24bit bus at '0x880a' and addressEx '0x01'
-    Given write data byte '0x0c' to 24bit bus at '0x880b' and addressEx '0x01'
-    Given write data byte '0x80' to 24bit bus at '0x880c' and addressEx '0x01'
-    Given write data byte '0x18' to 24bit bus at '0x880d' and addressEx '0x01'
-    Given write data byte '0x80' to 24bit bus at '0x880e' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x880f' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8810' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x8811' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x8812' and addressEx '0x01'
-    Given write data byte '0x3f' to 24bit bus at '0x8813' and addressEx '0x01'
+    Given write data byte '0x0b' to 24bit bus at '0x8812' and addressEx '0x01'
+    Given write data byte '0x0c' to 24bit bus at '0x8813' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x8814' and addressEx '0x01'
+    Given write data byte '0x18' to 24bit bus at '0x8815' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x8816' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8817' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8818' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8819' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x881a' and addressEx '0x01'
+    Given write data byte '0x3f' to 24bit bus at '0x881b' and addressEx '0x01'
 
     # Middle middle, building top, double size, flip X and Y
-    Given write data byte '0xcc' to 24bit bus at '0x8814' and addressEx '0x01'
-    Given write data byte '0x50' to 24bit bus at '0x8815' and addressEx '0x01'
-    Given write data byte '0x80' to 24bit bus at '0x8816' and addressEx '0x01'
-    Given write data byte '0x88' to 24bit bus at '0x8817' and addressEx '0x01'
-    Given write data byte '0x80' to 24bit bus at '0x8818' and addressEx '0x01'
+    Given write data byte '0xcc' to 24bit bus at '0x881c' and addressEx '0x01'
+    Given write data byte '0x50' to 24bit bus at '0x881d' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x881e' and addressEx '0x01'
+    Given write data byte '0x88' to 24bit bus at '0x881f' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x8820' and addressEx '0x01'
     # Note the sprite address starts on the "right" and "bottom"
-    Given write data byte '0xff' to 24bit bus at '0x8819' and addressEx '0x01'
-    Given write data byte '0x47' to 24bit bus at '0x881a' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x881b' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x881c' and addressEx '0x01'
-    Given write data byte '0x3f' to 24bit bus at '0x881d' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8821' and addressEx '0x01'
+    Given write data byte '0x47' to 24bit bus at '0x8822' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8823' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8824' and addressEx '0x01'
+    Given write data byte '0x3f' to 24bit bus at '0x8825' and addressEx '0x01'
 
     # Terminate the sprite list
-    Given write data byte '0x00' to 24bit bus at '0x881e' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x881f' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8820' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8826' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8827' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8828' and addressEx '0x01'
+
+    # Signal flag ready
+    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
 
     Given render a video display frame
 #    When display until window closed
