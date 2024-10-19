@@ -38,6 +38,8 @@ public class Sprites4 extends DisplayLayer {
     int onScreen = 0;
     double clockMultiplier = 1.0f;
 
+    boolean triggerBufferSwap = false;
+
 
     int[][] calculatedFrames = new int[2][512*512];
 
@@ -136,8 +138,6 @@ public class Sprites4 extends DisplayLayer {
     }
 
     double clockAccumulator = 0.0;
-    boolean delayed_doLineStart1 = false;
-    boolean delayed_doLineStart2 = false;
 
     boolean reachedEndOfLine = false;
 
@@ -154,12 +154,10 @@ public class Sprites4 extends DisplayLayer {
         }
         prevVSYNC = _vSync;
         // To emulate the longer delayed line start
-        if (_doLineStart || delayed_doLineStart1 || delayed_doLineStart2) {
+        if (_doLineStart) {
             // Reset on low in hardware
             fetchingPixel = 0;
         }
-        delayed_doLineStart2 = delayed_doLineStart1;
-        delayed_doLineStart1 = _doLineStart;
         if (!enableLayer) {
             // Reset on low in hardware
             drawingSpriteIndex = 0;
@@ -268,25 +266,23 @@ public class Sprites4 extends DisplayLayer {
 
             case 21:
                 // Lookup table in hardware
-                currentSpriteAddressWorking = currentSpriteAddress + (((currentSpriteYPixel >> 5) & 0xff) * (currentSpriteStride+1)); // Note: Add with +1 in hardware
-                currentSpriteXWorking = currentSpriteX;
-                currentSpriteSizeXWorking = currentSpriteSizeX;
+                updateSpriteRow();
                 drawingSpriteState++;
                 break;
 
             case 23:
                 int pixelX = (currentSpriteXPixel >> 5) & 0xff;
-                if ((currentSpritePalette & 0x40) > 0) {
-// TODO: Flips                    pixelX = 31 - pixelX;
-                }
-                if ((currentSpritePalette & 0x80) > 0) {
-// TODO: Flips                    pixelY = 31 - pixelY;
-                }
 
                 // Drawing pixels...
                 int theColour = 0;
                 // Selector
-                int internalAddress = currentSpriteAddressWorking + pixelX;
+                int internalAddress;
+                // Selector
+                if ((currentSpritePalette & 0x40) > 0) {
+                    internalAddress = currentSpriteAddressWorking - pixelX + 1; // +1 Adjustment for address /2, sprite widths should always be even numbers, or rather sprite data aligned to two bytes
+                } else {
+                    internalAddress = currentSpriteAddressWorking + pixelX;
+                }
                 theColour = plane0[internalAddress & 0xffff];
                 // Selector
                 if ((internalAddress & 0x010000) != 0) {
@@ -297,10 +293,10 @@ public class Sprites4 extends DisplayLayer {
 //                theColour = 0x01; // Debug solid colour
 //                System.out.println("X " + currentSpriteXWorking + " Y " + currentSpriteY);
 
-                currentSpriteXWorking = currentSpriteXWorking & 0x1ff;
+                int currentSpriteXWorkingAddr = currentSpriteXWorking & 0x1ff;
                 currentSpriteY = currentSpriteY & 0x1ff;
-                if ((calculatedFrames[offScreen][(currentSpriteY * 512) + currentSpriteXWorking] & 0x0f) == 0) {
-                    calculatedFrames[offScreen][(currentSpriteY * 512) + currentSpriteXWorking] = theColour;
+                if ((calculatedFrames[offScreen][(currentSpriteY * 512) + currentSpriteXWorkingAddr] & 0x0f) == 0) {
+                    calculatedFrames[offScreen][(currentSpriteY * 512) + currentSpriteXWorkingAddr] = theColour;
                 }
 
                 // Update coordinates after pixel draw...
@@ -327,9 +323,7 @@ public class Sprites4 extends DisplayLayer {
                 currentSpriteYPixel += currentSpriteScaleYInv;
 
                 // Lookup table in hardware
-                currentSpriteAddressWorking = currentSpriteAddress + (((currentSpriteYPixel >> 5) & 0xff) * (currentSpriteStride+1)); // Note: Add with +1 in hardware
-                currentSpriteXWorking = currentSpriteX;
-                currentSpriteSizeXWorking = currentSpriteSizeX;
+                updateSpriteRow();
 
                 drawingSpriteState--;   // Might need to be an adder load instead of memory reset
 
@@ -339,6 +333,17 @@ public class Sprites4 extends DisplayLayer {
                 }
                 break;
         }
+    }
+
+    private void updateSpriteRow() {
+        // Selector
+        if ((currentSpritePalette & 0x80) > 0) {
+            currentSpriteAddressWorking = currentSpriteAddress - (((currentSpriteYPixel >> 5) & 0xff) * (currentSpriteStride + 1)); // Note: Add with +1 in hardware
+        } else {
+            currentSpriteAddressWorking = currentSpriteAddress + (((currentSpriteYPixel >> 5) & 0xff) * (currentSpriteStride + 1)); // Note: Add with +1 in hardware
+        }
+        currentSpriteXWorking = currentSpriteX;
+        currentSpriteSizeXWorking = currentSpriteSizeX;
     }
 
     private void advanceSprite() {

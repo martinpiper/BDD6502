@@ -519,6 +519,7 @@ Feature: Tests the video character screen data conversion and sprites
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
+    Given randomly initialise all memory using seed 1234
     Given show video window
     Given limit video display to 60 fps
 
@@ -589,14 +590,15 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x10' to 24bit bus at '0x8812' and addressEx '0x01'
     Given write data byte '0x3f' to 24bit bus at '0x8813' and addressEx '0x01'
 
-    # Middle middle, building top, double size
-    Given write data byte '0x0c' to 24bit bus at '0x8814' and addressEx '0x01'
+    # Middle middle, building top, double size, flip X and Y
+    Given write data byte '0xcc' to 24bit bus at '0x8814' and addressEx '0x01'
     Given write data byte '0x50' to 24bit bus at '0x8815' and addressEx '0x01'
     Given write data byte '0x80' to 24bit bus at '0x8816' and addressEx '0x01'
     Given write data byte '0x88' to 24bit bus at '0x8817' and addressEx '0x01'
     Given write data byte '0x80' to 24bit bus at '0x8818' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8819' and addressEx '0x01'
-    Given write data byte '0x40' to 24bit bus at '0x881a' and addressEx '0x01'
+    # Note the sprite address starts on the "right" and "bottom"
+    Given write data byte '0xff' to 24bit bus at '0x8819' and addressEx '0x01'
+    Given write data byte '0x47' to 24bit bus at '0x881a' and addressEx '0x01'
     Given write data byte '0x10' to 24bit bus at '0x881b' and addressEx '0x01'
     Given write data byte '0x10' to 24bit bus at '0x881c' and addressEx '0x01'
     Given write data byte '0x3f' to 24bit bus at '0x881d' and addressEx '0x01'
@@ -609,6 +611,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given render a video display frame
 #    When display until window closed
 
+    Given render a video display frame
     Given render a video display frame
 #    Given render 256 video display frames
     When display until window closed
