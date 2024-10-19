@@ -244,7 +244,7 @@ public class Sprites4 extends DisplayLayer {
                 break;
 
             case 13:
-                currentSpriteAddress = spriteAddress[drawingSpriteIndex];
+                currentSpriteAddress = spriteAddress[drawingSpriteIndex] << 1;
                 drawingSpriteState++;
                 break;
 
@@ -286,10 +286,10 @@ public class Sprites4 extends DisplayLayer {
                 // Drawing pixels...
                 int theColour = 0;
                 // Selector
-                int internalAddress = currentSpriteAddressWorking + (pixelX/2);
+                int internalAddress = currentSpriteAddressWorking + pixelX;
                 theColour = plane0[internalAddress & 0xffff];
                 // Selector
-                if ((pixelX & 0x01) != 0) {
+                if ((internalAddress & 0x010000) != 0) {
                     theColour >>= 4;
                 }
                 theColour &= 0x0f;

@@ -2143,6 +2143,11 @@ public class Glue {
     public void addASprites4LayerWithRegistersAtXAndAddressExX(String addressRegisters, String addressEx) throws ScriptException {
         displayBombJack.addLayer(new Sprites4(valueToInt(addressRegisters), valueToInt(addressEx)));
     }
+    @Given("^add a Sprites4 layer with registers at '(.*)' and addressEx '(.*)' and running at (.*)MHz$")
+    public void addASprites4LayerWithRegistersAtXAndAddressExXMHz(String addressRegisters, String addressEx , String MHz) throws ScriptException {
+        double clockMultiplier = Double.parseDouble(MHz) / kVideoClockMHz;
+        displayBombJack.addLayer(new Sprites4(valueToInt(addressRegisters), valueToInt(addressEx) , clockMultiplier));
+    }
 
     @Given("^add a Vector layer with registers at '(.*)' and addressEx '(.*)'$")
     public void addAVectorDisplayWithRegistersAtXaAndAddressExX(String addressRegisters, String addressExMap) throws ScriptException {

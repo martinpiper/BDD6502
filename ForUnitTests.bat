@@ -31,4 +31,6 @@ java -jar target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar --concat
 rem Building Scaled
 java -jar target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar --rgbshift 5 6 5 --newpalettes --palettesize 16 --forcergb 255 0 255 --image target\testconcat4.png --imagequantize 16 --tilewh 32 32 --imagequantize 16 --nostacking --outputscaled target\testconcat4ScaledSprites --outputsprites target\testconcat4ScaledSpritesSheet.txt --outputpalettes target\testconcat4PaletteData.bin --convertwritepass
 
+java -jar target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar --rgbshift 5 6 5 --newpalettes --palettesize 16 --forcergb 255 0 255 --image target\testconcat4.png --imagequantize 16 --tilewh 64 64 --imagequantize 16 --nostacking --outputscaled4 target\testconcat4ScaledSprites4 --outputsprites target\testconcat4ScaledSpritesSheet.txt --outputpalettes target\testconcat4PaletteData4.bin --convertwritepass
+
 popd
