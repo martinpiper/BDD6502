@@ -558,6 +558,11 @@ Feature: Tests the video character screen data conversion and sprites
     # Sprites4 registers
     # Zero flag
     Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    # Zero the X/Y border adjustments
+    Given write data byte '0x00' to 24bit bus at '0x8801' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8802' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8803' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8804' and addressEx '0x01'
 
     # Sprites support X and Y flips
     # Palette | 0x10 = MSBX | 0x20 = MSBY | 0x40 = flipX | 0x80 = flipY
@@ -581,11 +586,11 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x20' to 24bit bus at '0x8810' and addressEx '0x01'
     Given write data byte '0x3f' to 24bit bus at '0x8811' and addressEx '0x01'
 
-    # Top left, standing left, double size
+    # Top left, 0,0, standing left, double size
     Given write data byte '0x0b' to 24bit bus at '0x8812' and addressEx '0x01'
-    Given write data byte '0x0c' to 24bit bus at '0x8813' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
     Given write data byte '0x80' to 24bit bus at '0x8814' and addressEx '0x01'
-    Given write data byte '0x18' to 24bit bus at '0x8815' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8815' and addressEx '0x01'
     Given write data byte '0x80' to 24bit bus at '0x8816' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8817' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8818' and addressEx '0x01'
@@ -619,7 +624,30 @@ Feature: Tests the video character screen data conversion and sprites
 
     Given render a video display frame
     Given render a video display frame
-#    Given render 256 video display frames
+
+    Given write data byte '0xff' to 24bit bus at '0x8801' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8802' and addressEx '0x01'
+    Given render a video display frame
+    Given render a video display frame
+    Given write data byte '0xfe' to 24bit bus at '0x8801' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8802' and addressEx '0x01'
+    Given render a video display frame
+    Given render a video display frame
+    Given write data byte '0xfd' to 24bit bus at '0x8801' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8802' and addressEx '0x01'
+    Given render a video display frame
+    Given render a video display frame
+    Given write data byte '0xf0' to 24bit bus at '0x8801' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8802' and addressEx '0x01'
+    Given render a video display frame
+    Given render a video display frame
+    Given write data byte '0xf0' to 24bit bus at '0x8803' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8804' and addressEx '0x01'
+    Given render a video display frame
+    Given render a video display frame
+
+
+      #    Given render 256 video display frames
     When display until window closed
 
 #    Then expect image "testdata/TC-10-000000.bmp" to be identical to "target/frames/TC-10-000000.bmp"

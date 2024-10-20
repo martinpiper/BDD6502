@@ -41,6 +41,8 @@ public class Sprites4 extends DisplayLayer {
     double clockMultiplier = 1.0f;
 
     boolean triggerBufferSwap = false;
+    int leftBorderAdjust = 0;
+    int topBorderAdjust = 0;
 
 
     int[][] calculatedFrames = new int[2][512*512];
@@ -84,6 +86,19 @@ public class Sprites4 extends DisplayLayer {
                             triggerBufferSwap = true;
                         }
                         break;
+                    case 1 :
+                        leftBorderAdjust = (leftBorderAdjust & 0xff00) | (data & 0xff);
+                        break;
+                    case 2 :
+                        leftBorderAdjust = (leftBorderAdjust & 0x00ff) | ((data & 0xff) << 8);
+                        break;
+                    case 3 :
+                        topBorderAdjust = (topBorderAdjust & 0xff00) | (data & 0xff);
+                        break;
+                    case 4 :
+                        topBorderAdjust = (topBorderAdjust & 0x00ff) | ((data & 0xff) << 8);
+                        break;
+
                     default:
                         // TODO: Clipping/extent values
                         return;
@@ -199,10 +214,12 @@ public class Sprites4 extends DisplayLayer {
             clockAccumulator -= 1.0;
         }
 
+        int fetchingH = (fetchingPixel + leftBorderAdjust) & 0x1ff;
+        int fetchingV = (displayV + topBorderAdjust) & 0x1ff;
         // Output calculated data
-        int finalPixel = calculatedFrames[onScreen][fetchingPixel + (displayV * 512)];
+        int finalPixel = calculatedFrames[onScreen][fetchingH + (fetchingV * 512)];
         // And progressively clear the output pixel, like the hardware does
-        calculatedFrames[onScreen][fetchingPixel + (displayV * 512)] = 0;
+        calculatedFrames[onScreen][fetchingH + (fetchingV * 512)] = 0;
         fetchingPixel++;
         fetchingPixel &= 0x1ff;
 
