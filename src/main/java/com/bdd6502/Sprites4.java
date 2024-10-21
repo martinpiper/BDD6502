@@ -36,7 +36,6 @@ public class Sprites4 extends DisplayLayer {
     int currentSpriteXPixel = 0;
     int currentSpriteYPixel = 0;
     int currentSpriteStride = 0;
-    int fetchingPixel = 0;
     int onScreen = 0;
     double clockMultiplier = 1.0f;
 
@@ -183,6 +182,7 @@ public class Sprites4 extends DisplayLayer {
             // Flip-flip in hardware
             onScreen = 1-onScreen;
 
+            System.out.println("Reached sprite: " + drawingSpriteIndex);
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
             reachedEndOfLine = false;
@@ -197,7 +197,6 @@ public class Sprites4 extends DisplayLayer {
         // To emulate the longer delayed line start
         if (_doLineStart) {
             // Reset on low in hardware
-            fetchingPixel = 0;
         }
         if (!enableLayer) {
             // Reset on low in hardware
@@ -214,14 +213,12 @@ public class Sprites4 extends DisplayLayer {
             clockAccumulator -= 1.0;
         }
 
-        int fetchingH = (fetchingPixel + leftBorderAdjust) & 0x1ff;
+        int fetchingH = (displayH + leftBorderAdjust) & 0x1ff;
         int fetchingV = (displayV + topBorderAdjust) & 0x1ff;
         // Output calculated data
         int finalPixel = calculatedFrames[onScreen][fetchingH + (fetchingV * 512)];
         // And progressively clear the output pixel, like the hardware does
         calculatedFrames[onScreen][fetchingH + (fetchingV * 512)] = 0;
-        fetchingPixel++;
-        fetchingPixel &= 0x1ff;
 
         return finalPixel;
     }

@@ -1,0 +1,80 @@
+kBus24Bit_VideoLayer_HasOverscan=1
+kBus24Bit_VideoLayer_ExpandedPalettes = 1
+kBus24Bit_SpritesMaxNum = 32
+
+!ct pet
+!sal
+!pdb "target/t.pdb"
+!source "C64/stdlib/stdlib.a"
+!source "C64/stdlib/LongBranches.a"
+!source "C64/stdlib/PETSCII.a"
+!source "BombJack/stdlib/Bus24Bit_Macros.a"
+!source "BombJack/stdlib/Video_Macros.a"
+
+
+*=$200
+!zn
+; The code "start" entry which initialises the stack is not called before this, which is fine for unit testing
+; When running on a real C64 the "start" entry initialises the machine properly
+start
+	sei
+;	lda #ProcessorPortAllRAMWithIO
+;	jsr InitialiseMachine
+
+	jsr Bus24Bit_Init	
+
+	+MBus24Bit_SetAddress_A $01 , $8808
+	ldx #111
+.l1
+	; Palette + flags
+.smf1	lda #$0b
+	+MBus24Bit_Send8BitValueFromA
+	; Y pos and size
+.smy1	lda #0
+	+MBus24Bit_Send8BitValueFromA
+	+MBus24Bit_Send8BitValue $20
+	; X pos and size
+.smx1	lda #0
+	+MBus24Bit_Send8BitValueFromA
+	+MBus24Bit_Send8BitValue $20
+	; Address
+	+MBus24Bit_SendLE16BitValue $0000
+	; Scales
+	+MBus24Bit_Send8BitValue $20
+	+MBus24Bit_Send8BitValue $20
+	; Stride
+	+MBus24Bit_Send8BitValue $3f
+
+	lda .smx1+1
+	clc
+	adc #11
+	sta .smx1+1
+	
+	lda .smy1+1
+	adc #3
+	sta .smy1+1
+	
+	lda .smf1+1
+	eor #$10
+	sta .smf1+1
+
+	dex
+	bne .l1
+
+	; Terminate list
+	+MBus24Bit_Send8BitValue 0
+	+MBus24Bit_SendLE16BitValue 0
+
+
+	rts
+
+Initialise_NoPreserveStack = 1
+Initialise_NoIRQServiceRoutine = 1
+Initialise_NoMACROWaitForTheLastScan = 1
+!source "C64/stdlib/Initialise.a"
+
+!source "BombJack/stdlib/Bus24Bit.a"
+!source "BombJack/stdlib/Video.a"
+!source "BombJack/stdlib/APU_Macros.a"
+!source "BombJack/stdlib/APU.a"
+

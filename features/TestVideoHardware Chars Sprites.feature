@@ -645,7 +645,27 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0xff' to 24bit bus at '0x8804' and addressEx '0x01'
     Given render a video display frame
     Given render a video display frame
+    Given render a video display frame
 
+    And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/Test Sprites4.a"
+#    And I run the command line: ..\C64\bin\LZMPi.exe -c64mbe test.prg testcmp.prg $200
+    And I load prg "test.prg"
+    And I load labels "test.lbl"
+    And I enable trace with indent
+
+    When enable remote debugging
+#    And wait for debugger connection
+
+#    When I execute the procedure at start for no more than 99999999 instructions
+    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+
+    When I execute the procedure at start until return
+
+    # Signal flag ready
+    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given render a video display frame
+    Given render a video display frame
+    Given render a video display frame
 
       #    Given render 256 video display frames
     When display until window closed
