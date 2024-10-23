@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/Test Sprites4.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/Test Sprites4.a" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
@@ -1236,26 +1237,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/loader/Module.java</url>
           <line>949</line>
           <option name="timeStamp" value="103" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>1498</line>
-          <option name="timeStamp" value="106" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java</url>
-          <line>84</line>
-          <option name="timeStamp" value="107" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java</url>
-          <line>190</line>
-          <option name="timeStamp" value="114" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java</url>
-          <line>185</line>
-          <option name="timeStamp" value="116" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

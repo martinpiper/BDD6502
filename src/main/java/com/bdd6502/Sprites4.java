@@ -10,7 +10,7 @@ public class Sprites4 extends DisplayLayer {
     int addressRegisters = 0x8800, addressExRegisters = 0x01;
     int addressExPlane0 = 0x08;
     byte[] plane0 = new byte[0x10000];
-    final int kNumSprites = 128;    // TODO: Could be more
+    final int kNumSprites = 256;
     int drawingWith = 0;
     int writingTo = 1;
     int[][] spriteX = new int[2][kNumSprites];
@@ -42,6 +42,7 @@ public class Sprites4 extends DisplayLayer {
     boolean triggerBufferSwap = false;
     int leftBorderAdjust = 0;
     int topBorderAdjust = 0;
+    int extentXPos = 255 , extentYPos = 255;
 
 
     int[][] calculatedFrames = new int[2][512*512];
@@ -96,6 +97,12 @@ public class Sprites4 extends DisplayLayer {
                         break;
                     case 4 :
                         topBorderAdjust = (topBorderAdjust & 0x00ff) | ((data & 0xff) << 8);
+                        break;
+                    case 5:
+                        extentXPos = data & 0xff;
+                        break;
+                    case 6:
+                        extentYPos = data & 0xff;
                         break;
 
                     default:
@@ -311,6 +318,22 @@ public class Sprites4 extends DisplayLayer {
                 break;
 
             case 23:
+                // If it is always going to be off the bottom edge...
+                if ( ((currentSpriteY/2) & 0xff) >= extentYPos && (((currentSpriteY + currentSpriteSizeY)/2) & 0xff) >= extentYPos) {
+                    advanceSprite();   // Must not trigger twice for this clock...
+                    return;
+                }
+                // If it is always going to be off the right edge...
+                if ( ((currentSpriteX/2) & 0xff) >= extentXPos && (((currentSpriteX + currentSpriteSizeX)/2) & 0xff) >= extentXPos) {
+                    advanceSprite();   // Must not trigger twice for this clock...
+                    return;
+                }
+                // If we start drawing from on the screen and move off the right edge, then advance to the next row
+                if ( ((currentSpriteXWorking/2) & 0xff) >= extentXPos && ((currentSpriteX/2) & 0xff) < extentXPos) {
+                    drawingSpriteState++;   // Must not trigger twice for this clock...
+                    return;
+                }
+
                 int pixelX = (currentSpriteXPixel >> 5) & 0xff;
 
                 // Drawing pixels...
@@ -349,8 +372,8 @@ public class Sprites4 extends DisplayLayer {
                 }
 
                 if (currentSpriteSizeY <= 0) {
-                    advanceSprite();
-                    return;
+                    advanceSprite();   // Must not trigger twice for this clock...
+//                    return;
                 }
 
                 break;

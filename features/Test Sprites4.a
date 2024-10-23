@@ -24,7 +24,7 @@ start
 	jsr Bus24Bit_Init	
 
 	+MBus24Bit_SetAddress_A $01 , $8808
-	ldx #111
+	ldx #230
 .l1
 	; Palette + flags
 .smf1	lda #$0b

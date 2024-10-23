@@ -563,6 +563,11 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x00' to 24bit bus at '0x8802' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8803' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8804' and addressEx '0x01'
+    # Extent X/Y values
+    # Improves from 126 to 190, with Y extent
+    Given write data byte '0xa8' to 24bit bus at '0x8805' and addressEx '0x01'
+    # Improves from 111 to 126, without X extent
+    Given write data byte '0x70' to 24bit bus at '0x8806' and addressEx '0x01'
 
     # Sprites support X and Y flips
     # Palette | 0x10 = MSBX | 0x20 = MSBY | 0x40 = flipX | 0x80 = flipY
@@ -668,8 +673,21 @@ Feature: Tests the video character screen data conversion and sprites
     Given render a video display frame
 
       #    Given render 256 video display frames
-    When display until window closed
+#    When display until window closed
 
-#    Then expect image "testdata/TC-10-000000.bmp" to be identical to "target/frames/TC-10-000000.bmp"
-#    Then expect image "testdata/TC-10-000001.bmp" to be identical to "target/frames/TC-10-000001.bmp"
-
+    Then expect image "testdata/TC-17-000002.bmp" to be identical to "target/frames/TC-17-000002.bmp"
+    Then expect image "testdata/TC-17-000003.bmp" to be identical to "target/frames/TC-17-000003.bmp"
+    Then expect image "testdata/TC-17-000004.bmp" to be identical to "target/frames/TC-17-000004.bmp"
+    Then expect image "testdata/TC-17-000005.bmp" to be identical to "target/frames/TC-17-000005.bmp"
+    Then expect image "testdata/TC-17-000006.bmp" to be identical to "target/frames/TC-17-000006.bmp"
+    Then expect image "testdata/TC-17-000007.bmp" to be identical to "target/frames/TC-17-000007.bmp"
+    Then expect image "testdata/TC-17-000008.bmp" to be identical to "target/frames/TC-17-000008.bmp"
+    Then expect image "testdata/TC-17-000009.bmp" to be identical to "target/frames/TC-17-000009.bmp"
+    Then expect image "testdata/TC-17-000010.bmp" to be identical to "target/frames/TC-17-000010.bmp"
+    Then expect image "testdata/TC-17-000011.bmp" to be identical to "target/frames/TC-17-000011.bmp"
+    Then expect image "testdata/TC-17-000012.bmp" to be identical to "target/frames/TC-17-000012.bmp"
+    Then expect image "testdata/TC-17-000013.bmp" to be identical to "target/frames/TC-17-000013.bmp"
+    Then expect image "testdata/TC-17-000014.bmp" to be identical to "target/frames/TC-17-000014.bmp"
+    Then expect image "testdata/TC-17-000015.bmp" to be identical to "target/frames/TC-17-000015.bmp"
+    Then expect image "testdata/TC-17-000016.bmp" to be identical to "target/frames/TC-17-000016.bmp"
+    Then expect image "testdata/TC-17-000017.bmp" to be identical to "target/frames/TC-17-000017.bmp"
