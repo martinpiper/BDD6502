@@ -189,7 +189,7 @@ public class Sprites4 extends DisplayLayer {
             // Flip-flip in hardware
             onScreen = 1-onScreen;
 
-            System.out.println("Reached sprite: " + drawingSpriteIndex);
+//            System.out.println("Reached sprite: " + drawingSpriteIndex);
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
             reachedEndOfLine = false;

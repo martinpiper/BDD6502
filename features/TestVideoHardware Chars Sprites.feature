@@ -656,7 +656,7 @@ Feature: Tests the video character screen data conversion and sprites
 #    And I run the command line: ..\C64\bin\LZMPi.exe -c64mbe test.prg testcmp.prg $200
     And I load prg "test.prg"
     And I load labels "test.lbl"
-    And I enable trace with indent
+#    And I enable trace with indent
 
     When enable remote debugging
 #    And wait for debugger connection
@@ -671,6 +671,9 @@ Feature: Tests the video character screen data conversion and sprites
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
+
+    Given video display does not save debug BMP images
+    When I execute the procedure at frames until return
 
       #    Given render 256 video display frames
 #    When display until window closed

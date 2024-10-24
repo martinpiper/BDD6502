@@ -21,7 +21,7 @@ start
 ;	lda #ProcessorPortAllRAMWithIO
 ;	jsr InitialiseMachine
 
-	jsr Bus24Bit_Init	
+	jsr Bus24Bit_Init
 
 	+MBus24Bit_SetAddress_A $01 , $8808
 	ldx #230
@@ -65,8 +65,93 @@ start
 	+MBus24Bit_Send8BitValue 0
 	+MBus24Bit_SendLE16BitValue 0
 
-
 	rts
+
+ScaleFactorFrames
+!for .i , 256 {
+	!by 39 + (16 * sin( (float(.i) / 32) * 3.14159265 ))
+}
+ScaleSizeFrames32
+!for .i , 256 {
+!set .scale = 39 + (16 * sin( (float(.i) / 32) * 3.14159265 ))
+	!by (32 * 32) / .scale
+}
+
+!zn
+frames
+	+MBus24Bit_SetAddress_A $01 , $8800
+	+MBus24Bit_Send8BitValue 0
+
+	+MByteValueToAddress_A $0b , .smf1+1
+	+MByteValueToAddress_A 0 , .smx1+1
+	+MByteValueToAddress_A 0 , .smy1+1
+	
+	; Frames
+.smsf1	ldy #0
+	
+	+MBus24Bit_SetAddress_A $01 , $8808
+	ldx #190
+.l1
+	; Palette + flags
+.smf1	lda #$0b
+	+MBus24Bit_Send8BitValueFromA
+	; Y pos and size
+.smy1	lda #0
+	+MBus24Bit_Send8BitValueFromA
+	lda ScaleSizeFrames32,y
+	+MBus24Bit_Send8BitValueFromA
+	; X pos and size
+.smx1	lda #0
+	+MBus24Bit_Send8BitValueFromA
+	lda ScaleSizeFrames32,y
+	+MBus24Bit_Send8BitValueFromA
+	; Address
+	+MBus24Bit_Send8BitValue 0
+	txa
+	asl
+	asl
+	asl
+	asl
+	and #$30
+	+MBus24Bit_Send8BitValueFromA
+	; Scales
+	lda ScaleFactorFrames,y
+	+MBus24Bit_Send8BitValueFromA
+	+MBus24Bit_Send8BitValueFromA
+	; Stride
+	+MBus24Bit_Send8BitValue $3f
+
+	lda .smx1+1
+	clc
+	adc #11
+	sta .smx1+1
+	
+	lda .smy1+1
+	adc #3
+	sta .smy1+1
+	
+	lda .smf1+1
+	eor #$10
+	sta .smf1+1
+
+	iny
+	dex
+	bne .l1
+
+	; Terminate list
+	+MBus24Bit_Send8BitValue 0
+	+MBus24Bit_SendLE16BitValue 0
+
+	+MBus24Bit_SetAddress_A $01 , $8800
+	+MBus24Bit_Send8BitValue 1
+	jsr Video_WaitVBlank
+	
+	inc .smsf1+1
+	bne .doFrames
+	rts
+.doFrames
+	jmp frames
+
 
 Initialise_NoPreserveStack = 1
 Initialise_NoIRQServiceRoutine = 1
