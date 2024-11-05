@@ -30,6 +30,7 @@ start
 	jsr TestInterface_ReadRAMWithOffset
 	jsr TestInterface_WriteRAMLong
 .tl1
+    +MBASICTextPrint .dmaHelpText
 	inc VIC2BorderColour
 	+WaitForFire_A
 	inc VIC2BorderColour
@@ -37,6 +38,7 @@ start
 	inc VIC2BorderColour
 	+TestForPortBitsLoop_A CIA1KeyboardColumnJoystickA , JoystickBits_Right, .tl1
 
+    +MBASICTextPrint .pressFireText
 	+WaitForFire_A
 .il1
 	+MACROWaitForTheLastScan_A
@@ -76,6 +78,11 @@ start
 .errorMessageText
 !pet CHR_Red , "** ERROR **" , CHR_Return , 0
 
+.dmaHelpText
+!pet "Press fire to start the DMA, hold right and press fire to exit the DMA test" , CHR_Return , 0
+
+.pressFireText
+!pet "Press fire" , CHR_Return , 0
 
 
 TestInterface_Passthrough
