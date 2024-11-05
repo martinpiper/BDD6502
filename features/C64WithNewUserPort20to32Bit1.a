@@ -25,10 +25,39 @@ start
 	; This should re-init any screen if the 32 bit interface is stuck with DMA
 	jsr TestInterface_Passthrough
 	jsr Bus20To32Bit1_Init
+!if 0 {
 	jsr TestInterface_WriteRAM
 	jsr TestInterface_ReadRAM
 	jsr TestInterface_ReadRAMWithOffset
 	jsr TestInterface_WriteRAMLong
+} else {
+	; Simple sample stream demo
+	jsr Bus20To32Bit1_Init
+	jsr Bus20To32Bit1_ShortReset
+
+	jsr Bus20To32Bit1_ReadMode
+	jsr Bus20To32Bit1_SetLatch5
+	+BlankScreenBorderSpriteSound_A
+.smpl1
+    +MByteValueToAddress_A VIC2Colour_DarkGrey , VIC2BorderColour
+    +MByteValueToAddress_A VIC2Colour_Black , VIC2BorderColour
+	+MBus24Bit_Get8BitValueToA
+	pha
+	and #$0f
+	sta SIDVolumeFilter
+	; 20 = 8000 Hz
+	; 8 = 16000 Hz
+	+MACRODelay_X 8
+	pla
+	lsr
+	lsr
+	lsr
+	lsr
+	sta SIDVolumeFilter
+	+MACRODelay_X 8
+	jmp .smpl1
+}
+
 .tl1
     +MBASICTextPrint .dmaHelpText
 	inc VIC2BorderColour
