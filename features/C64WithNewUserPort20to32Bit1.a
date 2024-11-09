@@ -25,7 +25,7 @@ start
 	; This should re-init any screen if the 32 bit interface is stuck with DMA
 	jsr TestInterface_Passthrough
 	jsr Bus20To32Bit1_Init
-!if 0 {
+!if 1 {
 	jsr TestInterface_WriteRAM
 	jsr TestInterface_ReadRAM
 	jsr TestInterface_ReadRAMWithOffset
