@@ -106,7 +106,6 @@ public class Sprites4 extends DisplayLayer {
                         break;
 
                     default:
-                        // TODO: Clipping/extent values
                         return;
                 }
 
