@@ -651,6 +651,121 @@ Feature: Tests the video character screen data conversion and sprites
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
+    # Pixel scroll test, note double buffered draw buffers
+    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    # Top left, 0,0, standing left, double size
+    Given write data byte '0x0b' to 24bit bus at '0x8808' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8809' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880a' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880b' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880c' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880d' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880e' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x880f' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8810' and addressEx '0x01'
+    Given write data byte '0x3f' to 24bit bus at '0x8811' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8812' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8814' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given render a video display frame
+    # Pixel scroll test, note double buffered draw buffers
+    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    # Top left, 0,0, standing left, double size
+    Given write data byte '0x0b' to 24bit bus at '0x8808' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8809' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880a' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880b' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880c' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x880d' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880e' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x880f' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8810' and addressEx '0x01'
+    Given write data byte '0x3f' to 24bit bus at '0x8811' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8812' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8814' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given render a video display frame
+    # Pixel scroll test, note double buffered draw buffers
+    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    # Top left, 0,0, standing left, double size
+    Given write data byte '0x0b' to 24bit bus at '0x8808' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8809' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880a' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880b' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880c' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x880d' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880e' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x880f' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8810' and addressEx '0x01'
+    Given write data byte '0x3f' to 24bit bus at '0x8811' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8812' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8814' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given render a video display frame
+    # Pixel scroll test, note double buffered draw buffers
+    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    # Top left, 0,0, standing left, double size
+    Given write data byte '0x0b' to 24bit bus at '0x8808' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8809' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880a' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880b' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880c' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x880d' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880e' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x880f' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8810' and addressEx '0x01'
+    Given write data byte '0x3f' to 24bit bus at '0x8811' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8812' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8814' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given render a video display frame
+    # Pixel scroll test, note double buffered draw buffers
+    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    # Top left, 0,0, standing left, double size
+    Given write data byte '0x0b' to 24bit bus at '0x8808' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8809' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880a' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880b' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880c' and addressEx '0x01'
+    Given write data byte '0x04' to 24bit bus at '0x880d' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880e' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x880f' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8810' and addressEx '0x01'
+    Given write data byte '0x3f' to 24bit bus at '0x8811' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8812' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8814' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given render a video display frame
+    # Pixel scroll test, note double buffered draw buffers
+    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    # Top left, 0,0, standing left, double size
+    Given write data byte '0x0b' to 24bit bus at '0x8808' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8809' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880a' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880b' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x880c' and addressEx '0x01'
+    Given write data byte '0x05' to 24bit bus at '0x880d' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880e' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x880f' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8810' and addressEx '0x01'
+    Given write data byte '0x3f' to 24bit bus at '0x8811' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8812' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8814' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given render a video display frame
+
+
+
+    Given render a video display frame
+    Given render a video display frame
+    Given render a video display frame
+    Given render a video display frame
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/Test Sprites4.a"
 #    And I run the command line: ..\C64\bin\LZMPi.exe -c64mbe test.prg testcmp.prg $200
@@ -694,3 +809,7 @@ Feature: Tests the video character screen data conversion and sprites
     Then expect image "testdata/TC-17-000015.bmp" to be identical to "target/frames/TC-17-000015.bmp"
     Then expect image "testdata/TC-17-000016.bmp" to be identical to "target/frames/TC-17-000016.bmp"
     Then expect image "testdata/TC-17-000017.bmp" to be identical to "target/frames/TC-17-000017.bmp"
+    Then expect image "testdata/TC-17-000018.bmp" to be identical to "target/frames/TC-17-000018.bmp"
+    Then expect image "testdata/TC-17-000019.bmp" to be identical to "target/frames/TC-17-000019.bmp"
+    Then expect image "testdata/TC-17-000020.bmp" to be identical to "target/frames/TC-17-000020.bmp"
+    Then expect image "testdata/TC-17-000027.bmp" to be identical to "target/frames/TC-17-000027.bmp"
