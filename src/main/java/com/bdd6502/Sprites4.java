@@ -288,7 +288,7 @@ public class Sprites4 extends DisplayLayer {
                 break;
 
             case 13:
-                currentSpriteAddress = spriteAddress[drawingWith][drawingSpriteIndex] << 1;
+                currentSpriteAddress = spriteAddress[drawingWith][drawingSpriteIndex];
                 drawingSpriteState++;
                 break;
 
@@ -341,13 +341,13 @@ public class Sprites4 extends DisplayLayer {
                 int internalAddress;
                 // Selector
                 if ((currentSpritePalette & 0x40) > 0) {
-                    internalAddress = currentSpriteAddressWorking - pixelX + 1; // +1 Adjustment for address /2, sprite widths should always be even numbers, or rather sprite data aligned to two bytes
+                    internalAddress = currentSpriteAddressWorking - pixelX;
                 } else {
                     internalAddress = currentSpriteAddressWorking + pixelX;
                 }
-                theColour = plane0[internalAddress & 0xffff];
+                theColour = plane0[(internalAddress>>1) & 0xffff];
                 // Selector
-                if ((internalAddress & 0x010000) != 0) {
+                if ((internalAddress & 0x1) != 0) {
                     theColour >>= 4;
                 }
                 theColour &= 0x0f;

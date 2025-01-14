@@ -108,7 +108,7 @@ frames
 	; Address
 	+MBus24Bit_Send8BitValue 0
 	txa
-	asl
+;	asl
 	asl
 	asl
 	asl

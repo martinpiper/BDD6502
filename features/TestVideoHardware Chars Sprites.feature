@@ -532,7 +532,7 @@ Feature: Tests the video character screen data conversion and sprites
     # Sprites4 data
     # Turrican Scaled
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledSprites4.bin" to 24bit bus at '0x0000' and addressEx '0x08'
-    Given write data from file "C:\Work\ImageToBitplane\target\testconcat4ScaledSprites4.bin" to 24bit bus at '0x8000' and addressEx '0x08'
+    Given write data from file "C:\Work\ImageToBitplane\target\testconcat4ScaledSprites4.bin" to 24bit bus at '0x4000' and addressEx '0x08'
 
     # Chars
     # oldbridge char screen with rgbfactor 512
@@ -575,18 +575,18 @@ Feature: Tests the video character screen data conversion and sprites
     # Y size (in screen pixels, regardless of scale)
     # X pos
     # X size (in screen pixels, regardless of scale)
-    # Sprite address (16 bits) / 2, MSB is for the upper nybble bank
+    # Sprite address (16 bits)
     # Y inv scale (*32)
     # X inv scale (*32)
     # Sprite stride-1
-    # Midddle, right, crouching left, no scale
+    # Middle, right, crouching left, no scale
     Given write data byte '0x1b' to 24bit bus at '0x8808' and addressEx '0x01'
     Given write data byte '0x80' to 24bit bus at '0x8809' and addressEx '0x01'
     Given write data byte '0x40' to 24bit bus at '0x880a' and addressEx '0x01'
     Given write data byte '0x10' to 24bit bus at '0x880b' and addressEx '0x01'
     Given write data byte '0x40' to 24bit bus at '0x880c' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x880d' and addressEx '0x01'
-    Given write data byte '0x08' to 24bit bus at '0x880e' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x880e' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x880f' and addressEx '0x01'
     Given write data byte '0x20' to 24bit bus at '0x8810' and addressEx '0x01'
     Given write data byte '0x3f' to 24bit bus at '0x8811' and addressEx '0x01'
@@ -611,7 +611,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x80' to 24bit bus at '0x8820' and addressEx '0x01'
     # Note the sprite address starts on the "right" and "bottom"
     Given write data byte '0xff' to 24bit bus at '0x8821' and addressEx '0x01'
-    Given write data byte '0x47' to 24bit bus at '0x8822' and addressEx '0x01'
+    Given write data byte '0x8f' to 24bit bus at '0x8822' and addressEx '0x01'
     Given write data byte '0x10' to 24bit bus at '0x8823' and addressEx '0x01'
     Given write data byte '0x10' to 24bit bus at '0x8824' and addressEx '0x01'
     Given write data byte '0x3f' to 24bit bus at '0x8825' and addressEx '0x01'
