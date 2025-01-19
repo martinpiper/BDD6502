@@ -1,4 +1,4 @@
-java -Dmusic.volume=1 -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\Martin Piper\Downloads\asikwp_-_twistmachine.mod" "target/exportedMusic" 1 1
+java -Dmusic.volume=1 -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --exportmod "C:\Users\marti\Downloads\asikwp_-_twistmachine.mod" "target/exportedMusic" 1 1
 
 pushd ..\C64\VideoHardware\assets
 call convert4.bat
@@ -33,4 +33,8 @@ java -jar target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar --rgbshi
 
 java -jar target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar --rgbshift 5 6 5 --newpalettes --palettesize 16 --forcergb 255 0 255 --image target\testconcat4.png --imagequantize 16 --tilewh 64 64 --imagequantize 16 --nostacking --outputscaled4 target\testconcat4ScaledSprites4 --outputsprites target\testconcat4ScaledSpritesSheet.txt --outputpalettes target\testconcat4PaletteData4.bin --convertwritepass
 
+rem After Burner
+java -jar target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar java -jar c:\work\ImageToBitplane\target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar --rgbshift 5 6 5 --newpalettes --palettesize 16 --forcergb 255 0 255 --forcergb 200 0 200 --forcergb 150 0 150 --forcergb 100 0 100 --nostacking --outputscaled4 c:\temp\TScaledSprites4 --outputsprites c:\temp\TScaledSprites4Sheet.txt --outputpalettes c:\temp\t.pal --batchimagequantize 16 --batchimages "src\test\resources\t-6.png" "src\test\resources\t-10.png" --resetforcergb --forcergb 255 0 255 --batchimages "src\test\resources\t-787.png" --writepass
+
 popd
+
