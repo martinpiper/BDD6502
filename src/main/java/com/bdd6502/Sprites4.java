@@ -40,6 +40,7 @@ public class Sprites4 extends DisplayLayer {
     double clockMultiplier = 1.0f;
 
     boolean triggerBufferSwap = false;
+    int register0 = 0;
     int leftBorderAdjust = 0;
     int topBorderAdjust = 0;
     int extentXPos = 255 , extentYPos = 255;
@@ -76,15 +77,15 @@ public class Sprites4 extends DisplayLayer {
         }
 */
         if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters) && address < (addressRegisters + 0x800)) {
-            busContention = display.getBusContentionPixels();
             int latchedValuesDetect = address - addressRegisters;
             if (latchedValuesDetect < 8) {
                 switch (latchedValuesDetect) {
                     case 0:
-                        if (!triggerBufferSwap && (data & 0x01) == 0x01)
+                        if ((register0 & 0x01) == 0x00 && (data & 0x01) == 0x01)
                         {
                             triggerBufferSwap = true;
                         }
+                        register0 = data & 0xff;
                         break;
                     case 1 :
                         leftBorderAdjust = (leftBorderAdjust & 0xff00) | (data & 0xff);
@@ -185,17 +186,17 @@ public class Sprites4 extends DisplayLayer {
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
         // Time to the rising edge of the _hSync
         if (!prevVSYNC && _vSync) {
-            // Flip-flip in hardware
+            // Flip-flop in hardware
             onScreen = 1-onScreen;
 
-//            System.out.println("Reached sprite: " + drawingSpriteIndex);
+//            System.out.println("Reached sprite: " + drawingSpriteIndex + " reachedEndOfLine " + reachedEndOfLine);
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
             reachedEndOfLine = false;
 
             if (triggerBufferSwap) {
                 drawingWith = 1 - drawingWith;
-                writingTo = 1 - writingTo;
+                writingTo = 1 - drawingWith;
                 triggerBufferSwap = false;
             }
         }
