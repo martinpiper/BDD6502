@@ -149,7 +149,7 @@ public class Sprites2 extends DisplayLayer {
     boolean reachedEndOfLine = false;
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer, boolean vBlank) {
         // Time to the rising edge of the _hSync
         if (!prevHSYNC && _hSync) {
             // Flip-flip in hardware

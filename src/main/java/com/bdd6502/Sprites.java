@@ -140,7 +140,7 @@ public class Sprites extends DisplayLayer {
     int lastSpriteClocked = 24;
     int lastSpriteClockedPixels = 16;
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer, boolean vBlank) {
         if (withOverscan) {
             spriteEnable = enableLayer;
         }

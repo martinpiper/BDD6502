@@ -134,6 +134,9 @@ frames
 	eor #$10
 	sta .smf1+1
 
+    ; Checking the sprite list double buffer works across multiple frames
+    jsr Delay
+
 	iny
 	dex
 	bne .l1
@@ -152,6 +155,9 @@ frames
 .doFrames
 	jmp frames
 
+Delay
+    +DelayFor 150
+    rts
 
 Initialise_NoPreserveStack = 1
 Initialise_NoIRQServiceRoutine = 1

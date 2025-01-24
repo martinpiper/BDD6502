@@ -1,5 +1,7 @@
 package com.bdd6502;
 
+import com.loomcom.symon.util.HexUtil;
+
 import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,7 +25,7 @@ public class Sprites4 extends DisplayLayer {
     int[][] spriteStride = new int[2][kNumSprites];
     int[][] spritePalette = new int[2][kNumSprites];
 
-    boolean prevVSYNC = false;
+    boolean prevVBlank = false;
 
     int drawingSpriteIndex = 0;
     int drawingSpriteState = 0;
@@ -68,21 +70,16 @@ public class Sprites4 extends DisplayLayer {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
-/*
-        // No control register logic now...
-        if (addressExActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x100)) {
-            if ((data & 0x01) > 0) {
-            } else {
-            }
-        }
-*/
         if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters) && address < (addressRegisters + 0x800)) {
+//            System.out.println("writeData "+ HexUtil.byteToHex(data) + " to " + HexUtil.wordToHex(address) +" Reached sprite: " + drawingSpriteIndex + " reachedEndOfLine " + reachedEndOfLine + " triggerBufferSwap " + triggerBufferSwap + " drawingWith " + drawingWith + " writingTo " + writingTo);
+
             int latchedValuesDetect = address - addressRegisters;
             if (latchedValuesDetect < 8) {
                 switch (latchedValuesDetect) {
                     case 0:
                         if ((register0 & 0x01) == 0x00 && (data & 0x01) == 0x01)
                         {
+//                            System.out.println("** Set triggerBufferSwap : Reached sprite: " + drawingSpriteIndex + " reachedEndOfLine " + reachedEndOfLine + " triggerBufferSwap " + triggerBufferSwap + " drawingWith " + drawingWith + " writingTo " + writingTo);
                             triggerBufferSwap = true;
                         }
                         register0 = data & 0xff;
@@ -183,13 +180,13 @@ public class Sprites4 extends DisplayLayer {
     boolean reachedEndOfLine = false;
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
-        // Time to the rising edge of the _hSync
-        if (!prevVSYNC && _vSync) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer, boolean vBlank) {
+        // Note: _vSync *is not* the same as vBlank which is tied to extEXTWANTIRQFlag in hardware
+        if (!prevVBlank && vBlank) {
             // Flip-flop in hardware
             onScreen = 1-onScreen;
 
-//            System.out.println("Reached sprite: " + drawingSpriteIndex + " reachedEndOfLine " + reachedEndOfLine);
+//            System.out.println("_vSync Reached sprite: " + drawingSpriteIndex + " reachedEndOfLine " + reachedEndOfLine + " triggerBufferSwap " + triggerBufferSwap + " drawingWith " + drawingWith + " writingTo " + writingTo);
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
             reachedEndOfLine = false;
@@ -200,7 +197,7 @@ public class Sprites4 extends DisplayLayer {
                 triggerBufferSwap = false;
             }
         }
-        prevVSYNC = _vSync;
+        prevVBlank = vBlank;
         // To emulate the longer delayed line start
         if (_doLineStart) {
             // Reset on low in hardware

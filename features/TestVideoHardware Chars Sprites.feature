@@ -812,6 +812,7 @@ Feature: Tests the video character screen data conversion and sprites
     Then expect image "testdata/TC-17-000018.bmp" to be identical to "target/frames/TC-17-000018.bmp"
     Then expect image "testdata/TC-17-000019.bmp" to be identical to "target/frames/TC-17-000019.bmp"
     Then expect image "testdata/TC-17-000020.bmp" to be identical to "target/frames/TC-17-000020.bmp"
+    Then expect image "testdata/TC-17-000021.bmp" to be identical to "target/frames/TC-17-000021.bmp"
     Then expect image "testdata/TC-17-000027.bmp" to be identical to "target/frames/TC-17-000027.bmp"
 
 

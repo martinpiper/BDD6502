@@ -175,7 +175,7 @@ public class Mode7 extends DisplayLayer {
     int finalPixelDelay0 , finalPixelDelay1 , finalPixelDelay2 , finalPixelDelay3 , finalPixelDelay4;
     int _vSyncDelay = 0;
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer, boolean vBlank) {
         if (withOverscan) {
             flagDisplayEnable = enableLayer;
         }

@@ -1,7 +1,5 @@
 package com.bdd6502;
 
-import com.loomcom.symon.util.HexUtil;
-
 import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -96,7 +94,7 @@ public class VectorPlane extends DisplayLayer {
     }
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer, boolean vBlank) {
         finalPixelDelay = finalPixel;
         if (!_vSync || !enableLayer || kill) {
             drawIndex = 0;

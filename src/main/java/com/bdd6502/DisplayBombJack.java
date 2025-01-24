@@ -618,7 +618,7 @@ public class DisplayBombJack extends MemoryBus {
                     // Ensure each layer index is executed once
                     if (cachedPixel[theLayer] < 0) {
                         DisplayLayer displayLayer = layersRaw[theLayer];
-                        int pixel = displayLayer.calculatePixel(displayHExternal, displayVExternal, _hSync, _vSync, doLineStart, enableLayerFlags[theLayer]);
+                        int pixel = displayLayer.calculatePixel(displayHExternal, displayVExternal, _hSync, _vSync, doLineStart, enableLayerFlags[theLayer], vBlank);
                         if (is16Colours) {
                             if ((pixel & 0x0f) != 0 || firstLayer) {
                                 latchedPixel = pixel;
@@ -642,7 +642,7 @@ public class DisplayBombJack extends MemoryBus {
         } else {
             int layerIndex = 0;
             for (DisplayLayer layer : layersRaw) {
-                int pixel = layer.calculatePixel(displayHExternal, displayVExternal, _hSync, _vSync, doLineStart, enableLayerFlags[layerIndex]);
+                int pixel = layer.calculatePixel(displayHExternal, displayVExternal, _hSync, _vSync, doLineStart, enableLayerFlags[layerIndex], vBlank);
                 layer.ageContention();
                 // If there is pixel data in the layer then use it
                 // Always use the first colour, which is the furthest layer colour

@@ -80,7 +80,7 @@ public class UserPortTo24BitAddressTest {
             }
 
             @Override
-            public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
+            public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer, boolean vBlank) {
                 return 0;
             }
         };

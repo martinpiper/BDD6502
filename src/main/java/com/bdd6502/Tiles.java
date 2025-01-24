@@ -110,7 +110,7 @@ public class Tiles extends DisplayLayer {
     }
 
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer, boolean vBlank) {
         if (withOverscan) {
             enableTiles = enableLayer;
         }

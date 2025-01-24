@@ -111,14 +111,14 @@ public class MergeNTo1 extends DisplayLayer {
 
     int latchedPixel = 0;
     @Override
-    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer) {
+    public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer, boolean vBlank) {
         // Because the merge layer has quite a long processing path of combinatorial multiplexer logic, the pixel is latched to provide a pipeline to grant enough time to process
         int returnPixel = latchedPixel;
 
         // NOTE: Assume 2 layers max even though this has an array for displayLayers...
 //        for (int i = 0 ; i < displayLayers.length ; i++) {
-        int pixel0 = displayLayers[0].calculatePixel(displayH, displayV, _hSync, _vSync, _doLineStart, enableLayer & controlVisible0);
-        int pixel1 = displayLayers[1].calculatePixel(displayH, displayV, _hSync, _vSync, _doLineStart, enableLayer & controlVisible1);
+        int pixel0 = displayLayers[0].calculatePixel(displayH, displayV, _hSync, _vSync, _doLineStart, enableLayer & controlVisible0, vBlank);
+        int pixel1 = displayLayers[1].calculatePixel(displayH, displayV, _hSync, _vSync, _doLineStart, enableLayer & controlVisible1, vBlank);
 
         switch (registers[0] & 0x03) {
             case 0:
