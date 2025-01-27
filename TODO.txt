@@ -10,6 +10,7 @@
 
 * For the scaled sprites layers (normal and rotated) add some debug that will show how much time is used (or free) for each scanline up until it reaches the end of sprite list
 	** Add an option to debug break the debugger if the time runs out?
+	** Also for scaled sprites4 for the whole previous frame output the highest sprite number reached and the time used out of the whole frame, plus output the currently rendering sprite number.
 
 
 
