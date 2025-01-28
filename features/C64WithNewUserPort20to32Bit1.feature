@@ -41,6 +41,9 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     Given a user port to 32 bit interface running at 4.0MHz and 24 bit bus is installed
     And add to the 32 bit interface a bank of memory at address '0x0' and size '0x100000'
     And add to the 32 bit interface a bank of memory at address '0x100000' and size '0x100000'
+    Given load binary file "C:\VICE\C64\kernal" into temporary memory
+    And trim "0" bytes from the start of temporary memory
+    And add temporary memory to the 32 bit interface memory address '0x0'
     And enable user port bus debug output
     Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
     And the layer has 16 colours

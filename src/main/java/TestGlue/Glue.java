@@ -9,6 +9,7 @@ import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 import com.loomcom.symon.util.HexUtil;
 import com.replicanet.cukesplus.PropertiesResolution;
+import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -135,6 +136,7 @@ public class Glue {
         name = PropertiesResolution.resolveInput(scenario, name);
         System.setProperty(name , Integer.toString(machine.getCpu().getClockCycles()));
     }
+
 
 
     private class ProfileData {
@@ -2075,6 +2077,16 @@ public class Glue {
         int iAddress = valueToInt(address);
         int iSize = valueToInt(size);
         userPort24BitAddress.addMemoryAt(iAddress, iSize);
+    }
+
+    @And("^add temporary memory to the 32 bit interface memory address '(.*)'$")
+    public void addToTheBitInterfaceMemoryFromFileOffsetXSizeXToAddressX(String toAddress) throws Throwable {
+        int to = valueToInt(toAddress);
+
+        for (byte value : lastBinaryData) {
+            userPort24BitAddress.write32BitMemory(to,value);
+            to++;
+        }
     }
 
     @Given("^the layer has overscan$")

@@ -239,11 +239,7 @@ public class UserPortTo24BitAddress extends Device {
                             }
                             else if (bus32LatchAddress == 6) {
                                 Bus32CalculateOffsets();
-                                for (MemoryInternal memory: bus32MemoryBlocks) {
-                                    if (memory.includes(bus32CurrentAddress)) {
-                                        memory.getMemory().write(bus32CurrentAddress - memory.startAddress,data);
-                                    }
-                                }
+                                write32BitMemory(bus32CurrentAddress , data);
                                 bus32CurrentAddress++;
                                 Bus32OffsetsToLatches();
                             }
@@ -335,6 +331,14 @@ public class UserPortTo24BitAddress extends Device {
                 break;
             default:
                 break;
+        }
+    }
+
+    public void write32BitMemory(int address, int data) throws MemoryAccessException {
+        for (MemoryInternal memory: bus32MemoryBlocks) {
+            if (memory.includes(address)) {
+                memory.getMemory().write(address - memory.startAddress, data);
+            }
         }
     }
 
@@ -551,11 +555,14 @@ public class UserPortTo24BitAddress extends Device {
                                 case kbus32_latch7_Passthrough:
                                     break;
                                 case kbus32_latch7_RAM:
-                                    return 0xff;
+                                    break;
+//                                    return 0xff;
                                 case kbus32_latch7_PassthroughDisable:
-                                    return 0xff;
+                                    break;
+//                                    return 0xff;
                                 case kbus32_latch7_Disabled:
-                                    return 0xff;
+                                    break;
+//                                    return 0xff;
                             }
                         }
                     }
