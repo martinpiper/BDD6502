@@ -24,7 +24,7 @@ start
 	jsr Bus24Bit_Init
 
 	+MBus24Bit_SetAddress_A $01 , $8808
-	ldx #230
+	ldx #185
 .l1
 	; Palette + flags
 .smf1	lda #$0b
@@ -38,7 +38,7 @@ start
 	+MBus24Bit_Send8BitValueFromA
 	+MBus24Bit_Send8BitValue $20
 	; Address
-	+MBus24Bit_SendLE16BitValue $0000
+	+MBus24Bit_SendLE24BitValue $0000
 	; Scales
 	+MBus24Bit_Send8BitValue $20
 	+MBus24Bit_Send8BitValue $20
@@ -90,7 +90,7 @@ frames
 .smsf1	ldy #0
 	
 	+MBus24Bit_SetAddress_A $01 , $8808
-	ldx #190
+	ldx #185
 .l1
 	; Palette + flags
 .smf1	lda #$0b
@@ -114,6 +114,7 @@ frames
 	asl
 	and #$30
 	+MBus24Bit_Send8BitValueFromA
+	+MBus24Bit_Send8BitValue 0
 	; Scales
 	lda ScaleFactorFrames,y
 	+MBus24Bit_Send8BitValueFromA
@@ -135,7 +136,7 @@ frames
 	sta .smf1+1
 
     ; Checking the sprite list double buffer works across multiple frames
-    jsr Delay
+;    jsr Delay
 
 	iny
 	dex

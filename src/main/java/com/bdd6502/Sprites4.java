@@ -11,7 +11,7 @@ public class Sprites4 extends DisplayLayer {
 
     int addressRegisters = 0x8800, addressExRegisters = 0x01;
     int addressExPlane0 = 0x08;
-    byte[] plane0 = new byte[0x10000];
+    byte[] plane0 = new byte[0x100000]; // 1 MB is a sensible (ish) memory size based on hardware cost, single IC IS62C10248AL
     final int kNumSprites = 256;
     int drawingWith = 0;
     int writingTo = 1;
@@ -46,6 +46,7 @@ public class Sprites4 extends DisplayLayer {
     int leftBorderAdjust = 0;
     int topBorderAdjust = 0;
     int extentXPos = 255 , extentYPos = 255;
+    int addressExtra = 0;
 
 
     int[][] calculatedFrames = new int[2][512*512];
@@ -102,6 +103,9 @@ public class Sprites4 extends DisplayLayer {
                     case 6:
                         extentYPos = data & 0xff;
                         break;
+                    case 7:
+                        addressExtra = data & 0xff;
+                        break;
 
                     default:
                         return;
@@ -111,8 +115,8 @@ public class Sprites4 extends DisplayLayer {
             }
             latchedValuesDetect -= 8;
 
-            int spriteIndex = latchedValuesDetect / 0x0a;
-            switch (latchedValuesDetect % 0x0a) {
+            int spriteIndex = latchedValuesDetect / 0x0b;
+            switch (latchedValuesDetect % 0x0b) {
                 case 0:
                 default: {
                     spritePalette[writingTo][spriteIndex] = data & 0xff;
@@ -135,22 +139,26 @@ public class Sprites4 extends DisplayLayer {
                     break;
                 }
                 case 5: {
-                    spriteAddress[writingTo][spriteIndex] = (spriteAddress[writingTo][spriteIndex] & 0xff00) | (data & 0xff);
+                    spriteAddress[writingTo][spriteIndex] = (spriteAddress[writingTo][spriteIndex] & 0xffff00) | (data & 0xff);
                     break;
                 }
                 case 6: {
-                    spriteAddress[writingTo][spriteIndex] = (spriteAddress[writingTo][spriteIndex] & 0xff) | ((data & 0xff) << 8);
+                    spriteAddress[writingTo][spriteIndex] = (spriteAddress[writingTo][spriteIndex] & 0xff00ff) | ((data & 0xff) << 8);
                     break;
                 }
                 case 7: {
-                    spriteScaleYInv[writingTo][spriteIndex] = data & 0xff;
+                    spriteAddress[writingTo][spriteIndex] = (spriteAddress[writingTo][spriteIndex] & 0x00ffff) | ((data & 0xff) << 16);
                     break;
                 }
                 case 8: {
-                    spriteScaleXInv[writingTo][spriteIndex] = data & 0xff;
+                    spriteScaleYInv[writingTo][spriteIndex] = data & 0xff;
                     break;
                 }
                 case 9: {
+                    spriteScaleXInv[writingTo][spriteIndex] = data & 0xff;
+                    break;
+                }
+                case 0xa: {
                     spriteStride[writingTo][spriteIndex] = data & 0xff;
                     break;
                 }
@@ -160,7 +168,7 @@ public class Sprites4 extends DisplayLayer {
         // This selection logic is because the actual address line is used to select the memory, not a decoder
         if (addressExActive(addressEx, addressExPlane0)) {
             busContention = display.getBusContentionPixels();
-            plane0[address] = data;
+            plane0[address + (addressExtra << 16)] = data;
         }
     }
 
@@ -343,7 +351,7 @@ public class Sprites4 extends DisplayLayer {
                 } else {
                     internalAddress = currentSpriteAddressWorking + pixelX;
                 }
-                theColour = plane0[(internalAddress>>1) & 0xffff];
+                theColour = plane0[(internalAddress>>1) & 0xfffff];
                 // Selector
                 if ((internalAddress & 0x1) != 0) {
                     theColour >>= 4;
