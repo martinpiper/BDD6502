@@ -138,4 +138,13 @@ public class HexUtil {
         sb.append(HEX_CONSTANTS[val & 0xff]);
         return sb.toString();
     }
+
+    public static String intToHex(int val) {
+        StringBuilder sb = new StringBuilder(4);
+        sb.append(HEX_CONSTANTS[(val >> 24) & 0xff]);
+        sb.append(HEX_CONSTANTS[(val >> 16) & 0xff]);
+        sb.append(HEX_CONSTANTS[(val >> 8) & 0xff]);
+        sb.append(HEX_CONSTANTS[val & 0xff]);
+        return sb.toString();
+    }
 }

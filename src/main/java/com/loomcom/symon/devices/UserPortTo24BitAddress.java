@@ -52,6 +52,52 @@ public class UserPortTo24BitAddress extends Device {
     private int bus32CurrentAddress;
     private int bus32AddAddress;
 
+    public String getDebug() {
+        String debug = "";
+        debug += "UserPort:";
+        if (simpleMode) {
+            debug += " simple mode ";
+        } else if (add32Bit1Mode) {
+            debug += " 32 bit mode ";
+            debug += " address " + HexUtil.intToHex(bus32LatchAddress);
+
+            for (int i = 0 ; i < bus32Latches.length ; i++) {
+                if ((i % 8) == 0) {
+                    debug += "\r";
+                }
+                debug += " latch" + i + ": " + HexUtil.byteToHex(bus32Latches[i]);
+            }
+            debug += "\r latch7: ";
+            if ((bus32Latches[7] & kbus32_latch7_SelectMask) == kbus32_latch7_Passthrough) {
+                debug += " select: Passthrough";
+            } else if ((bus32Latches[7] & kbus32_latch7_SelectMask) == kbus32_latch7_RAM) {
+                debug += " select: RAM";
+            } else if ((bus32Latches[7] & kbus32_latch7_SelectMask) == kbus32_latch7_PassthroughDisable) {
+                debug += " select: Passthrough disable";
+            } else if ((bus32Latches[7] & kbus32_latch7_SelectMask) == kbus32_latch7_Disabled) {
+                debug += " select: Disabled";
+            }
+            if ((bus32Latches[7] & kbus32_latch7_InternalPA2) == kbus32_latch7_InternalPA2) {
+                debug += " PA2";
+            }
+            if (bus32FastDMAStart) {
+                debug += " DMA start";
+                debug += " dma count " + HexUtil.intToHex(bus32FastDMACounter);
+            }
+            if ((bus32Latches[7] & kbus32_latch7_ResetDone) == kbus32_latch7_ResetDone) {
+                debug += " Reset done";
+            }
+        }
+        debug += "\r 24 bit state " + bus24State;
+        debug += " count enabled " +  bus24CountEnabled;
+        debug += " internal latches " + HexUtil.byteToHex(bus24Bytes[0]) + " " + HexUtil.byteToHex(bus24Bytes[1]) + " " + HexUtil.byteToHex(bus24Bytes[2]);
+        debug += "\r EBBS " + HexUtil.byteToHex(bus24Bytes[0]) + " address " +  HexUtil.wordToHex(bus24Bytes[1] | (bus24Bytes[2] << 8));
+
+        debug += "\r";
+        return debug;
+    }
+
+
     public boolean isEnableAPU() {
         return enableAPU;
     }

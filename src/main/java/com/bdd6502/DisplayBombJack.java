@@ -549,12 +549,26 @@ public class DisplayBombJack extends MemoryBus {
             enablePixels = false;
         }
 
-        vBlank = false;
-        if (displayVExternal < 0x10 || displayVExternal >= 0xf0) {
-            vBlank = true;
+        if (displayVExternal == 0xef) {
+            displayVExternal = displayVExternal;
         }
-        if (displayH == 0x180 && displayVExternal == 0xf0) {
-            extEXTWANTIRQFlag = true;
+        if (withOverscan) {
+            if (displayVExternal < 0x10 || displayVExternal >= 0xf0) {
+                if (!vBlank) {
+                    extEXTWANTIRQFlag = true;
+                }
+                vBlank = true;
+            } else {
+                vBlank = false;
+            }
+        } else {
+            vBlank = false;
+            if (displayVExternal < 0x10 || displayVExternal >= 0xf0) {
+                vBlank = true;
+            }
+            if (displayH == 0x180 && displayVExternal == 0xf0) {
+                extEXTWANTIRQFlag = true;
+            }
         }
 
         if (vBlank /*|| (displayH & 256) == 256*/) {

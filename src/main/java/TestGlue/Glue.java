@@ -946,6 +946,10 @@ public class Glue {
             optionalExtras += audioExpansion.getDebug();
         }
 
+        if (userPort24BitAddress != null) {
+            optionalExtras += userPort24BitAddress.getDebug();
+        }
+
         remoteDebugger.setReplyReg(machine.getCpu().getCpuState().pc, machine.getCpu().getCpuState().a, machine.getCpu().getCpuState().x, machine.getCpu().getCpuState().y,
                 machine.getCpu().getCpuState().sp, machine.getRam().read(0, false), machine.getRam().read(1, false),
                 machine.getCpu().getCpuState().getStatusFlag(), displayV, displayH,
