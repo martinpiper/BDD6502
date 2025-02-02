@@ -361,7 +361,9 @@ public class UserPortTo24BitAddress extends Device {
                             }
                         }
                     } else {
-                        bus24WriteByte(data);
+                        if (bus32LatchAddress != 7 && bus32LatchAddress != 3) {
+                            bus24WriteByte(data);
+                        }
                     }
                 } else {
                     throw new MemoryAccessException("registerDDRPortB != 0xff on write");

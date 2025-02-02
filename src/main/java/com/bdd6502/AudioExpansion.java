@@ -350,6 +350,7 @@ public class AudioExpansion extends MemoryBus implements Runnable {
     public String getDebug() {
         String debug = "";
         for (int i = 0 ; i < voiceVolume.length ; i++) {
+            debug += "Audio: ";
             if ( (voicesActiveMask & (1<<i)) != 0 ) {
                 debug += " Active";
             } else {

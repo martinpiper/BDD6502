@@ -422,12 +422,8 @@ public class Sprites4 extends DisplayLayer {
 
     @Override
     public String getDebug() {
-        String debug = "";
-        // TODO: Layer usage information? How many pixels drawn, maximum sprites drawn?
-        if (!debug.isEmpty()) {
-            debug = "Sprites4: " + debug;
-        }
-        return debug;
+        return "Sprites4: leftBorderAdjust " + HexUtil.wordToHex(leftBorderAdjust) + " topBorderAdjust " + HexUtil.wordToHex(topBorderAdjust)
+                + " extentXPos " + HexUtil.byteToHex(extentXPos) + " extentYPos " + HexUtil.byteToHex(extentYPos) + " addressExtra " + HexUtil.byteToHex(addressExtra) + "\r";
     }
 
     public void randomiseData(Random rand) {
