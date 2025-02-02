@@ -59,7 +59,8 @@ public class UserPortTo24BitAddress extends Device {
             debug += " simple mode ";
         } else if (add32Bit1Mode) {
             debug += " 32 bit mode ";
-            debug += " address " + HexUtil.intToHex(bus32LatchAddress);
+            Bus32LatchAddressCalculate();
+            debug += " current latch " + HexUtil.byteToHex(bus32LatchAddress);
 
             for (int i = 0 ; i < bus32Latches.length ; i++) {
                 if ((i % 8) == 0) {
