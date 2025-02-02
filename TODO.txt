@@ -13,6 +13,7 @@
 	** Also for scaled sprites4 for the whole previous frame output the highest sprite number reached and the time used out of the whole frame, plus output the currently rendering sprite number.
 	** Also the Sprites4 extent state
 		>> ; TODO: Strange that the borders need to be reset when entering the game?!
+	** Also the bus32 address and adder state etc
 
 
 
