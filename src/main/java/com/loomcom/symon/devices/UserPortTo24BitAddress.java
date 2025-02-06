@@ -59,6 +59,8 @@ public class UserPortTo24BitAddress extends Device {
             debug += " simple mode ";
         } else if (add32Bit1Mode) {
             debug += " 32 bit mode ";
+            debug += " PortA DDR " + HexUtil.byteToHex(registerDDRPortA);
+            debug += " PortB DDR " + HexUtil.byteToHex(registerDDRPortB);
             Bus32LatchAddressCalculate();
             debug += " current latch " + HexUtil.byteToHex(bus32LatchAddress);
 

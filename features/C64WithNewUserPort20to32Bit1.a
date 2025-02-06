@@ -9,6 +9,7 @@ kBus24Bit_SpritesMaxNum = 32
 !source "C64/stdlib/LongBranches.a"
 !source "C64/stdlib/PETSCII.a"
 !source "BombJack/stdlib/Bus24Bit_Macros.a"
+!source "BombJack/stdlib/Bus20To32Bit1_Macros.a"
 !source "BombJack/stdlib/Video_Macros.a"
 
 
@@ -408,10 +409,10 @@ TestInterface_ScrollScreen
 	sta COLOURRAM + (.x-1) + ((.y-1) * VIC2ScreenCharsWidth)
 }
 	; This should work in read or write mode
-	jsr Bus20To32Bit1_SetLatch3
+	+MBus20To32Bit1_SetLatch3_A
 	+MBus24Bit_Get8BitValueToA
 
-	jsr Bus20To32Bit1_SetLatch5
+	+MBus20To32Bit1_UsingState_SetLatch5_A
 }
 
 
