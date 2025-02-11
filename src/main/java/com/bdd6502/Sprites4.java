@@ -42,6 +42,8 @@ public class Sprites4 extends DisplayLayer {
     double clockMultiplier = 1.0f;
 
     boolean triggerBufferSwap = false;
+    int highestSpriteSubmitted = 0;
+    int lasthighestSpriteSubmitted = 0;
     int register0 = 0;
     int leftBorderAdjust = 0;
     int topBorderAdjust = 0;
@@ -72,7 +74,7 @@ public class Sprites4 extends DisplayLayer {
     @Override
     public void writeData(int address, int addressEx, byte data) {
         if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters) && address < (addressRegisters + 0x800)) {
-//            System.out.println("writeData "+ HexUtil.byteToHex(data) + " to " + HexUtil.wordToHex(address) +" Reached sprite: " + drawingSpriteIndex + " reachedEndOfLine " + reachedEndOfLine + " triggerBufferSwap " + triggerBufferSwap + " drawingWith " + drawingWith + " writingTo " + writingTo);
+//            System.out.println("writeData "+ HexUtil.byteToHex(data) + " to " + HexUtil.wordToHex(address) +" Reached sprite: " + drawingSpriteIndex + " reachedEndOfList " + reachedEndOfList + " triggerBufferSwap " + triggerBufferSwap + " drawingWith " + drawingWith + " writingTo " + writingTo);
 
             int latchedValuesDetect = address - addressRegisters;
             if (latchedValuesDetect < 8) {
@@ -80,7 +82,7 @@ public class Sprites4 extends DisplayLayer {
                     case 0:
                         if ((register0 & 0x01) == 0x00 && (data & 0x01) == 0x01)
                         {
-//                            System.out.println("** Set triggerBufferSwap : Reached sprite: " + drawingSpriteIndex + " reachedEndOfLine " + reachedEndOfLine + " triggerBufferSwap " + triggerBufferSwap + " drawingWith " + drawingWith + " writingTo " + writingTo);
+//                            System.out.println("** Set triggerBufferSwap : Reached sprite: " + drawingSpriteIndex + " reachedEndOfList " + reachedEndOfList + " triggerBufferSwap " + triggerBufferSwap + " drawingWith " + drawingWith + " writingTo " + writingTo);
                             triggerBufferSwap = true;
                         }
                         register0 = data & 0xff;
@@ -116,6 +118,9 @@ public class Sprites4 extends DisplayLayer {
             latchedValuesDetect -= 8;
 
             int spriteIndex = latchedValuesDetect / 0x0b;
+            if (spriteIndex > highestSpriteSubmitted) {
+                highestSpriteSubmitted = spriteIndex;
+            }
             switch (latchedValuesDetect % 0x0b) {
                 case 0:
                 default: {
@@ -185,7 +190,11 @@ public class Sprites4 extends DisplayLayer {
 
     double clockAccumulator = 0.0;
 
-    boolean reachedEndOfLine = false;
+    boolean reachedEndOfList = false;
+
+    int lastdrawingSpriteIndex = 0;
+    int lastdrawingSpriteState = 0;
+    boolean lastreachedEndOfList = false;
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer, boolean vBlank) {
@@ -194,15 +203,21 @@ public class Sprites4 extends DisplayLayer {
             // Flip-flop in hardware
             onScreen = 1-onScreen;
 
-//            System.out.println("_vSync Reached sprite: " + drawingSpriteIndex + " reachedEndOfLine " + reachedEndOfLine + " triggerBufferSwap " + triggerBufferSwap + " drawingWith " + drawingWith + " writingTo " + writingTo);
+//            System.out.println("_vSync Reached sprite: " + drawingSpriteIndex + " reachedEndOfList " + reachedEndOfList + " triggerBufferSwap " + triggerBufferSwap + " drawingWith " + drawingWith + " writingTo " + writingTo);
+            lastdrawingSpriteIndex = drawingSpriteIndex;
+            lastdrawingSpriteState = drawingSpriteState;
+            lastreachedEndOfList = reachedEndOfList;
+
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
-            reachedEndOfLine = false;
+            reachedEndOfList = false;
 
             if (triggerBufferSwap) {
                 drawingWith = 1 - drawingWith;
                 writingTo = 1 - drawingWith;
                 triggerBufferSwap = false;
+                lasthighestSpriteSubmitted = highestSpriteSubmitted;
+                highestSpriteSubmitted = 0;
             }
         }
         prevVBlank = vBlank;
@@ -214,12 +229,12 @@ public class Sprites4 extends DisplayLayer {
             // Reset on low in hardware
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
-            reachedEndOfLine = false;
+            reachedEndOfList = false;
         }
 
         clockAccumulator += clockMultiplier;
         while (clockAccumulator >= 1.0) {
-            if (!reachedEndOfLine) {
+            if (!reachedEndOfList) {
                 handleSpriteSchedule(displayH, displayV);
             }
             clockAccumulator -= 1.0;
@@ -276,7 +291,7 @@ public class Sprites4 extends DisplayLayer {
             case 6:
                 // Test for end of list
                 if (currentSpriteSizeY == 0) {
-                    reachedEndOfLine = true;
+                    reachedEndOfList = true;
                     return;
                 }
 
@@ -422,8 +437,12 @@ public class Sprites4 extends DisplayLayer {
 
     @Override
     public String getDebug() {
-        return "Sprites4: leftBorderAdjust " + HexUtil.wordToHex(leftBorderAdjust) + " topBorderAdjust " + HexUtil.wordToHex(topBorderAdjust)
+        String debug = "Sprites4: leftBorderAdjust " + HexUtil.wordToHex(leftBorderAdjust) + " topBorderAdjust " + HexUtil.wordToHex(topBorderAdjust)
                 + " extentXPos " + HexUtil.byteToHex(extentXPos) + " extentYPos " + HexUtil.byteToHex(extentYPos) + " addressExtra " + HexUtil.byteToHex(addressExtra) + "\r";
+        debug += "Sprites4: Current sprite: " + drawingSpriteIndex + " reachedEndOfList " + reachedEndOfList + " highest sprite " + highestSpriteSubmitted + " triggerBufferSwap " + triggerBufferSwap + "\r";
+        debug += "Sprites4: Previous frame sprite: " + lastdrawingSpriteIndex + " highest sprite " + lasthighestSpriteSubmitted + " reachedEndOfList " + lastreachedEndOfList + "\r";
+
+        return debug;
     }
 
     public void randomiseData(Random rand) {

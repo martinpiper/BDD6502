@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/C64WithNewUserPort20to32Bit1.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/C64WithNewUserPort20to32Bit1.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
@@ -108,7 +107,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner C64WithNewUserPort20to32Bit1.feature">
+  <component name="RunManager" selected="Application.TestRunner VideoHardware @Demo14">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -1061,13 +1060,13 @@
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature @TC-4" />
       <item itemvalue="Application.TestRunner TestVideoHardware Chars.feature" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-10 Sprites3 (Scaled rotated)" />
-      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-17 Sprites4 (New Scaled)" />
-      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-17-2 Sprites4 (New Scaled) (1)" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-11" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-12" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-13 background colour" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-14" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-15" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-17 Sprites4 (New Scaled)" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-17-2 Sprites4 (New Scaled) (1)" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-1" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-6" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-7 Sprites2 (Scaled)" />
@@ -1159,6 +1158,20 @@
     </option>
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
+          <line>605</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
+          <line>276</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="JUnit">
         <watch expression="debugState" />
@@ -1169,6 +1182,10 @@
         <watch expression="displayX" />
         <watch expression="displayVExternal" />
         <watch expression="displayH" />
+        <watch expression="latchedPixel" />
+        <watch expression="realColour" />
+        <watch expression="palette[paletteBank]" language="JAVA" />
+        <watch expression="theColourValue" />
       </configuration>
     </watches-manager>
   </component>
