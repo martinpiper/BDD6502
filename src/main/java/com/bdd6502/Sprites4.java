@@ -405,7 +405,6 @@ public class Sprites4 extends DisplayLayer {
                 currentSpriteY++;
                 currentSpriteYPixel += currentSpriteScaleYInv;
 
-                // Lookup table in hardware
                 updateSpriteRow();
 
                 drawingSpriteState--;   // Might need to be an adder load instead of memory reset
@@ -419,11 +418,13 @@ public class Sprites4 extends DisplayLayer {
     }
 
     private void updateSpriteRow() {
+        // Lookup table in hardware, 8 bit * 8 bit
+        int multiply = ((currentSpriteYPixel >> 5) & 0xff) * (currentSpriteStride + 1); // Note: Add with +1 in hardware
         // Selector
         if ((currentSpritePalette & 0x80) > 0) {
-            currentSpriteAddressWorking = currentSpriteAddress - (((currentSpriteYPixel >> 5) & 0xff) * (currentSpriteStride + 1)); // Note: Add with +1 in hardware
+            currentSpriteAddressWorking = currentSpriteAddress - multiply;
         } else {
-            currentSpriteAddressWorking = currentSpriteAddress + (((currentSpriteYPixel >> 5) & 0xff) * (currentSpriteStride + 1)); // Note: Add with +1 in hardware
+            currentSpriteAddressWorking = currentSpriteAddress + multiply;
         }
         currentSpriteXWorking = currentSpriteX;
         currentSpriteSizeXWorking = currentSpriteSizeX;
