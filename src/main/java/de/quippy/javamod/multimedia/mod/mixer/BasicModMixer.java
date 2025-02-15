@@ -1293,99 +1293,107 @@ public abstract class BasicModMixer
 	{
 		if (debugData != null) {
 			int channel = actMemo.currentElement.getChannel();
-			if (previousChannelMemory[channel] == null) {
-				previousChannelMemory[channel] = new ChannelMemory();
+			String checkChannel = "music.channel.remap." + channel;
+			String remap = System.getProperty(checkChannel);
+			if (remap != null) {
+				int remapValue = Integer.parseInt(remap);
+				channel = remapValue;
 			}
-			if (actMemo.currentSample != previousChannelMemory[channel].currentSample) {
-				outputChannelHeader(channel);
-				debugData.println("currentSample: " + actMemo.currentSample.toString());
-				debugData.flush();
-			}
-			if (actMemo.currentNotePeriod != previousChannelMemory[channel].currentNotePeriod) {
-				outputChannelHeader(channel);
-				debugData.println("currentNotePeriod: " + actMemo.currentNotePeriod);
-				debugData.flush();
-			}
-			if (actMemo.instrumentFinished != previousChannelMemory[channel].instrumentFinished) {
-				outputChannelHeader(channel);
-				debugData.println("instrumentFinished: " + actMemo.instrumentFinished);
-				debugData.flush();
-			}
-			if (((actMemo.actRampVolLeft + actMemo.actRampVolRight) >> 22) != ((previousChannelMemory[channel].actRampVolLeft + previousChannelMemory[channel].actRampVolRight) >> 22)) {
-				outputChannelHeader(channel);
-				debugData.println("actRampVolCombined: " + ((actMemo.actRampVolLeft + actMemo.actRampVolRight) >> 22));
-				debugData.flush();
-			}
-
-			// A trigger
-			if (actMemo.newInstrumentSet == true) {
-				int sampleIndex = actMemo.currentSample.index;
-				exportSample(actMemo);
-				outputChannelHeader(channel);
-				debugData.println("newInstrumentSet: " + sampleIndex);
-				debugData.flush();
-
-				outputWaitFrames();
-				try {
-					debugMusicData.write(Helpers.kMusicCommandPlayNote | channel);
-
-					outputVolume(actMemo);
-					debugMusicData.write(sampleIndex);
-
-					outputNote(actMemo, sampleIndex);
-
-					debugMusicData.flush();
-				} catch (IOException e) {
+			if (channel >= 0) {
+				if (previousChannelMemory[channel] == null) {
+					previousChannelMemory[channel] = new ChannelMemory();
+				}
+				if (actMemo.currentSample != previousChannelMemory[channel].currentSample) {
+					outputChannelHeader(channel);
+					debugData.println("currentSample: " + actMemo.currentSample.toString());
+					debugData.flush();
+				}
+				if (actMemo.currentNotePeriod != previousChannelMemory[channel].currentNotePeriod) {
+					outputChannelHeader(channel);
+					debugData.println("currentNotePeriod: " + actMemo.currentNotePeriod);
+					debugData.flush();
+				}
+				if (actMemo.instrumentFinished != previousChannelMemory[channel].instrumentFinished) {
+					outputChannelHeader(channel);
+					debugData.println("instrumentFinished: " + actMemo.instrumentFinished);
+					debugData.flush();
+				}
+				if (((actMemo.actRampVolLeft + actMemo.actRampVolRight) >> 22) != ((previousChannelMemory[channel].actRampVolLeft + previousChannelMemory[channel].actRampVolRight) >> 22)) {
+					outputChannelHeader(channel);
+					debugData.println("actRampVolCombined: " + ((actMemo.actRampVolLeft + actMemo.actRampVolRight) >> 22));
+					debugData.flush();
 				}
 
-				actMemo.newInstrumentSet = false;
-			}
-
-			if (!actMemo.instrumentFinished) {
-				if (getRealFrequency(actMemo, actMemo.currentSample.index) != actMemo.previousRealFrequency) {
+				// A trigger
+				if (actMemo.newInstrumentSet == true) {
 					int sampleIndex = actMemo.currentSample.index;
 					exportSample(actMemo);
 					outputChannelHeader(channel);
-					debugData.println("newNoteSet: " + sampleIndex);
+					debugData.println("newInstrumentSet: " + sampleIndex);
 					debugData.flush();
 
 					outputWaitFrames();
 					try {
-						debugMusicData.write(Helpers.kMusicCommandAdjustNote | channel);
+						debugMusicData.write(Helpers.kMusicCommandPlayNote | channel);
 
 						outputVolume(actMemo);
+						debugMusicData.write(sampleIndex);
+
 						outputNote(actMemo, sampleIndex);
 
 						debugMusicData.flush();
 					} catch (IOException e) {
 					}
+
+					actMemo.newInstrumentSet = false;
 				}
 
-				if (getRealVolume(actMemo) != actMemo.previousRealVolume) {
-					if (!System.getProperty("music.volume","").isEmpty()) {
+				if (!actMemo.instrumentFinished) {
+					if (getRealFrequency(actMemo, actMemo.currentSample.index) != actMemo.previousRealFrequency) {
 						int sampleIndex = actMemo.currentSample.index;
 						exportSample(actMemo);
 						outputChannelHeader(channel);
-						debugData.println("newVolumeSet: " + sampleIndex);
+						debugData.println("newNoteSet: " + sampleIndex);
 						debugData.flush();
 
 						outputWaitFrames();
 						try {
-							debugMusicData.write(Helpers.kMusicCommandAdjustVolume | channel);
+							debugMusicData.write(Helpers.kMusicCommandAdjustNote | channel);
 
 							outputVolume(actMemo);
+							outputNote(actMemo, sampleIndex);
 
 							debugMusicData.flush();
 						} catch (IOException e) {
 						}
 					}
+
+					if (getRealVolume(actMemo) != actMemo.previousRealVolume) {
+						if (!System.getProperty("music.volume", "").isEmpty()) {
+							int sampleIndex = actMemo.currentSample.index;
+							exportSample(actMemo);
+							outputChannelHeader(channel);
+							debugData.println("newVolumeSet: " + sampleIndex);
+							debugData.flush();
+
+							outputWaitFrames();
+							try {
+								debugMusicData.write(Helpers.kMusicCommandAdjustVolume | channel);
+
+								outputVolume(actMemo);
+
+								debugMusicData.flush();
+							} catch (IOException e) {
+							}
+						}
+					}
+
+
 				}
 
 
+				previousChannelMemory[channel].deepCopy(actMemo);
 			}
-
-
-			previousChannelMemory[channel].deepCopy(actMemo);
 		}
 		for (int i=startIndex; i<endIndex; i++)
 		{
