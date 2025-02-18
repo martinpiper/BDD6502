@@ -10,7 +10,7 @@ import static org.hamcrest.Matchers.*;
 public class Sprites4 extends DisplayLayer {
 
     int addressRegisters = 0x8800, addressExRegisters = 0x01;
-    int addressExPlane0 = 0x08;
+    int addressExPlane0 = 0x04;
     byte[] plane0 = new byte[0x100000]; // 1 MB is a sensible (ish) memory size based on hardware cost, single IC IS62C10248AL
     final int kNumSprites = 256;
     int drawingWith = 0;
@@ -311,6 +311,7 @@ public class Sprites4 extends DisplayLayer {
             case 13:
                 currentSpriteAddress = spriteAddress[drawingWith][drawingSpriteIndex];
                 drawingSpriteState++;
+                // TODO: This is actually 6 clocks on the hardware, since it is 3 x 8 bit loads from RAM
                 break;
 
             case 15:

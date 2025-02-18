@@ -515,7 +515,7 @@ Feature: Tests the video character screen data conversion and sprites
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
-    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x08' and running at 14.31818MHz
+    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 14.31818MHz
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
@@ -531,8 +531,8 @@ Feature: Tests the video character screen data conversion and sprites
 
     # Sprites4 data
     # Turrican Scaled
-    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledSprites4.bin" to 24bit bus at '0x0000' and addressEx '0x08'
-    Given write data from file "C:\Work\ImageToBitplane\target\testconcat4ScaledSprites4.bin" to 24bit bus at '0x4000' and addressEx '0x08'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledSprites4.bin" to 24bit bus at '0x0000' and addressEx '0x04'
+    Given write data from file "C:\Work\ImageToBitplane\target\testconcat4ScaledSprites4.bin" to 24bit bus at '0x4000' and addressEx '0x04'
 
     # Chars
     # oldbridge char screen with rgbfactor 512
@@ -838,21 +838,21 @@ Feature: Tests the video character screen data conversion and sprites
     And enable video display bus debug output
     Given video display processes 24 pixels per instruction
     Given video display refresh window every 32 instructions
-    Given video display saves debug BMP images to leaf filename "target/frames/TC-17-"
+    Given video display saves debug BMP images to leaf filename "target/frames/TC-17-2-"
     Given video display add joystick to port 2
 #    Given video display does not save debug BMP images
-#    Given property "bdd6502.bus24.trace" is set to string "true"
+    Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     Given a user port to 24 bit bus is installed
-    Given add a StaticColour layer for palette index '0x07'
-    And the layer has 16 colours
-    And the layer has overscan
-    And the layer uses exact address matching
-    Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
-    And the layer has 16 colours
-    And the layer has overscan
-    And the layer uses exact address matching
-    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x08' and running at 14.31818MHz
+#    Given add a StaticColour layer for palette index '0x07'
+#    And the layer has 16 colours
+#    And the layer has overscan
+#    And the layer uses exact address matching
+#    Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
+#    And the layer has 16 colours
+#    And the layer has overscan
+#    And the layer uses exact address matching
+    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 14.31818MHz
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
@@ -864,7 +864,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data from file "C:\temp\t.pal" to 24bit bus at '0x9c00' and addressEx '0x01'
 
 
-    Given write data from file "C:\temp\TScaledSprites4.bin" to 24bit bus at '0x0000' and addressEx '0x08'
+    Given write data from file "C:\temp\TScaledSprites4.bin" to 24bit bus at '0x0000' and addressEx '0x04'
 
     # Chars
     # oldbridge char screen with rgbfactor 512
@@ -877,13 +877,23 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data from file "C:\Work\ImageToBitplane\target\chars1024_scr.bin2" to 24bit bus at '0x8000' and addressEx '0x80'
 
     # Enable display
-    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
+    Given write data byte '0x30' to 24bit bus at '0x9e00' and addressEx '0x01'
     # Default display priority
     Given write data byte '0xe4' to 24bit bus at '0x9e08' and addressEx '0x01'
     # Overscan control
     Given write data byte '0x29' to 24bit bus at '0x9e09' and addressEx '0x01'
     # Just enable Sprites4, not the chars
     Given write data byte '0x01' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    # Background colour
+    Given write data byte '0x07' to 24bit bus at '0x9e0b' and addressEx '0x01'
+
+    # Init combiners
+    Given write data byte '0x60' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0xa201' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0xa202' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0xa203' and addressEx '0x01'
+
+
     # All layers
 #    Given write data byte '0x07' to 24bit bus at '0x9e0a' and addressEx '0x01'
 
@@ -960,6 +970,8 @@ Feature: Tests the video character screen data conversion and sprites
     Given render a video display frame
     When display until window closed
 
+    Then expect image "testdata/TC-17-2-000002.bmp" to be identical to "target/frames/TC-17-2-000002.bmp"
+
 
   @TC-17-3
   Scenario: Testing Sprites4 layer - 3 - Specific scaled data
@@ -977,7 +989,7 @@ Feature: Tests the video character screen data conversion and sprites
 #    Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     Given a user port to 24 bit bus is installed
-    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x08' and running at 14.31818MHz
+    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 14.31818MHz
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
@@ -1001,16 +1013,16 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0xff' to 24bit bus at '0x9c08' and addressEx '0x01'
     Given write data byte '0xff' to 24bit bus at '0x9c09' and addressEx '0x01'
 
-    # Specific pattern to aid debugging of scale up and down behaviour
-    Given write data byte '0x21' to 24bit bus at '0x0000' and addressEx '0x08'
-    Given write data byte '0x43' to 24bit bus at '0x0001' and addressEx '0x08'
-    Given write data byte '0x23' to 24bit bus at '0x0002' and addressEx '0x08'
-    Given write data byte '0x01' to 24bit bus at '0x0003' and addressEx '0x08'
+    # Sprites4 Specific pattern to aid debugging of scale up and down behaviour
+    Given write data byte '0x21' to 24bit bus at '0x0000' and addressEx '0x04'
+    Given write data byte '0x43' to 24bit bus at '0x0001' and addressEx '0x04'
+    Given write data byte '0x23' to 24bit bus at '0x0002' and addressEx '0x04'
+    Given write data byte '0x01' to 24bit bus at '0x0003' and addressEx '0x04'
 
-    Given write data byte '0x10' to 24bit bus at '0x0004' and addressEx '0x08'
-    Given write data byte '0x32' to 24bit bus at '0x0005' and addressEx '0x08'
-    Given write data byte '0x21' to 24bit bus at '0x0006' and addressEx '0x08'
-    Given write data byte '0x43' to 24bit bus at '0x0007' and addressEx '0x08'
+    Given write data byte '0x10' to 24bit bus at '0x0004' and addressEx '0x04'
+    Given write data byte '0x32' to 24bit bus at '0x0005' and addressEx '0x04'
+    Given write data byte '0x21' to 24bit bus at '0x0006' and addressEx '0x04'
+    Given write data byte '0x43' to 24bit bus at '0x0007' and addressEx '0x04'
 
     # Enable display
     Given write data byte '0x30' to 24bit bus at '0x9e00' and addressEx '0x01'
