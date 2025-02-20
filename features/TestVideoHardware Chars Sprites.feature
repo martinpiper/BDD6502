@@ -844,15 +844,18 @@ Feature: Tests the video character screen data conversion and sprites
     Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     Given a user port to 24 bit bus is installed
-#    Given add a StaticColour layer for palette index '0x07'
-#    And the layer has 16 colours
-#    And the layer has overscan
-#    And the layer uses exact address matching
-#    Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
-#    And the layer has 16 colours
-#    And the layer has overscan
-#    And the layer uses exact address matching
-    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 14.31818MHz
+    # Layer 0
+    Given add a 2-to-1 merge layer with registers at '0xa200'
+    And the layer has 16 colours
+    And the layer has overscan
+      # Layer 0-1
+#      Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 14.31818MHz
+    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 12.096MHz
+    And the layer has 16 colours
+    And the layer has overscan
+    And the layer uses exact address matching
+      # Layer 0-0
+    Given add a Sprites V9.5 layer with registers at '0x9800' and addressEx '0x10' and running at 16MHz
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
@@ -990,7 +993,18 @@ Feature: Tests the video character screen data conversion and sprites
 #    Given property "bdd6502.bus24.trace" is set to string "true"
     Given I have a simple overclocked 6502 system
     Given a user port to 24 bit bus is installed
+    # Layer 0
+    Given add a 2-to-1 merge layer with registers at '0xa200'
+    And the layer has 16 colours
+    And the layer has overscan
+      # Layer 0-1
+#      Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 14.31818MHz
     Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 12.096MHz
+    And the layer has 16 colours
+    And the layer has overscan
+    And the layer uses exact address matching
+      # Layer 0-0
+    Given add a Sprites V9.5 layer with registers at '0x9800' and addressEx '0x10' and running at 16MHz
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
@@ -1047,10 +1061,10 @@ Feature: Tests the video character screen data conversion and sprites
     # Zero flag
     Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
     # Zero the X/Y border adjustments
-    Given write data byte '0x00' to 24bit bus at '0x8801' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8802' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8803' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8804' and addressEx '0x01'
+    Given write data byte '0xf0' to 24bit bus at '0x8801' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8802' and addressEx '0x01'
+    Given write data byte '0xf8' to 24bit bus at '0x8803' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8804' and addressEx '0x01'
     # Extent X/Y values
     Given write data byte '0xa8' to 24bit bus at '0x8805' and addressEx '0x01'
     Given write data byte '0x70' to 24bit bus at '0x8806' and addressEx '0x01'
@@ -1115,6 +1129,11 @@ Feature: Tests the video character screen data conversion and sprites
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
+
+    Given write data byte '0x29' to 24bit bus at '0x9e09' and addressEx '0x01'
+    Given render a video display frame
+    Given render a video display frame
+
     When display until window closed
 
     Then expect image "testdata/TC-17-3-000002.bmp" to be identical to "target/frames/TC-17-3-000002.bmp"

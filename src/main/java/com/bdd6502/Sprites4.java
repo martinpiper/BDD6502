@@ -240,7 +240,7 @@ public class Sprites4 extends DisplayLayer {
             clockAccumulator -= 1.0;
         }
 
-        int fetchingH = (displayH + leftBorderAdjust - 2) & 0x1ff;
+        int fetchingH = (displayH + leftBorderAdjust - 1) & 0x1ff;
         int fetchingV = (displayV + topBorderAdjust) & 0x1ff;
         // Output calculated data
         int finalPixel = calculatedFrames[onScreen][fetchingH + (fetchingV * 512)];
