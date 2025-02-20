@@ -240,12 +240,16 @@ public class Sprites4 extends DisplayLayer {
             clockAccumulator -= 1.0;
         }
 
-        int fetchingH = (displayH + leftBorderAdjust) & 0x1ff;
+        int fetchingH = (displayH + leftBorderAdjust - 2) & 0x1ff;
         int fetchingV = (displayV + topBorderAdjust) & 0x1ff;
         // Output calculated data
         int finalPixel = calculatedFrames[onScreen][fetchingH + (fetchingV * 512)];
         // And progressively clear the output pixel, like the hardware does
         calculatedFrames[onScreen][fetchingH + (fetchingV * 512)] = 0;
+
+        if (displayH < 2) {
+            finalPixel = display.getContentionColouredPixel();
+        }
 
         return finalPixel;
     }

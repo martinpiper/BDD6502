@@ -10,6 +10,8 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-17-2-000002.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-2-000002.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000002.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000002.bmp" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -108,7 +110,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-17-2 Sprites4 (New Scaled) (1)">
+  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-17-3 Sprites4 (New Scaled) (3)">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -1177,12 +1179,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java</url>
-          <line>436</line>
+          <line>440</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java</url>
-          <line>424</line>
+          <line>428</line>
           <option name="timeStamp" value="21" />
         </line-breakpoint>
       </breakpoints>
