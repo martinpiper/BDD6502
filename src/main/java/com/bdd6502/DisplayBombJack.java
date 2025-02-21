@@ -109,6 +109,7 @@ public class DisplayBombJack extends MemoryBus {
     String leafFilename = null;
     int lastDataWritten = 0;
     boolean vBlank = false;
+    boolean needToOutputVSyncWait = false;
     boolean _hSync = true, _vSync = true;
     boolean extEXTWANTIRQFlag = false;
     PrintWriter debugData = null;
@@ -571,11 +572,16 @@ public class DisplayBombJack extends MemoryBus {
             }
         }
 
+        if (!vBlank) {
+            // For the next VBLANK start
+            needToOutputVSyncWait = true;
+        }
         if (vBlank /*|| (displayH & 256) == 256*/) {
             enablePixels = false;
         }
         // The hardware syncs on -ve _VBLANK
-        if (displayX == 0 && displayVExternal == 0xf0) {
+//        if (displayX == 0 && displayVExternal == 0xf0) {
+        if (vBlank && needToOutputVSyncWait) {
             if (enableDisplay && debugData != null) {
                 debugData.println("; Frame " + frameNumberForSync);
                 debugData.println("d$0");
@@ -586,6 +592,7 @@ public class DisplayBombJack extends MemoryBus {
                     callbackUserPort.signalVBlank();
                 }
             }
+            needToOutputVSyncWait = false;
         }
 
 
