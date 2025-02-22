@@ -63,18 +63,20 @@ public abstract class MemoryBus {
         return false;
     }
 
-    public void writeDataFromFile(int address, int addressEx, String filename) throws IOException {
+    public int writeDataFromFile(int address, int addressEx, String filename) throws IOException {
         byte[] data = FileUtils.readFileToByteArray(new File(filename));
         for (int i = 0; i < data.length; i++) {
             writeData(address + i, addressEx, data[i]);
         }
+        return data.length;
     }
 
-    public void writeDataFromFile(int address, int addressEx, String filename, int offset, int length) throws IOException {
+    public int writeDataFromFile(int address, int addressEx, String filename, int offset, int length) throws IOException {
         byte[] data = FileUtils.readFileToByteArray(new File(filename));
         for (int i = 0; i < length; i++) {
             writeData(address + i, addressEx, data[offset + i]);
         }
+        return data.length;
     }
 
     public void writeData(int address, int addressEx, int data) {

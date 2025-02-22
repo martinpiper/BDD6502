@@ -1027,17 +1027,19 @@ Feature: Tests the video character screen data conversion and sprites
     # White
     Given write data byte '0xff' to 24bit bus at '0x9c08' and addressEx '0x01'
     Given write data byte '0xff' to 24bit bus at '0x9c09' and addressEx '0x01'
+    # White
+    Given write data byte '0x77' to 24bit bus at '0x9c0a' and addressEx '0x01'
+    Given write data byte '0x77' to 24bit bus at '0x9c0b' and addressEx '0x01'
 
     # Sprites4 Specific pattern to aid debugging of scale up and down behaviour
-    Given write data byte '0x21' to 24bit bus at '0x0000' and addressEx '0x04'
-    Given write data byte '0x43' to 24bit bus at '0x0001' and addressEx '0x04'
-    Given write data byte '0x23' to 24bit bus at '0x0002' and addressEx '0x04'
-    Given write data byte '0x01' to 24bit bus at '0x0003' and addressEx '0x04'
-
-    Given write data byte '0x10' to 24bit bus at '0x0004' and addressEx '0x04'
-    Given write data byte '0x32' to 24bit bus at '0x0005' and addressEx '0x04'
-    Given write data byte '0x21' to 24bit bus at '0x0006' and addressEx '0x04'
-    Given write data byte '0x43' to 24bit bus at '0x0007' and addressEx '0x04'
+    Given start writing data to 24bit bus at '0x0000' and addressEx '0x04'
+    # Guard data
+    Given write data '0x55 0x55 0x55 0x55 0x55 0x55 0x55 0x55' to 24bit bus
+    # Real data
+    Given write data '0x21 0x43 0x23 0x01' to 24bit bus
+    Given write data '0x10 0x32 0x21 0x43' to 24bit bus
+    # Guard data
+    Given write data '0x55 0x55 0x55 0x55 0x55 0x55 0x55 0x55' to 24bit bus
 
     # Enable display
     Given write data byte '0x30' to 24bit bus at '0x9e00' and addressEx '0x01'
@@ -1080,49 +1082,16 @@ Feature: Tests the video character screen data conversion and sprites
     # Y inv scale (*32)
     # X inv scale (*32)
     # Sprite stride-1
-    # Middle, right, crouching left, no scale
-    Given write data byte '0x00' to 24bit bus at '0x8808' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x8809' and addressEx '0x01'
-    Given write data byte '16' to 24bit bus at '0x880a' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x880b' and addressEx '0x01'
-    Given write data byte '16' to 24bit bus at '0x880c' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x880d' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x880e' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x880f' and addressEx '0x01'
-    Given write data byte '0x08' to 24bit bus at '0x8810' and addressEx '0x01'
-    Given write data byte '0x08' to 24bit bus at '0x8811' and addressEx '0x01'
-    Given write data byte '3' to 24bit bus at '0x8812' and addressEx '0x01'
-
-    Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
-    Given write data byte '0x40' to 24bit bus at '0x8814' and addressEx '0x01'
-    Given write data byte '4' to 24bit bus at '0x8815' and addressEx '0x01'
-    Given write data byte '0x40' to 24bit bus at '0x8816' and addressEx '0x01'
-    Given write data byte '4' to 24bit bus at '0x8817' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8818' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8819' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x881a' and addressEx '0x01'
-    Given write data byte '0x20' to 24bit bus at '0x881b' and addressEx '0x01'
-    Given write data byte '0x20' to 24bit bus at '0x881c' and addressEx '0x01'
-    Given write data byte '3' to 24bit bus at '0x881d' and addressEx '0x01'
-
-    Given write data byte '0x00' to 24bit bus at '0x881e' and addressEx '0x01'
-    Given write data byte '0x80' to 24bit bus at '0x881f' and addressEx '0x01'
-    Given write data byte '2' to 24bit bus at '0x8820' and addressEx '0x01'
-    Given write data byte '0x80' to 24bit bus at '0x8821' and addressEx '0x01'
-    Given write data byte '2' to 24bit bus at '0x8822' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8823' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8824' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8825' and addressEx '0x01'
-    Given write data byte '0x40' to 24bit bus at '0x8826' and addressEx '0x01'
-    Given write data byte '0x40' to 24bit bus at '0x8827' and addressEx '0x01'
-    Given write data byte '3' to 24bit bus at '0x8828' and addressEx '0x01'
+    Given start writing data to 24bit bus at '0x8808' and addressEx '0x01'
+    Given write data '0x00 0x10 16 0x10 16 0x10 0x00 0x00 0x08 0x08 3' to 24bit bus
+    Given write data '0x00 0x40 4 0x40 4 0x10 0x00 0x00 0x20 0x20 3' to 24bit bus
+    Given write data '0x00 0x80 2 0x80 2 0x10 0x00 0x00 0x40 0x40 3' to 24bit bus
 
     # Terminate the sprite list
-    Given write data byte '0x00' to 24bit bus at '0x8829' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x882a' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x882b' and addressEx '0x01'
+    Given write data '0x00 0x00 0x00' to 24bit bus
 
     # Signal flag ready
+    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
     Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
 
     Given enable debug pixel picking
@@ -1134,6 +1103,18 @@ Feature: Tests the video character screen data conversion and sprites
     Given render a video display frame
     Given render a video display frame
 
+    # Fill rate test
+    Given start writing data to 24bit bus at '0x8808' and addressEx '0x01'
+    Given write data '0x00 0x10 200 0x10 200 0x00 0x00 0x00 0x01 0x01 3' to 24bit bus
+    # Terminate the sprite list
+    Given write data '0x00 0x00 0x00' to 24bit bus
+    # Signal flag ready
+    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given render a video display frame
+    Given render a video display frame
+    Given render a video display frame
+
     When display until window closed
 
-    Then expect image "testdata/TC-17-3-000002.bmp" to be identical to "target/frames/TC-17-3-000002.bmp"
+    Then expect image "testdata/TC-17-3-000003.bmp" to be identical to "target/frames/TC-17-3-000003.bmp"

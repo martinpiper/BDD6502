@@ -2201,17 +2201,44 @@ public class Glue {
         displayBombJack.getLastLayerAdded().make16Colours();
     }
 
+    int currentUserPortWriteAddress = 0;
+    int currentUserPortWriteAddressEx = 0;
     @Given("^write data from file \"([^\"]*)\" to 24bit bus at '(.*)' and addressEx '(.*)'$")
     public void writeDataFromFileToBitBusAtXCAndAddressExX(String filename, String address, String addressEx) throws Throwable {
+        currentUserPortWriteAddress = valueToInt(address);
+        currentUserPortWriteAddressEx = valueToInt(addressEx);
+        int len = 0;
         for (MemoryBus device : devices) {
-            device.writeDataFromFile(valueToInt(address), valueToInt(addressEx), filename);
+            len = device.writeDataFromFile(currentUserPortWriteAddress, currentUserPortWriteAddressEx, filename);
         }
+        currentUserPortWriteAddress += len;
     }
 
     @Given("^write data byte '(.*)' to 24bit bus at '(.*)' and addressEx '(.*)'$")
     public void writeDataByteToBitBusAtXCAndAddressExX(String value, String address, String addressEx) throws Throwable {
+        currentUserPortWriteAddress = valueToInt(address);
+        currentUserPortWriteAddressEx = valueToInt(addressEx);
         for (MemoryBus device : devices) {
-            device.writeData(valueToInt(address), valueToInt(addressEx), valueToInt(value));
+            device.writeData(currentUserPortWriteAddress, currentUserPortWriteAddressEx, valueToInt(value));
+        }
+        currentUserPortWriteAddress++;
+    }
+
+    @Given("^start writing data to 24bit bus at '(.*)' and addressEx '(.*)'$")
+    public void startWritingToBitBusAtXCAndAddressExX(String address, String addressEx) throws Throwable {
+        currentUserPortWriteAddress = valueToInt(address);
+        currentUserPortWriteAddressEx = valueToInt(addressEx);
+    }
+
+    @Given("^write data '(.*)' to 24bit bus$")
+    public void writeDataToBitBus(String value) throws Throwable {
+        String resolved = PropertiesResolution.resolveInput(value);
+        String values[] = resolved.split(" ");
+        for (String theValue : values) {
+            for (MemoryBus device : devices) {
+                device.writeData(currentUserPortWriteAddress, currentUserPortWriteAddressEx, valueToInt(theValue));
+            }
+            currentUserPortWriteAddress++;
         }
     }
 
