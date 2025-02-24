@@ -257,7 +257,6 @@ public class Sprites4 extends DisplayLayer {
     void handleSpriteSchedule(int displayH, int displayV) {
         int offScreen = 1 - onScreen;
 
-        // Reading Y first gives time to calculate vertical extent and skip the sprite before drawing the span
         switch (drawingSpriteState) {
             // Even cycles, on the low portion of the event, on the +ve edge, the odd cycles, the load is actually completed
             case 0:
@@ -344,6 +343,7 @@ public class Sprites4 extends DisplayLayer {
                 break;
 
             case 21:
+                // Equivalent to hardware: S4_JustBeforeDrawingPixels
                 // If it is always going to be off the right edge...
                 // Note: Not using currentSpriteXWorking and currentSpriteSizeXWorking
                 if ( ((currentSpriteX/2) & 0xff) >= extentXPos && (((currentSpriteX + currentSpriteSizeX)/2) & 0xff) >= extentXPos) {
@@ -357,6 +357,7 @@ public class Sprites4 extends DisplayLayer {
                 break;
 
             case 23:
+                // Equivalent to hardware: S4_EnableXPosCount
                 // If it is always going to be off the bottom edge...
                 if ( ((currentSpriteY/2) & 0xff) >= extentYPos && (((currentSpriteY + currentSpriteSizeY)/2) & 0xff) >= extentYPos) {
                     advanceSprite();   // Must not trigger twice for this clock...
@@ -422,9 +423,7 @@ public class Sprites4 extends DisplayLayer {
                 currentSpriteY++;
                 currentSpriteYPixel += currentSpriteScaleYInv;
 
-                updateSpriteRow();
-
-                drawingSpriteState--;   // Might need to be an adder load instead of memory reset
+                drawingSpriteState = 21;   // Might need to be an adder load instead of memory reset
 
                 if (currentSpriteSizeY <= 0) {
                     advanceSprite();

@@ -1517,6 +1517,24 @@ Feature: Tests the video character screen data conversion and sprites
     Given render a video display frame
     Given render a video display frame
 
-    When display until window closed
+#    When display until window closed
 
     Then expect image "testdata/TC-17-3-000003.bmp" to be identical to "target/frames/TC-17-3-000003.bmp"
+    Then expect image "testdata/TC-17-3-000005.bmp" to be identical to "target/frames/TC-17-3-000005.bmp"
+    Then expect image "testdata/TC-17-3-000006.bmp" to be identical to "target/frames/TC-17-3-000006.bmp"
+    Then expect image "testdata/TC-17-3-000007.bmp" to be identical to "target/frames/TC-17-3-000007.bmp"
+    Then expect image "testdata/TC-17-3-000008.bmp" to be identical to "target/frames/TC-17-3-000008.bmp"
+    Then expect image "testdata/TC-17-3-000009.bmp" to be identical to "target/frames/TC-17-3-000009.bmp"
+    Then expect image "testdata/TC-17-3-000010.bmp" to be identical to "target/frames/TC-17-3-000010.bmp"
+    Then expect image "testdata/TC-17-3-000011.bmp" to be identical to "target/frames/TC-17-3-000011.bmp"
+
+    Then expect image "testdata/TC-17-3-000013.bmp" to be identical to "target/frames/TC-17-3-000013.bmp"
+    Then expect image "testdata/TC-17-3-000016.bmp" to be identical to "target/frames/TC-17-3-000016.bmp"
+    Then expect image "testdata/TC-17-3-000019.bmp" to be identical to "target/frames/TC-17-3-000019.bmp"
+    Then expect image "testdata/TC-17-3-000022.bmp" to be identical to "target/frames/TC-17-3-000022.bmp"
+    Then expect image "testdata/TC-17-3-000025.bmp" to be identical to "target/frames/TC-17-3-000025.bmp"
+    Then expect image "testdata/TC-17-3-000028.bmp" to be identical to "target/frames/TC-17-3-000028.bmp"
+    Then expect image "testdata/TC-17-3-000031.bmp" to be identical to "target/frames/TC-17-3-000031.bmp"
+    Then expect image "testdata/TC-17-3-000034.bmp" to be identical to "target/frames/TC-17-3-000034.bmp"
+    Then expect image "testdata/TC-17-3-000037.bmp" to be identical to "target/frames/TC-17-3-000037.bmp"
+    Then expect image "testdata/TC-17-3-000040.bmp" to be identical to "target/frames/TC-17-3-000040.bmp"
