@@ -557,7 +557,7 @@ Feature: Tests the video character screen data conversion and sprites
 
     # Sprites4 registers
     # Zero flag
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
     # Zero the X/Y border adjustments
     Given write data byte '0x00' to 24bit bus at '0x8801' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8802' and addressEx '0x01'
@@ -626,7 +626,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x00' to 24bit bus at '0x882b' and addressEx '0x01'
 
     # Signal flag ready
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
 
     Given render a video display frame
 #    When display until window closed
@@ -656,7 +656,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given render a video display frame
     Given render a video display frame
     # Pixel scroll test, note double buffered draw buffers
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
     # Top left, 0,0, standing left, double size
     Given write data byte '0x0b' to 24bit bus at '0x8808' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8809' and addressEx '0x01'
@@ -672,10 +672,10 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8814' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8815' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     # Pixel scroll test, note double buffered draw buffers
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
     # Top left, 0,0, standing left, double size
     Given write data byte '0x0b' to 24bit bus at '0x8808' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8809' and addressEx '0x01'
@@ -691,10 +691,10 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8814' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8815' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     # Pixel scroll test, note double buffered draw buffers
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
     # Top left, 0,0, standing left, double size
     Given write data byte '0x0b' to 24bit bus at '0x8808' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8809' and addressEx '0x01'
@@ -710,10 +710,10 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8814' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8815' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     # Pixel scroll test, note double buffered draw buffers
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
     # Top left, 0,0, standing left, double size
     Given write data byte '0x0b' to 24bit bus at '0x8808' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8809' and addressEx '0x01'
@@ -729,10 +729,10 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8814' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8815' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     # Pixel scroll test, note double buffered draw buffers
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
     # Top left, 0,0, standing left, double size
     Given write data byte '0x0b' to 24bit bus at '0x8808' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8809' and addressEx '0x01'
@@ -748,10 +748,10 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8814' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8815' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     # Pixel scroll test, note double buffered draw buffers
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
     # Top left, 0,0, standing left, double size
     Given write data byte '0x0b' to 24bit bus at '0x8808' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8809' and addressEx '0x01'
@@ -767,7 +767,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x00' to 24bit bus at '0x8813' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8814' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8815' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
 
 
@@ -787,12 +787,12 @@ Feature: Tests the video character screen data conversion and sprites
 #    And wait for debugger connection
 
 #    When I execute the procedure at start for no more than 99999999 instructions
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
 
     When I execute the procedure at start until return
 
     # Signal flag ready
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
@@ -903,7 +903,7 @@ Feature: Tests the video character screen data conversion and sprites
 
     # Sprites4 registers
     # Zero flag
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
     # Zero the X/Y border adjustments
     Given write data byte '0x00' to 24bit bus at '0x8801' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8802' and addressEx '0x01'
@@ -967,7 +967,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x00' to 24bit bus at '0x882b' and addressEx '0x01'
 
     # Signal flag ready
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
 
     Given render a video display frame
     Given render a video display frame
@@ -1064,7 +1064,7 @@ Feature: Tests the video character screen data conversion and sprites
 
     # Sprites4 registers
     # Zero flag
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
     # Zero the X/Y border adjustments
     Given write data byte '0xf0' to 24bit bus at '0x8801' and addressEx '0x01'
     Given write data byte '0xff' to 24bit bus at '0x8802' and addressEx '0x01'
@@ -1106,8 +1106,8 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data '0x00 0x00 0x00' to 24bit bus
 
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
 
     Given enable debug pixel picking
     Given render a video display frame
@@ -1128,8 +1128,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
 
     Given start writing data to 24bit bus at '0x8808' and addressEx '0x01'
@@ -1145,8 +1145,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
 
     Given start writing data to 24bit bus at '0x8808' and addressEx '0x01'
@@ -1161,8 +1161,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
 
     Given start writing data to 24bit bus at '0x8808' and addressEx '0x01'
@@ -1177,8 +1177,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
 
     Given start writing data to 24bit bus at '0x8808' and addressEx '0x01'
@@ -1193,8 +1193,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
 
     Given start writing data to 24bit bus at '0x8808' and addressEx '0x01'
@@ -1209,8 +1209,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
 
     Given start writing data to 24bit bus at '0x8808' and addressEx '0x01'
@@ -1228,8 +1228,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     Given render a video display frame
 
@@ -1256,8 +1256,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
@@ -1284,8 +1284,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
@@ -1312,8 +1312,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
@@ -1340,8 +1340,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
@@ -1368,8 +1368,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
@@ -1396,8 +1396,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
@@ -1424,8 +1424,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
@@ -1452,8 +1452,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
@@ -1480,8 +1480,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
@@ -1508,8 +1508,8 @@ Feature: Tests the video character screen data conversion and sprites
     # Terminate the sprite list
     Given write data '0x00 0x00 0x00' to 24bit bus
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
     Given render a video display frame
     Given render a video display frame
     Given render a video display frame
@@ -1627,7 +1627,7 @@ Feature: Tests the video character screen data conversion and sprites
 
     # Sprites4 registers
     # Zero flag
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
     # Zero the X/Y border adjustments
     Given write data byte '0xf0' to 24bit bus at '0x8801' and addressEx '0x01'
     Given write data byte '0xff' to 24bit bus at '0x8802' and addressEx '0x01'
@@ -1682,8 +1682,8 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data '0x00 0x00 0x00' to 24bit bus
 
     # Signal flag ready
-    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
 
     Given enable debug pixel picking
     Given render a video display frame

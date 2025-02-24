@@ -45,6 +45,7 @@ public class Sprites4 extends DisplayLayer {
     int highestSpriteSubmitted = 0;
     int lasthighestSpriteSubmitted = 0;
     int register0 = 0;
+    boolean register0_calculationEnable = false;
     int leftBorderAdjust = 0;
     int topBorderAdjust = 0;
     int extentXPos = 255 , extentYPos = 255;
@@ -84,6 +85,12 @@ public class Sprites4 extends DisplayLayer {
                         {
 //                            System.out.println("** Set triggerBufferSwap : Reached sprite: " + drawingSpriteIndex + " reachedEndOfList " + reachedEndOfList + " triggerBufferSwap " + triggerBufferSwap + " drawingWith " + drawingWith + " writingTo " + writingTo);
                             triggerBufferSwap = true;
+                        }
+                        if ((data & 0x02) == 0x02)
+                        {
+                            register0_calculationEnable = true;
+                        } else {
+                            register0_calculationEnable = false;
                         }
                         register0 = data & 0xff;
                         break;
@@ -225,7 +232,7 @@ public class Sprites4 extends DisplayLayer {
         if (_doLineStart) {
             // Reset on low in hardware
         }
-        if (!enableLayer) {
+        if (!register0_calculationEnable) {
             // Reset on low in hardware
             drawingSpriteIndex = 0;
             drawingSpriteState = 0;
@@ -249,6 +256,10 @@ public class Sprites4 extends DisplayLayer {
 
         if (displayH < 2) {
             finalPixel = display.getContentionColouredPixel();
+        }
+
+        if (!enableLayer) {
+            return 0;
         }
 
         return finalPixel;

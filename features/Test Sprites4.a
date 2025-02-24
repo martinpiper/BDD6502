@@ -80,7 +80,7 @@ ScaleSizeFrames32
 !zn
 frames
 	+MBus24Bit_SetAddress_A $01 , $8800
-	+MBus24Bit_Send8BitValue 0
+	+MBus24Bit_Send8BitValue 2
 
 	+MByteValueToAddress_A $0b , .smf1+1
 	+MByteValueToAddress_A 0 , .smx1+1
@@ -147,7 +147,7 @@ frames
 	+MBus24Bit_SendLE16BitValue 0
 
 	+MBus24Bit_SetAddress_A $01 , $8800
-	+MBus24Bit_Send8BitValue 1
+	+MBus24Bit_Send8BitValue 3
 	jsr Video_WaitVBlank
 	
 	inc .smsf1+1
