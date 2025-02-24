@@ -7,9 +7,6 @@
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -108,7 +105,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-17-3 Sprites4 (New Scaled) (3)">
+  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-17-4 Sprites4 (New Scaled)">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -509,6 +506,14 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags @TC-17-3 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner TestVideoHardware.feature  @TC-17-4 Sprites4 (New Scaled)" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @TC-17-4 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -1077,6 +1082,7 @@
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-17 Sprites4 (New Scaled)" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-17-2 Sprites4 (New Scaled) (1)" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-17-3 Sprites4 (New Scaled) (3)" />
+      <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-17-4 Sprites4 (New Scaled)" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-1" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-6" />
       <item itemvalue="Application.TestRunner TestVideoHardware.feature  @TC-7 Sprites2 (Scaled)" />

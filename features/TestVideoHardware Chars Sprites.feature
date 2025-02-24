@@ -978,7 +978,7 @@ Feature: Tests the video character screen data conversion and sprites
 
 
   @TC-17-3
-  Scenario: Testing Sprites4 layer - 3 - Specific scaled data
+  Scenario: Testing Sprites4 layer - 3 - Specific scaled data and extents
     Given clear all external devices
     Given a new video display with overscan and 16 colours
     And the display uses exact address matching
@@ -1538,3 +1538,159 @@ Feature: Tests the video character screen data conversion and sprites
     Then expect image "testdata/TC-17-3-000034.bmp" to be identical to "target/frames/TC-17-3-000034.bmp"
     Then expect image "testdata/TC-17-3-000037.bmp" to be identical to "target/frames/TC-17-3-000037.bmp"
     Then expect image "testdata/TC-17-3-000040.bmp" to be identical to "target/frames/TC-17-3-000040.bmp"
+
+
+
+  @TC-17-4
+  Scenario: Testing Sprites4 layer - 4 - Flips
+    Given clear all external devices
+    Given a new video display with overscan and 16 colours
+    And the display uses exact address matching
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
+    And enable video display bus debug output
+    Given video display processes 24 pixels per instruction
+    Given video display refresh window every 32 instructions
+    Given video display saves debug BMP images to leaf filename "target/frames/TC-17-4-"
+    Given video display add joystick to port 2
+#    Given video display does not save debug BMP images
+#    Given property "bdd6502.bus24.trace" is set to string "true"
+    Given I have a simple overclocked 6502 system
+    Given a user port to 24 bit bus is installed
+    # Layer 0
+    Given add a 2-to-1 merge layer with registers at '0xa200'
+    And the layer has 16 colours
+    And the layer has overscan
+      # Layer 0-1
+#      Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 14.31818MHz
+    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 12.096MHz
+    And the layer has 16 colours
+    And the layer has overscan
+    And the layer uses exact address matching
+      # Layer 0-0
+    Given add a Sprites V9.5 layer with registers at '0x9800' and addressEx '0x10' and running at 16MHz
+    And the layer has 16 colours
+    And the layer has overscan
+    And the layer uses exact address matching
+    Given show video window
+    Given limit video display to 60 fps
+
+    # Palette
+    # Mid grey
+    Given write data byte '0xe7' to 24bit bus at '0x9c00' and addressEx '0x01'
+    Given write data byte '0x38' to 24bit bus at '0x9c01' and addressEx '0x01'
+    # Bright red
+    Given write data byte '0x1f' to 24bit bus at '0x9c02' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x9c03' and addressEx '0x01'
+    # Bright green
+    Given write data byte '0xe0' to 24bit bus at '0x9c04' and addressEx '0x01'
+    Given write data byte '0x07' to 24bit bus at '0x9c05' and addressEx '0x01'
+    # Bright blue
+    Given write data byte '0x00' to 24bit bus at '0x9c06' and addressEx '0x01'
+    Given write data byte '0xf8' to 24bit bus at '0x9c07' and addressEx '0x01'
+    # White
+    Given write data byte '0xff' to 24bit bus at '0x9c08' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x9c09' and addressEx '0x01'
+    # Bright greeny yellow
+    Given write data byte '0x77' to 24bit bus at '0x9c0a' and addressEx '0x01'
+    Given write data byte '0x77' to 24bit bus at '0x9c0b' and addressEx '0x01'
+    # Bright darker greeny yellow
+    Given write data byte '0x55' to 24bit bus at '0x9c0c' and addressEx '0x01'
+    Given write data byte '0x55' to 24bit bus at '0x9c0d' and addressEx '0x01'
+
+    # Sprites4 Specific pattern to aid debugging of scale up and down behaviour
+    Given start writing data to 24bit bus at '0x0000' and addressEx '0x04'
+    # Guard data
+    Given write data '0x55 0x55 0x55 0x55 0x55 0x55 0x55 0x55' to 24bit bus
+    # Real data
+    Given write data '0x21 0x43 0x23 0x01' to 24bit bus
+    Given write data '0x10 0x32 0x21 0x43' to 24bit bus
+    # Guard data
+    Given write data '0x66 0x66 0x66 0x66 0x66 0x66 0x66 0x66' to 24bit bus
+
+    # Enable display
+    Given write data byte '0x30' to 24bit bus at '0x9e00' and addressEx '0x01'
+    # Default display priority
+    Given write data byte '0xe4' to 24bit bus at '0x9e08' and addressEx '0x01'
+    # Overscan control
+    Given write data byte '0x29' to 24bit bus at '0x9e09' and addressEx '0x01'
+    # Just enable Sprites4
+    Given write data byte '0x01' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    # Background colour
+    Given write data byte '0x00' to 24bit bus at '0x9e0b' and addressEx '0x01'
+
+    # Init combiners
+    Given write data byte '0x60' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0xa201' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0xa202' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0xa203' and addressEx '0x01'
+
+    # Sprites4 registers
+    # Zero flag
+    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    # Zero the X/Y border adjustments
+    Given write data byte '0xf0' to 24bit bus at '0x8801' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8802' and addressEx '0x01'
+    Given write data byte '0xf8' to 24bit bus at '0x8803' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8804' and addressEx '0x01'
+    # Extent X/Y values
+    Given write data byte '0xa8' to 24bit bus at '0x8805' and addressEx '0x01'
+    Given write data byte '0x70' to 24bit bus at '0x8806' and addressEx '0x01'
+    # Memory bank for sprite RAM load
+    Given write data byte '0x00' to 24bit bus at '0x8807' and addressEx '0x01'
+
+    # Sprites support X and Y flips
+    # Palette | 0x10 = MSBX | 0x20 = MSBY | 0x40 = flipX | 0x80 = flipY
+    # Y pos
+    # Y size (in screen pixels, regardless of scale)
+    # X pos
+    # X size (in screen pixels, regardless of scale)
+    # Sprite address (24 bits)
+    # Y inv scale (*32)
+    # X inv scale (*32)
+    # Sprite stride-1
+    Given start writing data to 24bit bus at '0x8808' and addressEx '0x01'
+    # Note: These do not adjust the starting address, so will appear to be "wrong", but it is sometimes valid to not adjust the starting address for certain graphical effects
+    Given write data '0x00 0x10 16 0x10 16 0x10 0x00 0x00 0x08 0x08 3' to 24bit bus
+    Given write data '0x40 0x10 16 0x30 16 0x10 0x00 0x00 0x08 0x08 3' to 24bit bus
+    Given write data '0x80 0x10 16 0x50 16 0x10 0x00 0x00 0x08 0x08 3' to 24bit bus
+    Given write data '0xc0 0x10 16 0x70 16 0x10 0x00 0x00 0x08 0x08 3' to 24bit bus
+
+    # Note: These do adjust the starting address, so will be correct
+    Given write data '0x00 0x30 16 0x10 16 0x10 0x00 0x00 0x08 0x08 3' to 24bit bus
+    Given write data '0x40 0x30 16 0x30 16 0x13 0x00 0x00 0x08 0x08 3' to 24bit bus
+    Given write data '0x80 0x30 16 0x50 16 0x1c 0x00 0x00 0x08 0x08 3' to 24bit bus
+    Given write data '0xc0 0x30 16 0x70 16 0x1f 0x00 0x00 0x08 0x08 3' to 24bit bus
+
+    # As above but with different scales and sizes, to test stride and overflow
+    Given write data '0x00 0x50 4 0x10 16 0x10 0x00 0x00 0x08 0x20 3' to 24bit bus
+    Given write data '0x40 0x50 4 0x30 16 0x10 0x00 0x00 0x08 0x20 3' to 24bit bus
+    Given write data '0x80 0x50 4 0x50 16 0x10 0x00 0x00 0x08 0x20 3' to 24bit bus
+    Given write data '0xc0 0x50 4 0x70 16 0x10 0x00 0x00 0x08 0x20 3' to 24bit bus
+
+    Given write data '0x00 0x60 4 0x10 16 0x10 0x00 0x00 0x08 0x20 3' to 24bit bus
+    Given write data '0x40 0x60 4 0x30 16 0x13 0x00 0x00 0x08 0x20 3' to 24bit bus
+    Given write data '0x80 0x60 4 0x50 16 0x1c 0x00 0x00 0x08 0x20 3' to 24bit bus
+    Given write data '0xc0 0x60 4 0x70 16 0x1f 0x00 0x00 0x08 0x20 3' to 24bit bus
+
+    Given write data '0x00 0x70 16 0x10 4 0x10 0x00 0x00 0x20 0x08 3' to 24bit bus
+    Given write data '0x40 0x70 16 0x30 4 0x13 0x00 0x00 0x20 0x08 3' to 24bit bus
+    Given write data '0x80 0x70 16 0x50 4 0x1c 0x00 0x00 0x20 0x08 3' to 24bit bus
+    Given write data '0xc0 0x70 16 0x70 4 0x1f 0x00 0x00 0x20 0x08 3' to 24bit bus
+
+    # Terminate the sprite list
+    Given write data '0x00 0x00 0x00' to 24bit bus
+
+    # Signal flag ready
+    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x8800' and addressEx '0x01'
+
+    Given enable debug pixel picking
+    Given render a video display frame
+
+    Given render a video display frame
+    Given render a video display frame
+
+    When display until window closed
+
+    Then expect image "testdata/TC-17-4-000002.bmp" to be identical to "target/frames/TC-17-4-000002.bmp"
