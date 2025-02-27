@@ -6,9 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/Test Sprites4.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/Test Sprites4.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/ModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/ModMixer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -107,7 +110,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-17-4 Sprites4 (New Scaled)">
+  <component name="RunManager" selected="Application.TestRunner VideoHardware @Demo14">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -179,6 +182,23 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--execVideoTest" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner --exportmod After Burner sound effects reduced" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\work\c64\VideoHardware\assets\AfterBurner sound effects reduced.xm&quot; &quot;target/exportedAfterBurnerSoundEffects&quot; 65535 168864" />
+      <option name="VM_PARAMETERS" value="-Dmusic.channel.remap.4=0 -Dmusic.channel.remap.5=1 -Dmusic.channel.remap.6=2 -Dmusic.channel.remap.7=3" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner --exportmod After Burner sound effects" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--exportmod &quot;C:\work\c64\VideoHardware\assets\AfterBurner sound effects.xm&quot; &quot;target/exportedAfterBurnerSoundEffects&quot; 1 1" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -1056,6 +1076,8 @@
       <item itemvalue="Application.TestRunner --exportmod (4) fnkyldrt.mod" />
       <item itemvalue="Application.TestRunner --exportmod (4)" />
       <item itemvalue="Application.TestRunner --exportmod (5)" />
+      <item itemvalue="Application.TestRunner --exportmod After Burner sound effects" />
+      <item itemvalue="Application.TestRunner --exportmod After Burner sound effects reduced" />
       <item itemvalue="Application.TestRunner --exportmod blood money" />
       <item itemvalue="Application.TestRunner --exportmod cream of the earth" />
       <item itemvalue="Application.TestRunner --exportmod" />
@@ -1197,6 +1219,11 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
           <line>1210</line>
           <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java</url>
+          <line>1458</line>
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

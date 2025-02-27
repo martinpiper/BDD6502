@@ -27,8 +27,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.SortedSet;
 
 import com.bdd6502.AudioExpansion;
+import com.loomcom.symon.util.HexUtil;
 import de.quippy.javamod.multimedia.mod.loader.Module;
 import de.quippy.javamod.multimedia.mod.loader.instrument.Envelope;
 import de.quippy.javamod.multimedia.mod.loader.instrument.Instrument;
@@ -220,8 +225,13 @@ public abstract class BasicModMixer
 	protected int [] nvRampL;
 	protected int [] nvRampR;
 
+	private Set<Integer> writtenSampleFrequencyForAssembly = new LinkedHashSet<>();
+
 	public void setDebugData(PrintWriter debugData) {
 		this.debugData = debugData;
+	}
+	public void setDebugAssembly(PrintWriter debugData) {
+		this.debugAssembly = debugData;
 	}
 	public void setDebugSampleData(DataOutputStream debugSampleData) {
 		this.debugSampleData = debugSampleData;
@@ -232,6 +242,7 @@ public abstract class BasicModMixer
 	}
 
 	PrintWriter debugData = null;
+	PrintWriter debugAssembly = null;
 	DataOutputStream debugSampleData = null;
 	DataOutputStream debugMusicData = null;
 
@@ -266,7 +277,7 @@ public abstract class BasicModMixer
 		this.nvRampR = new int [Helpers.VOL_RAMP_LEN];
 		
 		initializeMixer();
-	}
+    }
 	/**
 	 * BE SHURE TO STOP PLAYBACK! Changing this during playback may (will!)
 	 * cause crappy playback!
@@ -1444,6 +1455,12 @@ public abstract class BasicModMixer
 		debugMusicData.write(realFrequency);
 		debugMusicData.write(realFrequency >> 8);
 		actMemo.previousRealFrequency = realFrequency;
+
+		if (writtenSampleFrequencyForAssembly.add(sampleIndex)) {
+			String prefix = "kSampleInfo" + Integer.toString(sampleIndex) + "_";
+			debugAssembly.println(prefix + "frequency=$" + HexUtil.wordToHex(realFrequency));
+			debugAssembly.flush();
+		}
 	}
 
 	private int getRealFrequency(ChannelMemory actMemo, int sampleIndex) {
@@ -1546,6 +1563,12 @@ public abstract class BasicModMixer
 			debugMusicData.write(sampleLoopLengths[sampleIndex]>>8);
 			debugMusicData.flush();
 
+			String prefix = "kSampleInfo" + Integer.toString(sampleIndex) + "_";
+			debugAssembly.println(prefix + "start=$" + HexUtil.wordToHex(sampleStarts[sampleIndex]));
+			debugAssembly.println(prefix + "length=$" + HexUtil.wordToHex(sampleLengths[sampleIndex]));
+			debugAssembly.println(prefix + "loopStart=$" + HexUtil.wordToHex(sampleLoopStarts[sampleIndex]));
+			debugAssembly.println(prefix + "looplength=$" + HexUtil.wordToHex(sampleLoopLengths[sampleIndex]));
+			debugAssembly.flush();
 		} catch (IOException e) {
 		}
 

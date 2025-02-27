@@ -498,7 +498,7 @@ public class UserPortTo24BitAddress extends Device {
 
 
         for (MemoryBus device : externalDevices) {
-            device.writeData(bus24Bytes[1] | (bus24Bytes[2] << 8), bus24Bytes[0], data);
+            device.writeData((bus24Bytes[1] | (bus24Bytes[2] << 8)) & 0xffff, bus24Bytes[0], data);
         }
 
         // To emulate the latched write passthrough from the APU its execution needs to be delayed, the RAM contention is used to emulate this

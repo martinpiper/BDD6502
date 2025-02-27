@@ -1984,6 +1984,15 @@ public class Glue {
         audioExpansion.start();
         devices.add(audioExpansion);
     }
+    @Given("^a new audio expansion with registers at '(.*)' and addressEx '(.*)'$")
+    public void aNewAudioExpansionEx(String addressRegisters, String addressEx) throws IOException, ScriptException {
+        if (audioExpansion != null) {
+            audioExpansion.close();
+        }
+        audioExpansion = new AudioExpansion(valueToInt(addressRegisters), valueToInt(addressEx));
+        audioExpansion.start();
+        devices.add(audioExpansion);
+    }
     @Given("^audio mix (.*)$")
     public void audioMix(int mix) throws IOException {
         audioExpansion.setMix(mix);

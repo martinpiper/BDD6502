@@ -42,6 +42,7 @@ public class ModMixer extends BasicMixer
 	public static final String EVENTS_BIN = "Events.bin";
 	public static final String EVENTS_CMP = "Events.cmp";
 	public static final String SAMPLES_BIN = "Samples.bin";
+	public static final String ASSEMBLY_DEFINES_TXT = "Defines.a";
 
 
 	private final Module mod;
@@ -578,15 +579,18 @@ public class ModMixer extends BasicMixer
 	@Override
 	public void fastExport(String filename, int ratio1, int ratio2) {
 		PrintWriter debugData = null;
+		PrintWriter assemblyData = null;
 		DataOutputStream sampleData = null;
 		DataOutputStream musicData = null;
 		try {
 			debugData = new PrintWriter(new FileWriter(filename + CHANNEL_EVENTS_TXT));
+			assemblyData = new PrintWriter(new FileWriter(filename + ASSEMBLY_DEFINES_TXT));
 			sampleData = new DataOutputStream(new FileOutputStream(filename + SAMPLES_BIN));
 			// To simulate a stopped voice the first exported sample is always 0x80
 			sampleData.write(0x80);
 			musicData = new DataOutputStream(new FileOutputStream(filename + EVENTS_BIN));
 			modMixer.setDebugData(debugData);
+			modMixer.setDebugAssembly(assemblyData);
 			modMixer.setDebugSampleData(sampleData);
 			modMixer.setDebugMusicData(musicData);
 			modMixer.setSampleRatio1(ratio1);
