@@ -6,10 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/ModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/ModMixer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
@@ -1201,29 +1199,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java</url>
-          <line>462</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java</url>
-          <line>450</line>
-          <option name="timeStamp" value="21" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
-          <line>585</line>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
-          <line>1210</line>
-          <option name="timeStamp" value="24" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/de/quippy/javamod/multimedia/mod/mixer/BasicModMixer.java</url>
           <line>1458</line>
           <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayBombJack.java</url>
+          <line>254</line>
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

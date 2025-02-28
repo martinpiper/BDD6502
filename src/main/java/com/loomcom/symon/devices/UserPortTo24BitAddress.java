@@ -494,11 +494,11 @@ public class UserPortTo24BitAddress extends Device {
     }
 
     public void writeMemoryBusWithState(int data) {
-        emitMemoryDebugForUserport(bus24Bytes[1] | (bus24Bytes[2] << 8) , bus24Bytes[0] , data);
+        emitMemoryDebugForUserport((bus24Bytes[1] | (bus24Bytes[2] << 8))  & 0xffff, bus24Bytes[0] & 0xff, data);
 
 
         for (MemoryBus device : externalDevices) {
-            device.writeData((bus24Bytes[1] | (bus24Bytes[2] << 8)) & 0xffff, bus24Bytes[0], data);
+            device.writeData((bus24Bytes[1] | (bus24Bytes[2] << 8)) & 0xffff, bus24Bytes[0] & 0xff, data);
         }
 
         // To emulate the latched write passthrough from the APU its execution needs to be delayed, the RAM contention is used to emulate this
@@ -508,6 +508,9 @@ public class UserPortTo24BitAddress extends Device {
     }
 
     public void emitMemoryDebugForUserport(int address, int addressEx , int data) {
+        assert(addressEx >= 0);
+        assert(address >= 0);
+
         if (displayBombJack != null) {
             if (debugData != null && displayBombJack.isEnableDisplay() && !displayBombJack.getVBlank()) {
 //                debugData.println("d$0");

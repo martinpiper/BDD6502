@@ -251,6 +251,12 @@ public class DisplayBombJack extends MemoryBus {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
+        if ((addressEx & 0x80) == 0x80) {
+            addressEx = addressEx;
+        }
+        assert(addressEx >= 0);
+        assert(address >= 0);
+
         if (pixelsSinceLastDebugWrite >= pixelsSinceLastDebugWriteMax) {
             pixelsSinceLastDebugWrite = 0;
             // This check removes waits for display H/V positions during the VBLANK, the non-visible part of the frame
