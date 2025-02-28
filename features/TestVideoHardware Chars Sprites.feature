@@ -515,7 +515,7 @@ Feature: Tests the video character screen data conversion and sprites
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
-    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 14.31818MHz
+    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x05' and running at 14.31818MHz
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
@@ -531,8 +531,8 @@ Feature: Tests the video character screen data conversion and sprites
 
     # Sprites4 data
     # Turrican Scaled
-    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledSprites4.bin" to 24bit bus at '0x0000' and addressEx '0x04'
-    Given write data from file "C:\Work\ImageToBitplane\target\testconcat4ScaledSprites4.bin" to 24bit bus at '0x4000' and addressEx '0x04'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledSprites4.bin" to 24bit bus at '0x0000' and addressEx '0x05'
+    Given write data from file "C:\Work\ImageToBitplane\target\testconcat4ScaledSprites4.bin" to 24bit bus at '0x4000' and addressEx '0x05'
 
     # Chars
     # oldbridge char screen with rgbfactor 512
@@ -849,8 +849,8 @@ Feature: Tests the video character screen data conversion and sprites
     And the layer has 16 colours
     And the layer has overscan
       # Layer 0-1
-#      Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 14.31818MHz
-    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 12.096MHz
+#      Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x05' and running at 14.31818MHz
+    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x05' and running at 12.096MHz
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
@@ -867,7 +867,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data from file "C:\temp\t.pal" to 24bit bus at '0x9c00' and addressEx '0x01'
 
 
-    Given write data from file "C:\temp\TScaledSprites4.bin" to 24bit bus at '0x0000' and addressEx '0x04'
+    Given write data from file "C:\temp\TScaledSprites4.bin" to 24bit bus at '0x0000' and addressEx '0x05'
 
     # Chars
     # oldbridge char screen with rgbfactor 512
@@ -998,8 +998,8 @@ Feature: Tests the video character screen data conversion and sprites
     And the layer has 16 colours
     And the layer has overscan
       # Layer 0-1
-#      Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 14.31818MHz
-    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 12.096MHz
+#      Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x05' and running at 14.31818MHz
+    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x05' and running at 12.096MHz
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
@@ -1035,7 +1035,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x55' to 24bit bus at '0x9c0d' and addressEx '0x01'
 
     # Sprites4 Specific pattern to aid debugging of scale up and down behaviour
-    Given start writing data to 24bit bus at '0x0000' and addressEx '0x04'
+    Given start writing data to 24bit bus at '0x0000' and addressEx '0x05'
     # Guard data
     Given write data '0x55 0x55 0x55 0x55 0x55 0x55 0x55 0x55' to 24bit bus
     # Real data
@@ -1562,8 +1562,8 @@ Feature: Tests the video character screen data conversion and sprites
     And the layer has 16 colours
     And the layer has overscan
       # Layer 0-1
-#      Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 14.31818MHz
-    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x04' and running at 12.096MHz
+#      Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x05' and running at 14.31818MHz
+    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x05' and running at 12.096MHz
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
@@ -1599,7 +1599,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x55' to 24bit bus at '0x9c0d' and addressEx '0x01'
 
     # Sprites4 Specific pattern to aid debugging of scale up and down behaviour
-    Given start writing data to 24bit bus at '0x0000' and addressEx '0x04'
+    Given start writing data to 24bit bus at '0x0000' and addressEx '0x05'
     # Guard data
     Given write data '0x55 0x55 0x55 0x55 0x55 0x55 0x55 0x55' to 24bit bus
     # Real data
