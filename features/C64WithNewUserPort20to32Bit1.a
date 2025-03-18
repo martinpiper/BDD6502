@@ -65,6 +65,12 @@ start
 	+WaitForFire_A
 	inc VIC2BorderColour
 	jsr TestInterface_DMATransfer
+	+WaitForFire_A
+	inc VIC2BorderColour
+	jsr TestInterface_DMATransferAgain
+	+WaitForFire_A
+	inc VIC2BorderColour
+	jsr TestInterface_DMATransferAgain2
 	inc VIC2BorderColour
 	+TestForPortBitsLoop_A CIA1KeyboardColumnJoystickA , JoystickBits_Right, .tl1
 
@@ -217,6 +223,14 @@ TestInterface_WriteRAMLong
 
 	jsr Bus20To32Bit1_SetLatch6
 
+	ldx #0
+.la2
+    txa
+    and #$0f
+    +MBus24Bit_Send8BitValueFromA
+    dex
+    bne .la2
+
 	ldy #0
 	ldx #0
 .la1
@@ -240,16 +254,13 @@ TestInterface_WriteRAMLong
 TestInterface_DMATransfer
 	jsr Bus20To32Bit1_ShortReset
 
-	
-	; jsr Video_SetAddressPalette : This won't work because it uses the 24 bit interface but we cannot twiddle PA2 and also set latch7...
+
 	; Reset the 24 bit interface
 	jsr Bus20To32Bit1_SetLatch7
 	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_PassthroughDisable
 	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_PassthroughDisable | kBus20To32Bit1_latch7_InternalPA2
-	; Set the palette address using the direct byte
 	jsr Bus20To32Bit1_SetLatch4
-;	+MBus24Bit_SetAddressNoReset_A kBus24Bit_VideoLayer_EBBS , kBus24Bit_VideoLayer_Palette
-	+MBus24Bit_SetAddressNoReset_A kBus24Bit_CharScreenMap_EBBS , kBus24Bit_CharScreenMap + (kBus24Bit_CharScreenWidth * 4)
+	+MBus24Bit_SetAddressNoReset_A kBus24Bit_CharScreenMap_EBBS , kBus24Bit_CharScreenMap + (kBus24Bit_CharScreenWidth * 8) + 8
 
 	; Read a couple of bytes from internal RAM and also redirect that to the 24 bit interface
 	jsr Bus20To32Bit1_SetLatch7
@@ -260,19 +271,17 @@ TestInterface_DMATransfer
 	+MBus24Bit_Get8BitValueToA
 	+MBus24Bit_Get8BitValueToA
 
-	; Setup a DMA
+	; Setup a very short DMA
 	jsr Bus20To32Bit1_WriteMode
 	jsr Bus20To32Bit1_SetLatch11
-	+MBus24Bit_Send8BitValue $80
+	+MBus24Bit_Send8BitValue $f8
 	jsr Bus20To32Bit1_SetLatch12
-	+MBus24Bit_Send8BitValue $fe
-
+	+MBus24Bit_Send8BitValue $ff
 
 	jsr Video_WaitVBlank
 	jsr Video_WaitVBlank
 	jsr Video_StartRasterTimers
 	+MBus24Bit_WaitUntilRasterY 128
-
 
 	jsr Bus20To32Bit1_SetLatch7
 	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_RAM | kBus20To32Bit1_latch7_InternalPA2 | kBus20To32Bit1_latch7_FastDMAStart
@@ -286,6 +295,83 @@ TestInterface_DMATransfer
 	and #kBus20To32Bit1_latch13_DMAInProgress
 	bne .dmal1
 	
+	jsr Bus20To32Bit1_WriteMode
+	+MBASICTextPrint .completeDMA
+
+	rts
+
+
+TestInterface_DMATransferAgain
+	; Reset the 24 bit interface
+	jsr Bus20To32Bit1_WriteMode
+	jsr Bus20To32Bit1_SetLatch7
+	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_RAM | kBus20To32Bit1_latch7_InternalPA2
+
+	; Setup a short DMA, that continues using the old external address and current internal address
+	jsr Bus20To32Bit1_WriteMode
+	jsr Bus20To32Bit1_SetLatch11
+	+MBus24Bit_Send8BitValue $f4
+	jsr Bus20To32Bit1_SetLatch12
+	+MBus24Bit_Send8BitValue $ff
+
+	jsr Video_WaitVBlank
+	jsr Video_WaitVBlank
+	jsr Video_StartRasterTimers
+	+MBus24Bit_WaitUntilRasterY 128
+
+	jsr Bus20To32Bit1_SetLatch7
+	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_RAM | kBus20To32Bit1_latch7_InternalPA2 | kBus20To32Bit1_latch7_FastDMAStart
+
+	jsr Bus20To32Bit1_ReadMode
+	jsr Bus20To32Bit1_SetLatch13
+
+.dmal3
+	inc VIC2BorderColour
+	+MBus24Bit_Get8BitValueToA
+	and #kBus20To32Bit1_latch13_DMAInProgress
+	bne .dmal3
+
+	jsr Bus20To32Bit1_WriteMode
+	+MBASICTextPrint .completeDMA
+
+	rts
+
+TestInterface_DMATransferAgain2
+	; Reset the 24 bit interface
+	jsr Bus20To32Bit1_WriteMode
+	jsr Bus20To32Bit1_SetLatch7
+	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_PassthroughDisable
+	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_PassthroughDisable | kBus20To32Bit1_latch7_InternalPA2
+	jsr Bus20To32Bit1_SetLatch4
+	+MBus24Bit_SetAddressNoReset_A kBus24Bit_CharScreenMap_EBBS , kBus24Bit_CharScreenMap + (kBus24Bit_CharScreenWidth * 9) + 8
+
+	jsr Bus20To32Bit1_SetLatch7
+	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_RAM | kBus20To32Bit1_latch7_InternalPA2
+
+	; Setup a DMA
+	jsr Bus20To32Bit1_WriteMode
+	jsr Bus20To32Bit1_SetLatch11
+	+MBus24Bit_Send8BitValue $80
+	jsr Bus20To32Bit1_SetLatch12
+	+MBus24Bit_Send8BitValue $fe
+
+	jsr Video_WaitVBlank
+	jsr Video_WaitVBlank
+	jsr Video_StartRasterTimers
+	+MBus24Bit_WaitUntilRasterY 128
+
+	jsr Bus20To32Bit1_SetLatch7
+	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_RAM | kBus20To32Bit1_latch7_InternalPA2 | kBus20To32Bit1_latch7_FastDMAStart
+
+	jsr Bus20To32Bit1_ReadMode
+	jsr Bus20To32Bit1_SetLatch13
+
+.dmal2
+	inc VIC2BorderColour
+	+MBus24Bit_Get8BitValueToA
+	and #kBus20To32Bit1_latch13_DMAInProgress
+	bne .dmal2
+
 	jsr Bus20To32Bit1_WriteMode
 	+MBASICTextPrint .completeDMA
 

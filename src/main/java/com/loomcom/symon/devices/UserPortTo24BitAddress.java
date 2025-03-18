@@ -728,6 +728,15 @@ public class UserPortTo24BitAddress extends Device {
             while (clockAccumulator >= clockAccumulatorByteTime) {
                 clockAccumulator -= clockAccumulatorByteTime;
 
+                // Update the counter before trying to write memory. Matches the hardware behaviour.
+                if (bus32FastDMAStart) {
+                    Bus32CalculateDMACounter();
+                    bus32FastDMACounter++;
+                    if ((bus32FastDMACounter & 0xffff) == 0) {
+                        bus32FastDMAStart = false;
+                    }
+                    Bus32DMACounterToLatches();
+                }
                 if (bus32FastDMAStart) {
                     int toReturn = 0xff;
                     if ((bus32Latches[7] & kbus32_latch7_SelectMask) == kbus32_latch7_RAM) {
@@ -748,12 +757,6 @@ public class UserPortTo24BitAddress extends Device {
                         assertThat("DMA in progress but kbus32_latch7_RAM is not set, so this DMA doesn't make sense!" , false);
                     }
                     bus24WriteByte(toReturn);
-                    Bus32CalculateDMACounter();
-                    bus32FastDMACounter++;
-                    if ((bus32FastDMACounter & 0xffff) == 0) {
-                        bus32FastDMAStart = false;
-                    }
-                    Bus32DMACounterToLatches();
                 }
             }
         }
