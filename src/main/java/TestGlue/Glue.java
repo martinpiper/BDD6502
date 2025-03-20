@@ -9,7 +9,6 @@ import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 import com.loomcom.symon.util.HexUtil;
 import com.replicanet.cukesplus.PropertiesResolution;
-import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -137,7 +136,10 @@ public class Glue {
         System.setProperty(name , Integer.toString(machine.getCpu().getClockCycles()));
     }
 
-
+    @Given("^the display has RGB background functionality$")
+    public void theDisplayHasRGBBackground() {
+        displayBombJack.enableRGBBackgroundFunctionality();
+    }
 
     private class ProfileData {
         boolean isSEI = false;
@@ -2122,6 +2124,14 @@ public class Glue {
         displayBombJack.addLayer(new Mode7(valueToInt(addressRegisters), valueToInt(addressExMap)));
     }
 
+    @Given("^add a BitmapRGB background with registers at '(.*)' and addressEx '(.*)'$")
+    public void addABitmapRGBBackgroundWithRegistersAtXaAndScreenAddressExX(String addressRegisters, String addressEx) throws ScriptException {
+        DisplayLayer background = new BitmapRGBPlane(valueToInt(addressRegisters), valueToInt(addressEx));
+        background.setWithOverscan(true);
+        background.makeExactEBBSAddress();
+        displayBombJack.setBackgroundLayer(background);
+    }
+
     @Given("^add a Tiles layer with registers at '(.*)' and screen addressEx '(.*)' and planes addressEx '(.*)'$")
     public void addATilesDisplayWithRegistersAtXaAndAddressExX(String addressRegisters, String addressExScreen, String addressExPlanes) throws ScriptException {
         displayBombJack.addLayer(new Tiles(valueToInt(addressRegisters), valueToInt(addressExScreen), valueToInt(addressExPlanes)));
@@ -2219,6 +2229,17 @@ public class Glue {
         int len = 0;
         for (MemoryBus device : devices) {
             len = device.writeDataFromFile(currentUserPortWriteAddress, currentUserPortWriteAddressEx, filename);
+        }
+        currentUserPortWriteAddress += len;
+    }
+
+    @Given("^write data offset from file \"([^\"]*)\" to 24bit bus at '(.*)' and addressEx '(.*)' offset '(.*)' length '(.*)'$")
+    public void writeDataFromFileToBitBusAtXCAndAddressExXOffsetLength(String filename, String address, String addressEx, String offset, String length) throws Throwable {
+        currentUserPortWriteAddress = valueToInt(address);
+        currentUserPortWriteAddressEx = valueToInt(addressEx);
+        int len = 0;
+        for (MemoryBus device : devices) {
+            len = device.writeDataFromFile(currentUserPortWriteAddress, currentUserPortWriteAddressEx, filename , valueToInt(offset) , valueToInt(length));
         }
         currentUserPortWriteAddress += len;
     }

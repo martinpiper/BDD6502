@@ -2662,3 +2662,94 @@ Feature: Tests the video and audio hardware expansion together
     Then expect image "testdata/TC-15-000000.bmp" to be identical to "target/frames/TC-15-000000.bmp"
     Then expect image "testdata/TC-15-000001.bmp" to be identical to "target/frames/TC-15-000001.bmp"
     Then expect image "testdata/TC-15-000002.bmp" to be identical to "target/frames/TC-15-000002.bmp"
+
+
+
+  @TC-18
+  Scenario: Test RGB bitmap display
+    Given clear all external devices
+    Given a new video display with overscan and 16 colours
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
+    Given the display uses exact address matching
+    Given the display has RGB background functionality
+    And enable video display bus debug output
+    Given video display processes 8 pixels per instruction
+    Given video display refresh window every 32 instructions
+    Given video display does not save debug BMP images
+    Given video display add joystick to port 1
+    Given video display saves debug BMP images to leaf filename "target/frames/TC-18-"
+    Given property "bdd6502.bus24.trace" is set to string "true"
+    Given I have a simple overclocked 6502 system
+    And That does fail on BRK
+    And I enable uninitialised memory read protection with immediate fail
+    Given a user port to 24 bit bus is installed
+    Given add a BitmapRGB background with registers at '0xa300' and addressEx '0x03'
+    Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
+    And the layer has 16 colours
+    And the layer has overscan
+    And the layer uses exact address matching
+
+    Given show video window
+
+    # Palette
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanPaletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
+    # Chars
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_map.bin" to 24bit bus at '0x4000' and addressEx '0x80'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_map.bin2" to 24bit bus at '0x8000' and addressEx '0x80'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane0.bin" to 24bit bus at '0x2000' and addressEx '0x20'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane1.bin" to 24bit bus at '0x4000' and addressEx '0x20'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane2.bin" to 24bit bus at '0x8000' and addressEx '0x20'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane3.bin" to 24bit bus at '0x0000' and addressEx '0x20'
+
+    # RGB Bitmap
+    Given write data byte '0x00' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x00082' length '0x10000'
+    Given write data byte '0x01' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x10082' length '0x10000'
+    Given write data byte '0x02' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x20082' length '0x10000'
+    Given write data byte '0x03' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x30082' length '0x10000'
+    Given write data byte '0x04' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x40082' length '0x10000'
+    Given write data byte '0x05' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x50082' length '0x10000'
+    Given write data byte '0x06' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x60082' length '0x10000'
+    Given write data byte '0x07' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x70082' length '0x10000'
+
+    # Wide overscan can use 0x2b which has a couple of chars on the left masked for scrolling and hits the right edge _HSYNC
+    # Use the 320 wide settings
+    Given write data byte '0x29' to 24bit bus at '0x9e09' and addressEx '0x01'
+    # Enable all layers
+    Given write data byte '0x0f' to 24bit bus at '0x9e0a' and addressEx '0x01'
+
+    # Enable display
+    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
+    # Layer priority all
+    Given write data byte '0x00' to 24bit bus at '0x9e08' and addressEx '0x01'
+    # Change video background colour
+    Given write data byte '0x00' to 24bit bus at '0x9e0b' and addressEx '0x01'
+
+    # Old behaviour
+    Given render a video display frame
+
+    # New daughter board behaviour
+    # Enable background colour
+    Given write data byte '0x30' to 24bit bus at '0x9e00' and addressEx '0x01'
+    Given render a video display frame
+
+    # Change video background colour
+    Given write data byte '0x33' to 24bit bus at '0x9e0b' and addressEx '0x01'
+    Given render a video display frame
+
+    # Enable RGB background colour
+    Given write data byte '0x21' to 24bit bus at '0x9e00' and addressEx '0x01'
+    Given render a video display frame
+
+    Given render a video display frame
+
+    When display until window closed
+

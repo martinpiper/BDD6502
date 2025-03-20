@@ -98,6 +98,8 @@ public class DisplayBombJack extends MemoryBus {
 
     boolean enableDisplay = false;  // Default to be display off, this helps ensure startup code correctly sets this option
     boolean enableBackground = false;
+    boolean enableBackgroundRGB = false;
+    boolean enableBackgroundRGBFunctionality = false;
     int backgroundColour = 0;
     int latchedPixel = 0;
     int palette[][] = new int[256][256];
@@ -227,6 +229,12 @@ public class DisplayBombJack extends MemoryBus {
 
     DisplayLayer lastLayerAdded;
 
+    DisplayLayer backgroundLayer;
+
+    public void setBackgroundLayer(DisplayLayer layer) {
+        backgroundLayer = layer;
+    }
+
     public void addLayer(DisplayLayer layer) {
         lastLayerAdded = layer;
         layer.setDisplay(this);
@@ -251,9 +259,6 @@ public class DisplayBombJack extends MemoryBus {
 
     @Override
     public void writeData(int address, int addressEx, byte data) {
-        if ((addressEx & 0x80) == 0x80) {
-            addressEx = addressEx;
-        }
         assert(addressEx >= 0);
         assert(address >= 0);
 
@@ -274,7 +279,7 @@ public class DisplayBombJack extends MemoryBus {
         }
 
         lastDataWritten = data;
-        if (addressActive(addressEx, addressExPalette) && address >= addressPalette && address < (addressPalette + 0x200)) {
+        if (addressExActive(addressEx, addressExPalette) && address >= addressPalette && address < (addressPalette + 0x200)) {
             busContentionPalette = getBusContentionPixels();
             // Update the real memory first
             paletteMemory[paletteBank][address & 0x1ff] = data;
@@ -299,6 +304,14 @@ public class DisplayBombJack extends MemoryBus {
                 enableBackground = true;
             } else {
                 enableBackground = false;
+            }
+
+            if (enableBackgroundRGBFunctionality) {
+                if ((data & 0x01) > 0) {
+                    enableBackgroundRGB = true;
+                } else {
+                    enableBackgroundRGB = false;
+                }
             }
 
             if ((data & 0x20) > 0) {
@@ -355,6 +368,9 @@ public class DisplayBombJack extends MemoryBus {
         // Handle other layer writes
         for (DisplayLayer layer : layers) {
             layer.writeData(address, addressEx, data);
+        }
+        if (backgroundLayer != null) {
+            backgroundLayer.writeData(address, addressEx , data);
         }
     }
 
@@ -622,6 +638,11 @@ public class DisplayBombJack extends MemoryBus {
                         debugDisplayPixelRGB[displayBitmapX + (tempy*displayWidth)] = realColour;
                         debugDisplayPixelFromWhere[displayBitmapX + (tempy*displayWidth)] = latchedPixelFromWhere;
                     }
+                    // Force RGB colour output as it is the last selector in the output chain
+                    if (latchedPixelFromWhere == -3) {
+                        Color colour = new Color((latchedPixel & ((1<<paletteBitsRed)-1)) << (8-paletteBitsRed) , ((latchedPixel >> paletteBitsRed) & ((1<<paletteBitsGreen)-1)) << (8-paletteBitsGreen) , ((latchedPixel >> (paletteBitsRed + paletteBitsGreen)) & ((1<<paletteBitsBlue)-1)) << (8-paletteBitsBlue));
+                        realColour = colour.getRGB();
+                    }
                     panel.fastSetRGB(displayBitmapX, tempy, realColour);
                 } else {
                     panel.fastSetRGB(displayBitmapX, tempy, 0);
@@ -687,7 +708,17 @@ public class DisplayBombJack extends MemoryBus {
             }
         }
 
-        if (withOverscan && enableBackground && (latchedPixel & 0x0f) == 0) {
+        // This PIXELTRANS test takes priority in hardware
+        if (withOverscan && enableBackgroundRGBFunctionality && enableBackgroundRGB && (latchedPixel & 0x0f) == 0) {
+            if (backgroundLayer != null) {
+                latchedPixel = backgroundLayer.calculatePixel(displayHExternal, displayVExternal, _hSync, _vSync, doLineStart, true, vBlank);
+            } else {
+                // If the background layer is not connected, then it floats to logic 1 in all input bits
+                latchedPixel = 0xffff;
+            }
+            latchedPixelFromWhere = -3;
+        }
+        else if (withOverscan && enableBackground && (latchedPixel & 0x0f) == 0) {
             latchedPixel = backgroundColour;
             latchedPixelFromWhere = -2;
         }
@@ -765,5 +796,9 @@ public class DisplayBombJack extends MemoryBus {
 
     public void setPaletteBanks(int numBanks) {
         numPaletteBanks = numBanks;
+    }
+
+    public void enableRGBBackgroundFunctionality() {
+        enableBackgroundRGBFunctionality = true;
     }
 }
