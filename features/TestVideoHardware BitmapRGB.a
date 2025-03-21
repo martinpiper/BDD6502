@@ -1,0 +1,38 @@
+kBus24Bit_VideoLayer_HasOverscan = 1
+!sal
+!pdb "target/t.pdb"
+!source "C64/stdlib/stdlib.a"
+!source "C64/stdlib/LongBranches.a"
+!source "BombJack/stdlib/Bus24Bit_Macros.a"
+!source "BombJack/stdlib/Video_Macros.a"
+
+*=$200
+!zn
+mainLoop
+	lda #ProcessorPortAllRAMWithIO
+	jsr InitialiseMachine
+	jsr Bus24Bit_Init
+
+;    +WaitForFire_A
+.sl1
+	jsr Video_WaitVBlank
+	+MBus24Bit_SetAddress_A 0x01 , 0xa301
+	+MBus24Bit_SendLE16BitValueFromAddress .scrollX
+	+MBus24Bit_SendLE16BitValueFromAddress .scrollY
+
+	+MAddU8ToAddr16 3 , .scrollX , .scrollX + 1
+	+MAddU8ToAddr16 1 , .scrollY , .scrollY + 1
+
+	jmp .sl1
+
+.scrollX !word 0
+.scrollY !word 0
+
+Initialise_NoPreserveStack = 1
+Initialise_NoIRQServiceRoutine = 1
+Initialise_NoMACROWaitForTheLastScan = 1
+!source "C64/stdlib/Initialise.a"
+
+!source "BombJack/stdlib/Bus24Bit.a"
+!source "BombJack/stdlib/Video.a"
+

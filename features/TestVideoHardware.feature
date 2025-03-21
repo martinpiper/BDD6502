@@ -2704,21 +2704,71 @@ Feature: Tests the video and audio hardware expansion together
 
     # RGB Bitmap
     Given write data byte '0x00' to 24bit bus at '0xa300' and addressEx '0x01'
-    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x00082' length '0x10000'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x0008a' length '0x10000'
     Given write data byte '0x01' to 24bit bus at '0xa300' and addressEx '0x01'
-    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x10082' length '0x10000'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x1008a' length '0x10000'
     Given write data byte '0x02' to 24bit bus at '0xa300' and addressEx '0x01'
-    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x20082' length '0x10000'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x2008a' length '0x10000'
     Given write data byte '0x03' to 24bit bus at '0xa300' and addressEx '0x01'
-    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x30082' length '0x10000'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x3008a' length '0x10000'
     Given write data byte '0x04' to 24bit bus at '0xa300' and addressEx '0x01'
-    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x40082' length '0x10000'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x4008a' length '0x10000'
     Given write data byte '0x05' to 24bit bus at '0xa300' and addressEx '0x01'
-    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x50082' length '0x10000'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x5008a' length '0x10000'
     Given write data byte '0x06' to 24bit bus at '0xa300' and addressEx '0x01'
-    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x60082' length '0x10000'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x6008a' length '0x10000'
     Given write data byte '0x07' to 24bit bus at '0xa300' and addressEx '0x01'
-    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x70082' length '0x10000'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x7008a' length '0x10000'
+    Given write data byte '0x08' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x8008a' length '0x10000'
+    Given write data byte '0x09' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x9008a' length '0x10000'
+    Given write data byte '0x0a' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0xa008a' length '0x10000'
+    Given write data byte '0x0b' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0xb008a' length '0x10000'
+    Given write data byte '0x0c' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0xc008a' length '0x10000'
+    Given write data byte '0x0d' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0xd008a' length '0x10000'
+    Given write data byte '0x0e' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0xe008a' length '0x10000'
+    Given write data byte '0x0f' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0xf008a' length '0x10000'
+
+    Given write data byte '0x10' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x10008a' length '0x10000'
+    Given write data byte '0x11' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x11008a' length '0x10000'
+    Given write data byte '0x12' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x12008a' length '0x10000'
+    Given write data byte '0x13' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x13008a' length '0x10000'
+    Given write data byte '0x14' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x14008a' length '0x10000'
+    Given write data byte '0x15' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x15008a' length '0x10000'
+    Given write data byte '0x16' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x16008a' length '0x10000'
+    Given write data byte '0x17' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x17008a' length '0x10000'
+    Given write data byte '0x18' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x18008a' length '0x10000'
+    Given write data byte '0x19' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x19008a' length '0x10000'
+    Given write data byte '0x1a' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x1a008a' length '0x10000'
+    Given write data byte '0x1b' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x1b008a' length '0x10000'
+    Given write data byte '0x1c' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x1c008a' length '0x10000'
+    Given write data byte '0x1d' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x1d008a' length '0x10000'
+    Given write data byte '0x1e' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x1e008a' length '0x10000'
+    Given write data byte '0x1f' to 24bit bus at '0xa300' and addressEx '0x01'
+    Given write data offset from file "C:\temp\t.bmp" to 24bit bus at '0x0000' and addressEx '0x03' offset '0x1f008a' length '0x10000'
+
 
     # Wide overscan can use 0x2b which has a couple of chars on the left masked for scrolling and hits the right edge _HSYNC
     # Use the 320 wide settings
@@ -2751,5 +2801,19 @@ Feature: Tests the video and audio hardware expansion together
 
     Given render a video display frame
 
-    When display until window closed
+    And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/TestVideoHardware BitmapRGB.a"
+    And I load prg "test.prg"
+    And I load labels "test.lbl"
+#    And I enable trace with indent
 
+    When enable remote debugging
+#    And wait for debugger connection
+
+#    When display until window closed
+
+    Given I disable trace
+    Given property "bdd6502.bus24.trace" is set to string "false"
+    Given video display does not save debug BMP images
+    Given video display processes 24 pixels per instruction
+    Given limit video display to 60 fps
+    When I execute the procedure at mainLoop until return

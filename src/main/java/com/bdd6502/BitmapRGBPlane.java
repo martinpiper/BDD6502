@@ -13,6 +13,9 @@ public class BitmapRGBPlane extends DisplayLayer {
 
     int extraAddress = 0;
 
+    int scrollX , scrollY;
+
+
     public BitmapRGBPlane() {
     }
 
@@ -30,6 +33,18 @@ public class BitmapRGBPlane extends DisplayLayer {
         // No control register logic now...
         if (addressExActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x00)) {
             extraAddress = data & 0xff;
+        }
+        if (addressExActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x01)) {
+            scrollX = scrollX & 0xff00 | (data & 0xff);
+        }
+        if (addressExActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x02)) {
+            scrollX = scrollX & 0x00ff | ((data & 0xff) << 8);
+        }
+        if (addressExActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x03)) {
+            scrollY = scrollY & 0xff00 | (data & 0xff);
+        }
+        if (addressExActive(addressEx, addressExRegisters) && address == (addressRegisters + 0x04)) {
+            scrollY = scrollY & 0x00ff | ((data & 0xff) << 8);
         }
 
         // This selection logic is because the actual address line is used to select the memory, not a decoder
@@ -60,6 +75,8 @@ public class BitmapRGBPlane extends DisplayLayer {
 
     @Override
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer, boolean vBlank) {
+        displayH = (displayH + scrollX) & 0x3ff;
+        displayV = (displayV + scrollY) & 0x3ff;
         int rgbpixel = (plane0[(displayV << 10) | displayH] & 0xff) | ((plane1[(displayV << 10) | displayH] & 0xff) << 8);
 
         // Matches RGB565 BMP format, but it's not the format we want because red and blue are swapped
@@ -71,5 +88,7 @@ public class BitmapRGBPlane extends DisplayLayer {
     public void randomiseData(Random rand) {
         randomiseHelper(rand, plane0);
         extraAddress = rand.nextInt();
+        scrollX = rand.nextInt();
+        scrollY = rand.nextInt();
     }
 }
