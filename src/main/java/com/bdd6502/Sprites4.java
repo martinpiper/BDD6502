@@ -399,8 +399,21 @@ public class Sprites4 extends DisplayLayer {
 
                 int currentSpriteXWorkingAddr = currentSpriteXWorking & 0x1ff;
                 currentSpriteY = currentSpriteY & 0x1ff;
-                if ((calculatedFrames[offScreen][(currentSpriteY * 512) + currentSpriteXWorkingAddr] & 0x0f) == 0) {
-                    calculatedFrames[offScreen][(currentSpriteY * 512) + currentSpriteXWorkingAddr] = theColour;
+                int toUseX = currentSpriteXWorkingAddr;
+                int toUseY = currentSpriteY;
+/* // Three 2D shears
+                double v = -Math.tan(Math.toRadians(45.0) / 2.0) * toUseY;
+                toUseX = toUseX + (int)v;
+                v = Math.sin(Math.toRadians(45.0)) * toUseX;
+                toUseY = toUseY + (int)v;
+                v = -Math.tan(Math.toRadians(45.0) / 2.0) * toUseY;
+                toUseX = toUseX + (int)v;
+                toUseX = toUseX + 64;
+                toUseX = toUseX & 0x1ff;
+                toUseY = toUseY & 0x1ff;
+*/
+                if ((calculatedFrames[offScreen][(toUseY * 512) + toUseX] & 0x0f) == 0) {
+                    calculatedFrames[offScreen][(toUseY * 512) + toUseX] = theColour;
                 }
 
                 // If we start drawing from on the screen and move off the right edge, then advance to the next row
