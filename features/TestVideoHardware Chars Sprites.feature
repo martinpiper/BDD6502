@@ -859,7 +859,7 @@ Feature: Tests the video character screen data conversion and sprites
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
-    Given randomly initialise all memory using seed 1234
+#    Given randomly initialise all memory using seed 1234
     Given show video window
     Given limit video display to 60 fps
 
@@ -903,7 +903,7 @@ Feature: Tests the video character screen data conversion and sprites
 
     # Sprites4 registers
     # Zero flag
-    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8800' and addressEx '0x01'
     # Zero the X/Y border adjustments
     Given write data byte '0x00' to 24bit bus at '0x8801' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8802' and addressEx '0x01'
@@ -924,7 +924,6 @@ Feature: Tests the video character screen data conversion and sprites
     # Y inv scale (*32)
     # X inv scale (*32)
     # Sprite stride-1
-    # Middle, right, crouching left, no scale
     Given write data byte '0x00' to 24bit bus at '0x8808' and addressEx '0x01'
     Given write data byte '0x40' to 24bit bus at '0x8809' and addressEx '0x01'
     Given write data byte '30' to 24bit bus at '0x880a' and addressEx '0x01'
@@ -966,7 +965,7 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data byte '0x00' to 24bit bus at '0x882a' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x882b' and addressEx '0x01'
 
-    # Signal flag ready
+    # Signal flag ready and enable hardware calculation
     Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
 
     Given render a video display frame
