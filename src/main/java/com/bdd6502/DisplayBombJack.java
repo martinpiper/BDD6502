@@ -578,7 +578,9 @@ public class DisplayBombJack extends MemoryBus {
         if (withOverscan) {
             if (displayVExternal < 0x10 || displayVExternal >= 0xf0) {
                 if (!vBlank) {
-                    extEXTWANTIRQFlag = true;
+                    if (enableDisplay) {
+                        extEXTWANTIRQFlag = true;
+                    }
                 }
                 vBlank = true;
             } else {
@@ -590,7 +592,9 @@ public class DisplayBombJack extends MemoryBus {
                 vBlank = true;
             }
             if (displayH == 0x180 && displayVExternal == 0xf0) {
-                extEXTWANTIRQFlag = true;
+                if (enableDisplay) {
+                    extEXTWANTIRQFlag = true;
+                }
             }
         }
 

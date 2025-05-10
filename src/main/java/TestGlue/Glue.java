@@ -628,6 +628,15 @@ public class Glue {
             }
         }
 
+        // Check for NMI being triggered
+        if (userPort24BitAddress != null && (userPort24BitAddress.getCIA2InterruptControl() & 0x10) == 0x10) {
+            if (displayBombJack != null && displayBombJack.extEXTWANTIRQ()) {
+                displayBombJack.resetExtEXTWANTIRQ();
+                userPort24BitAddress.setAssertNMI(true);
+                machine.getCpu().assertNmi();
+            }
+        }
+
         // Execute CPU step!
         machine.getCpu().step();
 
