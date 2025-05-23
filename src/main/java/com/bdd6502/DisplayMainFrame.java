@@ -14,6 +14,8 @@ public class DisplayMainFrame extends JFrame implements KeyListener , MouseMotio
     boolean pressedRight    = false;
     boolean pressedFire     = false;
 
+    boolean pressedSpace     = false;
+
     DisplayBombJack displayBombJack;
     public DisplayMainFrame(DisplayBombJack displayBombJack) {
         this.displayBombJack = displayBombJack;
@@ -41,6 +43,8 @@ public class DisplayMainFrame extends JFrame implements KeyListener , MouseMotio
             pressedRight = true;
         } else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
             pressedFire = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            pressedSpace = true;
         } else if (e.getKeyCode() == KeyEvent.VK_P) {
             displayBombJack.setDebugDisplayPixels(!displayBombJack.isDebugDisplayPixels());
         }
@@ -58,6 +62,8 @@ public class DisplayMainFrame extends JFrame implements KeyListener , MouseMotio
             pressedRight = false;
         } else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
             pressedFire = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            pressedSpace = false;
         }
     }
 
@@ -79,6 +85,10 @@ public class DisplayMainFrame extends JFrame implements KeyListener , MouseMotio
 
     public boolean isPressedFire() {
         return pressedFire;
+    }
+
+    public boolean isPressedSpace() {
+        return pressedSpace;
     }
 
     @Override

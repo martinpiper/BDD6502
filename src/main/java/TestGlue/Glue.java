@@ -1128,6 +1128,7 @@ public class Glue {
             frameDelta = 0;
             if (displayBombJack != null) {
                 int joystickBits = 0;
+                int joystickBits2 = 0;
                 if (!displayBombJack.getWindow().isPressedUp()) {
                     joystickBits |= 0x1;
                 }
@@ -1143,11 +1144,17 @@ public class Glue {
                 if (!displayBombJack.getWindow().isPressedFire()) {
                     joystickBits |= 0x10;
                 }
+                if (!displayBombJack.getWindow().isPressedSpace()) {
+                    joystickBits2 |= 0x10;
+                }
                 if (enableJoystick1) {
                     machine.getBus().write(0xdc00, joystickBits);
                 }
                 if (enableJoystick2) {
                     machine.getBus().write(0xdc01, joystickBits);
+                }
+                if (enableJoystick2Space) {
+                    machine.getBus().write(0xdc01, joystickBits2);
                 }
                 if (displayBombJack != null && enableCIA1RasterTimer) {
                     machine.getBus().write(0xdc04, (displayBombJack.getDisplayX(cia1RasterOffsetX) * 62) / 384); // CIA1TimerALo
@@ -2415,6 +2422,12 @@ public class Glue {
     @Given("^video display add joystick to port 2$")
     public void addJoystickPort2() {
         enableJoystick2 = true;
+    }
+
+    boolean enableJoystick2Space = false;
+    @Given("^video display add space as joystick port 2$")
+    public void addSpaceJoystickPort2() {
+        enableJoystick2Space = true;
     }
 
     boolean enableCIA1RasterTimer = false;
