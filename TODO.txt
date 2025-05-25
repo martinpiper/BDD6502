@@ -279,3 +279,8 @@
 		Sprite 0 9800 : pos 23 , >>224<< full height frame 3 palette 2
 		>> Sprite 1 9800 : pos 67 , 124 frame 3 palette 2
 	Show as many sprites as the clock rate allows, indicate the partial number of pixels on the last sprite.
+
+
+
+
+* Implement "> xxxx xx x x x" command
