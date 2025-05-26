@@ -375,13 +375,13 @@ public class Sprites4 extends DisplayLayer {
                     return;
                 }
 
-                /*
                 // TODO: This is missing from the emulation logic and hardware, but it actually works and vastly improves performance.
+                // # New top of screen reject test
                 if ( ((currentSpriteY/2) & 0xff) >= extentYPos ) {
                     drawingSpriteState++;   // Must not trigger twice for this clock...
                     return;
                 }
-                */
+
 
                 int pixelX = (currentSpriteXPixel >> 5) & 0xff;
 

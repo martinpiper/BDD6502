@@ -1133,6 +1133,43 @@ Feature: Tests the video character screen data conversion and sprites
 
     Given start writing data to 24bit bus at '0x8808' and addressEx '0x01'
     Given write data '0x00 0x08 20 0x10 20 0x08 0x00 0x00 0x10 0x10 1' to 24bit bus
+    # Moving this sprite up, should cause the later sprite to render more lines
+    # New top of screen reject test
+    Given write data '0x20 0xfc 200 0x10 200 0x08 0x00 0x00 0x01 0x01 1' to 24bit bus
+    Given write data '0x00 0x10 200 0x14 200 0x08 0x00 0x00 0x01 0x01 1' to 24bit bus
+    # Will fully render
+    Given write data '0x00 0x14 200 0x18 200 0x08 0x00 0x00 0x01 0x01 1' to 24bit bus
+    # Will partially render
+    Given write data '0x00 0x18 200 0x1c 200 0x08 0x00 0x00 0x01 0x01 1' to 24bit bus
+    Given write data '0x00 0xc8 20 0x0 20 0x08 0x00 0x00 0x10 0x10 1' to 24bit bus
+    # Terminate the sprite list
+    Given write data '0x00 0x00 0x00' to 24bit bus
+    # Signal flag ready
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given render a video display frame
+
+    Given start writing data to 24bit bus at '0x8808' and addressEx '0x01'
+    Given write data '0x00 0x08 20 0x10 20 0x08 0x00 0x00 0x10 0x10 1' to 24bit bus
+    # Moving this sprite even more up, should cause the later sprite to render more lines
+    # New top of screen reject test
+    Given write data '0x20 0xdc 200 0x10 200 0x08 0x00 0x00 0x01 0x01 1' to 24bit bus
+    Given write data '0x00 0x10 200 0x14 200 0x08 0x00 0x00 0x01 0x01 1' to 24bit bus
+    # Will fully render
+    Given write data '0x00 0x14 200 0x18 200 0x08 0x00 0x00 0x01 0x01 1' to 24bit bus
+    # Will partially render
+    Given write data '0x00 0x18 200 0x1c 200 0x08 0x00 0x00 0x01 0x01 1' to 24bit bus
+    Given write data '0x00 0xc8 20 0x0 20 0x08 0x00 0x00 0x10 0x10 1' to 24bit bus
+    # Terminate the sprite list
+    Given write data '0x00 0x00 0x00' to 24bit bus
+    # Signal flag ready
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
+    Given render a video display frame
+
+
+    Given start writing data to 24bit bus at '0x8808' and addressEx '0x01'
+    Given write data '0x00 0x08 20 0x10 20 0x08 0x00 0x00 0x10 0x10 1' to 24bit bus
     # Moving this sprite down, should cause the later sprite to render more lines
     Given write data '0x00 0x8c 200 0x10 200 0x08 0x00 0x00 0x01 0x01 1' to 24bit bus
     Given write data '0x00 0x10 200 0x14 200 0x08 0x00 0x00 0x01 0x01 1' to 24bit bus
@@ -1526,17 +1563,19 @@ Feature: Tests the video character screen data conversion and sprites
     Then expect image "testdata/TC-17-3-000009.bmp" to be identical to "target/frames/TC-17-3-000009.bmp"
     Then expect image "testdata/TC-17-3-000010.bmp" to be identical to "target/frames/TC-17-3-000010.bmp"
     Then expect image "testdata/TC-17-3-000011.bmp" to be identical to "target/frames/TC-17-3-000011.bmp"
-
+    Then expect image "testdata/TC-17-3-000012.bmp" to be identical to "target/frames/TC-17-3-000012.bmp"
     Then expect image "testdata/TC-17-3-000013.bmp" to be identical to "target/frames/TC-17-3-000013.bmp"
-    Then expect image "testdata/TC-17-3-000016.bmp" to be identical to "target/frames/TC-17-3-000016.bmp"
-    Then expect image "testdata/TC-17-3-000019.bmp" to be identical to "target/frames/TC-17-3-000019.bmp"
-    Then expect image "testdata/TC-17-3-000022.bmp" to be identical to "target/frames/TC-17-3-000022.bmp"
-    Then expect image "testdata/TC-17-3-000025.bmp" to be identical to "target/frames/TC-17-3-000025.bmp"
-    Then expect image "testdata/TC-17-3-000028.bmp" to be identical to "target/frames/TC-17-3-000028.bmp"
-    Then expect image "testdata/TC-17-3-000031.bmp" to be identical to "target/frames/TC-17-3-000031.bmp"
-    Then expect image "testdata/TC-17-3-000034.bmp" to be identical to "target/frames/TC-17-3-000034.bmp"
-    Then expect image "testdata/TC-17-3-000037.bmp" to be identical to "target/frames/TC-17-3-000037.bmp"
-    Then expect image "testdata/TC-17-3-000040.bmp" to be identical to "target/frames/TC-17-3-000040.bmp"
+
+    Then expect image "testdata/TC-17-3-000015.bmp" to be identical to "target/frames/TC-17-3-000015.bmp"
+    Then expect image "testdata/TC-17-3-000018.bmp" to be identical to "target/frames/TC-17-3-000018.bmp"
+    Then expect image "testdata/TC-17-3-000021.bmp" to be identical to "target/frames/TC-17-3-000021.bmp"
+    Then expect image "testdata/TC-17-3-000024.bmp" to be identical to "target/frames/TC-17-3-000024.bmp"
+    Then expect image "testdata/TC-17-3-000027.bmp" to be identical to "target/frames/TC-17-3-000027.bmp"
+    Then expect image "testdata/TC-17-3-000030.bmp" to be identical to "target/frames/TC-17-3-000030.bmp"
+    Then expect image "testdata/TC-17-3-000033.bmp" to be identical to "target/frames/TC-17-3-000033.bmp"
+    Then expect image "testdata/TC-17-3-000036.bmp" to be identical to "target/frames/TC-17-3-000036.bmp"
+    Then expect image "testdata/TC-17-3-000039.bmp" to be identical to "target/frames/TC-17-3-000039.bmp"
+    Then expect image "testdata/TC-17-3-000042.bmp" to be identical to "target/frames/TC-17-3-000042.bmp"
 
 
 
