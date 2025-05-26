@@ -6,26 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware Chars Sprites.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/Sprites4.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000006.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000006.bmp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000007.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000007.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000008.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000008.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000009.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000009.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000010.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000010.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000011.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000011.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000013.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000013.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000016.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000016.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000019.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000019.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000022.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000022.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000025.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000025.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000028.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000028.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000031.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000031.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000034.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000034.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000037.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000037.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testdata/TC-17-3-000040.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/testdata/TC-17-3-000040.bmp" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />

@@ -375,14 +375,6 @@ public class Sprites4 extends DisplayLayer {
                     return;
                 }
 
-                // TODO: This is missing from the emulation logic and hardware, but it actually works and vastly improves performance.
-                // # New top of screen reject test
-                if ( ((currentSpriteY/2) & 0xff) >= extentYPos ) {
-                    drawingSpriteState++;   // Must not trigger twice for this clock...
-                    return;
-                }
-
-
                 int pixelX = (currentSpriteXPixel >> 5) & 0xff;
 
                 // Drawing pixels...
@@ -429,6 +421,18 @@ public class Sprites4 extends DisplayLayer {
                 if ( ((currentSpriteXWorking/2) & 0xff) >= extentXPos && ((currentSpriteX/2) & 0xff) < extentXPos) {
                     drawingSpriteState++;   // Must not trigger twice for this clock...
                     return;
+                }
+
+                // This was missing from the V11.0 emulation logic and hardware, but it actually works and vastly improves performance.
+                // # New top of screen reject test
+                // See hardware: S4_forNewTopOfScreenTest
+                if ( ((currentSpriteY/2) & 0xff) >= extentYPos ) {
+                    // Attempt to match emulation with hardware, the simulation shows this is delayed by a clock
+                    // This happens because we want a stable S4_advanceSprite2/S4advanceSprite2
+                    if (currentSpriteXWorking == (currentSpriteX+1)) {
+                        drawingSpriteState++;   // Must not trigger twice for this clock...
+                        return;
+                    }
                 }
 
                 // Update coordinates after pixel draw...
