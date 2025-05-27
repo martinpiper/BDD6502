@@ -515,10 +515,21 @@ Feature: Tests the video character screen data conversion and sprites
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
-    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x05' and running at 14.31818MHz
+    # Same as simulation test, for layer pixel offset
+    # Layer 0
+    Given add a 2-to-1 merge layer with registers at '0xa200'
+    And the layer has 16 colours
+    And the layer has overscan
+    # Layer 0-1
+#    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x05' and running at 14.31818MHz
+    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x05' and running at 12.096MHz
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
+    # Layer 0-0
+    Given add a StaticColour layer for palette index '0x00'
+    And the layer has 16 colours
+    And the layer has overscan
     Given randomly initialise all memory using seed 1234
     Given show video window
     Given limit video display to 60 fps
@@ -544,7 +555,13 @@ Feature: Tests the video character screen data conversion and sprites
     Given write data from file "C:\Work\ImageToBitplane\target\chars1024_scr.bin" to 24bit bus at '0x4000' and addressEx '0x80'
     Given write data from file "C:\Work\ImageToBitplane\target\chars1024_scr.bin2" to 24bit bus at '0x8000' and addressEx '0x80'
 
-    # Enable display
+     # Init combiners
+    Given write data byte '0x60' to 24bit bus at '0xa200' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0xa201' and addressEx '0x01'
+    Given write data byte '0x60' to 24bit bus at '0xa202' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0xa203' and addressEx '0x01'
+
+   # Enable display
     Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
     # Default display priority
     Given write data byte '0xe4' to 24bit bus at '0x9e08' and addressEx '0x01'
@@ -789,6 +806,7 @@ Feature: Tests the video character screen data conversion and sprites
 #    When I execute the procedure at start for no more than 99999999 instructions
     Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
 
+    # Specifically test sprites with MSB X and Y across all borders
     When I execute the procedure at start until return
 
     # Signal flag ready

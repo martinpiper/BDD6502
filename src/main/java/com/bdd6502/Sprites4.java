@@ -429,7 +429,7 @@ public class Sprites4 extends DisplayLayer {
                 if ( ((currentSpriteY/2) & 0xff) >= extentYPos ) {
                     // Attempt to match emulation with hardware, the simulation shows this is delayed by a clock
                     // This happens because we want a stable S4_advanceSprite2/S4advanceSprite2
-                    if (currentSpriteXWorking == (currentSpriteX+1)) {
+                    if (currentSpriteXWorking == (currentSpriteX+2)) {
                         drawingSpriteState++;   // Must not trigger twice for this clock...
                         return;
                     }

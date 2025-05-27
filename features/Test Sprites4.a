@@ -24,6 +24,7 @@ start
 	jsr Bus24Bit_Init
 
 	+MBus24Bit_SetAddress_A $01 , $8808
+	; The maximum number of sprites for the memory range
 	ldx #185
 .l1
 	; Palette + flags
@@ -32,16 +33,16 @@ start
 	; Y pos and size
 .smy1	lda #0
 	+MBus24Bit_Send8BitValueFromA
-	+MBus24Bit_Send8BitValue $20
+	+MBus24Bit_Send8BitValue $40
 	; X pos and size
 .smx1	lda #0
 	+MBus24Bit_Send8BitValueFromA
-	+MBus24Bit_Send8BitValue $20
+	+MBus24Bit_Send8BitValue $40
 	; Address
 	+MBus24Bit_SendLE24BitValue $0000
 	; Scales
-	+MBus24Bit_Send8BitValue $20
-	+MBus24Bit_Send8BitValue $20
+	+MBus24Bit_Send8BitValue $10
+	+MBus24Bit_Send8BitValue $10
 	; Stride
 	+MBus24Bit_Send8BitValue $3f
 
@@ -57,7 +58,15 @@ start
 	lda .smf1+1
 	eor #$10
 	sta .smf1+1
-
+.smeo1	lda #0
+    bne .smeo1o
+	lda .smf1+1
+	eor #$20
+	sta .smf1+1
+.smeo1o
+    lda .smeo1+1
+    eor #1
+    sta .smeo1+1
 	dex
 	bne .l1
 
@@ -90,6 +99,7 @@ frames
 .smsf1	ldy #0
 	
 	+MBus24Bit_SetAddress_A $01 , $8808
+	; The maximum number of sprites for the memory range
 	ldx #185
 .l1
 	; Palette + flags
