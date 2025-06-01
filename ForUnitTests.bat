@@ -36,5 +36,8 @@ java -jar target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar --rgbshi
 rem After Burner
 java -jar target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar java -jar c:\work\ImageToBitplane\target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar --rgbshift 5 6 5 --newpalettes --palettesize 16 --forcergb 255 0 255 --forcergb 200 0 200 --forcergb 150 0 150 --forcergb 100 0 100 --nostacking --outputscaled4 c:\temp\TScaledSprites4 --outputsprites c:\temp\TScaledSprites4Sheet.txt --outputpalettes c:\temp\t.pal --batchimagequantize 16 --batchimages "src\test\resources\t-6.png" "src\test\resources\t-10.png" --resetforcergb --forcergb 255 0 255 --batchimages "src\test\resources\t-787.png" --writepass
 
+rem Vectors
+java -jar target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar java -jar c:\work\ImageToBitplane\target\imagetobitplane-1.0-SNAPSHOT-jar-with-dependencies.jar --rgbshift 4 4 4 --newpalettes --forcergb 0 0 0 --paletteoffset 0 --palettesize 16 --image "C:\work\C64\Animation\RawFrames2\frm00001.bmp" --outputpalettes target/vectors_paletteData.bin --outputvectors 1 20 2 255 target/vectors_Data.bin --convertwritepass
+
 popd
 
