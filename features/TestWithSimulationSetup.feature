@@ -44,12 +44,14 @@ Feature: Test with the simulation setup
     Given add a 2-to-1 merge layer with registers at '0xa200'
     And the layer has 16 colours
     And the layer has overscan
-      Given add a Sprites layer with registers at '0x9800' and addressEx '0x10'
+      Given add a Sprites V9.5 layer with registers at '0x9800' and addressEx '0x10' and running at 16MHz
       And the layer has 16 colours
       And the layer has overscan
-      Given add a Sprites2 layer with registers at '0x9200' and addressEx '0x04' and running at 14.31818MHz
+      And the layer uses exact address matching
+      Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x05' and running at 12.096MHz
       And the layer has 16 colours
       And the layer has overscan
+      And the layer uses exact address matching
 
 
     Given show video window
@@ -58,14 +60,15 @@ Feature: Test with the simulation setup
     # Palette
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanPaletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledPaletteData.bin" to 24bit bus at '0x9d00' and addressEx '0x01'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledPaletteData4.bin" to 24bit bus at '0x9d60' and addressEx '0x01'
     # Sprites
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanSprites_plane0.bin" to 24bit bus at '0x2000' and addressEx '0x10'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanSprites_plane1.bin" to 24bit bus at '0x4000' and addressEx '0x10'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanSprites_plane2.bin" to 24bit bus at '0x8000' and addressEx '0x10'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanSprites_plane3.bin" to 24bit bus at '0x0000' and addressEx '0x10'
-    # Sprites2 data
-    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledSprites0.bin" to 24bit bus at '0x2000' and addressEx '0x04'
-    Given write data from file "C:\work\C64\VideoHardware\tmp\TurricanScaledSprites1.bin" to 24bit bus at '0x4000' and addressEx '0x04'
+    # Sprites4 data
+    # Turrican Scaled
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledSprites4.bin" to 24bit bus at '0x0000' and addressEx '0x05'
     # Tiles
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanTiles_map.bin" to 24bit bus at '0x2000' and addressEx '0x80'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanTiles_plane0.bin" to 24bit bus at '0x2000' and addressEx '0x40'
@@ -179,27 +182,63 @@ Feature: Test with the simulation setup
     # Vectors bank
     Given write data byte '0x00' to 24bit bus at '0xa100' and addressEx '0x01'
 
-    # Sprites2 registers
-    Given write data byte '0x08' to 24bit bus at '0x9200' and addressEx '0x01'
-    Given write data byte '0x40' to 24bit bus at '0x9201' and addressEx '0x01'
-    Given write data byte '0x40' to 24bit bus at '0x9202' and addressEx '0x01'
-    Given write data byte '0x80' to 24bit bus at '0x9203' and addressEx '0x01'
-    Given write data byte '0x20' to 24bit bus at '0x9204' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x9205' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x9206' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x9207' and addressEx '0x01'
-    # Second scaled sprite
-    Given write data byte '0x08' to 24bit bus at '0x9208' and addressEx '0x01'
-    Given write data byte '0x80' to 24bit bus at '0x9209' and addressEx '0x01'
-    Given write data byte '0x40' to 24bit bus at '0x920a' and addressEx '0x01'
-    Given write data byte '0x80' to 24bit bus at '0x920b' and addressEx '0x01'
-    Given write data byte '0x20' to 24bit bus at '0x920c' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x920d' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x920e' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x920f' and addressEx '0x01'
+    # Sprites4 registers
+    # Zero flag
+    Given write data byte '0x02' to 24bit bus at '0x8800' and addressEx '0x01'
+    # X/Y adjustments
+    Given write data byte '0xf2' to 24bit bus at '0x8801' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8802' and addressEx '0x01'
+    Given write data byte '0xf4' to 24bit bus at '0x8803' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8804' and addressEx '0x01'
+    # Extent X/Y values
+    Given write data byte '0xa8' to 24bit bus at '0x8805' and addressEx '0x01'
+    Given write data byte '0x70' to 24bit bus at '0x8806' and addressEx '0x01'
+    # Extra address
+    Given write data byte '0x00' to 24bit bus at '0x8807' and addressEx '0x01'
 
-    # End of list
-    Given write data byte '0x00' to 24bit bus at '0x9212' and addressEx '0x01'
+    # Sprites support X and Y flips
+    # Palette | 0x10 = MSBX | 0x20 = MSBY | 0x40 = flipX | 0x80 = flipY
+    # Y pos
+    # Y size (in screen pixels, regardless of scale)
+    # X pos
+    # X size (in screen pixels, regardless of scale)
+    # Sprite address (24 bits)
+    # Y inv scale (*32)
+    # X inv scale (*32)
+    # Sprite stride-1
+    # Middle, right, crouching left, no scale
+    Given write data byte '0x1b' to 24bit bus at '0x8808' and addressEx '0x01'
+    Given write data byte '0x70' to 24bit bus at '0x8809' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x880a' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x880b' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x880c' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880d' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x880e' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x880f' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x8810' and addressEx '0x01'
+    Given write data byte '0x20' to 24bit bus at '0x8811' and addressEx '0x01'
+    Given write data byte '0x3f' to 24bit bus at '0x8812' and addressEx '0x01'
+
+    # Standing left, double size
+    Given write data byte '0x0b' to 24bit bus at '0x8813' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x8814' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x8815' and addressEx '0x01'
+    Given write data byte '0x48' to 24bit bus at '0x8816' and addressEx '0x01'
+    Given write data byte '0x80' to 24bit bus at '0x8817' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8818' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8819' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x881a' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x881b' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x881c' and addressEx '0x01'
+    Given write data byte '0x3f' to 24bit bus at '0x881d' and addressEx '0x01'
+
+    # Terminate the sprite list
+    Given write data byte '0x00' to 24bit bus at '0x8829' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x882a' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x882b' and addressEx '0x01'
+
+    # Signal flag ready
+    Given write data byte '0x03' to 24bit bus at '0x8800' and addressEx '0x01'
 
     # Default combine setup
     Given write data byte '0x60' to 24bit bus at '0xa200' and addressEx '0x01'
@@ -209,6 +248,8 @@ Feature: Test with the simulation setup
 
     # Enable all layers
     Given write data byte '0x0f' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    Given render a video display frame
+    Given render a video display frame
     Given render a video display frame
 
     # Visibility layer control
@@ -368,6 +409,8 @@ Feature: Test with the simulation setup
     Then expect image "testdata/TC-14-000039.bmp" to be identical to "target/frames/TC-14-000039.bmp"
 
     Then expect image "testdata/TC-14-000040.bmp" to be identical to "target/frames/TC-14-000040.bmp"
+    Then expect image "testdata/TC-14-000041.bmp" to be identical to "target/frames/TC-14-000041.bmp"
+    Then expect image "testdata/TC-14-000042.bmp" to be identical to "target/frames/TC-14-000042.bmp"
 
 
 
