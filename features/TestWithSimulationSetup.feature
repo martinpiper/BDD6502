@@ -8,6 +8,8 @@ Feature: Test with the simulation setup
     Given a new video display with overscan and 16 colours
     Given set the video display to RGB colour 5 6 5
     Given set the video display with 32 palette banks
+    Given the display uses exact address matching
+#    Given the display has RGB background functionality
     And enable video display bus debug output
     Given video display processes 8 pixels per instruction
     Given video display refresh window every 32 instructions
@@ -57,7 +59,8 @@ Feature: Test with the simulation setup
     Given show video window
 
     # Use: convert4.bat
-    # Palette
+    # Palette bank and data
+    Given write data byte '0x00' to 24bit bus at '0x9e0c' and addressEx '0x01'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanPaletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledPaletteData.bin" to 24bit bus at '0x9d00' and addressEx '0x01'
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanScaledPaletteData4.bin" to 24bit bus at '0x9d60' and addressEx '0x01'
@@ -100,7 +103,7 @@ Feature: Test with the simulation setup
     Given write data byte '0x00' to 24bit bus at '0x9e0a' and addressEx '0x01'
 
     # Enable display with tiles and borders
-    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
+    Given write data byte '0x30' to 24bit bus at '0x9e00' and addressEx '0x01'
     Given write data byte '0x70' to 24bit bus at '0x9e01' and addressEx '0x01'
     Given write data byte '0x01' to 24bit bus at '0x9e02' and addressEx '0x01'
     Given write data byte '0x8a' to 24bit bus at '0x9e03' and addressEx '0x01'
@@ -246,11 +249,39 @@ Feature: Test with the simulation setup
     Given write data byte '0x60' to 24bit bus at '0xa202' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0xa203' and addressEx '0x01'
 
+    # Enable one layer
+    Given write data byte '0x01' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    # Background colour
+    Given write data byte '0x01' to 24bit bus at '0x9e0b' and addressEx '0x01'
+    Given render a video display frame
+    Given render a video display frame
+    Given render a video display frame
+    # Enable each layer
+    Given write data byte '0x02' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x04' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x08' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    Given render a video display frame
+    Given write data byte '0x0b' to 24bit bus at '0x9e0a' and addressEx '0x01'
+    Given render a video display frame
+    Given render a video display until H=0 and V=128
+    Given write data byte '0x11' to 24bit bus at '0x9e0b' and addressEx '0x01'
+    Given render a video display until H=0 and V=136
+    Given write data byte '0x12' to 24bit bus at '0x9e0b' and addressEx '0x01'
+    Given render a video display until H=0 and V=144
+    Given write data byte '0x13' to 24bit bus at '0x9e0b' and addressEx '0x01'
+    Given render a video display until H=0 and V=152
+    Given write data byte '0x14' to 24bit bus at '0x9e0b' and addressEx '0x01'
+    Given render a video display until H=0 and V=160
+    Given write data byte '0x15' to 24bit bus at '0x9e0b' and addressEx '0x01'
+    Given render a video display until H=0 and V=168
+    Given write data byte '0x11' to 24bit bus at '0x9e0b' and addressEx '0x01'
+    Given render a video display until vsync
+    Given render a video display frame
+
     # Enable all layers
     Given write data byte '0x0f' to 24bit bus at '0x9e0a' and addressEx '0x01'
-    Given render a video display frame
-    Given render a video display frame
-    Given render a video display frame
 
     # Visibility layer control
     Given write data byte '0x00' to 24bit bus at '0xa200' and addressEx '0x01'
