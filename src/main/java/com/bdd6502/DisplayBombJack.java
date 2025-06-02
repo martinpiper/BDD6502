@@ -23,8 +23,11 @@ public class DisplayBombJack extends MemoryBus {
     final int displayWidth = 384;
     final int displayHeight = 264;
     private int latchedPixelFromWhere = -1;
+    private int latchedPixelPaletteLayerExpansion = 0;
     private int numPaletteBanks = 0;
     private int paletteBank = 0;
+    private boolean enablePaletteLayerExpansionFunctionality = false;
+    private int paletteLayerExpansion = 0;
 
     public void setDebugDisplayPixels(boolean debugDisplayPixels) {
         this.debugDisplayPixels = debugDisplayPixels;
@@ -98,6 +101,7 @@ public class DisplayBombJack extends MemoryBus {
 
     boolean enableDisplay = false;  // Default to be display off, this helps ensure startup code correctly sets this option
     boolean enableBackground = false;
+    private int backgroundPaletteLayerExpansion = 0;
     boolean enableBackgroundRGB = false;
     boolean enableBackgroundRGBFunctionality = false;
     int backgroundColour = 0;
@@ -300,6 +304,7 @@ public class DisplayBombJack extends MemoryBus {
 
         // This logic now exists on the video layer hardware
         if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters) {
+            backgroundPaletteLayerExpansion = (data>>1) & 0x03;
             if ((data & 0x10) > 0) {
                 enableBackground = true;
             } else {
@@ -361,6 +366,11 @@ public class DisplayBombJack extends MemoryBus {
             if (numPaletteBanks > 0) {
                 if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0c) {
                     paletteBank = data;
+                }
+            }
+            if (enablePaletteLayerExpansionFunctionality) {
+                if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x0d) {
+                    paletteLayerExpansion = data;
                 }
             }
         }
@@ -636,7 +646,14 @@ public class DisplayBombJack extends MemoryBus {
                     if (busContentionPalette > 0) {
                         latchedPixel = getContentionColouredPixel();
                     }
-                    int realColour = palette[paletteBank][latchedPixel & 0xff];
+                    int workingPaletteBank = paletteBank;
+                    if (enablePaletteLayerExpansionFunctionality) {
+                        if (latchedPixelPaletteLayerExpansion != 0) {
+                            latchedPixelPaletteLayerExpansion = latchedPixelPaletteLayerExpansion;
+                        }
+                        workingPaletteBank = workingPaletteBank ^ (latchedPixelPaletteLayerExpansion << 3);
+                    }
+                    int realColour = palette[workingPaletteBank][latchedPixel & 0xff];
                     if (debugDisplayPixels) {
                         debugDisplayPixel[displayBitmapX + (tempy*displayWidth)] = latchedPixel & 0xff;
                         debugDisplayPixelRGB[displayBitmapX + (tempy*displayWidth)] = realColour;
@@ -665,6 +682,7 @@ public class DisplayBombJack extends MemoryBus {
             for (int i = layersRaw.length - 1; i >= 0; i--) {
                 int theLayer = (displayPriority >> (i * 2)) & 0x03;
                 int realLayer = theLayer;
+                int thePaletteLayerExpansion = (paletteLayerExpansion >> (theLayer * 2)) & 0x03;
                 theLayer = (layersRaw.length - 1) - theLayer;
                 if (theLayer >= 0 && theLayer < layersRaw.length) {
                     // Ensure each layer index is executed once
@@ -675,11 +693,13 @@ public class DisplayBombJack extends MemoryBus {
                             if ((pixel & 0x0f) != 0 || firstLayer) {
                                 latchedPixel = pixel;
                                 latchedPixelFromWhere = realLayer;
+                                latchedPixelPaletteLayerExpansion = thePaletteLayerExpansion;
                             }
                         } else {
                             if ((pixel & 0x07) != 0 || firstLayer) {
                                 latchedPixel = pixel;
                                 latchedPixelFromWhere = realLayer;
+                                latchedPixelPaletteLayerExpansion = thePaletteLayerExpansion;
                             }
                         }
                         cachedPixel[theLayer] = pixel;
@@ -725,6 +745,7 @@ public class DisplayBombJack extends MemoryBus {
         else if (withOverscan && enableBackground && (latchedPixel & 0x0f) == 0) {
             latchedPixel = backgroundColour;
             latchedPixelFromWhere = -2;
+            latchedPixelPaletteLayerExpansion = backgroundPaletteLayerExpansion;
         }
 
         displayX++;
@@ -790,6 +811,10 @@ public class DisplayBombJack extends MemoryBus {
             // With randomly initialised state, we do not want the palette bank to be different when using the feature to send palette data compared to the code using the default 0 bank
 //            paletteBank = rand.nextInt() & (numPaletteBanks - 1);
         }
+
+        if (enablePaletteLayerExpansionFunctionality) {
+            paletteLayerExpansion = rand.nextInt() & 0xff;
+        }
     }
 
     public void setRGBColour(int r, int g, int b) {
@@ -804,5 +829,9 @@ public class DisplayBombJack extends MemoryBus {
 
     public void enableRGBBackgroundFunctionality() {
         enableBackgroundRGBFunctionality = true;
+    }
+
+    public void enablePaletteLayerExpansionFunctionality() {
+        enablePaletteLayerExpansionFunctionality = true;
     }
 }

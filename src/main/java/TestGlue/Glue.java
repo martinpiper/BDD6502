@@ -141,6 +141,11 @@ public class Glue {
         displayBombJack.enableRGBBackgroundFunctionality();
     }
 
+    @Given("^the display has palette layer expansion$")
+    public void theDisplayHasPaletteLayerExpansion() {
+        displayBombJack.enablePaletteLayerExpansionFunctionality();
+    }
+
     private class ProfileData {
         boolean isSEI = false;
         int targetAddress;
