@@ -284,3 +284,9 @@
 
 
 * Implement "> xxxx xx x x x" command
+
+
+
+
+* Note palettes used at the end of a frame and render. Also refresh on single step. Do the same for the sprites4 view.
+
