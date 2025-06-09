@@ -8,12 +8,18 @@ class QuickDrawPanel extends JPanel {
     BufferedImage image;
     Dimension size = new Dimension();
     int[] rawPixels = null;
+    int[] rawPixelsBack = null;
     volatile boolean isCached = false;
     int width , height;
 
     public QuickDrawPanel(int width, int height) {
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         AttachImage(img);
+    }
+
+    boolean isDoubleBuffered = false;
+    public void setDoublebuffered() {
+        isDoubleBuffered = true;
     }
 
     public BufferedImage getImage() {
@@ -31,8 +37,19 @@ class QuickDrawPanel extends JPanel {
     public void fastSetRGB(int x, int y, int rgb) {
         int pos = x + (y*width);
         isCached = false;
-        rawPixels[pos] = rgb;
+        if (isDoubleBuffered) {
+            rawPixelsBack[pos] = rgb;
+        } else {
+            rawPixels[pos] = rgb;
+        }
     }
+
+    public void swapBuffers() {
+        int[] temp = rawPixels;
+        rawPixels = rawPixelsBack;
+        rawPixelsBack = temp;
+    }
+
 
     protected void AttachImage(BufferedImage image) {
         this.image = image;
@@ -41,6 +58,7 @@ class QuickDrawPanel extends JPanel {
         this.width = size.width;
         this.height = size.height;
         rawPixels = image.getRGB(0, 0, width,height,null,0,width);
+        rawPixelsBack = new int[rawPixels.length];
         isCached = false;
     }
 

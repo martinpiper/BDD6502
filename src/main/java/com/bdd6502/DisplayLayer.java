@@ -1,5 +1,7 @@
 package com.bdd6502;
 
+import java.io.IOException;
+
 public abstract class DisplayLayer extends MemoryBus {
     protected DisplayBombJack display = null;
     protected boolean is16Colours = false;
@@ -40,5 +42,8 @@ public abstract class DisplayLayer extends MemoryBus {
 
     public String getDebug() {
         return "";
+    }
+
+    public void setDisplayDebugWindow(boolean b) throws IOException {
     }
 }

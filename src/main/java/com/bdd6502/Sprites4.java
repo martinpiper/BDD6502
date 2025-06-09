@@ -2,6 +2,8 @@ package com.bdd6502;
 
 import com.loomcom.symon.util.HexUtil;
 
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -207,6 +209,19 @@ public class Sprites4 extends DisplayLayer {
     public int calculatePixel(int displayH, int displayV, boolean _hSync, boolean _vSync, boolean _doLineStart, boolean enableLayer, boolean vBlank) {
         // Note: _vSync *is not* the same as vBlank which is tied to extEXTWANTIRQFlag in hardware
         if (!prevVBlank && vBlank) {
+            if (debugWindow != null) {
+                debugWindow.swapBuffers();
+                debugWindow.displayClear();
+                for (int x = 0 ; x < 512 ; x++) {
+                    debugWindow.fastSetRGB(x , extentYPos * 2 , 0xff0000);
+                }
+                for (int y = 0 ; y < 512 ; y++) {
+                    debugWindow.fastSetRGB(extentXPos * 2 , y , 0xff0000);
+                }
+                debugWindow.RepaintWindow();
+            }
+
+
             // Flip-flop in hardware
             onScreen = 1-onScreen;
 
@@ -412,6 +427,15 @@ public class Sprites4 extends DisplayLayer {
                 toUseX = toUseX & 0x1ff;
                 toUseY = toUseY & 0x1ff;
 */
+                if (debugWindow != null) {
+                    if ( (theColour & 0x0f) != 0) {
+                        int debugIndex = (drawingSpriteIndex & 0x07) << 5;
+                        debugIndex |= ((drawingSpriteIndex>>3) & 0x07) << 13;
+                        debugIndex |= ((drawingSpriteIndex>>6) & 0x07) << 21;
+                        debugWindow.fastSetRGB(toUseX, toUseY, debugIndex);
+                    }
+                }
+
                 if ((calculatedFrames[offScreen][(toUseY * 512) + toUseX] & 0x0f) == 0) {
                     calculatedFrames[offScreen][(toUseY * 512) + toUseX] = theColour;
                 }
@@ -513,5 +537,20 @@ public class Sprites4 extends DisplayLayer {
         randomiseHelper(rand, spriteAddress);
         randomiseHelper(rand, spriteStride);
         randomiseHelper(rand, spritePalette);
+    }
+
+    DisplaySprites4 debugWindow = null;
+    @Override
+    public void setDisplayDebugWindow(boolean b) throws IOException {
+        if (debugWindow != null) {
+            if (debugWindow.isVisible()) {
+                debugWindow.getWindow().dispatchEvent(new WindowEvent(debugWindow.getWindow(), WindowEvent.WINDOW_CLOSING));
+            }
+        }
+        debugWindow = null;
+        if (b) {
+            debugWindow = new DisplaySprites4();
+            debugWindow.InitWindow();
+        }
     }
 }

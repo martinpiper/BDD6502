@@ -526,6 +526,7 @@ Feature: Tests the video character screen data conversion and sprites
     And the layer has 16 colours
     And the layer has overscan
     And the layer uses exact address matching
+    And the layer displays a debug window
     # Layer 0-0
     Given add a StaticColour layer for palette index '0x00'
     And the layer has 16 colours

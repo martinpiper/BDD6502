@@ -146,6 +146,7 @@ public class Glue {
         displayBombJack.enablePaletteLayerExpansionFunctionality();
     }
 
+
     private class ProfileData {
         boolean isSEI = false;
         int targetAddress;
@@ -2129,6 +2130,12 @@ public class Glue {
     public void theLayerHasOverscan() {
         displayBombJack.getLastLayerAdded().setWithOverscan(true);
     }
+
+    @And("^the layer displays a debug window$")
+    public void theLayerDisplaysADebugWindow() throws IOException {
+        displayBombJack.getLastLayerAdded().setDisplayDebugWindow(true);
+    }
+
 
     @Given("^add a StaticColour layer for palette index '(.*)'$")
     public void addAStaticColourLayerForPaletteIndex(String paletteIndex) throws ScriptException {
