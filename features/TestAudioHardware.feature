@@ -40,3 +40,78 @@ Feature: Tests the video and audio hardware expansion together
 #    When I execute the procedure at PlaySample for no more than 1000000 instructions
     Given limit video display to 60 fps
     When I execute the procedure at MusicPlay until return
+
+
+
+
+  @TC-19
+  Scenario: Test Audio2 (TODO)
+    Given clear all external devices
+    Given a new video display with overscan and 16 colours
+    Given set the video display to RGB colour 5 6 5
+    Given set the video display with 32 palette banks
+    Given the display uses exact address matching
+    Given the display has RGB background functionality
+    And enable video display bus debug output
+    Given a new audio expansion
+    And the audio expansion uses exact address matching
+    And audio mix 85
+    And audio refresh window every 32 instructions
+    And audio refresh window every 0 instructions
+    And audio refresh is independent
+    Given video display does not save debug BMP images
+    Given property "bdd6502.bus24.trace" is set to string "true"
+    Given property "bdd6502.apu.trace" is set to string "true"
+    Given I have a simple overclocked 6502 system
+    And That does fail on BRK
+    And I enable uninitialised memory read protection with immediate fail
+    Given a user port to 24 bit bus is installed
+    And enable user port bus debug output
+    Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
+    And the layer has 16 colours
+    And the layer has overscan
+    And the layer uses exact address matching
+    Given show video window
+
+    # Palette
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanPaletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
+    # Chars
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_map.bin" to 24bit bus at '0x4000' and addressEx '0x80'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_map.bin2" to 24bit bus at '0x8000' and addressEx '0x80'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane0.bin" to 24bit bus at '0x2000' and addressEx '0x20'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane1.bin" to 24bit bus at '0x4000' and addressEx '0x20'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane2.bin" to 24bit bus at '0x8000' and addressEx '0x20'
+    Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanStatus_plane3.bin" to 24bit bus at '0x0000' and addressEx '0x20'
+
+    # Wide overscan can use 0x2b which has a couple of chars on the left masked for scrolling and hits the right edge _HSYNC
+    # Use the 320 wide settings
+    Given write data byte '0x29' to 24bit bus at '0x9e09' and addressEx '0x01'
+    # Enable all layers
+    Given write data byte '0x0f' to 24bit bus at '0x9e0a' and addressEx '0x01'
+
+    # Enable display
+    Given write data byte '0x20' to 24bit bus at '0x9e00' and addressEx '0x01'
+    # Layer priority all
+    Given write data byte '0x00' to 24bit bus at '0x9e08' and addressEx '0x01'
+    # Change video background colour
+    Given write data byte '0x00' to 24bit bus at '0x9e0b' and addressEx '0x01'
+
+    # Instead of writing this data via the 6502 CPU, just send it straight to memory
+    # Audio
+    Given write data from file "testdata/sample.pcmu8" to 24bit bus at '0x0000' and addressEx '0x04'
+
+    Given write data byte '0x00' to 24bit bus at '0x802d' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8000' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8003' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8004' and addressEx '0x01'
+    Given write data byte '0x4a' to 24bit bus at '0x8005' and addressEx '0x01'
+    Given write data byte '0x0b' to 24bit bus at '0x8006' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x8009' and addressEx '0x01'
+    Given write data byte '0xff' to 24bit bus at '0x800a' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x802c' and addressEx '0x01'
+    Given write data byte '0x01' to 24bit bus at '0x802d' and addressEx '0x01'
+
+    Given video display does not save debug BMP images
+    Given limit video display to 60 fps
+    When render 100 video display frames
+    When rendering the video until window closed
