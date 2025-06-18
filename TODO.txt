@@ -312,3 +312,11 @@
     >> Note at 25 Hz 0x4e4f0 bytes at the start are silent (0x80) -> Removed by hand
 		* Use this? ffmpeg -i input.mp3 -af "silenceremove=start_periods=1:start_duration=1:start_threshold=-60dB:detection=peak,aformat=dblp,areverse,silenceremove=start_periods=1:start_duration=1:start_threshold=-60dB:detection=peak,aformat=dblp,areverse" output.flac
     >> TODO: @TC-19
+	* Consider compression
+		Calculate delta between bytes, start with sample byte $80 (mid point silence, u8)
+		Encode delta, start with 0 and a sign extend indicator with 1 (maybe use ff and shift)
+			0 bit = end
+			1 bit = Shift in next bit to the left, shift sign extend indicator left
+		At end, if not 0 then one extra bit
+			1 = subtract half sign extend indicator and ensure top bits are sign extended
+		Use this calculated delta value to calculate the next sample byte

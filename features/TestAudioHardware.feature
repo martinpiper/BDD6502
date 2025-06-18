@@ -170,7 +170,7 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x07' to 24bit bus at '0x8130' and addressEx '0x01'
     Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x70000' length '0x10000'
     Given write data byte '0x08' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x81000' length '0x10000'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x80000' length '0x10000'
     Given write data byte '0x09' to 24bit bus at '0x8130' and addressEx '0x01'
     Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x90000' length '0x10000'
     Given write data byte '0x0a' to 24bit bus at '0x8130' and addressEx '0x01'
