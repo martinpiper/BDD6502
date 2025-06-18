@@ -56,6 +56,12 @@ Feature: Tests the video and audio hardware expansion together
     Given a new audio expansion
     And the audio expansion uses exact address matching
     And audio mix 85
+
+    Given a new audio2 1 expansion with registers at '0x8000' and addressEx '0x06'
+    And the audio2 1 expansion uses exact address matching
+    Given a new audio2 2 expansion with registers at '0x8100' and addressEx '0x07'
+    And the audio2 2 expansion uses exact address matching
+
     And audio refresh window every 32 instructions
     And audio refresh window every 0 instructions
     And audio refresh is independent
@@ -100,6 +106,7 @@ Feature: Tests the video and audio hardware expansion together
     # Audio
     Given write data from file "testdata/sample.pcmu8" to 24bit bus at '0x0000' and addressEx '0x04'
 
+    # Audio registers
     Given write data byte '0x00' to 24bit bus at '0x802d' and addressEx '0x01'
     Given write data byte '0xff' to 24bit bus at '0x8000' and addressEx '0x01'
     Given write data byte '0xff' to 24bit bus at '0x8003' and addressEx '0x01'
@@ -110,6 +117,120 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0xff' to 24bit bus at '0x800a' and addressEx '0x01'
     Given write data byte '0x01' to 24bit bus at '0x802c' and addressEx '0x01'
     Given write data byte '0x01' to 24bit bus at '0x802d' and addressEx '0x01'
+
+    # Audio2 1 data
+    Given write data byte '0x00' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x00000' length '0x10000'
+    Given write data byte '0x01' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x10000' length '0x10000'
+    Given write data byte '0x02' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x20000' length '0x10000'
+    Given write data byte '0x03' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x30000' length '0x10000'
+    Given write data byte '0x04' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x40000' length '0x10000'
+    Given write data byte '0x05' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x50000' length '0x10000'
+    Given write data byte '0x06' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x60000' length '0x10000'
+    Given write data byte '0x07' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x70000' length '0x10000'
+    Given write data byte '0x08' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x80000' length '0x10000'
+    Given write data byte '0x09' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x90000' length '0x10000'
+    Given write data byte '0x0a' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xa0000' length '0x10000'
+    Given write data byte '0x0b' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xb0000' length '0x10000'
+    Given write data byte '0x0c' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xc0000' length '0x10000'
+    Given write data byte '0x0d' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xd0000' length '0x10000'
+    Given write data byte '0x0e' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xe0000' length '0x10000'
+    Given write data byte '0x0f' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.bin" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xf0000' length '0x10000'
+
+    # Audio2 2 data
+    Given write data byte '0x00' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x00000' length '0x10000'
+    Given write data byte '0x01' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x10000' length '0x10000'
+    Given write data byte '0x02' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x20000' length '0x10000'
+    Given write data byte '0x03' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x30000' length '0x10000'
+    Given write data byte '0x04' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x40000' length '0x10000'
+    Given write data byte '0x05' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x50000' length '0x10000'
+    Given write data byte '0x06' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x60000' length '0x10000'
+    Given write data byte '0x07' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x70000' length '0x10000'
+    Given write data byte '0x08' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x81000' length '0x10000'
+    Given write data byte '0x09' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x90000' length '0x10000'
+    Given write data byte '0x0a' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xa0000' length '0x10000'
+    Given write data byte '0x0b' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xb0000' length '0x10000'
+    Given write data byte '0x0c' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xc0000' length '0x10000'
+    Given write data byte '0x0d' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xd0000' length '0x10000'
+    Given write data byte '0x0e' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xe0000' length '0x10000'
+    Given write data byte '0x0f' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.bin" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xf0000' length '0x10000'
+    
+    # Audio2 1 registers
+    # Control
+    Given write data byte '0x00' to 24bit bus at '0x8031' and addressEx '0x01'
+    # Volume
+    Given write data byte '0xff' to 24bit bus at '0x8032' and addressEx '0x01'
+    # Address
+    Given write data byte '0x00' to 24bit bus at '0x8033' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8034' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8035' and addressEx '0x01'
+    # Length
+    Given write data byte '0x00' to 24bit bus at '0x8036' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8037' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8038' and addressEx '0x01'
+    # Rate
+    # 25000 Hz
+    Given write data byte '0x00' to 24bit bus at '0x8039' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x803a' and addressEx '0x01'
+    # 12500 Hz
+    Given write data byte '0x00' to 24bit bus at '0x8039' and addressEx '0x01'
+    Given write data byte '0x08' to 24bit bus at '0x803a' and addressEx '0x01'
+    # Control
+    Given write data byte '0x03' to 24bit bus at '0x8031' and addressEx '0x01'
+
+    # Audio2 2 registers
+    # Control
+    Given write data byte '0x00' to 24bit bus at '0x8131' and addressEx '0x01'
+    # Volume
+    Given write data byte '0xff' to 24bit bus at '0x8132' and addressEx '0x01'
+    # Address
+    Given write data byte '0x00' to 24bit bus at '0x8133' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8134' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8135' and addressEx '0x01'
+    # Length
+    Given write data byte '0x00' to 24bit bus at '0x8136' and addressEx '0x01'
+    Given write data byte '0x00' to 24bit bus at '0x8137' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x8138' and addressEx '0x01'
+    # Rate
+    # 25000 Hz
+    Given write data byte '0x00' to 24bit bus at '0x8139' and addressEx '0x01'
+    Given write data byte '0x10' to 24bit bus at '0x813a' and addressEx '0x01'
+    # 12500 Hz
+    Given write data byte '0x00' to 24bit bus at '0x8139' and addressEx '0x01'
+    Given write data byte '0x08' to 24bit bus at '0x813a' and addressEx '0x01'
+    # Control
+    Given write data byte '0x03' to 24bit bus at '0x8131' and addressEx '0x01'
 
     Given video display does not save debug BMP images
     Given limit video display to 60 fps

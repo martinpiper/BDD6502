@@ -8,6 +8,9 @@
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/TestAudioHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestAudioHardware.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -1226,7 +1229,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>639</line>
+          <line>649</line>
           <option name="timeStamp" value="74" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -1241,7 +1244,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>637</line>
+          <line>647</line>
           <option name="timeStamp" value="80" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -1251,7 +1254,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>2135</line>
+          <line>2210</line>
           <option name="timeStamp" value="85" />
         </line-breakpoint>
       </breakpoints>
@@ -1261,7 +1264,12 @@
         <watch expression="debugState" />
       </configuration>
       <configuration name="Application">
-        <watch expression="backgroundPaletteLayerExpansion" language="JAVA" />
+        <watch expression="sampleRAMBank" language="JAVA" />
+        <watch expression="voiceControl" language="JAVA" />
+        <watch expression="voiceVolume" language="JAVA" />
+        <watch expression="voiceAddress" language="JAVA" />
+        <watch expression="voiceLength" language="JAVA" />
+        <watch expression="voiceRate" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

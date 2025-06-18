@@ -177,6 +177,8 @@ public class Glue {
     static private DisplayBombJack displayBombJack = null;
     static private DisplayC64 displayC64 = null;
     static private AudioExpansion audioExpansion = null;
+    static private AudioExpansion2 audio2Expansion1 = null;
+    static private AudioExpansion2 audio2Expansion2 = null;
     static private UserPortTo24BitAddress userPort24BitAddress = null;
     private int pixelsPerInstruction = 8;
     private int instructionsPerDisplayRefresh = 32;
@@ -369,6 +371,14 @@ public class Glue {
             audioExpansion.close();
         }
         audioExpansion = null;
+        if (audio2Expansion1 != null) {
+            audio2Expansion1.close();
+        }
+        audio2Expansion1 = null;
+        if (audio2Expansion2 != null) {
+            audio2Expansion2.close();
+        }
+        audio2Expansion2 = null;
         userPort24BitAddress = null;
 
         if (displayC64 != null) {
@@ -801,6 +811,12 @@ public class Glue {
                 if (audioExpansion != null) {
                     audioExpansion.setMute(true);
                 }
+                if (audio2Expansion1 != null) {
+                    audio2Expansion1.setMute(true);
+                }
+                if (audio2Expansion2 != null) {
+                    audio2Expansion2.setMute(true);
+                }
                 wasSuspended = true;
             }
             remoteDebugger.setCurrentPrefix(machine.getCpu().getProgramCounter());
@@ -879,6 +895,12 @@ public class Glue {
             // Reset any frame rate compensation
             if (audioExpansion != null) {
                 audioExpansion.setMute(false);
+            }
+            if (audio2Expansion1 != null) {
+                audio2Expansion1.setMute(false);
+            }
+            if (audio2Expansion2 != null) {
+                audio2Expansion2.setMute(false);
             }
 
             timeSinceLastDebugDisplayTimes = System.currentTimeMillis();
@@ -961,6 +983,12 @@ public class Glue {
 
         if (audioExpansion != null) {
             optionalExtras += audioExpansion.getDebug();
+        }
+        if (audio2Expansion1 != null) {
+            optionalExtras += audio2Expansion1.getDebug();
+        }
+        if (audio2Expansion2 != null) {
+            optionalExtras += audio2Expansion2.getDebug();
         }
 
         if (userPort24BitAddress != null) {
@@ -1268,6 +1296,24 @@ public class Glue {
                     instructionsPerAudioRefreshCount--;
                     if (instructionsPerAudioRefreshCount <= 0) {
                         audioExpansion.calculateSamples();
+                        instructionsPerAudioRefreshCount = instructionsPerAudioRefresh;
+                    }
+                }
+            }
+            if (audio2Expansion1 != null) {
+                if (instructionsPerAudioRefresh > 0) {
+                    instructionsPerAudioRefreshCount--;
+                    if (instructionsPerAudioRefreshCount <= 0) {
+                        audio2Expansion1.calculateSamples();
+                        instructionsPerAudioRefreshCount = instructionsPerAudioRefresh;
+                    }
+                }
+            }
+            if (audio2Expansion2 != null) {
+                if (instructionsPerAudioRefresh > 0) {
+                    instructionsPerAudioRefreshCount--;
+                    if (instructionsPerAudioRefreshCount <= 0) {
+                        audio2Expansion2.calculateSamples();
                         instructionsPerAudioRefreshCount = instructionsPerAudioRefresh;
                     }
                 }
@@ -2008,6 +2054,15 @@ public class Glue {
         audioExpansion.start();
         devices.add(audioExpansion);
     }
+    @Given("^a new audio2 1 expansion$")
+    public void aNewAudio2Expansion() throws IOException {
+        if (audio2Expansion1 != null) {
+            audio2Expansion1.close();
+        }
+        audio2Expansion1 = new AudioExpansion2();
+        audio2Expansion1.start();
+        devices.add(audio2Expansion1);
+    }
     @Given("^a new audio expansion with registers at '(.*)' and addressEx '(.*)'$")
     public void aNewAudioExpansionEx(String addressRegisters, String addressEx) throws IOException, ScriptException {
         if (audioExpansion != null) {
@@ -2017,12 +2072,30 @@ public class Glue {
         audioExpansion.start();
         devices.add(audioExpansion);
     }
+    @Given("^a new audio2 1 expansion with registers at '(.*)' and addressEx '(.*)'$")
+    public void aNewAudio21ExpansionEx(String addressRegisters, String addressEx) throws IOException, ScriptException {
+        if (audio2Expansion1 != null) {
+            audio2Expansion1.close();
+        }
+        audio2Expansion1 = new AudioExpansion2(valueToInt(addressRegisters), valueToInt(addressEx), 0);
+        audio2Expansion1.start();
+        devices.add(audio2Expansion1);
+    }
+    @Given("^a new audio2 2 expansion with registers at '(.*)' and addressEx '(.*)'$")
+    public void aNewAudio22ExpansionEx(String addressRegisters, String addressEx) throws IOException, ScriptException {
+        if (audio2Expansion2 != null) {
+            audio2Expansion2.close();
+        }
+        audio2Expansion2 = new AudioExpansion2(valueToInt(addressRegisters), valueToInt(addressEx), 1);
+        audio2Expansion2.start();
+        devices.add(audio2Expansion2);
+    }
     @Given("^audio mix (.*)$")
     public void audioMix(int mix) throws IOException {
         audioExpansion.setMix(mix);
     }
 
-        APUData apuData;
+    APUData apuData;
     @Given("^enable APU mode$")
     public void enableAPUMode() throws IOException {
         apuData = new APUData();
@@ -2091,6 +2164,8 @@ public class Glue {
         userPort24BitAddress = new UserPortTo24BitAddress(scenario);
         userPort24BitAddress.addDevice(displayBombJack);
         userPort24BitAddress.addDevice(audioExpansion);
+        userPort24BitAddress.addDevice(audio2Expansion1);
+        userPort24BitAddress.addDevice(audio2Expansion2);
         machine.getBus().addDevice(userPort24BitAddress);
         displayBombJack.setCallbackUserPort(userPort24BitAddress);
     }
@@ -2237,6 +2312,15 @@ public class Glue {
         audioExpansion.makeExactEBBSAddress();
     }
 
+    @Given("^the audio2 1 expansion uses exact address matching$")
+    public void makeAudio21ExpansionExactEBBSAddress() throws ScriptException {
+        audio2Expansion1.makeExactEBBSAddress();
+    }
+    @Given("^the audio2 2 expansion uses exact address matching$")
+    public void makeAudio22ExpansionExactEBBSAddress() throws ScriptException {
+        audio2Expansion2.makeExactEBBSAddress();
+    }
+
     @Given("^the APU uses exact address matching$")
     public void makeAPUExactEBBSAddress() throws ScriptException {
         apuData.makeExactEBBSAddress();
@@ -2328,6 +2412,20 @@ public class Glue {
                     }
                 }
             }
+            if (audio2Expansion1 != null) {
+                if (instructionsPerAudioRefresh > 0) {
+                    for (int i = 0; i < 100; i++) {
+                        audio2Expansion1.calculateSamples();
+                    }
+                }
+            }
+            if (audio2Expansion2 != null) {
+                if (instructionsPerAudioRefresh > 0) {
+                    for (int i = 0; i < 100; i++) {
+                        audio2Expansion2.calculateSamples();
+                    }
+                }
+            }
 
             Thread.sleep(1);
         }
@@ -2402,7 +2500,15 @@ public class Glue {
 
     @Given("^audio refresh is independent$")
     public void audioRefreshIsIndependent() throws ScriptException {
-        audioExpansion.startThread();
+        if (audioExpansion != null) {
+            audioExpansion.startThread();
+        }
+        if (audio2Expansion1 != null) {
+            audio2Expansion1.startThread();
+        }
+        if (audio2Expansion2 != null) {
+            audio2Expansion2.startThread();
+        }
     }
 
     long startTime  = 0;
@@ -2889,6 +2995,12 @@ public class Glue {
         }
         if (audioExpansion != null) {
             audioExpansion.randomiseData(rand);
+        }
+        if (audio2Expansion1 != null) {
+            audio2Expansion1.randomiseData(rand);
+        }
+        if (audio2Expansion2 != null) {
+            audio2Expansion2.randomiseData(rand);
         }
         if (userPort24BitAddress != null) {
             userPort24BitAddress.randomiseData(rand);
