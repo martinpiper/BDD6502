@@ -320,3 +320,5 @@
 		At end, if not 0 then one extra bit
 			1 = subtract half sign extend indicator and ensure top bits are sign extended
 		Use this calculated delta value to calculate the next sample byte
+		>> See: DeltaEncode
+			* TODO: Output the compressed file so it can be player by ffplay

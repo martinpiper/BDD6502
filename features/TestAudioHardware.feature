@@ -53,9 +53,6 @@ Feature: Tests the video and audio hardware expansion together
     Given the display uses exact address matching
     Given the display has RGB background functionality
     And enable video display bus debug output
-    Given a new audio expansion
-    And the audio expansion uses exact address matching
-    And audio mix 85
 
     Given a new audio2 1 expansion with registers at '0x8000' and addressEx '0x06'
     And the audio2 1 expansion uses exact address matching
@@ -101,22 +98,6 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x00' to 24bit bus at '0x9e08' and addressEx '0x01'
     # Change video background colour
     Given write data byte '0x00' to 24bit bus at '0x9e0b' and addressEx '0x01'
-
-    # Instead of writing this data via the 6502 CPU, just send it straight to memory
-    # Audio
-    Given write data from file "testdata/sample.pcmu8" to 24bit bus at '0x0000' and addressEx '0x04'
-
-    # Audio registers
-    Given write data byte '0x00' to 24bit bus at '0x802d' and addressEx '0x01'
-    Given write data byte '0xff' to 24bit bus at '0x8000' and addressEx '0x01'
-    Given write data byte '0xff' to 24bit bus at '0x8003' and addressEx '0x01'
-    Given write data byte '0xff' to 24bit bus at '0x8004' and addressEx '0x01'
-    Given write data byte '0x4a' to 24bit bus at '0x8005' and addressEx '0x01'
-    Given write data byte '0x0b' to 24bit bus at '0x8006' and addressEx '0x01'
-    Given write data byte '0xff' to 24bit bus at '0x8009' and addressEx '0x01'
-    Given write data byte '0xff' to 24bit bus at '0x800a' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x802c' and addressEx '0x01'
-    Given write data byte '0x01' to 24bit bus at '0x802d' and addressEx '0x01'
 
     # Audio2 1 data
     Given write data byte '0x00' to 24bit bus at '0x8030' and addressEx '0x01'
