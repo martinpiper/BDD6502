@@ -322,3 +322,6 @@
 		Use this calculated delta value to calculate the next sample byte
 		>> See: DeltaEncode
 			* TODO: Output the compressed file so it can be player by ffplay
+		>> Variable Coded Delta (VCD)
+			python C:/Work/C64/VideoHardware/DeltaEncode/main.py -c "C:\Temp\aburner_left.bin" 7 "C:\Temp\aburner_left.vcd"
+			python C:/Work/C64/VideoHardware/DeltaEncode/main.py -c "C:\Temp\aburner_right.bin" 7 "C:\Temp\aburner_right.vcd"

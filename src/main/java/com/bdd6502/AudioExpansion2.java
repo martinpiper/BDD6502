@@ -31,9 +31,11 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
     byte sampleRAMBank = 0;
 
     int voiceInternalCounter;    // Not addressable
+    int currentSample = 0x80;
     byte voiceControl = 0;
     byte voiceVolume;
     int voiceAddress;
+    int voiceAddressAdd;
     int voiceLength;
     int voiceRate;
 
@@ -150,6 +152,9 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
         if ((voiceControl & 0x01) == 0) {
             // HW: Reset the latch on low. voiceInternalCounter is 32 bits
             voiceInternalCounter = 0;
+            currentSample = 0x80;
+            voiceAddressAdd = 0;
+            bitsRemaining = 0;
         }
     }
 
@@ -172,56 +177,90 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
         return true;
     }
 
-
-
+    int bitsRemaining = 0;
+    int currentByte = 0;
+    int getNextBit() {
+        if (bitsRemaining <= 0) {
+            int address = voiceAddress + voiceAddressAdd;
+            currentByte = sampleRAM[address & 0xfffff] & 0xff;
+            bitsRemaining = 8;
+            voiceAddressAdd++;
+        }
+        int ret = 0;
+        if ((currentByte & 0x80) != 0) {
+            ret = 1;
+        }
+        bitsRemaining--;
+        currentByte <<= 1;
+        return ret;
+    }
     public void calculateBalancedSamples(int channel) {
         for (int i = channel ; i < sampleBuffer.length ; i+=2) {
             ageContention();
 
-            // Here accumulatedSample is signed, in hardware it is a two byte 16 bit lookup of two internal unsigned 8 bit data channels
-            int accumulatedSample = 0;
-
             handleVoiceActiveMaskLatches();
 
+            // HW: Here sample is signed, in hardware it is unsigned
+            int sample = currentSample - 0x80;
+
             if ((voiceControl & 0x01) != 0) {
-                int address;
-                // HW: Note accuracy shifting is just address line selection
-                address = voiceAddress + (voiceInternalCounter >> counterShift);
-
-                int sample = sampleRAM[address & 0xfffff] & 0xff;
-                sample = sample - 0x80;
-                // HW: This will be implemented with a 0x10000 byte ROM containing a multiply/divide lookup table
-                sample = (sample * (voiceVolume & 0xff)) / 255;
-
-                accumulatedSample += sample;
-
-                // HW: Note add is clocked after the sample read
+                // HW: Note add is clocked before any sample read
                 voiceInternalCounter += voiceRate;
+                if (voiceInternalCounter >= counterShiftValue) {
+                    voiceInternalCounter -= counterShiftValue;
 
-                // HW: Note selective comparison is just address line selection
-                if (((voiceInternalCounter >> counterShift) & 0xfffff) >= voiceLength) {
-                    // HW: Note the comparison result should only be used when the offset adders are stable
-                    // HW: Note the active flag is a reset only if it is previously active, do not use a level to clear this flag
-                    if ((voiceControl & 0x02) > 0) {
-                        voiceInternalCounter = 0;
-                    } else {
-                        voiceControl = 0;
+                    // Decode the delta
+                    int delta = 0;
+                    int numBits = 0;
+                    int gotBit = 1;
+                    while(getNextBit() == 0) {
+                        numBits++;
+                    }
+                    if (numBits > 0) {
+                        // Anything else except the 0 special case...
+                        while (numBits > 0) {
+                            delta <<= 1;
+                            delta |= gotBit;
+                            gotBit = getNextBit();
+                            numBits--;
+                        }
+                        if (gotBit != 0) {
+                            delta = -delta;
+                        }
+                    }
+
+                    sample += delta;
+                    currentSample = sample + 0x80;
+
+                    if (voiceAddressAdd >= voiceLength) {
+                        voiceAddressAdd = 0;
+                        // HW: Note the comparison result should only be used when the offset adders are stable
+                        // HW: Note the active flag is a reset only if it is previously active, do not use a level to clear this flag
+                        if ((voiceControl & 0x02) > 0) {
+                            voiceAddressAdd = 0;
+                            currentSample = 0x80;
+                            bitsRemaining = 0;
+                        } else {
+                            voiceControl = 0;
+                        }
                     }
                 }
             } else {
                 // HW: Add 0x80 as the middle part of 8 bit unsigned samples for inactive channels
                 // In emulation we do nothing...
-//                    accumulatedSample += 0;
+                sample += 0;
             }
 
-            // Convert from s8 to u8 sample
-            accumulatedSample = accumulatedSample + 0x80;
-            if (accumulatedSample > 255) {
-                accumulatedSample = 255;
-            } else if (accumulatedSample < 0) {
-                accumulatedSample = 0;
+            // HW: This will be implemented with a 0x10000 byte ROM containing a multiply/divide lookup table
+            int sampleAfterVolume = (sample * (voiceVolume & 0xff)) / 255;
+            sampleAfterVolume += 0x80;
+
+            if (sampleAfterVolume > 255) {
+                sampleAfterVolume = 255;
+            } else if (sampleAfterVolume < 0) {
+                sampleAfterVolume = 0;
             }
-            sampleBuffer[i] = (byte)(accumulatedSample & 0xff);
+            sampleBuffer[i] = (byte)(sampleAfterVolume & 0xff);
         }
     }
 
