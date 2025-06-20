@@ -229,8 +229,16 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
                         }
                     }
 
+                    // Testing the result of signed int maths with unsigned byte two's complement based maths
+                    byte testSample = (byte)currentSample;
+                    testSample += (byte) (delta & 0xff);
+
                     sample += delta;
                     currentSample = sample + 0x80;
+
+                    if ((currentSample & 0xff) != (testSample & 0xff)) {
+                        int z=0;
+                    }
 
                     if (voiceAddressAdd >= voiceLength) {
                         voiceAddressAdd = 0;
@@ -306,7 +314,12 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
         } else {
             debug += "       ";
         }
-        debug += " Addr:" + HexUtil.wordToHex(voiceAddress) + " Len:" + HexUtil.wordToHex(voiceLength) + " Rate:" + HexUtil.wordToHex(voiceRate) + " Counter:" + HexUtil.wordToHex(voiceInternalCounter >> counterShift);
+        if ( (voiceControl & 0x02) != 0 ) {
+            debug += " Loop";
+        } else {
+            debug += "     ";
+        }
+        debug += " Addr:" + HexUtil.wordToHex(voiceAddress) + " Len:" + HexUtil.wordToHex(voiceLength) + " Rate:" + HexUtil.wordToHex(voiceRate) + " Counter:" + HexUtil.wordToHex(voiceInternalCounter) + " AddrAdd:" + HexUtil.wordToHex(voiceAddressAdd);
         debug += "\r";
         return debug;
     }
