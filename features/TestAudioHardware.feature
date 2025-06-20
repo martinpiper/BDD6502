@@ -76,6 +76,11 @@ Feature: Tests the video and audio hardware expansion together
     And the layer uses exact address matching
     Given show video window
 
+    And I start writing memory at $400
+    And I write the following hex bytes
+      | 4c 00 04 |
+
+
     # Palette
     Given write data from file "C:\Work\C64\VideoHardware\tmp\TurricanPaletteData.bin" to 24bit bus at '0x9c00' and addressEx '0x01'
     # Chars
@@ -126,8 +131,9 @@ Feature: Tests the video and audio hardware expansion together
     Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xb0000' length '0x10000'
     Given write data byte '0x0c' to 24bit bus at '0x8030' and addressEx '0x01'
     Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xc0000' length '0x10000'
-#    Given write data byte '0x0d' to 24bit bus at '0x8030' and addressEx '0x01'
-#    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xd0000' length '0x10000'
+    # 896,987 bytes
+    Given write data byte '0x0d' to 24bit bus at '0x8030' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xd0000' length '0xafd8'
 #    Given write data byte '0x0e' to 24bit bus at '0x8030' and addressEx '0x01'
 #    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xe0000' length '0x10000'
 #    Given write data byte '0x0f' to 24bit bus at '0x8030' and addressEx '0x01'
@@ -160,8 +166,9 @@ Feature: Tests the video and audio hardware expansion together
     Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xb0000' length '0x10000'
     Given write data byte '0x0c' to 24bit bus at '0x8130' and addressEx '0x01'
     Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xc0000' length '0x10000'
-#    Given write data byte '0x0d' to 24bit bus at '0x8130' and addressEx '0x01'
-#    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xd0000' length '0x10000'
+    # 873,536 bytes
+    Given write data byte '0x0d' to 24bit bus at '0x8130' and addressEx '0x01'
+    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xd0000' length '0x5440'
 #    Given write data byte '0x0e' to 24bit bus at '0x8130' and addressEx '0x01'
 #    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xe0000' length '0x10000'
 #    Given write data byte '0x0f' to 24bit bus at '0x8130' and addressEx '0x01'
@@ -177,8 +184,8 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x00' to 24bit bus at '0x8034' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8035' and addressEx '0x01'
     # Length
-    Given write data byte '0x00' to 24bit bus at '0x8036' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8037' and addressEx '0x01'
+    Given write data byte '0xd8' to 24bit bus at '0x8036' and addressEx '0x01'
+    Given write data byte '0xaf' to 24bit bus at '0x8037' and addressEx '0x01'
     Given write data byte '0x0d' to 24bit bus at '0x8038' and addressEx '0x01'
     # Rate
     # 25000 Hz
@@ -188,7 +195,7 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x00' to 24bit bus at '0x8039' and addressEx '0x01'
     Given write data byte '0x08' to 24bit bus at '0x803a' and addressEx '0x01'
     # Control
-    Given write data byte '0x01' to 24bit bus at '0x8031' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8031' and addressEx '0x01'
 
     # Audio2 2 registers
     # Control
@@ -200,8 +207,8 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x00' to 24bit bus at '0x8134' and addressEx '0x01'
     Given write data byte '0x00' to 24bit bus at '0x8135' and addressEx '0x01'
     # Length
-    Given write data byte '0x00' to 24bit bus at '0x8136' and addressEx '0x01'
-    Given write data byte '0x00' to 24bit bus at '0x8137' and addressEx '0x01'
+    Given write data byte '0x40' to 24bit bus at '0x8136' and addressEx '0x01'
+    Given write data byte '0x54' to 24bit bus at '0x8137' and addressEx '0x01'
     Given write data byte '0x0d' to 24bit bus at '0x8138' and addressEx '0x01'
     # Rate
     # 25000 Hz
@@ -211,9 +218,10 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x00' to 24bit bus at '0x8139' and addressEx '0x01'
     Given write data byte '0x08' to 24bit bus at '0x813a' and addressEx '0x01'
     # Control
-    Given write data byte '0x01' to 24bit bus at '0x8131' and addressEx '0x01'
+    Given write data byte '0x03' to 24bit bus at '0x8131' and addressEx '0x01'
 
     Given video display does not save debug BMP images
     Given limit video display to 60 fps
+#    When I execute the procedure at $400 until return
     When render 100 video display frames
     When rendering the video until window closed
