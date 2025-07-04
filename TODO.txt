@@ -327,3 +327,10 @@
 			python C:/Work/C64/VideoHardware/DeltaEncode/main.py -c "C:\Temp\aburner_right.bin" 7 "C:\Temp\aburner_right.vcd"
 		>> Note with maxbits of 7 the encoding is lossless
 		>> Playback of compressed then decompressed data: "C:\Users\Marti\Downloads\ffmpeg-20200422-2e38c63-win64-static\ffmpeg-20200422-2e38c63-win64-static\bin\ffplay.exe" -f u8 -ar 12500 c:\temp\aburner_left.vcd.decomp
+
+
+
+
+* Syntax to send large chunks of data using a bank register EBBS/address
+	Also add this option to the ResourceGenerator
+	This will avoid situations where data extends beyond expected bank register values
