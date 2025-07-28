@@ -362,6 +362,7 @@ public class Glue {
 
     @Given("^clear all external devices$")
     public void clearDevices() {
+        c64IOExpected = false;
         devices.clear();
         if (displayBombJack != null) {
             displayBombJack.getWindow().dispatchEvent(new WindowEvent(displayBombJack.getWindow(), WindowEvent.WINDOW_CLOSING));
@@ -1182,7 +1183,7 @@ public class Glue {
                     joystickBits2 |= 0x10;
                 }
                 if (enableJoystick1) {
-                    if (machine.getBus().getProcessorPort()) {
+                    if (c64IOExpected && machine.getBus().getProcessorPort()) {
                         int pp = machine.getBus().read(0x01);
                         machine.getBus().write(0x01, 0x2f);
 
@@ -1194,7 +1195,7 @@ public class Glue {
                     }
                 }
                 if (enableJoystick2) {
-                    if (machine.getBus().getProcessorPort()) {
+                    if (c64IOExpected && machine.getBus().getProcessorPort()) {
                         int pp = machine.getBus().read(0x01);
                         machine.getBus().write(0x01, 0x2f);
 
@@ -1206,7 +1207,7 @@ public class Glue {
                     }
                 }
                 if (enableJoystick2Space) {
-                    if (machine.getBus().getProcessorPort()) {
+                    if (c64IOExpected && machine.getBus().getProcessorPort()) {
                         int pp = machine.getBus().read(0x01);
                         machine.getBus().write(0x01, 0x2f);
 
@@ -1218,7 +1219,7 @@ public class Glue {
                     }
                 }
                 if (displayBombJack != null && enableCIA1RasterTimer) {
-                    if (machine.getBus().getProcessorPort()) {
+                    if (c64IOExpected && machine.getBus().getProcessorPort()) {
                         int pp = machine.getBus().read(0x01);
                         machine.getBus().write(0x01, 0x2f);
 
@@ -2996,8 +2997,10 @@ public class Glue {
         // Not going to add this to the device memory map
     }
 
+    boolean c64IOExpected = false;
     @Given("^add C64 hardware$")
     public void addC64Hardware() throws MemoryRangeException {
+        c64IOExpected = true;
         C64VICII deviceVIC = new C64VICII(scenario);
         if (displayC64 != null) {
             displayC64.setTheVICII(deviceVIC);
