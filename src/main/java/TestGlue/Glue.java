@@ -1182,19 +1182,58 @@ public class Glue {
                     joystickBits2 |= 0x10;
                 }
                 if (enableJoystick1) {
-                    machine.getBus().write(0xdc00, joystickBits);
+                    if (machine.getBus().getProcessorPort()) {
+                        int pp = machine.getBus().read(0x01);
+                        machine.getBus().write(0x01, 0x2f);
+
+                        machine.getBus().write(0xdc00, joystickBits);
+
+                        machine.getBus().write(0x01, pp);
+                    } else {
+                        machine.getBus().write(0xdc00, joystickBits);
+                    }
                 }
                 if (enableJoystick2) {
-                    machine.getBus().write(0xdc01, joystickBits);
+                    if (machine.getBus().getProcessorPort()) {
+                        int pp = machine.getBus().read(0x01);
+                        machine.getBus().write(0x01, 0x2f);
+
+                        machine.getBus().write(0xdc01, joystickBits);
+
+                        machine.getBus().write(0x01, pp);
+                    } else {
+                        machine.getBus().write(0xdc01, joystickBits);
+                    }
                 }
                 if (enableJoystick2Space) {
-                    machine.getBus().write(0xdc01, joystickBits2);
+                    if (machine.getBus().getProcessorPort()) {
+                        int pp = machine.getBus().read(0x01);
+                        machine.getBus().write(0x01, 0x2f);
+
+                        machine.getBus().write(0xdc01, joystickBits2);
+
+                        machine.getBus().write(0x01, pp);
+                    } else {
+                        machine.getBus().write(0xdc01, joystickBits2);
+                    }
                 }
                 if (displayBombJack != null && enableCIA1RasterTimer) {
-                    machine.getBus().write(0xdc04, (displayBombJack.getDisplayX(cia1RasterOffsetX) * 62) / 384); // CIA1TimerALo
-                    machine.getBus().write(0xdc05, 0); // CIA1TimerAHi
-                    machine.getBus().write(0xdc06, displayBombJack.getDisplayYForCIA(cia1RasterOffsetY)); // CIA1TimerBLo
-                    machine.getBus().write(0xdc07, displayBombJack.getDisplayYForCIA(cia1RasterOffsetY) >> 8); // CIA1TimerBHi
+                    if (machine.getBus().getProcessorPort()) {
+                        int pp = machine.getBus().read(0x01);
+                        machine.getBus().write(0x01, 0x2f);
+
+                        machine.getBus().write(0xdc04, (displayBombJack.getDisplayX(cia1RasterOffsetX) * 62) / 384); // CIA1TimerALo
+                        machine.getBus().write(0xdc05, 0); // CIA1TimerAHi
+                        machine.getBus().write(0xdc06, displayBombJack.getDisplayYForCIA(cia1RasterOffsetY)); // CIA1TimerBLo
+                        machine.getBus().write(0xdc07, displayBombJack.getDisplayYForCIA(cia1RasterOffsetY) >> 8); // CIA1TimerBHi
+
+                        machine.getBus().write(0x01, pp);
+                    } else {
+                        machine.getBus().write(0xdc04, (displayBombJack.getDisplayX(cia1RasterOffsetX) * 62) / 384); // CIA1TimerALo
+                        machine.getBus().write(0xdc05, 0); // CIA1TimerAHi
+                        machine.getBus().write(0xdc06, displayBombJack.getDisplayYForCIA(cia1RasterOffsetY)); // CIA1TimerBLo
+                        machine.getBus().write(0xdc07, displayBombJack.getDisplayYForCIA(cia1RasterOffsetY) >> 8); // CIA1TimerBHi
+                    }
                 }
 
                 // Execute video clocks while running the CPU

@@ -979,3 +979,8 @@ Added: Given I am using C64 processor port options
 	This shows the sprites in display list order, not draw order. Colourised with draw list entry position.
 	This allows hidden sprite overdraw to be seen, since it is opposite to the transparent pixel test for the real display.
 	It also allows the clip window extents to be seen
+
+
+
+* If the processor port is enabled then bus writes in IO space should go to the IO with the processor port figuring it all out
+    Not the underlying RAM

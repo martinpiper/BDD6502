@@ -70,6 +70,10 @@ public class Bus {
         processorPort = true;
     }
 
+    public boolean getProcessorPort() {
+        return processorPort;
+    }
+
     public int startAddress() {
         return startAddress;
     }
