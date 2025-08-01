@@ -83,6 +83,8 @@ public abstract class MemoryBus {
         writeData(address, addressEx, (byte) data);
     }
 
+    abstract public boolean isAddressMatching(int address, int addressEx);
+
     abstract public void writeData(int address, int addressEx, byte data);
 
     abstract public void setAddressBus(int address, int addressEx);

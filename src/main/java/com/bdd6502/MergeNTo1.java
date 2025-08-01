@@ -48,6 +48,14 @@ public class MergeNTo1 extends DisplayLayer {
     }
 
     @Override
+    public boolean isAddressMatching(int address, int addressEx) {
+        if (addressExActive(addressEx, addressExRegisters)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void writeData(int address, int addressEx, byte data) {
 
         if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters) && address < (addressRegisters + registers.length)) {

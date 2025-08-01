@@ -27,7 +27,7 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
 
     SourceDataLine line = null;
 
-    byte sampleRAM[] = new byte[0x100000];
+    byte sampleRAM[] = new byte[0x300000];
     byte sampleRAMBank = 0;
 
     int voiceInternalCounter;    // Not addressable
@@ -93,6 +93,16 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
     public void startThread() {
         thread = new Thread(this);
         thread.start();
+    }
+
+    public boolean isAddressMatching(int address, int addressEx) {
+        if (addressExActive(addressEx, addressExRegisters) && (address >= addressRegisters + 0x30) && (address < (addressRegisters + 0x40))) {
+            return true;
+        }
+        if (addressExActive(addressEx, addressExSampleBank)) {
+            return true;
+        }
+        return false;
     }
 
     @Override

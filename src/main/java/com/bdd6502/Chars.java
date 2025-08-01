@@ -62,6 +62,17 @@ public class Chars extends DisplayLayer {
     }
 
     @Override
+    public boolean isAddressMatching(int address, int addressEx) {
+        if (addressExActive(addressEx, addressExScreen)) {
+            return true;
+        }
+        if (addressExActive(addressEx, addressExPlane0)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void writeData(int address, int addressEx, byte data) {
         if (!isV4_0) {
             if (addressExActive(addressEx, addressExScreen) && address >= addressScreen && address < (addressScreen + 0x1f)) {

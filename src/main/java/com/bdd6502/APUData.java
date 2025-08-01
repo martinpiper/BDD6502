@@ -46,6 +46,14 @@ public class APUData extends MemoryBus {
     }
 
     @Override
+    public boolean isAddressMatching(int address, int addressEx) {
+        if (addressExActive(addressEx, addressExRegisters)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void writeData(int address, int addressEx, byte data) {
         // Some contention here as this uses banks of RAM
         if (addressExActive(addressEx, addressExRegisters)) {

@@ -18,6 +18,10 @@ public class GetBackground extends DisplayLayer {
         assertThat(layerIndex, is(greaterThanOrEqualTo(0)));
         this.layerIndex = layerIndex;
     }
+    @Override
+    public boolean isAddressMatching(int address, int addressEx) {
+        return false;
+    }
 
     @Override
     public void writeData(int address, int addressEx, byte data) {

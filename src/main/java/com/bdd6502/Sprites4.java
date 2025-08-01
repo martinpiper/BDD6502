@@ -75,6 +75,17 @@ public class Sprites4 extends DisplayLayer {
     }
 
     @Override
+    public boolean isAddressMatching(int address, int addressEx) {
+        if (addressExActive(addressEx, addressExRegisters)) {
+            return true;
+        }
+        if (addressExActive(addressEx, addressExPlane0)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void writeData(int address, int addressEx, byte data) {
         if (addressExActive(addressEx, addressExRegisters) && address >= (addressRegisters) && address < (addressRegisters + 0x800)) {
 //            System.out.println("writeData "+ HexUtil.byteToHex(data) + " to " + HexUtil.wordToHex(address) +" Reached sprite: " + drawingSpriteIndex + " reachedEndOfList " + reachedEndOfList + " triggerBufferSwap " + triggerBufferSwap + " drawingWith " + drawingWith + " writingTo " + writingTo);

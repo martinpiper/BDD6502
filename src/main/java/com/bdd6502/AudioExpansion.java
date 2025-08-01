@@ -102,6 +102,17 @@ public class AudioExpansion extends MemoryBus implements Runnable {
     }
 
     @Override
+    public boolean isAddressMatching(int address, int addressEx) {
+        if (addressExActive(addressEx, addressExRegisters) && (address >= addressRegisters) && (address < (addressRegisters + (numVoices * voiceSize)))) {
+            return true;
+        }
+        if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + (numVoices * voiceSize) + 1) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void writeData(int address, int addressEx, byte data) {
         // No contention, this will use latches, many of them
         if (addressExActive(addressEx, addressExRegisters) && (address >= addressRegisters) && (address < (addressRegisters + (numVoices * voiceSize)))) {

@@ -28,6 +28,17 @@ public class BitmapRGBPlane extends DisplayLayer {
     }
 
     @Override
+    public boolean isAddressMatching(int address, int addressEx) {
+        if (addressExActive(addressEx, addressExRegisters)) {
+            return true;
+        }
+        if (addressExActive(addressEx, addressExPlane0)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void writeData(int address, int addressEx, byte data) {
 
         // No control register logic now...

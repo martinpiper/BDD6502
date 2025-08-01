@@ -105,75 +105,22 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x00' to 24bit bus at '0x9e0b' and addressEx '0x01'
 
     # Audio2 1 data
-    Given write data byte '0x00' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x00000' length '0x10000'
-    Given write data byte '0x01' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x10000' length '0x10000'
-    Given write data byte '0x02' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x20000' length '0x10000'
-    Given write data byte '0x03' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x30000' length '0x10000'
-    Given write data byte '0x04' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x40000' length '0x10000'
-    Given write data byte '0x05' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x50000' length '0x10000'
-    Given write data byte '0x06' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x60000' length '0x10000'
-    Given write data byte '0x07' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x70000' length '0x10000'
-    Given write data byte '0x08' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x80000' length '0x10000'
-    Given write data byte '0x09' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0x90000' length '0x10000'
-    Given write data byte '0x0a' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xa0000' length '0x10000'
-    Given write data byte '0x0b' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xb0000' length '0x10000'
-    Given write data byte '0x0c' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xc0000' length '0x10000'
-    # 896,987 bytes
-    Given write data byte '0x0d' to 24bit bus at '0x8030' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xd0000' length '0xafd8'
-#    Given write data byte '0x0e' to 24bit bus at '0x8030' and addressEx '0x01'
-#    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xe0000' length '0x10000'
-#    Given write data byte '0x0f' to 24bit bus at '0x8030' and addressEx '0x01'
-#    Given write data offset from file "C:\temp\aburner_left.vcd" to 24bit bus at '0x0000' and addressEx '0x06' offset '0xf0000' length '0x10000'
+    Given load binary file "C:\temp\aburner_left.vcd" into temporary memory
+    Given write data from temporary memory to address24 '0' and addressEx '0x06' using bank switch register at '0x8030' and addressEx '0x01'
+    Given load binary file "C:\temp\aburner_left3.vcd" into temporary memory
+    Given write data from temporary memory to address24 '896987' and addressEx '0x06' using bank switch register at '0x8030' and addressEx '0x01'
+    Given load binary file "C:\temp\aburner_left6.vcd" into temporary memory
+    Given write data from temporary memory to address24 '896987+1343276' and addressEx '0x06' using bank switch register at '0x8030' and addressEx '0x01'
 
     # Audio2 2 data
-    Given write data byte '0x00' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x00000' length '0x10000'
-    Given write data byte '0x01' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x10000' length '0x10000'
-    Given write data byte '0x02' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x20000' length '0x10000'
-    Given write data byte '0x03' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x30000' length '0x10000'
-    Given write data byte '0x04' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x40000' length '0x10000'
-    Given write data byte '0x05' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x50000' length '0x10000'
-    Given write data byte '0x06' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x60000' length '0x10000'
-    Given write data byte '0x07' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x70000' length '0x10000'
-    Given write data byte '0x08' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x80000' length '0x10000'
-    Given write data byte '0x09' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0x90000' length '0x10000'
-    Given write data byte '0x0a' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xa0000' length '0x10000'
-    Given write data byte '0x0b' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xb0000' length '0x10000'
-    Given write data byte '0x0c' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xc0000' length '0x10000'
-    # 873,536 bytes
-    Given write data byte '0x0d' to 24bit bus at '0x8130' and addressEx '0x01'
-    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xd0000' length '0x5440'
-#    Given write data byte '0x0e' to 24bit bus at '0x8130' and addressEx '0x01'
-#    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xe0000' length '0x10000'
-#    Given write data byte '0x0f' to 24bit bus at '0x8130' and addressEx '0x01'
-#    Given write data offset from file "C:\temp\aburner_right.vcd" to 24bit bus at '0x0000' and addressEx '0x07' offset '0xf0000' length '0x10000'
-    
+    Given load binary file "C:\temp\aburner_right.vcd" into temporary memory
+    Given write data from temporary memory to address24 '0' and addressEx '0x07' using bank switch register at '0x8130' and addressEx '0x01'
+    Given load binary file "C:\temp\aburner_right3.vcd" into temporary memory
+    Given write data from temporary memory to address24 '873536' and addressEx '0x06' using bank switch register at '0x8030' and addressEx '0x01'
+    Given load binary file "C:\temp\aburner_right6.vcd" into temporary memory
+    Given write data from temporary memory to address24 '873536+1326593' and addressEx '0x06' using bank switch register at '0x8030' and addressEx '0x01'
+
+
     # Audio2 1 registers
     # Control
     Given write data byte '0x00' to 24bit bus at '0x8031' and addressEx '0x01'

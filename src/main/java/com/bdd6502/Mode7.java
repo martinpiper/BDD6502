@@ -40,6 +40,23 @@ public class Mode7 extends DisplayLayer {
     }
 
     @Override
+    public boolean isAddressMatching(int address, int addressEx) {
+        if (addressExActive(addressEx, addressExRegisters)) {
+            return true;
+        }
+        if (addressExActive(addressEx, addressExMap)) {
+            return true;
+        }
+        if (addressExActive(addressEx, addressExTiles0)) {
+            return true;
+        }
+        if (addressExActive(addressEx, addressExTiles1)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void writeData(int address, int addressEx, byte data) {
         if (addressExActive(addressEx, addressExRegisters)) {
             if (address == addressRegisters) {

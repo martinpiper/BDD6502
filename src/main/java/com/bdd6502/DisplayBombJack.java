@@ -262,6 +262,17 @@ public class DisplayBombJack extends MemoryBus {
     }
 
     @Override
+    public boolean isAddressMatching(int address, int addressEx) {
+        if (addressExActive(addressEx, addressExPalette)) {
+            return true;
+        }
+        if (addressExActive(addressEx, addressExRegisters)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void writeData(int address, int addressEx, byte data) {
         assert(addressEx >= 0);
         assert(address >= 0);

@@ -38,6 +38,20 @@ public class Tiles extends DisplayLayer {
     }
 
     @Override
+    public boolean isAddressMatching(int address, int addressEx) {
+        if (addressExActive(addressEx, addressExRegisters)) {
+            return true;
+        }
+        if (addressExActive(addressEx, addressExScreen)) {
+            return true;
+        }
+        if (addressExActive(addressEx, addressExPlane0)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void writeData(int address, int addressEx, byte data) {
         if (!withOverscan) {
             if (addressExActive(addressEx, addressExRegisters) && address == addressRegisters + 0x00) {

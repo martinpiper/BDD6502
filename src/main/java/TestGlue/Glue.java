@@ -2433,6 +2433,32 @@ public class Glue {
         }
     }
 
+    @Given("^write data from temporary memory to address24 '(.*)' and addressEx '(.*)' using bank switch register at '(.*)' and addressEx '(.*)'$")
+    public void writedataFromTemporaryMemoryToAddressAndAddressExUsingBankSwitchRegister(String itoAddress, String itoAddressEx, String ibankAddress, String ibankAddressEx) throws Throwable {
+        for (MemoryBus writeDevice : devices) {
+            int toAddress = valueToInt(itoAddress);
+            int toAddressEx = valueToInt(itoAddressEx);
+            if (!writeDevice.isAddressMatching(toAddress , toAddressEx)) {
+                continue;
+            }
+            int bankAddress = valueToInt(ibankAddress);
+            int bankAddressEx = valueToInt(ibankAddressEx);
+            int offset = 0;
+            int lastBankValue = -1;
+            while (offset < lastBinaryData.length) {
+                if (((toAddress >> 16) & 0xff) != lastBankValue) {
+                    lastBankValue = ((toAddress >> 16) & 0xff);
+                    for (MemoryBus device : devices) {
+                        device.writeData(bankAddress, bankAddressEx, lastBankValue);
+                    }
+                }
+                writeDevice.writeData(toAddress & 0xffff, toAddressEx, lastBinaryData[offset]);
+                offset++;
+                toAddress++;
+            }
+        }
+    }
+
     @When("^rendering the video until window closed$")
     public void renderingTheVideoUntilWindowClosed() throws InterruptedException {
         displayBombJack.writeDebugBMPsToLeafFilename(null);

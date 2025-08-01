@@ -65,6 +65,12 @@ public class UserPortTo24BitAddressTest {
 
         // Add a profiling display layer
         DisplayLayer debugLayer = new DisplayLayer() {
+
+            @Override
+            public boolean isAddressMatching(int address, int addressEx) {
+                return false;
+            }
+
             @Override
             public void writeData(int address, int addressEx, byte data) {
                 memoryAddressByteSequence.add(new MemoryItem(fullAddressFromAddrEx(address,addressEx) , data));
