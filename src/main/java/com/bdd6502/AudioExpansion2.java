@@ -27,7 +27,7 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
 
     SourceDataLine line = null;
 
-    byte sampleRAM[] = new byte[0x300000];
+    byte[] sampleRAM = new byte[0x400000];
     byte sampleRAMBank = 0;
 
     int voiceInternalCounter;    // Not addressable
@@ -192,7 +192,7 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
     int getNextBit() {
         if (bitsRemaining <= 0) {
             int address = voiceAddress + voiceAddressAdd;
-            currentByte = sampleRAM[address & 0xfffff] & 0xff;
+            currentByte = sampleRAM[address & 0x3fffff] & 0xff;
             bitsRemaining = 8;
             voiceAddressAdd++;
         }
