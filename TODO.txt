@@ -357,11 +357,3 @@
 	* Consider loop control instead of just stopping, loop from a particular address... But this is a hard hard problem because it is a compressed bit stream
 		>> Unless the loop point is filled with samples of 0 offset so the address aligns with the start loop point of the bit stream (some very small loss) and the end loop point contains a sample to return to the value at the start of the loop
 		>> If it is always looping, then the "end" can be a couple of bytes at the start of the sample memory which are all zeros, which is no delta and silent... The end of the sample data could even be a delta to return back to 0x80.
-
-
-
-
-* Syntax to send large chunks of data using a bank register EBBS/address
-	>> Given write data from temporary memory to address24 '0x000000' and addressEx '0x06' using bank switch register at '0x8030' and addressEx '0x01'
-	Also add this option to the ResourceGenerator
-	This will avoid situations where data extends beyond expected bank register values

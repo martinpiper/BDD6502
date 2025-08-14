@@ -142,13 +142,23 @@ public class RemoteDebugger implements Runnable {
         this.receivedDisassemble = false;
     }
 
+    public void setReplyMemory(String replyMemory) {
+        this.replyMemory = replyMemory;
+        this.receivedMemory = false;
+    }
+
     volatile String replyDisassemble;
+    volatile String replyMemory;
 
     public boolean isReceivedDisassemble() {
         return receivedDisassemble;
     }
 
     boolean receivedDisassemble = false;
+    public boolean isReceivedMemory() {
+        return receivedMemory;
+    }
+    boolean receivedMemory = false;
 
     public int getDisassembleStart() {
         return disassembleStart;
@@ -432,6 +442,24 @@ public class RemoteDebugger implements Runnable {
                                 writer.print(currentReplyPrefix);
                             }
                             writer.flush();
+                        } else if (splits[0].equalsIgnoreCase("mem") || splits[0].equalsIgnoreCase("m")) {
+                            try {
+                                disassembleEnd = disassembleStart + 0x100;
+                                if (splits.length >= 2) {
+                                    disassembleStart = Glue.valueToInt(splits[1], 16);
+                                    disassembleEnd = disassembleStart + 0x100;
+                                }
+                                if (splits.length >= 3) {
+                                    disassembleEnd = Glue.valueToInt(splits[2], 16);
+                                }
+
+                                suspendCurrentDevice();
+                                replyMemory = null;
+                                receivedMemory = true;
+                            } catch (Exception e2) {
+                                writer.print(currentReplyPrefix);
+                            }
+                            writer.flush();
                         } else if (splits[0].equalsIgnoreCase("cpu")) {
                             try {
                                 if (splits.length >= 2) {
@@ -504,6 +532,11 @@ public class RemoteDebugger implements Runnable {
             writer.print(replyDisassemble + currentReplyPrefix);
             writer.flush();
             replyDisassemble = null;
+        }
+        if (replyMemory != null) {
+            writer.print(replyMemory + currentReplyPrefix);
+            writer.flush();
+            replyMemory = null;
         }
         if (replyDump != null) {
             output.write(0x02);

@@ -889,6 +889,63 @@ public class Glue {
                 continue;
             }
 
+            if (remoteDebugger.isReceivedMemory()) {
+                int start = remoteDebugger.getDisassembleStart();
+                int end = remoteDebugger.getDisassembleEnd();
+                StringBuilder sb = new StringBuilder();
+                StringBuilder sbSafeBytes1 = new StringBuilder();
+                StringBuilder sbSafeBytes2 = new StringBuilder();
+                if (remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_CPU)) {
+                    // >C:0400  00 00 00 00  00 00 00 00  00 00 00 00  00 00 00 00   ................
+                    int doneBytes = 0;
+                    while (start <= end) {
+                        if (doneBytes == 0) {
+                            sb.append(">C:" + HexUtil.wordToHex(start) + "  ");
+                        }
+                        int theByte = machine.getRam().safeInvisibleRead(start);
+                        sb.append(HexUtil.byteToHex(theByte) + " ");
+                        if (CharUtils.isAsciiPrintable((char)theByte)) {
+                            sbSafeBytes1.append((char)theByte);
+                        } else {
+                            sbSafeBytes1.append('.');
+                        }
+                        // Try to convert scr values to ASCII...
+                        char replacement = (char)((theByte & 0x3f) | 0x40);
+                        if (CharUtils.isAsciiPrintable(replacement)) {
+                            sbSafeBytes2.append((char)replacement);
+                        } else {
+                            sbSafeBytes2.append('.');
+                        }
+                        doneBytes++;
+                        if (doneBytes == 4 || doneBytes == 8 || doneBytes == 12) {
+                            sb.append(" ");
+                        }
+                        if (doneBytes == 16) {
+                            sb.append("   " + sbSafeBytes1 + "   " + sbSafeBytes2 + "\n");
+                            doneBytes = 0;
+                            sbSafeBytes1 = new StringBuilder();
+                            sbSafeBytes2 = new StringBuilder();
+                        }
+                        start++;
+                    }
+                    if (sbSafeBytes1.length() > 0) {
+                        sb.append("   " + sbSafeBytes1 + "   " + sbSafeBytes2 + "\n");
+                    }
+                }
+                if (userPort24BitAddress != null && userPort24BitAddress.isEnableAPU() && remoteDebugger.isCurrentDevice(RemoteDebugger.kDeviceFlags_APU)) {
+                    while (start <= end) {
+                        sb.append(".C: TODO!!");
+//                        String line = userPort24BitAddress.disassembleAPUInstructionAt(start);
+//                        sb.append(HexUtil.wordToHex(start) + "  " + line + "\n");
+                        start += 1;
+                    }
+                }
+                // Ready for the next page
+                remoteDebugger.setDisassembleStart(end);
+                remoteDebugger.setReplyMemory(sb.toString());
+                continue;
+            }
+
             Thread.sleep(10);
         }
 

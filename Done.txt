@@ -984,3 +984,11 @@ Added: Given I am using C64 processor port options
 
 * If the processor port is enabled then bus writes in IO space should go to the IO with the processor port figuring it all out
     Not the underlying RAM
+
+
+
+* Syntax to send large chunks of data using a bank register EBBS/address
+	>> Given write data from temporary memory to address24 '0x000000' and addressEx '0x06' using bank switch register at '0x8030' and addressEx '0x01'
+	Also add this option to the ResourceGenerator
+	This will avoid situations where data extends beyond expected bank register values
+    >> @Given("^write data from temporary memory to address24 '(.*)' and addressEx '(.*)' using bank switch register at '(.*)' and addressEx '(.*)'$")
