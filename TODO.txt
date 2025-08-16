@@ -357,3 +357,14 @@
 	* Consider loop control instead of just stopping, loop from a particular address... But this is a hard hard problem because it is a compressed bit stream
 		>> Unless the loop point is filled with samples of 0 offset so the address aligns with the start loop point of the bit stream (some very small loss) and the end loop point contains a sample to return to the value at the start of the loop
 		>> If it is always looping, then the "end" can be a couple of bytes at the start of the sample memory which are all zeros, which is no delta and silent... The end of the sample data could even be a delta to return back to 0x80.
+
+
+
+
+* Syntax to fill the display window, remove most of the borders.
+
+* Syntax to zoom the display window as much as possible (X or Y resolution).
+
+* Add display internals to the debug output.
+
+* Show palettes in window.
