@@ -44,6 +44,18 @@ class QuickDrawPanel extends JPanel {
         }
     }
 
+    public void fastSetRGB2W(int x, int y, int rgb) {
+        int pos = x + (y*width);
+        isCached = false;
+        if (isDoubleBuffered) {
+            rawPixelsBack[pos] = rgb;
+            rawPixelsBack[pos+1] = rgb;
+        } else {
+            rawPixels[pos] = rgb;
+            rawPixels[pos+1] = rgb;
+        }
+    }
+
     public void swapBuffers() {
         int[] temp = rawPixels;
         rawPixels = rawPixelsBack;

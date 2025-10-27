@@ -268,6 +268,9 @@ public class DisplayC64 {
     boolean isCHARROM = false;
     int borderColour = 0;
     int backgroundColour = 0;
+    int extraBackgroundColour1 = 0;
+    int extraBackgroundColour2 = 0;
+    int extraBackgroundColour3 = 0;
     int bankToAddress[] = {0xc000, 0x8000, 0x4000, 0x0000};
     private void refreshInternals() {
         try {
@@ -362,6 +365,9 @@ public class DisplayC64 {
 
             borderColour = theVICII.read(0x20, false);
             backgroundColour = theVICII.read(0x21, false);
+            extraBackgroundColour1 = theVICII.read(0x22, false);
+            extraBackgroundColour2 = theVICII.read(0x23, false);
+            extraBackgroundColour3 = theVICII.read(0x24, false);
         } catch (MemoryAccessException e) {
         }
     }
@@ -412,25 +418,59 @@ public class DisplayC64 {
                 } catch (MemoryAccessException e) {
                 }
             }
-            if ( (currentCharBits & 0b10000000) == 0) {
-                if (isBitmap) {
-                    panel.fastSetRGB(displayH, displayV, palette[currentChar & 0xf]);
+            if (isMulticolour) {
+                if ((currentCharBits & 0b11000000) == 0) {
+                    panel.fastSetRGB2W(displayH, displayV, palette[backgroundColour & 0xf]);
+                } else if ((currentCharBits & 0b11000000) == 0b01000000) {
+                    if (isBitmap) {
+                        panel.fastSetRGB2W(displayH, displayV, palette[(currentChar >> 4) & 0xf]);
+                    } else {
+                        panel.fastSetRGB2W(displayH, displayV, palette[extraBackgroundColour1 & 0x0f]);
+                    }
+                } else if ((currentCharBits & 0b11000000) == 0b10000000) {
+                    if (isBitmap) {
+                        panel.fastSetRGB2W(displayH, displayV, palette[currentChar & 0xf]);
+                    } else {
+                        panel.fastSetRGB2W(displayH, displayV, palette[extraBackgroundColour2 & 0x0f]);
+                    }
                 } else {
-                    panel.fastSetRGB(displayH, displayV, palette[backgroundColour & 0x0f]);
+                    if (isBitmap) {
+                        panel.fastSetRGB2W(displayH, displayV, palette[currentColour & 0xf]);
+                    } else {
+                        panel.fastSetRGB2W(displayH, displayV, palette[currentColour & 0x07]);
+                    }
                 }
             } else {
-                if (isBitmap) {
-                    panel.fastSetRGB(displayH, displayV, palette[(currentChar>>4) & 0xf]);
+                if ((currentCharBits & 0b10000000) == 0) {
+                    if (isBitmap) {
+                        panel.fastSetRGB(displayH, displayV, palette[currentChar & 0xf]);
+                    } else {
+                        panel.fastSetRGB(displayH, displayV, palette[backgroundColour & 0x0f]);
+                    }
                 } else {
-                    panel.fastSetRGB(displayH, displayV, palette[currentColour & 0x0f]);
+                    if (isBitmap) {
+                        panel.fastSetRGB(displayH, displayV, palette[(currentChar >> 4) & 0xf]);
+                    } else {
+                        panel.fastSetRGB(displayH, displayV, palette[currentColour & 0x0f]);
+                    }
                 }
             }
-            currentCharBits = currentCharBits << 1;
+            if (isMulticolour) {
+                currentCharBits = currentCharBits << 2;
+            } else {
+                currentCharBits = currentCharBits << 1;
+            }
         } else {
             panel.fastSetRGB(displayH, displayV, palette[borderColour & 0x0f]);
+            if (isMulticolour) {
+                panel.fastSetRGB(displayH+1, displayV, palette[borderColour & 0x0f]);
+            }
         }
-
-        displayH++;
+        if (isMulticolour) {
+            displayH+=2;
+        } else {
+            displayH++;
+        }
         if (displayH >= displayWidth) {
             displayH = 0;
             displayV++;

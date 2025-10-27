@@ -211,11 +211,25 @@ Feature: C64 ROM tests
       lda #VIC2ScreenControlVDefault | kVIC2ScreenControlVBits_Bitmap
       sta VIC2ScreenControlV
       rts
+    multicolour
+      lda #VIC2Colour_Black
+      sta VIC2ScreenColour
+      lda #VIC2Colour_Red
+      sta VIC2BorderColour
+      +ClearScreenAt_AX COLOURRAM , VIC2Colour_White
+      +ClearScreenAt_AX $6000 , VIC2Colour_Grey | (VIC2Colour_DarkGrey << 4)
+      lda #VIC2ScreenControlHDefault | kVIC2ScreenControlHBits_Multicolour
+      sta VIC2ScreenControlH
+      rts
+    *=$4000
+      !bin "bitmap.chr"
+    *=$6000
+      !bin "bitmap.scr"
     """
     And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm test.a
     And I load prg "test.prg"
-    And I load bin "c:\temp\t.chr" at $4000
-    And I load bin "c:\temp\t.scr" at $6000
+#    And I load bin "bitmap.chr" at $4000
+#    And I load bin "bitmap.scr" at $6000
     And I load labels "test.lbl"
 
     And I enable trace with indent
@@ -228,3 +242,12 @@ Feature: C64 ROM tests
 
     Then expect image "testdata/TC-12-000109.bmp" to be identical to "target/frames/TC-12-000109.bmp"
     Then expect image "testdata/TC-12-000112.bmp" to be identical to "target/frames/TC-12-000112.bmp"
+
+
+    When I execute the procedure at multicolour until return
+
+    And render a C64 video display frame
+    And render a C64 video display frame
+    And render a C64 video display frame
+
+    Then expect image "testdata/TC-12-000115.bmp" to be identical to "target/frames/TC-12-000115.bmp"
