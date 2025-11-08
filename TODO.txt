@@ -386,3 +386,10 @@
 		totalBits 6631260  bytes 828907.5
 		ratio 57.66746301635184
 		numBitsDistribution [204170, 367685, 470891, 300692, 84646, 9041, 267, 0]
+		After:
+		input size byte 1437392
+		totalBits 6631249  bytes 828906.125
+		ratio 57.667367356990994
+		numBitsDistribution [204170, 367685, 470891, 300692, 84646, 9041, 267, 0]
+		>> Really not worth it at all. Put into branch: C64/DeltaEncode-enhancements
+
