@@ -992,3 +992,25 @@ Added: Given I am using C64 processor port options
 	Also add this option to the ResourceGenerator
 	This will avoid situations where data extends beyond expected bank register values
     >> @Given("^write data from temporary memory to address24 '(.*)' and addressEx '(.*)' using bank switch register at '(.*)' and addressEx '(.*)'$")
+
+
+
+* DeltaEncode enhancements, which make hardware decompression harder...
+	Consider encodeDelta(delta) but with the previous value.
+	There are a maximum number of bits depending on the previous value assuming the max range is 0 to 255.
+	For example, if the previous value is 250, the maximum positive delta value is 5, 101 in binary.
+	It would therefore be superfluous to output more than one 0 bits, given the next bit will always be 0 followed by a 1.
+	Given this, the encode and decode functions can early out in syncronisation, and save ending bits.
+	Also if the previous value equals, there can be no negative delta, or if the previous value is 255, there can be no positive delta, in these rare situations the sign bit is not needed and can be assumed.
+	> -c "C:\Temp\aburner_mono.bin" 7 "C:\Temp\aburner_mono.vcd"
+		input size byte 1437392
+		totalBits 6631260  bytes 828907.5
+		ratio 57.66746301635184
+		numBitsDistribution [204170, 367685, 470891, 300692, 84646, 9041, 267, 0]
+		After:
+		input size byte 1437392
+		totalBits 6631249  bytes 828906.125
+		ratio 57.667367356990994
+		numBitsDistribution [204170, 367685, 470891, 300692, 84646, 9041, 267, 0]
+		>> Really not worth it at all. Put into branch: C64/DeltaEncode-enhancements
+
