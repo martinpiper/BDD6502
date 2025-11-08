@@ -374,9 +374,10 @@
 
 
 
-* DeltaEncode enhancement?
+* DeltaEncode enhancements, which make hardware decompression harder...
 	Consider encodeDelta(delta) but with the previous value.
 	There are a maximum number of bits depending on the previous value assuming the max range is 0 to 255.
 	For example, if the previous value is 250, the maximum positive delta value is 5, 101 in binary.
 	It would therefore be superfluous to output more than one 0 bits, given the next bit will always be 0 followed by a 1.
 	Given this, the encode and decode functions can early out in syncronisation, and save ending bits.
+	Also if the previous value equals, there can be no negative delta, or if the previous value is 255, there can be no positive delta, in these rare situations the sign bit is not needed and can be assumed.
