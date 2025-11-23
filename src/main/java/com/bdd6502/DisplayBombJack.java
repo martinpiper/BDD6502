@@ -269,6 +269,14 @@ public class DisplayBombJack extends MemoryBus {
         if (addressExActive(addressEx, addressExRegisters)) {
             return true;
         }
+
+        if (backgroundLayer != null) {
+            if (backgroundLayer.isAddressMatching(address, addressEx)) {
+                return true;
+            }
+        }
+
+
         return false;
     }
 

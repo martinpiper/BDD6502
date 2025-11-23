@@ -371,3 +371,5 @@
 * Add display internals to the debug output.
 
 * Show palettes in window.
+
+* Show CPU memory map execution, read, write
