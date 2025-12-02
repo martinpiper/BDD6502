@@ -390,3 +390,10 @@
         Output bytes, with suitable comments for potential lo/hi values.
             Use labels for assembly referenced addresses, including indirectly referenced addresses
     Then try to repeatedly remove lines of code based on unused data access, assemble, check for correctness...
+
+
+
+* Separate layer debug rendering. Memory access view like ICU64.
+    And the layer displays a debug window
+        displayBombJack.getLastLayerAdded().setDisplayDebugWindow(true);
+            Could use a more generic version of DisplaySprites4 without double buffering
