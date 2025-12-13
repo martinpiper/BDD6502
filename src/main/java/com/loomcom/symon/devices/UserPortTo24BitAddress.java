@@ -767,6 +767,9 @@ public class UserPortTo24BitAddress extends Device {
                     bus32FastDMACounter++;
                     if ((bus32FastDMACounter & 0xffff) == 0) {
                         bus32FastDMAStart = false;
+                        if (displayBombJack != null) {
+                            displayBombJack.signalDMACompleted();
+                        }
                     }
                     Bus32DMACounterToLatches();
                 }

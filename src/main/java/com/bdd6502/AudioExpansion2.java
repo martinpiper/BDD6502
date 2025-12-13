@@ -1,7 +1,6 @@
 package com.bdd6502;
 
 import com.loomcom.symon.util.HexUtil;
-import org.apache.commons.lang.ArrayUtils;
 
 import javax.sound.sampled.*;
 import java.io.*;
@@ -16,11 +15,12 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
     int addressRegisters = 0x8000, addressExRegisters = 0x01;
     int addressExSampleBank = 0x06;
 
-    // 2MHz /8 /8 gives 31250 Hz and ample time to latch, add, select, apply volume for 8 voices, accumulate and output in a cyclic pattern
-    // The real hardware LOADOUTPUT period gives 25000 Hz
-    public static final int sampleRate = 25000;
-    static final int samplesToMix = 8;
-    public static final int counterShift = 12;
+    // 5MHz /4 /8 gives 156,250 Hz, and then /2 for the 1<<15 maximum
+//    public static final int sampleRate = 78125;
+    public static final int sampleRate = 78125;
+    static final int samplesToMix = 16;
+//    public static final int counterShift = 15;
+    public static final int counterShift = 14;
     public static final int counterShiftValue = 1<<counterShift;
     public static final int counterShiftMask = counterShiftValue - 1;
     byte[] sampleBuffer = new byte[samplesToMix];
@@ -164,7 +164,6 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
             voiceInternalCounter = 0;
             currentSample = 0x80;
             voiceAddressAdd = 0;
-            bitsRemaining = 0;
         }
     }
 
@@ -187,23 +186,6 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
         return true;
     }
 
-    int bitsRemaining = 0;
-    int currentByte = 0;
-    int getNextBit() {
-        if (bitsRemaining <= 0) {
-            int address = voiceAddress + voiceAddressAdd;
-            currentByte = sampleRAM[address & 0x3fffff] & 0xff;
-            bitsRemaining = 8;
-            voiceAddressAdd++;
-        }
-        int ret = 0;
-        if ((currentByte & 0x80) != 0) {
-            ret = 1;
-        }
-        bitsRemaining--;
-        currentByte <<= 1;
-        return ret;
-    }
     public void calculateBalancedSamples(int channel) {
         for (int i = channel ; i < sampleBuffer.length ; i+=2) {
             ageContention();
@@ -219,37 +201,12 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
                 if (voiceInternalCounter >= counterShiftValue) {
                     voiceInternalCounter -= counterShiftValue;
 
-                    // Decode the delta
-                    int delta = 0;
-                    int numBits = 0;
-                    int gotBit = 1;
-                    while(getNextBit() == 0) {
-                        numBits++;
-                    }
-                    if (numBits > 0) {
-                        // Anything else except the 0 special case...
-                        while (numBits > 0) {
-                            delta <<= 1;
-                            delta |= gotBit;
-                            gotBit = getNextBit();
-                            numBits--;
-                        }
-                        if (gotBit != 0) {
-                            delta = -delta;
-                        }
-                    }
-
                     // Testing the result of signed int maths with unsigned byte two's complement based maths
                     // HW: Note implementation uses normal unsigned adders
-//                    byte testSample = (byte)currentSample;
-//                    testSample += (byte) (delta & 0xff);
+                    int address = voiceAddress + voiceAddressAdd;
+                    currentSample = sampleRAM[address & 0x3fffff] & 0xff;
+                    voiceAddressAdd++;
 
-                    sample += delta;
-                    currentSample = sample + 0x80;
-
-//                    if ((currentSample & 0xff) != (testSample & 0xff)) {
-//                        int z=0;
-//                    }
 
                     if (voiceAddressAdd >= voiceLength) {
                         voiceAddressAdd = 0;
@@ -258,7 +215,6 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
                         if ((voiceControl & 0x02) > 0) {
                             voiceAddressAdd = 0;
                             currentSample = 0x80;
-                            bitsRemaining = 0;
                         } else {
                             voiceControl = 0;
                         }

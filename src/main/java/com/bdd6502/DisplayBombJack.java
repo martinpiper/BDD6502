@@ -62,6 +62,17 @@ public class DisplayBombJack extends MemoryBus {
         return frameNumberForSync;
     }
 
+    boolean mDMACompleted = false;
+    public void signalDMACompleted() {
+        mDMACompleted = true;
+    }
+
+    public boolean getSignalDMACompleted() {
+        boolean ret = mDMACompleted;
+        mDMACompleted = false;
+        return ret;
+    }
+
     int frameNumberForSync = 0;
 
     public int getDisplayH() {
