@@ -147,6 +147,169 @@ public class Glue {
     }
 
 
+    @Given("^enable memory profiling$")
+    public void enableMemoryProfiling() {
+        machine.getCpu().setMemoryProfilingEnabled(true);
+    }
+
+    boolean bincludeProfileLastAccess = false;
+    @Then("^include profile last access$")
+    public void includeProfileLastAccess() {
+        bincludeProfileLastAccess = true;
+    }
+
+    @Then("^output profile disassembly to file \"([^\"]*)\"$")
+    public void outputProfileDisassemblyToFile(String arg0) throws Throwable {
+        boolean[] indirectRange = new boolean[0x10000];
+        boolean[] injectLabel = new boolean[0x10000];
+        Cpu cpu = machine.getCpu();
+        Map<String,String> mapLabelsForIndirects = new HashMap<>();
+        for (int i = 0 ; i < cpu.memoryProfileFlags.length ; i++) {
+            if ( cpu.memoryProfileLastAccessByInstructionAt[i] >= 0 ) {
+                injectLabel[cpu.memoryProfileLastAccessByInstructionAt[i]] = true;
+            }
+            if ((cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[i] == -1) && (cpu.memoryProfileIndirectHi[i] != -1) && (cpu.memoryProfileIndirectHi[i] >= cpu.memoryProfileIndirectLo[i])) {
+                for (int j = cpu.memoryProfileIndirectLo[i] ; j <= cpu.memoryProfileIndirectHi[i] ; j++) {
+                    indirectRange[i+j] = true;
+                }
+            }
+        }
+        int lastPCOutput = -1;
+        List<String> lines = new LinkedList<String>();
+        boolean wasInstruction = false;
+        boolean wasMemory = false;
+        boolean forcePC = true;
+        for (int i = 0 ; i < 0x100 ; i++) {
+            if ( indirectRange[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0 || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_IndX | Cpu.kMemoryFlags_IndYZero)) != 0 ) {
+                mapLabelsForIndirects.put("label_" + HexUtil.byteToHex(i).toLowerCase() , "$" + HexUtil.byteToHex(i).toLowerCase());
+            }
+        }
+        for (int i = 0x100 ; i < cpu.memoryProfileFlags.length ; ) {
+            if (i == 0x84f) {
+                i=i;
+            }
+            String line = "";
+            int currentPC = i;
+            if ( (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_ExecuteStartOp) != 0 ) {
+                if (!wasInstruction) {
+                    forcePC = true;
+                }
+                if ( cpu.memoryProfileIndirectHi[i] != -1 ) {
+                    if (bincludeProfileIndexRange) {
+                        line += "; Index range " + cpu.memoryProfileIndirectLo[i] + " to " + cpu.memoryProfileIndirectHi[i] + System.lineSeparator();
+                    }
+                }
+                if ( injectLabel[i] || (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_PCTarget) != 0 ) {
+                    line += "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
+                }
+                wasInstruction = true;
+                wasMemory = false;
+                line += "\t" + cpu.getCpuState().disassembleOpForAddress(cpu.memoryProfileLastOpcode[i] , i , cpu.memoryProfileLastLastArgsLo[i] , cpu.memoryProfileLastLastArgsHi[i] , "label_").toLowerCase();
+                boolean selfModified = false;
+                for (int opLen = 0 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
+                    if ((cpu.memoryProfileFlags[i + opLen] & Cpu.kMemoryFlags_Write) != 0) {
+                        selfModified = true;
+                    }
+                }
+                if ( selfModified ) {
+                    line = "; Self modified code : " + line + System.lineSeparator();
+                    for (int opLen = 0 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
+                        line += "label_" + HexUtil.wordToHex(i + opLen).toLowerCase();
+                        line += "\t!by $" + HexUtil.byteToHex(cpu.getBus().read(i + opLen)).toLowerCase() + System.lineSeparator();
+                    }
+                }
+
+                // Skip ahead to the next instruction
+                i += cpu.memoryProfileLastOpcodeLength[i];
+            } else if ( indirectRange[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0 || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_IndX | Cpu.kMemoryFlags_IndYZero)) != 0 ) {
+                if (!wasMemory) {
+                    forcePC = true;
+                }
+                wasMemory = true;
+                wasInstruction = false;
+                if ( (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_IndYZero) != 0 ) {
+                    if (bincludeIndexRegisterType) {
+                        line += "; IndYZero" + System.lineSeparator();
+                    }
+                }
+                if ( (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_IndX) != 0 ) {
+                    if (bincludeIndexRegisterType) {
+                        line += "; IndX" + System.lineSeparator();
+                    }
+                }
+                if ( cpu.memoryProfileIndirectHi[i] != -1 ) {
+                    if (bincludeProfileIndexRange) {
+                        line += "; Index op range " + cpu.memoryProfileIndirectLo[i] + " to " + cpu.memoryProfileIndirectHi[i] + System.lineSeparator();
+                    }
+                }
+                if ( cpu.memoryProfileLastAccessByInstructionAt[i] >= 0 ) {
+                    if (bincludeProfileLastAccess) {
+                        line += "; Last access by label_" + HexUtil.wordToHex(cpu.memoryProfileLastAccessByInstructionAt[i]).toLowerCase() + System.lineSeparator();
+                    }
+                    int addr = cpu.memoryProfileLastAccessByInstructionAt[i];
+                    if (addr >= 0) {
+                        if (cpu.memoryProfileIndirectHi[addr] >= 1 && cpu.memoryProfileIndirectLo[addr] >= 1) {
+                            if (cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[addr] >= 0) {
+                                if (lastPCOutput <= (currentPC-cpu.memoryProfileIndirectLo[addr])) {
+//                                    mapLabelsForIndirects.put("; label_" + HexUtil.wordToHex(cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[addr]).toLowerCase(), "label_" + HexUtil.wordToHex(currentPC - cpu.memoryProfileIndirectLo[addr]) + " ;1 label_" + HexUtil.wordToHex(currentPC) + " - " + cpu.memoryProfileIndirectLo[addr]);
+                                } else {
+                                    mapLabelsForIndirects.put("label_" + HexUtil.wordToHex(cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[addr]).toLowerCase(), "label_" + HexUtil.wordToHex(currentPC).toLowerCase() + " - " + cpu.memoryProfileIndirectLo[addr] + " ;2 label_" + HexUtil.wordToHex(i - cpu.memoryProfileIndirectLo[addr]).toLowerCase());
+                                }
+                            }
+                        }
+                    }
+                }
+                if ( (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_Write) != 0 ) {
+                    if (bincludeProfileWriteHint) {
+                        line += "; Write" + System.lineSeparator();
+                    }
+                }
+                line += "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
+                line += "\t!by $" + HexUtil.byteToHex(cpu.getBus().read(i)).toLowerCase();
+
+                i++;
+            } else {
+                forcePC = true;
+                i++;
+            }
+
+            if (!line.isEmpty()) {
+                if (forcePC) {
+                    lines.add("* = $" + HexUtil.wordToHex(currentPC).toLowerCase());
+                    forcePC = false;
+                    lastPCOutput = currentPC;
+                }
+                lines.add(line);
+            }
+        }
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(arg0, false));
+        PrintWriter pw = new PrintWriter(writer);
+        mapLabelsForIndirects.forEach( (key,value) -> {pw.println(key + " = " + value);});
+        for (String line : lines) {
+            pw.println(line);
+        }
+        writer.close();
+    }
+
+    boolean bincludeIndexRegisterType = false;
+    @Then("^include profile index register type$")
+    public void includeIndexRegisterType() {
+        bincludeIndexRegisterType = true;
+    }
+
+    boolean bincludeProfileIndexRange = false;
+    @Then("^include profile index range$")
+    public void includeProfileIndexRange() {
+        bincludeProfileIndexRange = true;
+    }
+
+    boolean bincludeProfileWriteHint = false;
+    @Then("^include profile write hint$")
+    public void includeProfileWriteHint() {
+        bincludeProfileWriteHint = true;
+    }
+
     private class ProfileData {
         boolean isSEI = false;
         int targetAddress;
@@ -890,7 +1053,7 @@ public class Glue {
                         int targs1 = machine.getRam().safeInvisibleRead(start + 2);
 
                         sb.append(machine.getCpu().getCpuState().getInstructionByteStatusForAddress(tir, start, targs0, targs1) + " ");
-                        sb.append(String.format("%-13s\n", machine.getCpu().getCpuState().disassembleOpForAddress(tir, start, targs0, targs1)));
+                        sb.append(String.format("%-13s\n", machine.getCpu().getCpuState().disassembleOpForAddress(tir, start, targs0, targs1 , "$")));
 
                         // Undefined or invalid instructions should still progress the disassembly by 1 byte
                         start += Math.max(machine.getCpu().instructionSizes[tir], 1);
@@ -1582,6 +1745,16 @@ public class Glue {
     public void i_execute_the_procedure_at(String arg1) throws Throwable {
         machine.getCpu().setStackPointer(0xff);
         executeProcedureAtForNoMoreThanInstructionsUntilPC(arg1, "", "");
+    }
+
+    @When("^I execute the procedure at (.+) until return for (.+) iterations$")
+    public void i_execute_the_procedure_at_for_iterations(String arg1, String arg2) throws Throwable {
+        int iterations = valueToInt(arg2);
+        while (iterations > 0) {
+            iterations--;
+            machine.getCpu().setStackPointer(0xff);
+            executeProcedureAtForNoMoreThanInstructionsUntilPC(arg1, "", "");
+        }
     }
 
     @When("^I execute the indirect procedure at (.+) until return$")

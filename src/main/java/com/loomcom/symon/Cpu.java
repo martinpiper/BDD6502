@@ -227,6 +227,33 @@ public class Cpu implements InstructionTable {
         }
     }
 
+
+    public static final int kMemoryFlags_Read = 0x01;
+    public static final int kMemoryFlags_Write = 0x02;
+    public static final int kMemoryFlags_Execute = 0x04;
+    public static final int kMemoryFlags_ExecuteStartOp = 0x08;
+    public static final int kMemoryFlags_IndX = 0x10;
+    public static final int kMemoryFlags_IndYZero = 0x20;
+    public static final int kMemoryFlags_PCTarget = 0x40;
+    public int[] memoryProfileFlags = new int[0x10000];
+    public int[] memoryProfileLastAccessByInstructionAt = new int[0x10000];
+    public int[] memoryProfileCalculatedAddressUsedWithoutIndirect = new int[0x10000];
+    public int[] memoryProfileLastOpcode = new int[0x10000];
+    public int[] memoryProfileLastOpcodeLength = new int[0x10000];
+    public int[] memoryProfileLastLastArgsLo = new int[0x10000];
+    public int[] memoryProfileLastLastArgsHi = new int[0x10000];
+    public int[] memoryProfileIndirectLo = new int[0x10000];
+    public int[] memoryProfileIndirectHi = new int[0x10000];
+
+    boolean memoryProfilingEnabled = false;
+    public void setMemoryProfilingEnabled(boolean flag) {
+        memoryProfilingEnabled = flag;
+        java.util.Arrays.fill(memoryProfileIndirectLo , 256);
+        java.util.Arrays.fill(memoryProfileIndirectHi , -1);
+        java.util.Arrays.fill(memoryProfileLastAccessByInstructionAt, -1);
+        java.util.Arrays.fill(memoryProfileCalculatedAddressUsedWithoutIndirect, -1);
+    }
+
     /**
      * Performs an individual instruction cycle.
      */
@@ -250,6 +277,10 @@ public class Cpu implements InstructionTable {
 
         // Fetch memory location for this instruction.
         state.ir = bus.read(state.pc);
+        if (memoryProfilingEnabled) {
+            memoryProfileFlags[state.pc] |= kMemoryFlags_Execute | kMemoryFlags_ExecuteStartOp;
+            memoryProfileLastOpcode[state.pc] = state.ir;
+        }
         irAddressMode = (state.ir >> 2) & 0x07;
         irOpMode = state.ir & 0x03;
 
@@ -259,10 +290,21 @@ public class Cpu implements InstructionTable {
 
         // Decode the instruction and operands
         state.instSize = Cpu.instructionSizes[state.ir];
+        if (memoryProfilingEnabled) {
+            memoryProfileLastOpcodeLength[state.lastPc] = state.instSize;
+        }
         int clockSteps = Cpu.instructionClocks[state.ir];
         clockCycles += clockSteps;
         for (int i = 0; i < state.instSize - 1; i++) {
             state.args[i] = bus.read(state.pc);
+            if (memoryProfilingEnabled) {
+                memoryProfileFlags[state.pc] |= kMemoryFlags_Execute;
+                if (i == 0) {
+                    memoryProfileLastLastArgsLo[state.lastPc] = state.args[i];
+                } else if (i == 1) {
+                    memoryProfileLastLastArgsHi[state.lastPc] = state.args[i];
+                }
+            }
             // Increment PC after reading
             incrementPC();
         }
@@ -309,6 +351,13 @@ public class Cpu implements InstructionTable {
                     case 0: // (Zero Page,X)
                         tmp = (state.args[0] + state.x) & 0xff;
                         effectiveAddress = address(bus.read(tmp), bus.read(tmp + 1));
+                        if (memoryProfilingEnabled) {
+                            memoryProfileFlags[tmp] |= kMemoryFlags_Read | kMemoryFlags_IndX;
+                            memoryProfileLastAccessByInstructionAt[tmp] = state.lastPc;
+                            memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_IndX;
+                            memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                        }
+
                         state.traceShouldShowReadAddress = true;
                         state.traceShouldShowReadByte = true;
                         break;
@@ -324,7 +373,24 @@ public class Cpu implements InstructionTable {
                     case 4: // (Zero Page),Y
                         tmp = address(bus.read(state.args[0]),
                                 bus.read((state.args[0] + 1) & 0xff));
+
                         effectiveAddress = (tmp + state.y) & 0xffff;
+
+                        if (memoryProfilingEnabled) {
+                            memoryProfileIndirectLo[state.lastPc] = Math.min(memoryProfileIndirectLo[state.lastPc] , state.y);
+                            memoryProfileIndirectHi[state.lastPc] = Math.max(memoryProfileIndirectHi[state.lastPc] , state.y);
+                            memoryProfileCalculatedAddressUsedWithoutIndirect[state.lastPc] = tmp;
+                            memoryProfileFlags[state.args[0]] |= kMemoryFlags_Read | kMemoryFlags_IndYZero;
+                            memoryProfileFlags[state.args[0]+1] |= kMemoryFlags_Read | kMemoryFlags_IndYZero;
+                            memoryProfileLastAccessByInstructionAt[state.args[0]] = state.lastPc;
+                            memoryProfileFlags[tmp] |= kMemoryFlags_IndYZero;
+                            memoryProfileLastAccessByInstructionAt[tmp] = state.lastPc;
+                            memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                            memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                            memoryProfileIndirectLo[tmp] = Math.min(memoryProfileIndirectLo[tmp] , state.y);
+                            memoryProfileIndirectHi[tmp] = Math.max(memoryProfileIndirectHi[tmp] , state.y);
+                        }
+
                         state.traceShouldShowReadAddress = true;
                         state.traceShouldShowReadByte = true;
                         break;
@@ -347,6 +413,10 @@ public class Cpu implements InstructionTable {
         state.readAddress = effectiveAddress;
         if (state.readAddress >= 0) {
             state.readByte = bus.read(effectiveAddress, false);
+            if (memoryProfilingEnabled) {
+                memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+            }
         }
 
         // Execute
@@ -379,6 +449,9 @@ public class Cpu implements InstructionTable {
                 stackPush(state.getStatusFlag() | 0x10);
                 break;
             case 0x10: // BPL - Branch if Positive - Relative
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                }
                 if (!getNegativeFlag()) {
                     state.pc = relAddress(state.args[0]);
                 }
@@ -402,6 +475,9 @@ public class Cpu implements InstructionTable {
                 stackPush((state.pc - 1 >> 8) & 0xff); // PC high byte
                 stackPush(state.pc - 1 & 0xff);        // PC low byte
                 state.pc = address(state.args[0], state.args[1]);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[state.pc] |= kMemoryFlags_PCTarget;
+                }
                 testStackNeedToPop.addFirst(Boolean.FALSE);
                 break;
             case 0x22: // PYT - Push Y for Test
@@ -420,6 +496,9 @@ public class Cpu implements InstructionTable {
                 setProcessorStatus(stackPop());
                 break;
             case 0x30: // BMI - Branch if Minus - Relative
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                }
                 if (getNegativeFlag()) {
                     state.pc = relAddress(state.args[0]);
                 }
@@ -453,6 +532,9 @@ public class Cpu implements InstructionTable {
                 stackPush(state.a);
                 break;
             case 0x50: // BVC - Branch if Overflow Clear - Relative
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                }
                 if (!getOverflowFlag()) {
                     state.pc = relAddress(state.args[0]);
                 }
@@ -488,6 +570,9 @@ public class Cpu implements InstructionTable {
                 setArithmeticFlags(state.a);
                 break;
             case 0x70: // BVS - Branch if Overflow Set - Relative
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                }
                 if (getOverflowFlag()) {
                     state.pc = relAddress(state.args[0]);
                 }
@@ -504,6 +589,9 @@ public class Cpu implements InstructionTable {
                 setArithmeticFlags(state.a);
                 break;
             case 0x90: // BCC - Branch if Carry Clear - Relative
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                }
                 if (!getCarryFlag()) {
                     state.pc = relAddress(state.args[0]);
                 }
@@ -524,6 +612,9 @@ public class Cpu implements InstructionTable {
                 setArithmeticFlags(state.x);
                 break;
             case 0xb0: // BCS - Branch if Carry Set - Relative
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                }
                 if (getCarryFlag()) {
                     state.pc = relAddress(state.args[0]);
                 }
@@ -544,6 +635,9 @@ public class Cpu implements InstructionTable {
                 setArithmeticFlags(state.x);
                 break;
             case 0xd0: // BNE - Branch if Not Equal to Zero - Relative
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                }
                 if (!getZeroFlag()) {
                     state.pc = relAddress(state.args[0]);
                 }
@@ -559,6 +653,9 @@ public class Cpu implements InstructionTable {
                 // Do nothing.
                 break;
             case 0xf0: // BEQ - Branch if Equal to Zero - Relative
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                }
                 if (getZeroFlag()) {
                     state.pc = relAddress(state.args[0]);
                 }
@@ -570,6 +667,9 @@ public class Cpu implements InstructionTable {
             /** JMP *****************************************************************/
             case 0x4c: // JMP - Absolute
                 state.pc = address(state.args[0], state.args[1]);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[state.pc] |= kMemoryFlags_PCTarget;
+                }
                 break;
             case 0x6c: // JMP - Indirect
                 lo = address(state.args[0], state.args[1]); // Address of low byte
@@ -583,6 +683,11 @@ public class Cpu implements InstructionTable {
                 }
 
                 state.pc = address(bus.read(lo), bus.read(hi));
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[lo] |= kMemoryFlags_Read;
+                    memoryProfileFlags[hi] |= kMemoryFlags_Read;
+                    memoryProfileFlags[state.pc] |= kMemoryFlags_PCTarget;
+                }
                 /* TODO: For accuracy, allow a flag to enable broken behavior of early 6502s:
                  *
                  * "An original 6502 has does not correctly fetch the target
@@ -610,6 +715,10 @@ public class Cpu implements InstructionTable {
             case 0x19: // Absolute,Y
             case 0x1d: // Absolute,X
                 state.a |= bus.read(effectiveAddress);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 setArithmeticFlags(state.a);
                 state.traceShouldShowReadByte = true;
                 break;
@@ -623,9 +732,13 @@ public class Cpu implements InstructionTable {
             case 0x06: // Zero Page
             case 0x0e: // Absolute
             case 0x16: // Zero Page,X
-            case 0x1e: // Absolute,X
+            case 0x1e: // ASL Absolute,X
                 tmp = asl(bus.read(effectiveAddress));
                 bus.write(effectiveAddress, tmp);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_Write;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 setArithmeticFlags(tmp);
                 state.traceShouldShowReadByte = true;
                 break;
@@ -635,6 +748,10 @@ public class Cpu implements InstructionTable {
             case 0x24: // Zero Page
             case 0x2c: // Absolute
                 tmp = bus.read(effectiveAddress);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 setZeroFlag((state.a & tmp) == 0);
                 setNegativeFlag((tmp & 0x80) != 0);
                 setOverflowFlag((tmp & 0x40) != 0);
@@ -655,6 +772,10 @@ public class Cpu implements InstructionTable {
             case 0x39: // Absolute,Y
             case 0x3d: // Absolute,X
                 state.a &= bus.read(effectiveAddress);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 setArithmeticFlags(state.a);
                 state.traceShouldShowReadByte = true;
                 break;
@@ -671,6 +792,10 @@ public class Cpu implements InstructionTable {
             case 0x3e: // Absolute,X
                 tmp = rol(bus.read(effectiveAddress));
                 bus.write(effectiveAddress, tmp);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_Write;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 setArithmeticFlags(tmp);
                 state.traceShouldShowReadByte = true;
                 break;
@@ -689,6 +814,10 @@ public class Cpu implements InstructionTable {
             case 0x59: // Absolute,Y
             case 0x5d: // Absolute,X
                 state.a ^= bus.read(effectiveAddress);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 setArithmeticFlags(state.a);
                 state.traceShouldShowReadByte = true;
                 break;
@@ -705,6 +834,10 @@ public class Cpu implements InstructionTable {
             case 0x5e: // Absolute,X
                 tmp = lsr(bus.read(effectiveAddress));
                 bus.write(effectiveAddress, tmp);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_Write;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 setArithmeticFlags(tmp);
                 state.traceShouldShowReadByte = true;
                 break;
@@ -730,6 +863,10 @@ public class Cpu implements InstructionTable {
                 } else {
                     state.a = adc(state.a, bus.read(effectiveAddress));
                 }
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 state.traceShouldShowReadByte = true;
                 break;
 
@@ -745,6 +882,10 @@ public class Cpu implements InstructionTable {
             case 0x7e: // Absolute,X
                 tmp = ror(bus.read(effectiveAddress));
                 bus.write(effectiveAddress, tmp);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_Write;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 setArithmeticFlags(tmp);
                 state.traceShouldShowReadByte = true;
                 break;
@@ -759,6 +900,10 @@ public class Cpu implements InstructionTable {
             case 0x99: // Absolute,Y
             case 0x9d: // Absolute,X
                 bus.write(effectiveAddress, state.a);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Write;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 break;
 
 
@@ -767,6 +912,10 @@ public class Cpu implements InstructionTable {
             case 0x8c: // Absolute
             case 0x94: // Zero Page,X
                 bus.write(effectiveAddress, state.y);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Write;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 break;
 
 
@@ -775,6 +924,10 @@ public class Cpu implements InstructionTable {
             case 0x8e: // Absolute
             case 0x96: // Zero Page,Y
                 bus.write(effectiveAddress, state.x);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Write;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 break;
 
 
@@ -788,6 +941,10 @@ public class Cpu implements InstructionTable {
             case 0xb4: // Zero Page,X
             case 0xbc: // Absolute,X
                 state.y = bus.read(effectiveAddress);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 setArithmeticFlags(state.y);
                 break;
 
@@ -802,6 +959,10 @@ public class Cpu implements InstructionTable {
             case 0xb6: // Zero Page,Y
             case 0xbe: // Absolute,Y
                 state.x = bus.read(effectiveAddress);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 setArithmeticFlags(state.x);
                 break;
 
@@ -819,6 +980,10 @@ public class Cpu implements InstructionTable {
             case 0xb9: // Absolute,Y
             case 0xbd: // Absolute,X
                 state.a = bus.read(effectiveAddress);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 setArithmeticFlags(state.a);
                 break;
 
@@ -830,6 +995,10 @@ public class Cpu implements InstructionTable {
             case 0xc4: // Zero Page
             case 0xcc: // Absolute
                 cmp(state.y, bus.read(effectiveAddress));
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 state.traceShouldShowReadByte = true;
                 break;
 
@@ -846,6 +1015,10 @@ public class Cpu implements InstructionTable {
             case 0xd9: // Absolute,Y
             case 0xdd: // Absolute,X
                 cmp(state.a, bus.read(effectiveAddress));
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 state.traceShouldShowReadByte = true;
                 break;
 
@@ -857,6 +1030,10 @@ public class Cpu implements InstructionTable {
             case 0xde: // Absolute,X
                 tmp = (bus.read(effectiveAddress) - 1) & 0xff;
                 bus.write(effectiveAddress, tmp);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_Write;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 setArithmeticFlags(tmp);
                 break;
 
@@ -868,6 +1045,10 @@ public class Cpu implements InstructionTable {
             case 0xe4: // Zero Page
             case 0xec: // Absolute
                 cmp(state.x, bus.read(effectiveAddress));
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 state.traceShouldShowReadByte = true;
                 break;
 
@@ -892,6 +1073,10 @@ public class Cpu implements InstructionTable {
                 } else {
                     state.a = sbc(state.a, bus.read(effectiveAddress));
                 }
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 state.traceShouldShowReadByte = true;
                 break;
 
@@ -903,6 +1088,10 @@ public class Cpu implements InstructionTable {
             case 0xfe: // Absolute,X
                 tmp = (bus.read(effectiveAddress) + 1) & 0xff;
                 bus.write(effectiveAddress, tmp);
+                if (memoryProfilingEnabled) {
+                    memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_Write;
+                    memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                }
                 setArithmeticFlags(tmp);
                 break;
 
@@ -1307,6 +1496,9 @@ public class Cpu implements InstructionTable {
 
     public void setProgramCounter(int addr) {
         state.pc = addr;
+        if (memoryProfilingEnabled) {
+            memoryProfileFlags[state.pc] |= kMemoryFlags_PCTarget;
+        }
     }
 
     public int getStackPointer() {
@@ -1480,6 +1672,14 @@ public class Cpu implements InstructionTable {
      * offset address.
      */
     int xAddress(int lowByte, int hiByte) {
+        if (memoryProfilingEnabled) {
+            memoryProfileIndirectLo[state.lastPc] = Math.min(memoryProfileIndirectLo[state.lastPc] , state.x);
+            memoryProfileIndirectHi[state.lastPc] = Math.max(memoryProfileIndirectHi[state.lastPc] , state.x);
+            memoryProfileCalculatedAddressUsedWithoutIndirect[state.lastPc] = address(lowByte, hiByte);
+            memoryProfileIndirectLo[address(lowByte, hiByte)] = Math.min(memoryProfileIndirectLo[address(lowByte, hiByte)] , state.x);
+            memoryProfileIndirectHi[address(lowByte, hiByte)] = Math.max(memoryProfileIndirectHi[address(lowByte, hiByte)] , state.x);
+        }
+
         return (address(lowByte, hiByte) + state.x) & 0xffff;
     }
 
@@ -1488,6 +1688,15 @@ public class Cpu implements InstructionTable {
      * offset address.
      */
     int yAddress(int lowByte, int hiByte) {
+        if (memoryProfilingEnabled) {
+            memoryProfileIndirectLo[state.lastPc] = Math.min(memoryProfileIndirectLo[state.lastPc] , state.y);
+            memoryProfileIndirectHi[state.lastPc] = Math.max(memoryProfileIndirectHi[state.lastPc] , state.y);
+            memoryProfileCalculatedAddressUsedWithoutIndirect[state.lastPc] = address(lowByte, hiByte);
+            memoryProfileIndirectLo[address(lowByte, hiByte)] = Math.min(memoryProfileIndirectLo[address(lowByte, hiByte)] , state.y);
+            memoryProfileIndirectHi[address(lowByte, hiByte)] = Math.max(memoryProfileIndirectHi[address(lowByte, hiByte)] , state.y);
+            memoryProfileFlags[address(lowByte, hiByte)] |= kMemoryFlags_IndYZero;
+        }
+
         return (address(lowByte, hiByte) + state.y) & 0xffff;
     }
 
@@ -1495,6 +1704,15 @@ public class Cpu implements InstructionTable {
      * Given a single byte, compute the Zero Page,X offset address.
      */
     int zpxAddress(int zp) {
+        if (memoryProfilingEnabled) {
+            memoryProfileIndirectLo[state.lastPc] = Math.min(memoryProfileIndirectLo[state.lastPc] , state.x);
+            memoryProfileIndirectHi[state.lastPc] = Math.max(memoryProfileIndirectHi[state.lastPc] , state.x);
+            memoryProfileCalculatedAddressUsedWithoutIndirect[state.lastPc] = zp;
+            memoryProfileIndirectLo[zp] = Math.min(memoryProfileIndirectLo[zp] , state.x);
+            memoryProfileIndirectHi[zp] = Math.max(memoryProfileIndirectHi[zp] , state.x);
+            memoryProfileFlags[zp] |= kMemoryFlags_IndX;
+        }
+
         return (zp + state.x) & 0xff;
     }
 
@@ -1510,6 +1728,14 @@ public class Cpu implements InstructionTable {
      * Given a single byte, compute the Zero Page,Y offset address.
      */
     int zpyAddress(int zp) {
+        if (memoryProfilingEnabled) {
+            memoryProfileIndirectLo[state.lastPc] = Math.min(memoryProfileIndirectLo[state.lastPc] , state.y);
+            memoryProfileIndirectHi[state.lastPc] = Math.max(memoryProfileIndirectHi[state.lastPc] , state.y);
+            memoryProfileCalculatedAddressUsedWithoutIndirect[state.lastPc] = zp;
+            memoryProfileIndirectLo[zp] = Math.min(memoryProfileIndirectLo[zp] , state.y);
+            memoryProfileIndirectHi[zp] = Math.max(memoryProfileIndirectHi[zp] , state.y);
+            memoryProfileFlags[zp] |= kMemoryFlags_IndYZero;
+        }
         return (zp + state.y) & 0xff;
     }
 
@@ -1653,7 +1879,7 @@ public class Cpu implements InstructionTable {
             // .C:f6b0  A5 A0       LDA $A0        - A:E7 X:00 Y:0A SP:eb N.-..I..    7233411
             StringBuilder sb = new StringBuilder(".C:");
             sb.append(getInstructionByteStatusForAddress(tir , tpc , targs0 , targs1) + " ");
-            sb.append(String.format("%-13s", disassembleOpForAddress(tir , tpc , targs0 , targs1)));
+            sb.append(String.format("%-13s", disassembleOpForAddress(tir , tpc , targs0 , targs1 , "$")));
 
             sb.append("A:" + HexUtil.byteToHex(a) + " ");
             sb.append("X:" + HexUtil.byteToHex(x) + " ");
@@ -1784,7 +2010,7 @@ public class Cpu implements InstructionTable {
             return sb.toString();
         }
 
-        public String disassembleOpForAddress(int tir , int tpc , int targs0 , int targs1) {
+        public String disassembleOpForAddress(int tir , int tpc , int targs0 , int targs1 , String labelPrefix) {
             String mnemonic = opcodeNames[tir];
 
             if (mnemonic == null) {
@@ -1795,35 +2021,40 @@ public class Cpu implements InstructionTable {
 
             switch (instructionModes[tir]) {
                 case ABS:
-                    sb.append(" $" + HexUtil.wordToHex(address(targs0, targs1)));
+                    sb.append(" " + labelPrefix + HexUtil.wordToHex(address(targs0, targs1)));
                     break;
                 case ABX:
-                    sb.append(" $" + HexUtil.wordToHex(address(targs0, targs1)) + ",X");
+                    sb.append(" " + labelPrefix + HexUtil.wordToHex(address(targs0, targs1)) + ",X");
                     break;
                 case ABY:
-                    sb.append(" $" + HexUtil.wordToHex(address(targs0, targs1)) + ",Y");
+                    sb.append(" " + labelPrefix + HexUtil.wordToHex(address(targs0, targs1)) + ",Y");
                     break;
                 case IMM:
                     sb.append(" #$" + HexUtil.byteToHex(targs0));
                     break;
                 case IND:
-                    sb.append(" ($" + HexUtil.wordToHex(address(targs0, targs1)) + ")");
+                    sb.append(" (" + labelPrefix + HexUtil.wordToHex(address(targs0, targs1)) + ")");
                     break;
                 case XIN:
-                    sb.append(" ($" + HexUtil.byteToHex(targs0) + ",X)");
+                    sb.append(" (" + labelPrefix + HexUtil.byteToHex(targs0) + ",X)");
                     break;
                 case INY:
-                    sb.append(" ($" + HexUtil.byteToHex(targs0) + "),Y");
+                    sb.append(" (" + labelPrefix + HexUtil.byteToHex(targs0) + "),Y");
                     break;
                 case REL:
+                    int signedOffset = targs0 << 24;
+                    signedOffset >>= 24;
+//                    sb.append(" " + labelPrefix + HexUtil.wordToHex(tpc + 2 + signedOffset) + " ; $" + HexUtil.wordToHex(tpc + 2) + " $" + HexUtil.byteToHex(targs0));
+                    sb.append(" " + labelPrefix + HexUtil.wordToHex(tpc + 2 + signedOffset));
+                    break;
                 case ZPG:
-                    sb.append(" $" + HexUtil.byteToHex(targs0));
+                    sb.append(" " + labelPrefix + HexUtil.byteToHex(targs0));
                     break;
                 case ZPX:
-                    sb.append(" $" + HexUtil.byteToHex(targs0) + ",X");
+                    sb.append(" " + labelPrefix + HexUtil.byteToHex(targs0) + ",X");
                     break;
                 case ZPY:
-                    sb.append(" $" + HexUtil.byteToHex(targs0) + ",Y");
+                    sb.append(" " + labelPrefix + HexUtil.byteToHex(targs0) + ",Y");
                     break;
             }
 
