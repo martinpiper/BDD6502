@@ -5,6 +5,7 @@ Feature:  Profile guided disassembly
   Only memory that is accessed is output during the disassembly phase.
   This is useful for reverse engineering code.
 
+  @TC-21
   Scenario: Simple profile guided disassembly
     Given I have a simple overclocked 6502 system
     And I create file "target\test1.a" with
@@ -73,6 +74,7 @@ Feature:  Profile guided disassembly
     When ignoring empty lines
     Then expect the next line to contain "label_e8 = $e8"
     Then expect the next line to contain "label_a9 = $a9"
+    Then expect the next line to contain "label_042e = label_0431 - 3 ; Table start skipped"
     Then expect the next line to contain "* = $03ff"
     Then expect the next line to contain "label_03ff	!by $20"
     Then expect the next line to contain "* = $0400"
@@ -99,9 +101,6 @@ Feature:  Profile guided disassembly
     Then expect the next line to contain "label_0422	lda label_042e,y"
     Then expect the next line to contain "ldy #$08"
     Then expect the next line to contain "label_0427	rts"
-    # Even though the indirect/index table start isn't ever accessed, it is still generated to keep the data separation consistent
-    Then expect the next line to contain "* = $042e"
-    Then expect the next line to contain "label_042e	!by $00 ; Never accessed"
     Then expect the next line to contain "* = $0431"
     Then expect the next line to contain "label_0431	!by $03"
     Then expect the next line to contain "label_0432	!by $04 ; Never accessed"
@@ -128,6 +127,7 @@ Feature:  Profile guided disassembly
     When I execute the procedure at start until return
 
 
+  @TC-22
   Scenario: Complex binary only profile guided disassembly
     Given I have a simple overclocked 6502 system
 

@@ -182,6 +182,9 @@ public class Glue {
                     indirectRange[i+j] = true;
                 }
             }
+            if ((cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[i] == -1) && cpu.memoryProfileIndirectHi[i] >= 1 && cpu.memoryProfileIndirectLo[i] >= 1) {
+                mapLabelsForIndirects.put("label_" + HexUtil.wordToHex(i).toLowerCase(), "label_" + HexUtil.wordToHex(i + cpu.memoryProfileIndirectLo[i]).toLowerCase() + " - " + cpu.memoryProfileIndirectLo[i] + " ; Table start skipped");
+            }
         }
         int lastPCOutput = -1;
         List<String> lines = new LinkedList<String>();
@@ -207,6 +210,7 @@ public class Glue {
                 if (!wasInstruction) {
                     forcePC = true;
                 }
+
                 if ( cpu.memoryProfileIndirectHi[i] != -1 ) {
                     if (bincludeProfileIndexRange) {
                         line += "; Index range " + cpu.memoryProfileIndirectLo[i] + " to " + cpu.memoryProfileIndirectHi[i] + System.lineSeparator();
@@ -261,7 +265,7 @@ public class Glue {
 
                 // Skip ahead to the next instruction
                 i += cpu.memoryProfileLastOpcodeLength[i];
-            } else if ( indirectRange[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0 || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_IndX | Cpu.kMemoryFlags_IndYZero)) != 0 ) {
+            } else if ( indirectRange[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0 /*|| (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_IndX | Cpu.kMemoryFlags_IndYZero)) != 0*/ ) {
                 if (!wasMemory) {
                     forcePC = true;
                 }
@@ -286,19 +290,8 @@ public class Glue {
                     if (bincludeProfileLastAccess) {
                         line += "; Last access by label_" + HexUtil.wordToHex(cpu.memoryProfileLastAccessByInstructionAt[i]).toLowerCase() + System.lineSeparator();
                     }
-                    int addr = cpu.memoryProfileLastAccessByInstructionAt[i];
-                    if (addr >= 0) {
-                        if (cpu.memoryProfileIndirectHi[addr] >= 1 && cpu.memoryProfileIndirectLo[addr] >= 1) {
-                            if (cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[addr] >= 0) {
-                                if (lastPCOutput <= (currentPC-cpu.memoryProfileIndirectLo[addr])) {
-//                                    mapLabelsForIndirects.put("; label_" + HexUtil.wordToHex(cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[addr]).toLowerCase(), "label_" + HexUtil.wordToHex(currentPC - cpu.memoryProfileIndirectLo[addr]) + " ;1 label_" + HexUtil.wordToHex(currentPC) + " - " + cpu.memoryProfileIndirectLo[addr]);
-                                } else {
-                                    mapLabelsForIndirects.put("label_" + HexUtil.wordToHex(cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[addr]).toLowerCase(), "label_" + HexUtil.wordToHex(currentPC).toLowerCase() + " - " + cpu.memoryProfileIndirectLo[addr] + " ;2 label_" + HexUtil.wordToHex(i - cpu.memoryProfileIndirectLo[addr]).toLowerCase());
-                                }
-                            }
-                        }
-                    }
                 }
+
                 if ( (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_Write) != 0 ) {
                     if (bincludeProfileWriteHint) {
                         line += "; Write" + System.lineSeparator();

@@ -398,3 +398,21 @@
     And the layer displays a debug window
         displayBombJack.getLastLayerAdded().setDisplayDebugWindow(true);
             Could use a more generic version of DisplaySprites4 without double buffering
+
+
+
+@TC-22
+    Note: ; Self modified code : 	jsr label_07c8
+    And note the lo/hi store and fetches:
+        label_0487	lda label_0ae3,y
+        label_048a	sta label_049a
+        label_048d	lda label_0b08,y
+        label_0490	sta label_049b
+    * Flag the lo/hi self modified stores as lo/hi values
+        Then flag each of these as lo/hi
+            sta label_049a
+            sta label_049b
+        Then inspect the previous instruction for each and flag both label_0ae3 and label_0b08 as the starts of lo/hi tables
+    * Then try using !by < and !by > references when writing those tables...
+        Take into account any "never accessed" and still output normal bytes...
+
