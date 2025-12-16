@@ -246,6 +246,13 @@ public class Cpu implements InstructionTable {
     public int[] memoryProfileIndirectLo = new int[0x10000];
     public int[] memoryProfileIndirectHi = new int[0x10000];
     public int[] memoryProfileTargetBranchAddress = new int[0x10000];
+    public int[] memoryProfileForJmpJsrAt = new int[0x10000];
+    public boolean[] memoryProfileIsJmpJsrOpcode = new boolean[0x10000];
+    public boolean[] memoryProfileIsLowAddressForOpcode = new boolean[0x10000];
+    public boolean[] memoryProfileIsHighAddressForOpcode = new boolean[0x10000];
+    public char[] memoryProfileThisOpcodeStoredIntoLowAddress = new char[0x10000];
+    public char[] memoryProfileThisOpcodeStoredIntoHighAddress = new char[0x10000];
+    public char[] memoryProfileThisOpcodeLoadedInto = new char[0x10000];
 
     boolean memoryProfilingEnabled = false;
     public void setMemoryProfilingEnabled(boolean flag) {
@@ -316,6 +323,9 @@ public class Cpu implements InstructionTable {
 
         // Get the data from the effective address (if any)
         effectiveAddress = 0;
+
+        char lastRegisterStoreUsed = '\0';
+        char lastRegisterLoadUsed = '\0';
 
         switch (irOpMode) {
             case 0:
@@ -483,6 +493,9 @@ public class Cpu implements InstructionTable {
                 stackPush(state.pc - 1 & 0xff);        // PC low byte
                 state.pc = address(state.args[0], state.args[1]);
                 if (memoryProfilingEnabled) {
+                    memoryProfileIsJmpJsrOpcode[state.lastPc] = true;
+                    memoryProfileIsLowAddressForOpcode[state.lastPc + 1] = true;
+                    memoryProfileIsHighAddressForOpcode[state.lastPc + 2] = true;
                     memoryProfileFlags[state.pc] |= kMemoryFlags_PCTarget;
                 }
                 testStackNeedToPop.addFirst(Boolean.FALSE);
@@ -703,6 +716,9 @@ public class Cpu implements InstructionTable {
             case 0x4c: // JMP - Absolute
                 state.pc = address(state.args[0], state.args[1]);
                 if (memoryProfilingEnabled) {
+                    memoryProfileIsJmpJsrOpcode[state.lastPc] = true;
+                    memoryProfileIsLowAddressForOpcode[state.lastPc + 1] = true;
+                    memoryProfileIsHighAddressForOpcode[state.lastPc + 2] = true;
                     memoryProfileFlags[state.pc] |= kMemoryFlags_PCTarget;
                 }
                 break;
@@ -938,6 +954,7 @@ public class Cpu implements InstructionTable {
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Write;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                    lastRegisterStoreUsed = 'a';
                 }
                 break;
 
@@ -950,6 +967,7 @@ public class Cpu implements InstructionTable {
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Write;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                    lastRegisterStoreUsed = 'y';
                 }
                 break;
 
@@ -962,6 +980,7 @@ public class Cpu implements InstructionTable {
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Write;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                    lastRegisterStoreUsed = 'x';
                 }
                 break;
 
@@ -979,6 +998,7 @@ public class Cpu implements InstructionTable {
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                    lastRegisterLoadUsed = 'y';
                 }
                 setArithmeticFlags(state.y);
                 break;
@@ -997,6 +1017,7 @@ public class Cpu implements InstructionTable {
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                    lastRegisterLoadUsed = 'x';
                 }
                 setArithmeticFlags(state.x);
                 break;
@@ -1018,6 +1039,7 @@ public class Cpu implements InstructionTable {
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
+                    lastRegisterLoadUsed = 'a';
                 }
                 setArithmeticFlags(state.a);
                 break;
@@ -1135,6 +1157,24 @@ public class Cpu implements InstructionTable {
             default:
                 setOpTrap();
                 break;
+        }
+
+        if (memoryProfilingEnabled) {
+            if (lastRegisterStoreUsed != '\0' && effectiveAddress > 1) {
+                if ( (memoryProfileFlags[effectiveAddress] & kMemoryFlags_Write) != 0) {
+                    if (memoryProfileIsLowAddressForOpcode[effectiveAddress] && memoryProfileIsJmpJsrOpcode[effectiveAddress-1]) {
+                        memoryProfileThisOpcodeStoredIntoLowAddress[state.lastPc] = lastRegisterStoreUsed;
+                        memoryProfileForJmpJsrAt[state.lastPc] = effectiveAddress-1;
+                    }
+                    if (memoryProfileIsHighAddressForOpcode[effectiveAddress] && memoryProfileIsJmpJsrOpcode[effectiveAddress-2]) {
+                        memoryProfileThisOpcodeStoredIntoHighAddress[state.lastPc] = lastRegisterStoreUsed;
+                        memoryProfileForJmpJsrAt[state.lastPc] = effectiveAddress-2;
+                    }
+                }
+            }
+            if (lastRegisterLoadUsed != '\0' && effectiveAddress > 1) {
+                memoryProfileThisOpcodeLoadedInto[state.lastPc] = lastRegisterLoadUsed;
+            }
         }
 
         delayLoop(state.ir);

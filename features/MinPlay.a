@@ -38,15 +38,19 @@ label_d430 = $d430
 
 *=$c000
 	sei
-	lda #$7d
-	ldx #$83
-	jsr $8ce
+;	lda #$7d
+;	ldx #$83
+	lda #<label_837d
+	ldx #>label_837d
+;	jsr $8ce
+	jsr label_08ce
 .l1
 	lda #200
 .l2
 	cmp $d012
 	bne .l2
 	inc $d020
-	jsr $93d
+;	jsr $93d
+	jsr label_093d
 	dec $d020
 	jmp .l1

@@ -199,6 +199,76 @@ public class Glue {
                 mapLabelsForIndirects.put("label_" + HexUtil.byteToHex(i).toLowerCase() , "$" + HexUtil.byteToHex(i).toLowerCase());
             }
         }
+
+        int[] memoryAddressIsPotentiallyLowByteForOpcodeAddress = new int[0x10000];
+        int[] memoryAddressIsPotentiallyHighByteForOpcodeAddress = new int[0x10000];
+        int[] memoryAddressIsUsingIndexValue = new int[0x10000];
+        int[] memoryAddressActualMemoryAddressForLowHighTable = new int[0x10000];
+
+        for (int i = 0x100 ; i < cpu.memoryProfileFlags.length ; i++) {
+            if (excludeProfileMemoryRange[i]) {
+                continue;
+            }
+
+            if (cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i] != '\0') {
+                for (int j = i - 1 ; j > i-6 ; j--) {
+                    if (cpu.memoryProfileThisOpcodeLoadedInto[j] == cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i]) {
+                        if (cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] != -1) {
+                            if (cpu.memoryProfileIndirectHi[j] != -1) {
+                                for (int r = cpu.memoryProfileIndirectLo[j] ; r <= cpu.memoryProfileIndirectHi[j] ; r++) {
+                                    memoryAddressIsPotentiallyLowByteForOpcodeAddress[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = cpu.memoryProfileForJmpJsrAt[i];
+                                    memoryAddressIsUsingIndexValue[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = r;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (cpu.memoryProfileThisOpcodeStoredIntoHighAddress[i] != '\0') {
+                for (int j = i - 1 ; j > i-6 ; j--) {
+                    if (cpu.memoryProfileThisOpcodeLoadedInto[j] == cpu.memoryProfileThisOpcodeStoredIntoHighAddress[i]) {
+                        if (cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] != -1) {
+                            if (cpu.memoryProfileIndirectHi[j] != -1) {
+                                for (int r = cpu.memoryProfileIndirectLo[j] ; r <= cpu.memoryProfileIndirectHi[j] ; r++) {
+                                    memoryAddressIsPotentiallyHighByteForOpcodeAddress[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = cpu.memoryProfileForJmpJsrAt[i];
+                                    memoryAddressIsUsingIndexValue[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = r;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Now scan and calculate actual memory addresses for low/high tables
+        for (int i = 0x100 ; i < cpu.memoryProfileFlags.length ; i++) {
+            if (excludeProfileMemoryRange[i]) {
+                continue;
+            }
+
+            if (memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] > 0) {
+                for (int j = 0x100; j < cpu.memoryProfileFlags.length; j++) {
+                    if (excludeProfileMemoryRange[j]) {
+                        continue;
+                    }
+
+                    if (memoryAddressIsPotentiallyHighByteForOpcodeAddress[j] == memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] ) {
+                        if (memoryAddressIsUsingIndexValue[j] == memoryAddressIsUsingIndexValue[i] ) {
+                            int address = cpu.getBus().read(i) | (cpu.getBus().read(j) << 8);
+                            if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
+                                memoryAddressActualMemoryAddressForLowHighTable[i] = address;
+                                memoryAddressActualMemoryAddressForLowHighTable[j] = address;
+                                injectLabel[address] = true;    // Ensure a label
+                            }
+                        }
+                    }
+
+                }
+            }
+//            memoryAddressIsUsingIndexValue[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = r;
+
+        }
+
         for (int i = 0x100 ; i < cpu.memoryProfileFlags.length ; ) {
             boolean labelOut = false;
             if (excludeProfileMemoryRange[i]) {
@@ -235,6 +305,14 @@ public class Glue {
                 wasInstruction = true;
                 wasMemory = false;
                 line += "\t" + cpu.getCpuState().disassembleOpForAddress(cpu.memoryProfileLastOpcode[i] , i , cpu.memoryProfileLastLastArgsLo[i] , cpu.memoryProfileLastLastArgsHi[i] , "label_").toLowerCase();
+
+                if (cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i] != '\0') {
+//                    line += " ; Stored into low address with " + cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i];
+                }
+                if (cpu.memoryProfileThisOpcodeStoredIntoHighAddress[i] != '\0') {
+//                    line += " ; Stored into high address with " + cpu.memoryProfileThisOpcodeStoredIntoHighAddress[i];
+                }
+
                 if ((cpu.memoryProfileTargetBranchAddress[i] != -1) && (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_BranchTaken) == 0) {
                     if (bincludeProfileBranchNotTaken) {
                         line += " ; Branch not taken";
@@ -322,10 +400,24 @@ public class Glue {
                 String theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
                 mapLabelsGenerated.add(theLabel);
                 line += theLabel;
-                line += "\t!by $" + HexUtil.byteToHex(cpu.getBus().read(i)).toLowerCase();
+                if ( (memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] > 0) && (memoryAddressActualMemoryAddressForLowHighTable[i] > 0)) {
+                    line += "\t!by <label_" + HexUtil.wordToHex(memoryAddressActualMemoryAddressForLowHighTable[i]).toLowerCase() + " ; Was $" + HexUtil.byteToHex(cpu.getBus().read(i)).toLowerCase();
+                } else if ( (memoryAddressIsPotentiallyHighByteForOpcodeAddress[i] > 0) && (memoryAddressActualMemoryAddressForLowHighTable[i] > 0)) {
+                    line += "\t!by >label_" + HexUtil.wordToHex(memoryAddressActualMemoryAddressForLowHighTable[i]).toLowerCase() + " ; Was $" + HexUtil.byteToHex(cpu.getBus().read(i)).toLowerCase();
+                } else {
+                    line += "\t!by $" + HexUtil.byteToHex(cpu.getBus().read(i)).toLowerCase();
+                }
                 if ( (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) == 0) {
                     line += " ; Never accessed";
                 }
+                /* // Debug...
+                if (memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] > 0) {
+                    line += " ; Potential low byte by opcode at " + HexUtil.wordToHex(memoryAddressIsPotentiallyLowByteForOpcodeAddress[i]) + " index " + memoryAddressIsUsingIndexValue[i] + " address " + HexUtil.wordToHex(memoryAddressActualMemoryAddressForLowHighTable[i]);
+                }
+                if (memoryAddressIsPotentiallyHighByteForOpcodeAddress[i] > 0) {
+                    line += " ; Potential high byte by opcode at " + HexUtil.wordToHex(memoryAddressIsPotentiallyHighByteForOpcodeAddress[i]) + " index " + memoryAddressIsUsingIndexValue[i] + " address " + HexUtil.wordToHex(memoryAddressActualMemoryAddressForLowHighTable[i]);
+                }
+                */
 
                 i++;
             } else {

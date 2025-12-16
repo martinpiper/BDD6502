@@ -383,25 +383,3 @@
 
 
 
-@TC-22
-    Note: ; Self modified code : 	jsr label_07c8
-    And note the lo/hi store and fetches:
-        label_0487	lda label_0ae3,y
-        label_048a	sta label_049a
-        label_048d	lda label_0b08,y
-        label_0490	sta label_049b
-    * Flag the lo/hi self modified stores as lo/hi values
-        Then flag each of these as lo/hi
-            sta label_049a
-            sta label_049b
-        Then inspect the previous instruction for each and flag both label_0ae3 and label_0b08 as the starts of lo/hi tables
-    * Then try using !by < and !by > references when writing those tables...
-        Take into account any "never accessed" and still output normal bytes...
-    >>>>>
-        When executing, flag memory addresses as being used for the opcode parameters for branch, jsr, jmp, jmp(), for an opcode that modifies PC (edited)
-        If they are stored to, note the register name that stored.
-        Trace back for up to five opcodes for a load into that register name
-        If the load came from a memory location, flag that memory location as being a potential "lo or hi" address, depending on the original opcode parameter
-        Then check each potential lo/hi pair for a particular opcode that modifies PC (jsr/jmp) against existing known target addresses for all branch/jsr/jmp encountered.
-        If there is a match, replace the !by $XX with a corresponding !by <labelXXXX or !by >labelXXXX
-        Probably with a comment containing the original byte value for reference
