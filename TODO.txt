@@ -376,24 +376,6 @@
 * Show CPU memory map execution, read, write
 
 
-* Profile guided disassembly
-    Run code (repeatedly, to simulate many frames) in emulator, with register inputs, to note down the memory used for:
-        Execution
-        Data read
-        Data write (note self-modifying code)
-    Note IO register writes for each call and CPU time taken.
-
-    Try to deduce what are lo/hi tables based on indirect access, or self-modified addresses.
-        Flag memory bytes as potential lo or hi values.
-    Output assembly, that is automatically assembled and checked for correctness.
-        Only disassemble locations that were executed, otherwise use *= for the new locations with a suitable comment which can be easily removed later on.
-            Create labels for branch, jmp, jsr targets
-        Output bytes, with suitable comments for potential lo/hi values.
-            Use labels for assembly referenced addresses, including indirectly referenced addresses
-    Then try to repeatedly remove lines of code based on unused data access, assemble, check for correctness...
-
-
-
 * Separate layer debug rendering. Memory access view like ICU64.
     And the layer displays a debug window
         displayBombJack.getLastLayerAdded().setDisplayDebugWindow(true);
@@ -416,3 +398,8 @@
     * Then try using !by < and !by > references when writing those tables...
         Take into account any "never accessed" and still output normal bytes...
 
+
+
+@TC-21
+    For ; Self modified code : label_0438	jsr label_043c
+    >> If the opcode is not written then output the disassembly but create labels for the opcode parameters

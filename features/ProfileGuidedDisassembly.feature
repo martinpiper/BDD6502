@@ -132,7 +132,6 @@ Feature:  Profile guided disassembly
     Given I have a simple overclocked 6502 system
 
     And I load prg "..\DebuggingDetails\MusicSelectSystemPatched_a000.prg"
-#    And I load prg "c:\temp\mus1000.prg"
 
     Given I enable trace with indent
 
@@ -145,15 +144,8 @@ Feature:  Profile guided disassembly
     Given I set register Y to 0x01
     When I execute the procedure at 0x8ce until return
 
-#    Given I set register A to 0x00
-#    When I execute the procedure at 0x1000 until return
-
     Given I disable trace
     When I execute the procedure at 0x93d until return for 10000 iterations
-
-#    When I execute the procedure at 0x1003 until return for 1000 iterations
-#     # Stop music
-#    When I execute the procedure at 0x1006 until return for 1000 iterations
 
 #    Then include profile last access
 #    Then include profile index register type
@@ -164,4 +156,31 @@ Feature:  Profile guided disassembly
     Then output profile disassembly to file "target\temp.a"
 
     # cls && c:\work\c64\acme.exe --cpu 6502 -o c:\temp\t.prg -f cbm -v9 c:\work\BDD6502\target\temp.a c:\work\BDD6502\features\MinPlay.a && c:\work\c64\bin\LZMPi.exe -pp $37 -c64mbu c:\temp\t.prg c:\temp\tcmp.prg $c000 && c:\temp\tcmp.prg
+
+
+  @TC-23
+  Scenario: Complex binary only profile guided disassembly 2
+    Given I have a simple overclocked 6502 system
+
+    And I load prg "c:\temp\mus1000.prg"
+
+    Given I enable trace with indent
+
+    Given enable memory profiling
+
+    Given I set register A to 0x00
+    When I execute the procedure at 0x1000 until return
+
+    Given I disable trace
+    When I execute the procedure at 0x1003 until return for 10000 iterations
+     # Stop music
+    When I execute the procedure at 0x1006 until return
+
+#    Then include profile last access
+#    Then include profile index register type
+#    Then include profile index range
+#    Then include profile write hint
+    Then include profile branch not taken
+    Then profile exclude memory range from 0xd400 to 0xd4ff
+    Then output profile disassembly to file "target\temp2.a"
 
