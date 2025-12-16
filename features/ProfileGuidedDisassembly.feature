@@ -6,7 +6,7 @@ Feature:  Profile guided disassembly
   This is useful for reverse engineering code.
 
   Scenario: Simple profile guided disassembly
-    Given I have a simple 6502 system
+    Given I have a simple overclocked 6502 system
     And I create file "target\test1.a" with
     """
     !sal
@@ -38,6 +38,13 @@ Feature:  Profile guided disassembly
       jmp .unusedCode
     .someData
       !by 0,1,2,3,4,5,6,7,8,9
+    selfModifyTest
+      jsr .other
+      rts
+    .other
+      lda #0
+      sta selfModifyTest+1
+      rts
     """
     And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm target\test1.a
     And I load prg "test.prg"
@@ -46,6 +53,7 @@ Feature:  Profile guided disassembly
     Given I enable trace with indent
 
     Given enable memory profiling
+    When I execute the procedure at selfModifyTest until return
     When I execute the procedure at start until return
     Given I disable trace
     When I execute the procedure at start until return for 1000 iterations
@@ -93,13 +101,23 @@ Feature:  Profile guided disassembly
     Then expect the next line to contain "label_0433	!by $05"
     Then expect the next line to contain "label_0434	!by $06"
     Then expect the next line to contain "label_0435	!by $07"
+    Then expect the next line to contain "* = $0438"
+    Then expect the next line to contain "label_0438	!by $20"
+    Then expect the next line to contain "label_0439	!by $00"
+    Then expect the next line to contain "label_043a	!by $04"
+    Then expect the next line to contain "label_043b	rts"
+    Then expect the next line to contain "label_043c	lda #$00"
+    Then expect the next line to contain "label_043e	sta label_0439"
+    Then expect the next line to contain "rts"
     Then expect end of file
     Given close current file
 
     And I run the command line: ..\C64\acme.exe -o test.prg -f cbm target\test1dis.a
+    Given I have a simple overclocked 6502 system
+    And I load prg "test.prg"
+    When I execute the procedure at start until return
 
 
-  @ignore
   Scenario: Complex binary only profile guided disassembly
     Given I have a simple overclocked 6502 system
 
@@ -121,7 +139,7 @@ Feature:  Profile guided disassembly
 #    When I execute the procedure at 0x1000 until return
 
     Given I disable trace
-    When I execute the procedure at 0x93d until return for 1000 iterations
+    When I execute the procedure at 0x93d until return for 10000 iterations
 
 #    When I execute the procedure at 0x1003 until return for 1000 iterations
 #     # Stop music

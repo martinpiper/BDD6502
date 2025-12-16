@@ -220,14 +220,10 @@ public class Glue {
                 }
                 if ( selfModified ) {
                     line = "; Self modified code : " + line + System.lineSeparator();
-                    for (int opLen = 0 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
-                        String theLabel = "label_" + HexUtil.wordToHex(i + opLen).toLowerCase();
-                        mapLabelsGenerated.add(theLabel);
-                        line += theLabel;
-                        line += "\t!by $" + HexUtil.byteToHex(cpu.getBus().read(i + opLen)).toLowerCase() + System.lineSeparator();
-                    }
                 } else if ( opCodeMultipleEntry ) {
                     line = "; Opcode multiple entry code : " + line + System.lineSeparator();
+                }
+                if ( selfModified ||  opCodeMultipleEntry) {
                     for (int opLen = 0 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
                         String theLabel = "label_" + HexUtil.wordToHex(i + opLen).toLowerCase();
                         mapLabelsGenerated.add(theLabel);
