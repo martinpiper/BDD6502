@@ -1,0 +1,1645 @@
+label_0b2d = label_0b5d - 48 ; Table start skipped
+label_fc = $fc
+label_fd = $fd
+label_fe = $fe
+label_ff = $ff
+label_a9 = $a9
+label_0b2e = label_0b5e - 48 ; Table start skipped
+;* = $0400
+* = $c000
+label_0400	!by $01
+;* = $0401
+label_0401	inc label_0a1d
+	lda label_0a1d
+label_0407	cmp label_0a1c
+	bcc label_0411 ; Branch not taken
+	lda #$00
+	sta label_0a1d
+label_0411	clc
+	lda label_0adf
+label_0415	adc label_0a39
+	sta label_0adf
+	cmp #$08
+	bcc label_0425
+	and #$07
+	sta label_0adf
+	sec
+label_0425	lda label_0ae0
+label_0428	adc label_0a3a
+	sta label_0ae0
+	ldx #$02
+label_0430	ldy label_0ac0,x
+	sty label_fe
+	clc
+	lda label_0a63,x
+	adc #$01
+label_043b	cmp label_0a36,x
+	bcc label_0454
+label_0440	inc label_0a66,x
+	clc
+	lda label_0a54,x
+	adc #$01
+	cmp #$03
+	bcc label_044f
+	lda #$00
+label_044f	sta label_0a54,x
+	lda #$00
+label_0454	sta label_0a63,x
+	lda label_0abd,x
+	sta label_fc
+	lda label_0aba,x
+	sta label_fd
+	lda label_0a1d
+	bne label_04a1 ; Branch not taken
+label_0466	inc label_0a48,x
+	lda label_0a6c,x
+	cmp #$ff
+	beq label_047b ; Branch not taken
+	cmp #$00
+	bne label_04a1
+	lda label_0ab7,x
+	cmp #$01
+	bne label_04a1
+label_047b	ldy #$00
+	sec
+	lda (label_fc),y
+	sbc #$01
+	cmp #$25
+	bcs label_04a1
+	tay
+label_0487	lda label_0ae3,y
+label_048a	sta label_049a
+label_048d	lda label_0b08,y
+label_0490	sta label_049b
+	ldy #$01
+label_0495	lda (label_fc),y
+	ldy label_fe
+label_0499	jsr label_07c8 ; Self modified parameters
+label_049a = label_0499 + 1
+label_049b = label_0499 + 2
+
+label_049c	jsr label_08c2
+label_049f	bne label_047b
+label_04a1	ldy label_fe
+label_04a3	lda label_0a24,x
+	beq label_050e
+label_04a8	lda label_0a3c,x
+	beq label_04bb
+label_04ad	lda label_0a48,x
+label_04b0	cmp label_0a45,x
+	bcc label_04bb ; Branch not taken
+label_04b5	lda label_0a3c,x
+	jsr label_082f
+label_04bb	lda label_0a4b,x
+	beq label_04c3
+;* = $04c3
+label_04c3	lda label_0a30,x
+	beq label_04fe
+	cmp #$06
+	bcc label_04dc
+;* = $04dc
+label_04dc	lda label_0a48,x
+	cmp #$01
+	bcc label_04f6 ; Branch not taken
+label_04e3	lda label_0a33,x
+	beq label_04ed
+	cmp label_0a48,x
+	bcc label_04f6
+label_04ed	lda label_0a30,x
+	tay
+label_04f1	lda label_0ac4,y
+	bne label_04f9
+label_04f6	lda label_0a27,x
+label_04f9	ldy label_fe
+	sta label_0ace,y
+label_04fe	lda label_0a2d,x
+	beq label_0506
+;* = $0506
+label_0506	lda label_0a93,x
+	beq label_050e ; Branch not taken
+	jsr label_06e5
+label_050e	lda label_0a1d
+	bne label_0516 ; Branch not taken
+	jsr label_0526
+label_0516	lda label_fc
+label_0518	sta label_0abd,x
+label_051b	lda label_fd
+label_051d	sta label_0aba,x
+	dex
+	bmi label_054b
+label_0523	jmp label_0430
+label_0526	lda label_0ab7,x
+	sec
+	sbc #$01
+label_052c	sta label_0ab7,x
+	bcs label_0534
+	dec label_0a6c,x
+label_0534	lda label_0a6c,x
+	bne label_054b
+label_0539	lda label_0ab7,x
+	beq label_054c
+label_053e	cmp label_0a2a,x
+	bcs label_054b
+	lda label_0ace,y
+	and #$fe
+	sta label_0ace,y
+label_054b	rts
+label_054c	sta label_0acc,y
+	sta label_0a48,x
+label_0552	sta label_0a6f,x
+label_0555	sta label_0a75,x
+label_0558	sta label_0a72,x
+	sta label_0a63,x
+label_055e	sta label_0a66,x
+label_0561	sta label_0a54,x
+label_0564	cpx label_0a1b
+	bne label_0572
+	sta label_0adf
+label_056c	lda label_0a3b
+	sta label_0ae0
+label_0572	lda label_0a90,x
+	sta label_0acf,y
+label_0578	lda label_0a87,x
+	sta label_0ad0,y
+label_057e	lda label_0a8d,x
+	sta label_0acd,y
+label_0584	lda label_0a51,x
+label_0587	sta label_0a4e,x
+	ldy #$00
+	lda (label_fc),y
+	sta label_0a24,x
+	beq label_05b4
+	sta label_ff
+label_0595	lda label_0a5a,x
+	beq label_05a4
+;* = $05a4
+label_05a4	lda label_0a57,x
+	beq label_05af
+;* = $05af
+label_05af	lda label_ff
+	jsr label_0813
+label_05b4	pha
+	tya
+	ldy label_fe
+	sta label_0acb,y
+label_05bb	sta label_0a21,x
+	pla
+	sta label_0aca,y
+label_05c2	sta label_0a1e,x
+	ldy #$01
+label_05c7	lda (label_fc),y
+	ldy label_fe
+	sta label_0ab7,x
+	jsr label_08c2
+label_05d1	lda label_0a8a,x
+	sta label_0ace,y
+label_05d7	sta label_0a27,x
+	ldy #$00
+label_05dc	lda (label_fc),y
+	cmp #$19
+	bne label_05eb
+	iny
+label_05e3	lda (label_fc),y
+	pha
+	jsr label_08c2
+label_05e9	pla
+; Opcode multiple entry code : label_05ea	bit label_00a9
+label_05ea	!by $2c
+label_05eb	!by $a9
+label_05ec	!by $00
+
+	sta label_0a6c,x
+	rts
+label_05f1	lda #$00
+	ldy #$9b
+label_05f5	sta label_0a1a,y
+	dey
+	bne label_05f5
+	ldy #$02
+label_05fd	lda #$02
+	sta label_0a2a,y
+	lda #$00
+	sta label_0a6c,y
+	lda #$01
+	sta label_0ab7,y
+label_060c	sta label_0ab4,y
+	dey
+	bpl label_05fd
+	sta label_0a1c
+	lda label_fc
+	sta label_0ac3
+	clc
+	adc #$04
+	sta label_0abd
+	lda label_fd
+	sta label_0ac4
+	adc #$00
+	sta label_0aba
+	ldx #$7e
+	ldy #$00
+label_062e	lda (label_fc),y
+	clc
+	adc label_0abd
+	sta label_0a40,x
+	php
+	iny
+	plp
+label_063a	lda (label_fc),y
+	adc label_0aba
+	sta label_0a3d,x
+	iny
+	inx
+	bpl label_062e
+	jsr label_0658
+label_0649	jsr label_0942
+label_064c	jsr label_0942
+label_064f	inc label_0400
+	rts
+;* = $0658
+label_0658	ldx #$17
+label_065a	lda #$00
+	sta label_0aca,x
+	dex
+	bpl label_065a
+	sta label_d418
+	rts
+label_0666	sta label_ff
+	txa
+label_0669	tay
+	lda label_0a96,y
+	clc
+	adc #$01
+label_0670	sta label_0a96,y
+	cmp label_ff
+	bcs label_0681
+label_0677	lda label_0a9c,y
+	sta label_fc
+label_067c	lda label_0aa2,y
+	sta label_fd
+label_0681	rts
+label_0682	txa
+label_0683	tay
+	lda label_fc
+	sta label_0a9c,y
+	lda label_fd
+	sta label_0aa2,y
+	lda #$00
+	sta label_0a96,y
+	rts
+label_0694	sta label_ff
+	txa
+	clc
+	adc #$03
+	bne label_0669
+label_069c	txa
+	clc
+	adc #$03
+	bne label_0683
+label_06a2	sta label_0a7e,x
+	rts
+label_06a6	cmp #$64
+	bcc label_06b0
+;* = $06b0
+label_06b0	sta label_0a33,x
+	rts
+label_06b4	cmp #$63
+	bcc label_06be
+	sbc #$64
+	sta label_0a1b
+	rts
+label_06be	sta label_0a30,x
+	rts
+label_06c2	pha
+	and #$0f
+label_06c5	sta label_0a7b,x
+	pla
+	lsr
+	lsr
+	lsr
+	lsr
+label_06cd	sta label_0a78,x
+	rts
+;* = $06d5
+label_06d5	sta label_0ae1
+	rts
+label_06d9	sta label_0a3b
+	rts
+label_06dd	clc
+	adc label_0ae2
+	sta label_0ae2
+	rts
+label_06e5	lda label_0a63,x
+	bne label_0723
+	lda label_0a78,x
+	beq label_0724 ; Branch not taken
+label_06ef	lda label_0a75,x
+	beq label_0711
+	lda label_0acc,y
+	sec
+	sbc label_0a93,x
+	sta label_0acc,y
+	bcs label_0736 ; Branch not taken
+	lda label_0acd,y
+	sbc #$00
+	sta label_0acd,y
+label_0708	cmp label_0a7b,x
+	bcs label_0736
+;* = $0711
+label_0711	lda label_0acd,y
+label_0714	cmp label_0a78,x
+	bcc label_0724
+	cmp label_0a7b,x
+	bcc label_0736 ; Branch not taken
+	lda #$01
+	sta label_0a75,x
+label_0723	rts
+label_0724	lda label_0acc,y
+	clc
+label_0728	adc label_0a93,x
+	sta label_0acc,y
+	lda label_0acd,y
+	adc #$00
+	sta label_0acd,y
+label_0736	rts
+label_0737	sta label_0a8a,x
+	rts
+;* = $07a6
+label_07a6	pha
+	lsr
+	lsr
+	lsr
+	sta label_0a3a
+	pla
+	and #$07
+	sta label_0a39
+	rts
+label_07b4	sta label_0a1c
+	rts
+;* = $07c8
+label_07c8	lda label_0aa8,x
+	sta label_fc
+	lda label_0aae,x
+	sta label_fd
+label_07d2	lda label_0aab,x
+label_07d5	sta label_0aa8,x
+label_07d8	lda label_0ab1,x
+label_07db	sta label_0aae,x
+label_07de	jmp label_08c2
+;* = $0812
+label_0812	rts
+label_0813	and #$7f
+	clc
+label_0816	adc label_0a7e,x
+	asl
+	tay
+label_081b	lda label_0b2d,y
+	clc
+label_081f	adc label_0a69,x
+	pha
+label_0823	lda label_0b2e,y
+	adc #$00
+	tay
+	pla
+	rts
+label_082b	sta label_0a84,x
+	rts
+label_082f	cmp #$01
+	beq label_083c
+;* = $083b
+label_083b	rts
+label_083c	lda label_0a3f,x
+label_083f	cmp label_0a21,x
+	bcc label_0874
+	bne label_0850
+label_0846	lda label_0a42,x
+label_0849	cmp label_0a1e,x
+	beq label_083b
+	bcc label_0874
+label_0850	jsr label_088b
+label_0853	lda label_0a21,x
+	cmp label_0a3f,x
+	bcc label_0812 ; Branch not taken
+	bne label_0865
+	lda label_0a1e,x
+	cmp label_0a42,x
+	bcc label_0812 ; Branch not taken
+label_0865	lda label_0a42,x
+	sta label_0a1e,x
+	lda label_0a3f,x
+	sta label_0a21,x
+label_0871	jmp label_08b1
+label_0874	jsr label_089e
+label_0877	lda label_0a21,x
+	cmp label_0a3f,x
+	bcc label_0865
+	bne label_0812
+	lda label_0a1e,x
+	cmp label_0a42,x
+	bcs label_0812
+	bcc label_0865
+label_088b	clc
+	lda label_0a1e,x
+	adc label_0a81,x
+	sta label_0a1e,x
+	lda label_0a21,x
+	adc label_0a84,x
+label_089b	jmp label_08ae
+label_089e	sec
+	lda label_0a1e,x
+label_08a2	sbc label_0a81,x
+	sta label_0a1e,x
+	lda label_0a21,x
+label_08ab	sbc label_0a84,x
+label_08ae	sta label_0a21,x
+label_08b1	lda label_0a21,x
+	sta label_0acb,y
+	lda label_0a1e,x
+	sta label_0aca,y
+	rts
+label_08be	sta label_0a93,x
+	rts
+label_08c2	clc
+	lda label_fc
+	adc #$02
+	sta label_fc
+	bcc label_08cd
+	inc label_fd
+label_08cd	rts
+
+label_08ce	sta label_fc
+	stx label_fd
+	lda #$00
+	sta label_0400
+label_08d7	jmp label_05f1
+label_08da	sta label_0a45,x
+	rts
+;* = $08e2
+label_08e2	sta label_0a3c,x
+	rts
+;* = $08ea
+label_08ea	sta label_0a36,x
+	rts
+label_08ee	sta label_0a90,x
+	rts
+label_08f2	sta label_0ae2
+	rts
+label_08f6	jsr label_0813
+label_08f9	sta label_0a42,x
+	tya
+label_08fd	sta label_0a3f,x
+	rts
+label_0901	pha
+	lda label_0aa8,x
+label_0905	sta label_0aab,x
+	lda label_0aae,x
+label_090b	sta label_0ab1,x
+	lda label_fc
+label_0910	sta label_0aa8,x
+	lda label_fd
+label_0915	sta label_0aae,x
+	ldy #$02
+label_091a	lda (label_fc),y
+	sta label_ff
+	pla
+	clc
+label_0920	adc label_0ac3
+	sta label_fc
+	lda label_ff
+label_0927	adc label_0ac4
+	sta label_fd
+	pla
+	pla
+label_092e	jmp label_047b
+label_0931	sta label_0a87,x
+	rts
+;* = $093d
+label_093d	lda label_0400
+	beq label_0957 ; Branch not taken
+label_0942	jsr label_0401
+label_0945	ldy #$18
+label_0947	lda label_0aca,y
+label_094a	sta label_d400,y
+	dey
+	bpl label_0947
+	nop
+label_0951	lda label_0ae2
+label_0954	sta label_d418
+label_0957	rts
+label_0958	sta label_0a81,x
+	rts
+;* = $0a17
+label_0a17	sta label_0a8d,x
+label_0a1a	rts
+;* = $0a1b
+label_0a1b	!by $00
+label_0a1c	!by $01
+label_0a1d	!by $00
+label_0a1e	!by $7b
+label_0a1f	!by $da
+label_0a20	!by $00
+label_0a21	!by $05
+label_0a22	!by $2b
+label_0a23	!by $00
+label_0a24	!by $9d
+label_0a25	!by $be
+label_0a26	!by $00
+label_0a27	!by $41
+label_0a28	!by $41
+label_0a29	!by $11
+label_0a2a	!by $02
+label_0a2b	!by $02
+label_0a2c	!by $02
+label_0a2d	!by $00
+label_0a2e	!by $00
+label_0a2f	!by $00
+label_0a30	!by $00
+label_0a31	!by $03
+label_0a32	!by $05
+label_0a33	!by $00
+label_0a34	!by $00
+label_0a35	!by $04
+label_0a36	!by $00
+label_0a37	!by $14
+label_0a38	!by $00
+label_0a39	!by $01
+label_0a3a	!by $08
+label_0a3b	!by $e6
+label_0a3c	!by $01
+label_0a3d	!by $00
+label_0a3e	!by $00
+label_0a3f	!by $05
+label_0a40	!by $04
+label_0a41	!by $00
+label_0a42	!by $7b
+label_0a43	!by $9c
+label_0a44	!by $00
+label_0a45	!by $00
+label_0a46	!by $04
+label_0a47	!by $00
+label_0a48	!by $04
+label_0a49	!by $03
+label_0a4a	!by $10
+label_0a4b	!by $00
+label_0a4c	!by $00
+label_0a4d	!by $00
+label_0a4e	!by $00
+label_0a4f	!by $00
+label_0a50	!by $00
+label_0a51	!by $00
+label_0a52	!by $00
+label_0a53	!by $00
+label_0a54	!by $01
+label_0a55	!by $00
+label_0a56	!by $01
+label_0a57	!by $00
+label_0a58	!by $00
+label_0a59	!by $00
+label_0a5a	!by $00
+label_0a5b	!by $00
+label_0a5c	!by $00
+label_0a5d	!by $00
+label_0a5e	!by $00
+label_0a5f	!by $00
+label_0a60	!by $00
+label_0a61	!by $00
+label_0a62	!by $00
+label_0a63	!by $00
+label_0a64	!by $03
+label_0a65	!by $00
+label_0a66	!by $04
+label_0a67	!by $00
+label_0a68	!by $10
+label_0a69	!by $00
+label_0a6a	!by $00
+label_0a6b	!by $00
+label_0a6c	!by $00
+label_0a6d	!by $00
+label_0a6e	!by $01
+label_0a6f	!by $00
+label_0a70	!by $00
+label_0a71	!by $00
+label_0a72	!by $00
+label_0a73	!by $00
+label_0a74	!by $00
+label_0a75	!by $00
+label_0a76	!by $00
+label_0a77	!by $00
+label_0a78	!by $0d
+label_0a79	!by $0d
+label_0a7a	!by $0d
+label_0a7b	!by $02
+label_0a7c	!by $02
+label_0a7d	!by $02
+label_0a7e	!by $00
+label_0a7f	!by $03
+label_0a80	!by $00
+label_0a81	!by $90
+label_0a82	!by $c8
+label_0a83	!by $2c
+label_0a84	!by $01
+label_0a85	!by $00
+label_0a86	!by $01
+label_0a87	!by $8a
+label_0a88	!by $0a
+label_0a89	!by $aa
+label_0a8a	!by $41
+label_0a8b	!by $41
+label_0a8c	!by $11
+label_0a8d	!by $08
+label_0a8e	!by $0f
+label_0a8f	!by $00
+label_0a90	!by $0a
+label_0a91	!by $09
+label_0a92	!by $09
+label_0a93	!by $3c
+label_0a94	!by $9b
+label_0a95	!by $ff
+label_0a96	!by $14
+label_0a97	!by $1a
+label_0a98	!by $08
+label_0a99	!by $00
+label_0a9a	!by $00
+label_0a9b	!by $04
+label_0a9c	!by $e1
+label_0a9d	!by $22
+label_0a9e	!by $9f
+label_0a9f	!by $00
+label_0aa0	!by $00
+label_0aa1	!by $71
+label_0aa2	!by $83
+label_0aa3	!by $85
+label_0aa4	!by $85
+label_0aa5	!by $00
+label_0aa6	!by $00
+label_0aa7	!by $85
+label_0aa8	!by $00
+label_0aa9	!by $28
+label_0aaa	!by $00
+label_0aab	!by $00
+label_0aac	!by $00
+label_0aad	!by $00
+label_0aae	!by $00
+label_0aaf	!by $85
+label_0ab0	!by $00
+label_0ab1	!by $00
+label_0ab2	!by $00
+label_0ab3	!by $00
+label_0ab4	!by $01
+label_0ab5	!by $01
+label_0ab6	!by $01
+label_0ab7	!by $02
+label_0ab8	!by $02
+label_0ab9	!by $70
+label_0aba	!by $83
+label_0abb	!by $85
+label_0abc	!by $85
+label_0abd	!by $ed
+label_0abe	!by $d0
+label_0abf	!by $bb
+label_0ac0	!by $00
+label_0ac1	!by $07
+label_0ac2	!by $0e
+label_0ac3	!by $7d
+label_0ac4	!by $83
+; * = $0ac7
+* = * + 2
+label_0ac7	!by $11
+label_0ac8	!by $81 ; Never accessed
+label_0ac9	!by $51
+label_0aca	!by $7b
+label_0acb	!by $05
+label_0acc	!by $f0
+label_0acd	!by $08
+label_0ace	!by $41
+label_0acf	!by $0a
+label_0ad0	!by $8a
+label_0ad1	!by $da
+label_0ad2	!by $2b
+label_0ad3	!by $00
+label_0ad4	!by $0f
+label_0ad5	!by $11
+label_0ad6	!by $09
+label_0ad7	!by $0a
+label_0ad8	!by $00
+label_0ad9	!by $00
+label_0ada	!by $00
+label_0adb	!by $00
+label_0adc	!by $11
+label_0add	!by $09
+label_0ade	!by $aa
+label_0adf	!by $04
+label_0ae0	!by $06
+label_0ae1	!by $c1
+label_0ae2	!by $1f
+label_0ae3	!by <label_08f2 ; Was $f2
+label_0ae4	!by <label_08ee ; Was $ee
+label_0ae5	!by <label_0737 ; Was $37
+label_0ae6	!by <label_0a17 ; Was $17
+label_0ae7	!by <label_06a6 ; Was $a6
+label_0ae8	!by <label_08ea ; Was $ea
+label_0ae9	!by <label_06b4 ; Was $b4
+label_0aea	!by $e6 ; Never accessed
+label_0aeb	!by <label_08da ; Was $da
+label_0aec	!by <label_0931 ; Was $31
+label_0aed	!by $de ; Never accessed
+label_0aee	!by <label_082b ; Was $2b
+label_0aef	!by <label_0958 ; Was $58
+label_0af0	!by <label_08be ; Was $be
+label_0af1	!by <label_08e2 ; Was $e2
+label_0af2	!by <label_0666 ; Was $66
+label_0af3	!by <label_0682 ; Was $82
+label_0af4	!by <label_0694 ; Was $94
+label_0af5	!by <label_069c ; Was $9c
+label_0af6	!by <label_06a2 ; Was $a2
+label_0af7	!by <label_06c2 ; Was $c2
+label_0af8	!by $d1 ; Never accessed
+label_0af9	!by <label_06d5 ; Was $d5
+label_0afa	!by <label_06d9 ; Was $d9
+label_0afb	!by $bb ; Never accessed
+label_0afc	!by $bc ; Never accessed
+label_0afd	!by <label_06dd ; Was $dd
+label_0afe	!by $a2 ; Never accessed
+label_0aff	!by <label_07a6 ; Was $a6
+label_0b00	!by $35 ; Never accessed
+label_0b01	!by $b8 ; Never accessed
+label_0b02	!by $e1 ; Never accessed
+label_0b03	!by $c4 ; Never accessed
+label_0b04	!by <label_08f6 ; Was $f6
+label_0b05	!by <label_0901 ; Was $01
+label_0b06	!by <label_07c8 ; Was $c8
+label_0b07	!by <label_07b4 ; Was $b4
+label_0b08	!by >label_08f2 ; Was $08
+label_0b09	!by >label_08ee ; Was $08
+label_0b0a	!by >label_0737 ; Was $07
+label_0b0b	!by >label_0a17 ; Was $0a
+label_0b0c	!by >label_06a6 ; Was $06
+label_0b0d	!by >label_08ea ; Was $08
+label_0b0e	!by >label_06b4 ; Was $06
+label_0b0f	!by $08 ; Never accessed
+label_0b10	!by >label_08da ; Was $08
+label_0b11	!by >label_0931 ; Was $09
+label_0b12	!by $08 ; Never accessed
+label_0b13	!by >label_082b ; Was $08
+label_0b14	!by >label_0958 ; Was $09
+label_0b15	!by >label_08be ; Was $08
+label_0b16	!by >label_08e2 ; Was $08
+label_0b17	!by >label_0666 ; Was $06
+label_0b18	!by >label_0682 ; Was $06
+label_0b19	!by >label_0694 ; Was $06
+label_0b1a	!by >label_069c ; Was $06
+label_0b1b	!by >label_06a2 ; Was $06
+label_0b1c	!by >label_06c2 ; Was $06
+label_0b1d	!by $06 ; Never accessed
+label_0b1e	!by >label_06d5 ; Was $06
+label_0b1f	!by >label_06d9 ; Was $06
+label_0b20	!by $07 ; Never accessed
+label_0b21	!by $07 ; Never accessed
+label_0b22	!by >label_06dd ; Was $06
+label_0b23	!by $07 ; Never accessed
+label_0b24	!by >label_07a6 ; Was $07
+label_0b25	!by $09 ; Never accessed
+label_0b26	!by $07 ; Never accessed
+label_0b27	!by $07 ; Never accessed
+label_0b28	!by $07 ; Never accessed
+label_0b29	!by >label_08f6 ; Was $08
+label_0b2a	!by >label_0901 ; Was $09
+label_0b2b	!by >label_07c8 ; Was $07
+label_0b2c	!by >label_07b4 ; Was $07
+;* = $0b5d
+label_0b5d	!by $1b
+label_0b5e	!by $04
+label_0b5f	!by $59 ; Never accessed
+label_0b60	!by $04 ; Never accessed
+label_0b61	!by $9c
+label_0b62	!by $04
+label_0b63	!by $e2 ; Never accessed
+label_0b64	!by $04 ; Never accessed
+label_0b65	!by $2c ; Never accessed
+label_0b66	!by $05 ; Never accessed
+label_0b67	!by $7b
+label_0b68	!by $05
+label_0b69	!by $ce ; Never accessed
+label_0b6a	!by $05 ; Never accessed
+label_0b6b	!by $27
+label_0b6c	!by $06
+label_0b6d	!by $84 ; Never accessed
+label_0b6e	!by $06 ; Never accessed
+label_0b6f	!by $e8 ; Never accessed
+label_0b70	!by $06 ; Never accessed
+label_0b71	!by $51 ; Never accessed
+label_0b72	!by $07 ; Never accessed
+label_0b73	!by $c0 ; Never accessed
+label_0b74	!by $07 ; Never accessed
+label_0b75	!by $36 ; Never accessed
+label_0b76	!by $08 ; Never accessed
+label_0b77	!by $b3 ; Never accessed
+label_0b78	!by $08 ; Never accessed
+label_0b79	!by $38
+label_0b7a	!by $09
+label_0b7b	!by $c4 ; Never accessed
+label_0b7c	!by $09 ; Never accessed
+label_0b7d	!by $59 ; Never accessed
+label_0b7e	!by $0a ; Never accessed
+label_0b7f	!by $f6 ; Never accessed
+label_0b80	!by $0a ; Never accessed
+label_0b81	!by $9d ; Never accessed
+label_0b82	!by $0b ; Never accessed
+label_0b83	!by $4e ; Never accessed
+label_0b84	!by $0c ; Never accessed
+label_0b85	!by $09 ; Never accessed
+label_0b86	!by $0d ; Never accessed
+label_0b87	!by $d0
+label_0b88	!by $0d
+label_0b89	!by $a2 ; Never accessed
+label_0b8a	!by $0e ; Never accessed
+label_0b8b	!by $81 ; Never accessed
+label_0b8c	!by $0f ; Never accessed
+label_0b8d	!by $6d
+label_0b8e	!by $10
+label_0b8f	!by $67 ; Never accessed
+label_0b90	!by $11 ; Never accessed
+label_0b91	!by $70
+label_0b92	!by $12
+label_0b93	!by $88 ; Never accessed
+label_0b94	!by $13 ; Never accessed
+label_0b95	!by $b2
+label_0b96	!by $14
+label_0b97	!by $ed
+label_0b98	!by $15
+label_0b99	!by $3a ; Never accessed
+label_0b9a	!by $17 ; Never accessed
+label_0b9b	!by $9c
+label_0b9c	!by $18
+label_0b9d	!by $13 ; Never accessed
+label_0b9e	!by $1a ; Never accessed
+label_0b9f	!by $a0 ; Never accessed
+label_0ba0	!by $1b ; Never accessed
+label_0ba1	!by $44 ; Never accessed
+label_0ba2	!by $1d ; Never accessed
+label_0ba3	!by $02 ; Never accessed
+label_0ba4	!by $1f ; Never accessed
+label_0ba5	!by $da
+label_0ba6	!by $20
+label_0ba7	!by $ce ; Never accessed
+label_0ba8	!by $22 ; Never accessed
+label_0ba9	!by $e0
+label_0baa	!by $24
+label_0bab	!by $11
+label_0bac	!by $27
+label_0bad	!by $64 ; Never accessed
+label_0bae	!by $29 ; Never accessed
+label_0baf	!by $da
+label_0bb0	!by $2b
+label_0bb1	!by $75 ; Never accessed
+label_0bb2	!by $2e ; Never accessed
+label_0bb3	!by $38
+label_0bb4	!by $31
+label_0bb5	!by $26
+label_0bb6	!by $34
+label_0bb7	!by $40 ; Never accessed
+label_0bb8	!by $37 ; Never accessed
+label_0bb9	!by $89
+label_0bba	!by $3a
+label_0bbb	!by $04 ; Never accessed
+label_0bbc	!by $3e ; Never accessed
+label_0bbd	!by $b4
+label_0bbe	!by $41
+label_0bbf	!by $9c ; Never accessed
+label_0bc0	!by $45 ; Never accessed
+label_0bc1	!by $c0
+label_0bc2	!by $49
+label_0bc3	!by $22 ; Never accessed
+label_0bc4	!by $4e ; Never accessed
+label_0bc5	!by $c8 ; Never accessed
+label_0bc6	!by $52 ; Never accessed
+label_0bc7	!by $b4
+label_0bc8	!by $57
+label_0bc9	!by $eb ; Never accessed
+label_0bca	!by $5c ; Never accessed
+label_0bcb	!by $71
+label_0bcc	!by $62
+label_0bcd	!by $4c ; Never accessed
+label_0bce	!by $68 ; Never accessed
+label_0bcf	!by $80
+label_0bd0	!by $6e
+label_0bd1	!by $12 ; Never accessed
+label_0bd2	!by $75 ; Never accessed
+label_0bd3	!by $08 ; Never accessed
+label_0bd4	!by $7c ; Never accessed
+label_0bd5	!by $68
+label_0bd6	!by $83
+label_0bd7	!by $39 ; Never accessed
+label_0bd8	!by $8b ; Never accessed
+label_0bd9	!by $80
+label_0bda	!by $93
+;* = $837d
+label_837d	!by $87
+label_837e	!by $01
+label_837f	!by $d6
+label_8380	!by $01
+label_8381	!by $00
+label_8382	!by $01
+label_8383	!by $17
+label_8384	!by $c1
+label_8385	!by $07
+label_8386	!by $64
+label_8387	!by $01
+label_8388	!by $10
+label_8389	!by $25
+label_838a	!by $01
+label_838b	!by $02
+label_838c	!by $0a
+label_838d	!by $0a
+label_838e	!by $8a
+label_838f	!by $04
+label_8390	!by $08
+label_8391	!by $15
+label_8392	!by $d2
+label_8393	!by $0e
+label_8394	!by $3c
+label_8395	!by $0d
+label_8396	!by $90
+label_8397	!by $0c
+label_8398	!by $01
+label_8399	!by $03
+label_839a	!by $41
+label_839b	!by $18
+label_839c	!by $e6
+label_839d	!by $1d
+label_839e	!by $41
+label_839f	!by $22
+label_83a0	!by $9a
+label_83a1	!by $0f
+label_83a2	!by $01
+label_83a3	!by $11
+label_83a4	!by $00
+label_83a5	!by $1b
+label_83a6	!by $01
+label_83a7	!by $00
+label_83a8	!by $30
+label_83a9	!by $19
+label_83aa	!by $00
+label_83ab	!by $10
+label_83ac	!by $0f
+label_83ad	!by $00
+label_83ae	!by $30
+label_83af	!by $19
+label_83b0	!by $00
+label_83b1	!by $11
+label_83b2	!by $00
+label_83b3	!by $23
+label_83b4	!by $8f
+label_83b5	!by $02
+;* = $83b7
+* = *+1
+label_83b7	!by $00
+label_83b8	!by $05
+label_83b9	!by $19
+label_83ba	!by $00
+label_83bb	!by $10
+label_83bc	!by $80
+label_83bd	!by $11
+label_83be	!by $00
+label_83bf	!by $23
+label_83c0	!by $8f
+label_83c1	!by $02
+;* = $83c3
+* = *+1
+label_83c3	!by $a6
+label_83c4	!by $05
+label_83c5	!by $23
+label_83c6	!by $8f
+label_83c7	!by $02
+;* = $83c9
+* = *+1
+label_83c9	!by $00
+label_83ca	!by $05
+label_83cb	!by $19
+label_83cc	!by $00
+label_83cd	!by $23
+label_83ce	!by $8f
+label_83cf	!by $02
+;* = $83d1
+* = *+1
+label_83d1	!by $00
+label_83d2	!by $05
+label_83d3	!by $19
+label_83d4	!by $00
+label_83d5	!by $23
+label_83d6	!by $8f
+label_83d7	!by $02
+;* = $83d9
+* = *+1
+label_83d9	!by $00
+label_83da	!by $05
+label_83db	!by $19
+label_83dc	!by $00
+label_83dd	!by $10
+label_83de	!by $20
+label_83df	!by $01
+label_83e0	!by $1f
+label_83e1	!by $11
+label_83e2	!by $00
+label_83e3	!by $22
+label_83e4	!by $9d
+label_83e5	!by $23
+label_83e6	!by $8f
+label_83e7	!by $02
+;* = $83e9
+* = *+1
+label_83e9	!by $a6
+label_83ea	!by $0b
+label_83eb	!by $9d
+label_83ec	!by $06
+label_83ed	!by $9d
+label_83ee	!by $06
+label_83ef	!by $23
+label_83f0	!by $96
+label_83f1	!by $02
+;* = $83f3
+* = *+1
+label_83f3	!by $ad
+label_83f4	!by $05
+label_83f5	!by $9d
+label_83f6	!by $0c
+label_83f7	!by $23
+label_83f8	!by $8f
+label_83f9	!by $02
+;* = $83fb
+* = *+1
+label_83fb	!by $a6
+label_83fc	!by $05
+label_83fd	!by $9d
+label_83fe	!by $06
+label_83ff	!by $23
+label_8400	!by $8f
+label_8401	!by $02
+;* = $8403
+* = *+1
+label_8403	!by $a6
+label_8404	!by $05
+label_8405	!by $22
+label_8406	!by $98
+label_8407	!by $23
+label_8408	!by $8f
+label_8409	!by $02
+;* = $840b
+* = *+1
+label_840b	!by $a6
+label_840c	!by $05
+label_840d	!by $23
+label_840e	!by $8f
+label_840f	!by $02
+;* = $8411
+* = *+1
+label_8411	!by $9a
+label_8412	!by $05
+label_8413	!by $23
+label_8414	!by $96
+label_8415	!by $02
+;* = $8417
+* = *+1
+label_8417	!by $ad
+label_8418	!by $0b
+label_8419	!by $23
+label_841a	!by $8f
+label_841b	!by $02
+;* = $841d
+* = *+1
+label_841d	!by $a6
+label_841e	!by $05
+label_841f	!by $23
+label_8420	!by $8f
+label_8421	!by $02
+;* = $8423
+* = *+1
+label_8423	!by $a6
+label_8424	!by $05
+label_8425	!by $22
+label_8426	!by $9a
+label_8427	!by $23
+label_8428	!by $8f
+label_8429	!by $02
+;* = $842b
+* = *+1
+label_842b	!by $a6
+label_842c	!by $0b
+label_842d	!by $9a
+label_842e	!by $0c
+label_842f	!by $23
+label_8430	!by $96
+label_8431	!by $02
+;* = $8433
+* = *+1
+label_8433	!by $ad
+label_8434	!by $05
+label_8435	!by $23
+label_8436	!by $8f
+label_8437	!by $02
+;* = $8439
+* = *+1
+label_8439	!by $00
+label_843a	!by $0b
+label_843b	!by $19
+label_843c	!by $00
+label_843d	!by $23
+label_843e	!by $8f
+label_843f	!by $02
+;* = $8441
+* = *+1
+label_8441	!by $a6
+label_8442	!by $05
+label_8443	!by $23
+label_8444	!by $8f
+label_8445	!by $02
+;* = $8447
+* = *+1
+label_8447	!by $00
+label_8448	!by $05
+label_8449	!by $19
+label_844a	!by $00
+label_844b	!by $23
+label_844c	!by $8f
+label_844d	!by $02
+;* = $844f
+* = *+1
+label_844f	!by $a6
+label_8450	!by $05
+label_8451	!by $23
+label_8452	!by $8f
+label_8453	!by $02
+;* = $8455
+* = *+1
+label_8455	!by $00
+label_8456	!by $05
+label_8457	!by $19
+label_8458	!by $00
+label_8459	!by $23
+label_845a	!by $8f
+label_845b	!by $02
+;* = $845d
+* = *+1
+label_845d	!by $a6
+label_845e	!by $05
+label_845f	!by $23
+label_8460	!by $96
+label_8461	!by $02
+;* = $8463
+* = *+1
+label_8463	!by $ad
+label_8464	!by $05
+label_8465	!by $00
+label_8466	!by $06
+label_8467	!by $19
+label_8468	!by $00
+label_8469	!by $23
+label_846a	!by $8f
+label_846b	!by $02
+;* = $846d
+* = *+1
+label_846d	!by $a6
+label_846e	!by $05
+label_846f	!by $9a
+label_8470	!by $06
+label_8471	!by $22
+label_8472	!by $9f
+label_8473	!by $23
+label_8474	!by $8f
+label_8475	!by $02
+;* = $8477
+* = *+1
+label_8477	!by $a6
+label_8478	!by $0b
+label_8479	!by $9d
+label_847a	!by $06
+label_847b	!by $9d
+label_847c	!by $06
+label_847d	!by $23
+label_847e	!by $96
+label_847f	!by $02
+;* = $8481
+* = *+1
+label_8481	!by $ad
+label_8482	!by $05
+label_8483	!by $9d
+label_8484	!by $0c
+label_8485	!by $23
+label_8486	!by $8f
+label_8487	!by $02
+;* = $8489
+* = *+1
+label_8489	!by $a6
+label_848a	!by $05
+label_848b	!by $9d
+label_848c	!by $06
+label_848d	!by $23
+label_848e	!by $8f
+label_848f	!by $02
+;* = $8491
+* = *+1
+label_8491	!by $a6
+label_8492	!by $05
+label_8493	!by $22
+label_8494	!by $98
+label_8495	!by $23
+label_8496	!by $8f
+label_8497	!by $02
+;* = $8499
+* = *+1
+label_8499	!by $a6
+label_849a	!by $05
+label_849b	!by $23
+label_849c	!by $8f
+label_849d	!by $02
+;* = $849f
+* = *+1
+label_849f	!by $9a
+label_84a0	!by $05
+label_84a1	!by $23
+label_84a2	!by $96
+label_84a3	!by $02
+;* = $84a5
+* = *+1
+label_84a5	!by $ad
+label_84a6	!by $0b
+label_84a7	!by $23
+label_84a8	!by $8f
+label_84a9	!by $02
+;* = $84ab
+* = *+1
+label_84ab	!by $a6
+label_84ac	!by $05
+label_84ad	!by $23
+label_84ae	!by $8f
+label_84af	!by $02
+;* = $84b1
+* = *+1
+label_84b1	!by $a6
+label_84b2	!by $05
+label_84b3	!by $22
+label_84b4	!by $9a
+label_84b5	!by $23
+label_84b6	!by $8f
+label_84b7	!by $02
+;* = $84b9
+* = *+1
+label_84b9	!by $a6
+label_84ba	!by $0b
+label_84bb	!by $9a
+label_84bc	!by $0c
+label_84bd	!by $23
+label_84be	!by $96
+label_84bf	!by $02
+;* = $84c1
+* = *+1
+label_84c1	!by $ad
+label_84c2	!by $05
+label_84c3	!by $23
+label_84c4	!by $8f
+label_84c5	!by $02
+;* = $84c7
+* = *+1
+label_84c7	!by $00
+label_84c8	!by $0b
+label_84c9	!by $19
+label_84ca	!by $00
+label_84cb	!by $23
+label_84cc	!by $8f
+label_84cd	!by $02
+;* = $84cf
+* = *+1
+label_84cf	!by $a6
+label_84d0	!by $05
+label_84d1	!by $23
+label_84d2	!by $8f
+label_84d3	!by $02
+;* = $84d5
+* = *+1
+label_84d5	!by $00
+label_84d6	!by $05
+label_84d7	!by $19
+label_84d8	!by $00
+label_84d9	!by $23
+label_84da	!by $8f
+label_84db	!by $02
+;* = $84dd
+* = *+1
+label_84dd	!by $a6
+label_84de	!by $05
+label_84df	!by $23
+label_84e0	!by $8f
+label_84e1	!by $02
+;* = $84e3
+* = *+1
+label_84e3	!by $00
+label_84e4	!by $05
+label_84e5	!by $19
+label_84e6	!by $00
+label_84e7	!by $23
+label_84e8	!by $8f
+label_84e9	!by $02
+;* = $84eb
+* = *+1
+label_84eb	!by $a6
+label_84ec	!by $05
+label_84ed	!by $23
+label_84ee	!by $96
+label_84ef	!by $02
+;* = $84f1
+* = *+1
+label_84f1	!by $ad
+label_84f2	!by $05
+label_84f3	!by $00
+label_84f4	!by $06
+label_84f5	!by $19
+label_84f6	!by $00
+label_84f7	!by $23
+label_84f8	!by $8f
+label_84f9	!by $02
+;* = $84fb
+* = *+1
+label_84fb	!by $a6
+label_84fc	!by $05
+label_84fd	!by $9a
+label_84fe	!by $06
+label_84ff	!by $10
+label_8500	!by $ff
+;* = $8508
+* = *+7
+label_8508	!by $00
+label_8509	!by $01
+label_850a	!by $02
+label_850b	!by $09
+label_850c	!by $0a
+label_850d	!by $0a
+label_850e	!by $04
+label_850f	!by $0f
+label_8510	!by $15
+label_8511	!by $d2
+label_8512	!by $0e
+label_8513	!by $9b
+label_8514	!by $03
+label_8515	!by $81
+label_8516	!by $22
+label_8517	!by $9a
+label_8518	!by $09
+label_8519	!by $04
+label_851a	!by $0d
+label_851b	!by $c8
+label_851c	!by $0c
+label_851d	!by $00
+label_851e	!by $03
+label_851f	!by $41
+label_8520	!by $07
+label_8521	!by $03
+label_8522	!by $11
+label_8523	!by $00
+label_8524	!by $06
+label_8525	!by $14
+label_8526	!by $14
+label_8527	!by $03
+label_8528	!by $23
+label_8529	!by $47
+label_852a	!by $02
+;* = $852c
+* = *+1
+label_852c	!by $14
+label_852d	!by $fe
+label_852e	!by $23
+label_852f	!by $70
+label_8530	!by $02
+;* = $8532
+* = *+1
+label_8532	!by $14
+label_8533	!by $00
+label_8534	!by $23
+label_8535	!by $47
+label_8536	!by $02
+;* = $8538
+* = *+1
+label_8538	!by $23
+label_8539	!by $70
+label_853a	!by $02
+;* = $853c
+* = *+1
+label_853c	!by $14
+label_853d	!by $05
+label_853e	!by $23
+label_853f	!by $47
+label_8540	!by $02
+;* = $8542
+* = *+1
+label_8542	!by $14
+label_8543	!by $fe
+label_8544	!by $23
+label_8545	!by $70
+label_8546	!by $02
+;* = $8548
+* = *+1
+label_8548	!by $14
+label_8549	!by $00
+label_854a	!by $23
+label_854b	!by $47
+label_854c	!by $02
+;* = $854e
+* = *+1
+label_854e	!by $23
+label_854f	!by $70
+label_8550	!by $02
+;* = $8552
+* = *+1
+label_8552	!by $10
+label_8553	!by $ff
+;* = $8557
+* = *+3
+label_8557	!by $00
+label_8558	!by $01
+label_8559	!by $02
+label_855a	!by $09
+label_855b	!by $03
+label_855c	!by $41
+label_855d	!by $04
+label_855e	!by $00
+label_855f	!by $15
+label_8560	!by $d2
+label_8561	!by $0e
+label_8562	!by $ff
+label_8563	!by $0d
+label_8564	!by $2c
+label_8565	!by $0c
+label_8566	!by $01
+label_8567	!by $0f
+label_8568	!by $00
+label_8569	!by $07
+label_856a	!by $05
+label_856b	!by $05
+label_856c	!by $04
+label_856d	!by $00
+label_856e	!by $00
+label_856f	!by $19
+label_8570	!by $03
+label_8571	!by $13
+label_8572	!by $00
+label_8573	!by $03
+label_8574	!by $41
+label_8575	!by $0a
+label_8576	!by $4a
+label_8577	!by $11
+label_8578	!by $00
+label_8579	!by $b2
+label_857a	!by $18
+label_857b	!by $b5
+label_857c	!by $0c
+label_857d	!by $b2
+label_857e	!by $06
+label_857f	!by $b2
+label_8580	!by $0c
+label_8581	!by $b2
+label_8582	!by $0c
+label_8583	!by $b2
+label_8584	!by $06
+label_8585	!by $b5
+label_8586	!by $0c
+label_8587	!by $b4
+label_8588	!by $0c
+label_8589	!by $b2
+label_858a	!by $18
+label_858b	!by $b5
+label_858c	!by $0c
+label_858d	!by $ad
+label_858e	!by $06
+label_858f	!by $b0
+label_8590	!by $0c
+label_8591	!by $b4
+label_8592	!by $0c
+label_8593	!by $b0
+label_8594	!by $06
+label_8595	!by $b4
+label_8596	!by $0c
+label_8597	!by $b5
+label_8598	!by $0c
+label_8599	!by $10
+label_859a	!by $04
+label_859b	!by $03
+label_859c	!by $11
+label_859d	!by $0a
+label_859e	!by $aa
+label_859f	!by $11
+label_85a0	!by $00
+label_85a1	!by $be
+label_85a2	!by $0c
+label_85a3	!by $c1
+label_85a4	!by $0c
+label_85a5	!by $be
+label_85a6	!by $06
+label_85a7	!by $c1
+label_85a8	!by $0c
+label_85a9	!by $be
+label_85aa	!by $06
+label_85ab	!by $c1
+label_85ac	!by $0c
+label_85ad	!by $be
+label_85ae	!by $06
+label_85af	!by $c3
+label_85b0	!by $0c
+label_85b1	!by $be
+label_85b2	!by $06
+label_85b3	!by $c1
+label_85b4	!by $0c
+label_85b5	!by $10
+label_85b6	!by $08
+label_85b7	!by $00
+label_85b8	!by $80
+label_85b9	!by $19
+label_85ba	!by $01
+label_85bb	!by $12
+label_85bc	!by $ff
+;* = $85c4
+* = *+7
+label_85c4	!by $ca
+label_85c5	!by $01
+label_85c6	!by $b2
+label_85c7	!by $05
+label_85c8	!by $d1
+label_85c9	!by $01
+label_85ca	!by $b2
+label_85cb	!by $05
+label_85cc	!by $ca
+label_85cd	!by $01
+label_85ce	!by $be
+label_85cf	!by $05
+label_85d0	!by $ca
+label_85d1	!by $01
+label_85d2	!by $b2
+label_85d3	!by $05
+label_85d4	!by $07
+label_85d5	!by $00
+label_85d6	!by $d1
+label_85d7	!by $01
+label_85d8	!by $03
+label_85d9	!by $81
+label_85da	!by $c1
+label_85db	!by $05
+label_85dc	!by $03
+label_85dd	!by $41
+label_85de	!by $07
+label_85df	!by $03
+label_85e0	!by $ca
+label_85e1	!by $01
+label_85e2	!by $be
+label_85e3	!by $05
+label_85e4	!by $ca
+label_85e5	!by $01
+label_85e6	!by $b2
+label_85e7	!by $05
+label_85e8	!by $d1
+label_85e9	!by $01
+label_85ea	!by $b2
+label_85eb	!by $05
+label_85ec	!by $24
+label_85ed	!by $d1
+label_85ee	!by $01
+label_85ef	!by $be
+label_85f0	!by $05
+label_85f1	!by $b2
+label_85f2	!by $06
+label_85f3	!by $b2
+label_85f4	!by $06
+label_85f5	!by $be
+label_85f6	!by $06
+label_85f7	!by $07
+label_85f8	!by $00
+label_85f9	!by $03
+label_85fa	!by $81
+label_85fb	!by $c1
+label_85fc	!by $06
+label_85fd	!by $03
+label_85fe	!by $41
+label_85ff	!by $07
+label_8600	!by $03
+label_8601	!by $b2
+label_8602	!by $06
+label_8603	!by $ca
+label_8604	!by $01
+label_8605	!by $be
+label_8606	!by $05
+label_8607	!by $ca
+label_8608	!by $01
+label_8609	!by $be
+label_860a	!by $05
+label_860b	!by $24
+label_860c	!by $03
+label_860d	!by $81
+label_860e	!by $ca
+label_860f	!by $01
+label_8610	!by $03
+label_8611	!by $41
+label_8612	!by $24
+label_8613	!by $03
+label_8614	!by $81
+label_8615	!by $d1
+label_8616	!by $01
+label_8617	!by $03
+label_8618	!by $41
+label_8619	!by $24
+label_861a	!by $8d

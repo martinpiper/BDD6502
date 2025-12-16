@@ -220,7 +220,7 @@ Feature:  Profile guided disassembly
     Then profile exclude memory range from 0xd400 to 0xd4ff
     Then output profile disassembly to file "target\temp.a"
 
-    # cls && c:\work\c64\acme.exe --cpu 6502 -o c:\temp\t.prg -f cbm -v9 c:\work\BDD6502\target\temp.a c:\work\BDD6502\features\MinPlay.a && c:\work\c64\bin\LZMPi.exe -pp $37 -c64mbu c:\temp\t.prg c:\temp\tcmp.prg $c000 && c:\temp\tcmp.prg
+    # cls && c:\work\c64\acme.exe --cpu 6502 -o c:\temp\t.prg --labeldump test.lbl -f cbm -v9 c:\work\BDD6502\target\temp.a c:\work\BDD6502\features\MinPlay.a && c:\work\c64\bin\LZMPi.exe -pp $37 -c64mbu c:\temp\t.prg c:\temp\tcmp.prg $cf80 && c:\temp\tcmp.prg
 
 
   @TC-23

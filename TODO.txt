@@ -383,3 +383,15 @@
 
 
 
+@TC-22
+    >> * = $0a1b
+        >> Cannot be removed
+        > However all previous * = can be removed
+            * = $0400
+            Can be replaced with:
+            * = $2400
+
+
+@TC-22
+    >> For data use *=*+X instead of *=X if the gap is <= 256 bytes
+    >>> Note: tempWorkingExample.a
