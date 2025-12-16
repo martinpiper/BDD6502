@@ -55,6 +55,28 @@ Feature:  Profile guided disassembly
       lda #0
       sta selfModifyTest2
       rts
+    UseJumpTableSelfModify
+      lda .loAddr,x
+      sta .smJ+1
+      lda .hiAddr,x
+      sta .smJ+2
+    .smJ jmp $1234
+    .loAddr !by <.code1 , <.code2 , <.code3 , <.code4
+    .hiAddr !by >.code1 , >.code2 , >.code3 , >.code4
+    .code1
+      inc $fb
+      rts
+    .code2
+      inc $fc
+      rts
+    .code3
+      inc $fd
+      rts
+    .code4
+      inc $fe
+      rts
+
+
     """
     And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm target\test1.a
     And I load prg "test.prg"
@@ -63,6 +85,10 @@ Feature:  Profile guided disassembly
     Given I enable trace with indent
 
     Given enable memory profiling
+    Given I set register X to 0x1
+    When I execute the procedure at UseJumpTableSelfModify until return
+    Given I set register X to 0x3
+    When I execute the procedure at UseJumpTableSelfModify until return
     When I execute the procedure at selfModifyTest until return
     When I execute the procedure at selfModifyTest2 until return
     When I execute the procedure at start until return
@@ -79,9 +105,13 @@ Feature:  Profile guided disassembly
     Given open file "target\test1dis.a" for reading
 #    When ignoring lines that contain ";"
     When ignoring empty lines
+    Then expect the next line to contain "label_fc = $fc"
+    Then expect the next line to contain "label_fe = $fe"
+    Then expect the next line to contain "label_0463 = label_0464 - 1 ; Table start skipped"
     Then expect the next line to contain "label_e8 = $e8"
     Then expect the next line to contain "label_a9 = $a9"
     Then expect the next line to contain "label_042e = label_0431 - 3 ; Table start skipped"
+    Then expect the next line to contain "label_045f = label_0460 - 1 ; Table start skipped"
     Then expect the next line to contain "* = $03ff"
     Then expect the next line to contain "label_03ff	!by $20"
     Then expect the next line to contain "* = $0400"
@@ -131,6 +161,27 @@ Feature:  Profile guided disassembly
     Then expect the next line to contain "label_0449	!by $04"
     Then expect the next line to contain "label_044a	lda #$00"
     Then expect the next line to contain "label_044c	sta label_0447"
+    Then expect the next line to contain "rts"
+    Then expect the next line to contain "label_0450	lda label_045f,x"
+    Then expect the next line to contain "label_0453	sta label_045d"
+    Then expect the next line to contain "label_0456	lda label_0463,x"
+    Then expect the next line to contain "label_0459	sta label_045e"
+    Then expect the next line to contain "label_045c	jmp label_0470 ; Self modified parameters"
+    Then expect the next line to contain "label_045d = label_045c + 1"
+    Then expect the next line to contain "label_045e = label_045c + 2"
+    Then expect the next line to contain "* = $0460"
+    Then expect the next line to contain "label_0460	!by $6a"
+    Then expect the next line to contain "label_0461	!by $6d ; Never accessed"
+    Then expect the next line to contain "label_0462	!by $70"
+    Then expect the next line to contain "* = $0464"
+    Then expect the next line to contain "label_0464	!by $04"
+    Then expect the next line to contain "label_0465	!by $04 ; Never accessed"
+    Then expect the next line to contain "label_0466	!by $04"
+    Then expect the next line to contain "* = $046a"
+    Then expect the next line to contain "label_046a	inc label_fc"
+    Then expect the next line to contain "rts"
+    Then expect the next line to contain "* = $0470"
+    Then expect the next line to contain "label_0470	inc label_fe"
     Then expect the next line to contain "rts"
     Then expect end of file
     Given close current file
