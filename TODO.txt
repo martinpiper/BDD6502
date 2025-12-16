@@ -397,9 +397,3 @@
         Then inspect the previous instruction for each and flag both label_0ae3 and label_0b08 as the starts of lo/hi tables
     * Then try using !by < and !by > references when writing those tables...
         Take into account any "never accessed" and still output normal bytes...
-
-
-
-@TC-21
-    For ; Self modified code : label_0438	jsr label_043c
-    >> If the opcode is not written then output the disassembly but create labels for the opcode parameters

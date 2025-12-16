@@ -1032,3 +1032,9 @@ Added: Given I am using C64 processor port options
         Output bytes, with suitable comments for potential lo/hi values.
             Use labels for assembly referenced addresses, including indirectly referenced addresses
     Then try to repeatedly remove lines of code based on unused data access, assemble, check for correctness...
+
+
+
+@TC-21
+    For ; Self modified code : label_0438	jsr label_043c
+    >> If the opcode is not written then output the disassembly but create labels for the opcode parameters

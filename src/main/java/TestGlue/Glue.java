@@ -200,6 +200,7 @@ public class Glue {
             }
         }
         for (int i = 0x100 ; i < cpu.memoryProfileFlags.length ; ) {
+            boolean labelOut = false;
             if (excludeProfileMemoryRange[i]) {
                 i++;
                 continue;
@@ -222,12 +223,14 @@ public class Glue {
                         String theLabel = "label_" + HexUtil.wordToHex(targetAddress).toLowerCase();
                         line += theLabel + " ; Branch not taken here" + System.lineSeparator();
                         mapLabelsGenerated.add(theLabel);
+                        labelOut = true;
                     }
                 }
                 if ( injectLabel[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_PCTarget | Cpu.kMemoryFlags_IndX | Cpu.kMemoryFlags_IndYZero)) != 0 ) {
                     String theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
                     line += theLabel;
                     mapLabelsGenerated.add(theLabel);
+                    labelOut = true;
                 }
                 wasInstruction = true;
                 wasMemory = false;
@@ -238,10 +241,14 @@ public class Glue {
                     }
                 }
                 boolean selfModified = false;
-                for (int opLen = 0 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
+                for (int opLen = 1 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
                     if ((cpu.memoryProfileFlags[i + opLen] & Cpu.kMemoryFlags_Write) != 0) {
                         selfModified = true;
                     }
+                }
+                boolean selfModifiedOpcode = false;
+                if ((cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_Write) != 0) {
+                    selfModifiedOpcode = true;
                 }
                 boolean opCodeMultipleEntry = false;
                 for (int opLen = 1 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
@@ -249,19 +256,33 @@ public class Glue {
                         opCodeMultipleEntry = true;
                     }
                 }
-                if ( selfModified ) {
+                if ( selfModifiedOpcode ) {
                     line = "; Self modified code : " + line + System.lineSeparator();
                 } else if ( opCodeMultipleEntry ) {
                     line = "; Opcode multiple entry code : " + line + System.lineSeparator();
                 }
-                if ( selfModified ||  opCodeMultipleEntry) {
+                if ( selfModifiedOpcode ||  opCodeMultipleEntry) {
                     for (int opLen = 0 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
                         String theLabel = "label_" + HexUtil.wordToHex(i + opLen).toLowerCase();
                         mapLabelsGenerated.add(theLabel);
                         line += theLabel;
                         line += "\t!by $" + HexUtil.byteToHex(cpu.getBus().read(i + opLen)).toLowerCase() + System.lineSeparator();
                     }
+                } else if (selfModified) {
+                    String theLabel = "label_" + HexUtil.wordToHex(i).toLowerCase();
+                    mapLabelsGenerated.add(theLabel);
+                    if (labelOut) {
+                        line = line + " ; Self modified parameters" + System.lineSeparator();
+                    } else {
+                        line = theLabel + line + " ; Self modified parameters" + System.lineSeparator();
+                    }
+                    for (int opLen = 1 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
+                        theLabel = "label_" + HexUtil.wordToHex(i + opLen).toLowerCase();
+                        mapLabelsGenerated.add(theLabel);
+                        line += theLabel + " = label_" + HexUtil.wordToHex(i).toLowerCase() + " + " + opLen +System.lineSeparator();
+                    }
                 }
+
 
                 // Skip ahead to the next instruction
                 i += cpu.memoryProfileLastOpcodeLength[i];

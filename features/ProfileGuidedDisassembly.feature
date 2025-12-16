@@ -49,6 +49,12 @@ Feature:  Profile guided disassembly
       bne .neverTaken
       rts
     .neverTaken inc $1234
+    selfModifyTest2
+      jsr .other2
+    .other2
+      lda #0
+      sta selfModifyTest2
+      rts
     """
     And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm target\test1.a
     And I load prg "test.prg"
@@ -58,6 +64,7 @@ Feature:  Profile guided disassembly
 
     Given enable memory profiling
     When I execute the procedure at selfModifyTest until return
+    When I execute the procedure at selfModifyTest2 until return
     When I execute the procedure at start until return
     Given I disable trace
     When I execute the procedure at start until return for 1000 iterations
@@ -108,15 +115,22 @@ Feature:  Profile guided disassembly
     Then expect the next line to contain "label_0434	!by $06 ; Never accessed"
     Then expect the next line to contain "label_0435	!by $07"
     Then expect the next line to contain "* = $0438"
-    Then expect the next line to contain "; Self modified code : label_0438	jsr label_043c"
-    Then expect the next line to contain "label_0438	!by $20"
-    Then expect the next line to contain "label_0439	!by $00"
-    Then expect the next line to contain "label_043a	!by $04"
+    Then expect the next line to contain "label_0438	jsr label_043c ; Self modified parameters"
+    Then expect the next line to contain "label_0439 = label_0438 + 1"
+    Then expect the next line to contain "label_043a = label_0438 + 2"
     Then expect the next line to contain "label_043b	rts"
     Then expect the next line to contain "label_043c	lda #$00"
     Then expect the next line to contain "label_043e	sta label_0439"
     Then expect the next line to contain "label_0444 ; Branch not taken here"
     Then expect the next line to contain "bne label_0444 ; Branch not taken"
+    Then expect the next line to contain "rts"
+    Then expect the next line to contain "* = $0447"
+    Then expect the next line to contain "; Self modified code : label_0447	jsr label_044a"
+    Then expect the next line to contain "label_0447	!by $00"
+    Then expect the next line to contain "label_0448	!by $4a"
+    Then expect the next line to contain "label_0449	!by $04"
+    Then expect the next line to contain "label_044a	lda #$00"
+    Then expect the next line to contain "label_044c	sta label_0447"
     Then expect the next line to contain "rts"
     Then expect end of file
     Given close current file
