@@ -44,7 +44,10 @@ Feature:  Profile guided disassembly
     .other
       lda #0
       sta selfModifyTest+1
+      ; Test generate label for branch never taken
+      bne .neverTaken
       rts
+    .neverTaken inc $1234
     """
     And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm target\test1.a
     And I load prg "test.prg"
@@ -58,14 +61,15 @@ Feature:  Profile guided disassembly
     Given I disable trace
     When I execute the procedure at start until return for 1000 iterations
 
-    Then include profile last access
-    Then include profile index register type
-    Then include profile index range
-    Then include profile write hint
+#    Then include profile last access
+#    Then include profile index register type
+#    Then include profile index range
+#    Then include profile write hint
+    Then include profile branch not taken
     Then output profile disassembly to file "target\test1dis.a"
 
     Given open file "target\test1dis.a" for reading
-    When ignoring lines that contain ";"
+#    When ignoring lines that contain ";"
     When ignoring empty lines
     Then expect the next line to contain "label_e8 = $e8"
     Then expect the next line to contain "label_a9 = $a9"
@@ -75,10 +79,12 @@ Feature:  Profile guided disassembly
     Then expect the next line to contain "label_0400	lda #$00"
     Then expect the next line to contain "sta label_03ff"
     Then expect the next line to contain "bne label_0408"
+    Then expect the next line to contain "; Opcode multiple entry code : label_0407	bit label_00a9"
     Then expect the next line to contain "label_0407	!by $2c"
     Then expect the next line to contain "label_0408	!by $a9"
     Then expect the next line to contain "label_0409	!by $00"
     Then expect the next line to contain "bne label_040d"
+    Then expect the next line to contain "; Opcode multiple entry code : label_040c	bit label_e8"
     Then expect the next line to contain "label_040c	!by $24"
     Then expect the next line to contain "label_040d	!by $e8"
     Then expect the next line to contain "ldx #$20"
@@ -93,21 +99,25 @@ Feature:  Profile guided disassembly
     Then expect the next line to contain "label_0422	lda label_042e,y"
     Then expect the next line to contain "ldy #$08"
     Then expect the next line to contain "label_0427	rts"
+    # Even though the indirect/index table start isn't ever accessed, it is still generated to keep the data separation consistent
     Then expect the next line to contain "* = $042e"
-    Then expect the next line to contain "label_042e	!by $00"
+    Then expect the next line to contain "label_042e	!by $00 ; Never accessed"
     Then expect the next line to contain "* = $0431"
     Then expect the next line to contain "label_0431	!by $03"
-    Then expect the next line to contain "label_0432	!by $04"
+    Then expect the next line to contain "label_0432	!by $04 ; Never accessed"
     Then expect the next line to contain "label_0433	!by $05"
-    Then expect the next line to contain "label_0434	!by $06"
+    Then expect the next line to contain "label_0434	!by $06 ; Never accessed"
     Then expect the next line to contain "label_0435	!by $07"
     Then expect the next line to contain "* = $0438"
+    Then expect the next line to contain "; Self modified code : label_0438	jsr label_043c"
     Then expect the next line to contain "label_0438	!by $20"
     Then expect the next line to contain "label_0439	!by $00"
     Then expect the next line to contain "label_043a	!by $04"
     Then expect the next line to contain "label_043b	rts"
     Then expect the next line to contain "label_043c	lda #$00"
     Then expect the next line to contain "label_043e	sta label_0439"
+    Then expect the next line to contain "label_0444 ; Branch not taken here"
+    Then expect the next line to contain "bne label_0444 ; Branch not taken"
     Then expect the next line to contain "rts"
     Then expect end of file
     Given close current file
@@ -149,6 +159,8 @@ Feature:  Profile guided disassembly
 #    Then include profile index register type
 #    Then include profile index range
 #    Then include profile write hint
+    Then include profile branch not taken
+    Then profile exclude memory range from 0xd400 to 0xd4ff
     Then output profile disassembly to file "target\temp.a"
 
     # cls && c:\work\c64\acme.exe --cpu 6502 -o c:\temp\t.prg -f cbm -v9 c:\work\BDD6502\target\temp.a c:\work\BDD6502\features\MinPlay.a && c:\work\c64\bin\LZMPi.exe -pp $37 -c64mbu c:\temp\t.prg c:\temp\tcmp.prg $c000 && c:\temp\tcmp.prg

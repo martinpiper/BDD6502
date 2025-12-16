@@ -158,6 +158,13 @@ public class Glue {
         bincludeProfileLastAccess = true;
     }
 
+    boolean bincludeProfileBranchNotTaken = false;
+    @Then("^include profile branch not taken$")
+    public void includeProfileBranchNotTaken() {
+        bincludeProfileBranchNotTaken = true;
+    }
+
+    boolean[] excludeProfileMemoryRange = new boolean[0x10000];
     @Then("^output profile disassembly to file \"([^\"]*)\"$")
     public void outputProfileDisassemblyToFile(String arg0) throws Throwable {
         boolean[] indirectRange = new boolean[0x10000];
@@ -182,11 +189,18 @@ public class Glue {
         boolean wasMemory = false;
         boolean forcePC = true;
         for (int i = 1 ; i < 0x100 ; i++) {
+            if (excludeProfileMemoryRange[i]) {
+                continue;
+            }
             if ( indirectRange[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0 || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_IndX | Cpu.kMemoryFlags_IndYZero)) != 0 ) {
                 mapLabelsForIndirects.put("label_" + HexUtil.byteToHex(i).toLowerCase() , "$" + HexUtil.byteToHex(i).toLowerCase());
             }
         }
         for (int i = 0x100 ; i < cpu.memoryProfileFlags.length ; ) {
+            if (excludeProfileMemoryRange[i]) {
+                i++;
+                continue;
+            }
             String line = "";
             int currentPC = i;
             if ( (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_ExecuteStartOp) != 0 ) {
@@ -198,7 +212,15 @@ public class Glue {
                         line += "; Index range " + cpu.memoryProfileIndirectLo[i] + " to " + cpu.memoryProfileIndirectHi[i] + System.lineSeparator();
                     }
                 }
-                if ( injectLabel[i] || (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_PCTarget) != 0 ) {
+                if ((cpu.memoryProfileTargetBranchAddress[i] != -1) && (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_BranchTaken) == 0) {
+                    int targetAddress = cpu.memoryProfileTargetBranchAddress[i];
+                    if ( (cpu.memoryProfileFlags[targetAddress] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write | Cpu.kMemoryFlags_Execute)) == 0 && !injectLabel[targetAddress] && !indirectRange[targetAddress]) {
+                        String theLabel = "label_" + HexUtil.wordToHex(targetAddress).toLowerCase();
+                        line += theLabel + " ; Branch not taken here" + System.lineSeparator();
+                        mapLabelsGenerated.add(theLabel);
+                    }
+                }
+                if ( injectLabel[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_PCTarget | Cpu.kMemoryFlags_IndX | Cpu.kMemoryFlags_IndYZero)) != 0 ) {
                     String theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
                     line += theLabel;
                     mapLabelsGenerated.add(theLabel);
@@ -206,6 +228,11 @@ public class Glue {
                 wasInstruction = true;
                 wasMemory = false;
                 line += "\t" + cpu.getCpuState().disassembleOpForAddress(cpu.memoryProfileLastOpcode[i] , i , cpu.memoryProfileLastLastArgsLo[i] , cpu.memoryProfileLastLastArgsHi[i] , "label_").toLowerCase();
+                if ((cpu.memoryProfileTargetBranchAddress[i] != -1) && (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_BranchTaken) == 0) {
+                    if (bincludeProfileBranchNotTaken) {
+                        line += " ; Branch not taken";
+                    }
+                }
                 boolean selfModified = false;
                 for (int opLen = 0 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
                     if ((cpu.memoryProfileFlags[i + opLen] & Cpu.kMemoryFlags_Write) != 0) {
@@ -277,10 +304,14 @@ public class Glue {
                         line += "; Write" + System.lineSeparator();
                     }
                 }
+
                 String theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
                 mapLabelsGenerated.add(theLabel);
                 line += theLabel;
                 line += "\t!by $" + HexUtil.byteToHex(cpu.getBus().read(i)).toLowerCase();
+                if ( (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) == 0) {
+                    line += " ; Never accessed";
+                }
 
                 i++;
             } else {
@@ -327,6 +358,13 @@ public class Glue {
     @Then("^include profile write hint$")
     public void includeProfileWriteHint() {
         bincludeProfileWriteHint = true;
+    }
+
+    @Then("^profile exclude memory range from (.+) to (.+)$")
+    public void profileExcludeMemoryRangeFromXdToXdFf(String arg0, String arg1) throws Exception {
+        for (int i = valueToInt(arg0) ; i < valueToInt(arg1) ; i++) {
+            excludeProfileMemoryRange[i] = true;
+        }
     }
 
     private class ProfileData {

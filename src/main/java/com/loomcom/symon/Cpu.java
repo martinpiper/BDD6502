@@ -235,6 +235,7 @@ public class Cpu implements InstructionTable {
     public static final int kMemoryFlags_IndX = 0x10;
     public static final int kMemoryFlags_IndYZero = 0x20;
     public static final int kMemoryFlags_PCTarget = 0x40;
+    public static final int kMemoryFlags_BranchTaken = 0x80;
     public int[] memoryProfileFlags = new int[0x10000];
     public int[] memoryProfileLastAccessByInstructionAt = new int[0x10000];
     public int[] memoryProfileCalculatedAddressUsedWithoutIndirect = new int[0x10000];
@@ -244,6 +245,7 @@ public class Cpu implements InstructionTable {
     public int[] memoryProfileLastLastArgsHi = new int[0x10000];
     public int[] memoryProfileIndirectLo = new int[0x10000];
     public int[] memoryProfileIndirectHi = new int[0x10000];
+    public int[] memoryProfileTargetBranchAddress = new int[0x10000];
 
     boolean memoryProfilingEnabled = false;
     public void setMemoryProfilingEnabled(boolean flag) {
@@ -252,6 +254,7 @@ public class Cpu implements InstructionTable {
         java.util.Arrays.fill(memoryProfileIndirectHi , -1);
         java.util.Arrays.fill(memoryProfileLastAccessByInstructionAt, -1);
         java.util.Arrays.fill(memoryProfileCalculatedAddressUsedWithoutIndirect, -1);
+        java.util.Arrays.fill(memoryProfileTargetBranchAddress, -1);
     }
 
     /**
@@ -451,9 +454,13 @@ public class Cpu implements InstructionTable {
             case 0x10: // BPL - Branch if Positive - Relative
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                    memoryProfileTargetBranchAddress[state.lastPc] = relAddress(state.args[0]);
                 }
                 if (!getNegativeFlag()) {
                     state.pc = relAddress(state.args[0]);
+                    if (memoryProfilingEnabled) {
+                        memoryProfileFlags[state.lastPc] |= kMemoryFlags_BranchTaken;
+                    }
                 }
                 break;
             case 0x12: // PXT - Push X for Test
@@ -498,9 +505,13 @@ public class Cpu implements InstructionTable {
             case 0x30: // BMI - Branch if Minus - Relative
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                    memoryProfileTargetBranchAddress[state.lastPc] = relAddress(state.args[0]);
                 }
                 if (getNegativeFlag()) {
                     state.pc = relAddress(state.args[0]);
+                    if (memoryProfilingEnabled) {
+                        memoryProfileFlags[state.lastPc] |= kMemoryFlags_BranchTaken;
+                    }
                 }
                 break;
             case 0x32: //TTA - Test Test A
@@ -534,9 +545,13 @@ public class Cpu implements InstructionTable {
             case 0x50: // BVC - Branch if Overflow Clear - Relative
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                    memoryProfileTargetBranchAddress[state.lastPc] = relAddress(state.args[0]);
                 }
                 if (!getOverflowFlag()) {
                     state.pc = relAddress(state.args[0]);
+                    if (memoryProfilingEnabled) {
+                        memoryProfileFlags[state.lastPc] |= kMemoryFlags_BranchTaken;
+                    }
                 }
                 break;
             case 0x52: //TTY - Test Test Y
@@ -572,9 +587,13 @@ public class Cpu implements InstructionTable {
             case 0x70: // BVS - Branch if Overflow Set - Relative
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                    memoryProfileTargetBranchAddress[state.lastPc] = relAddress(state.args[0]);
                 }
                 if (getOverflowFlag()) {
                     state.pc = relAddress(state.args[0]);
+                    if (memoryProfilingEnabled) {
+                        memoryProfileFlags[state.lastPc] |= kMemoryFlags_BranchTaken;
+                    }
                 }
                 break;
             case 0x78: // SEI - Set Interrupt Disable - Implied
@@ -591,9 +610,13 @@ public class Cpu implements InstructionTable {
             case 0x90: // BCC - Branch if Carry Clear - Relative
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                    memoryProfileTargetBranchAddress[state.lastPc] = relAddress(state.args[0]);
                 }
                 if (!getCarryFlag()) {
                     state.pc = relAddress(state.args[0]);
+                    if (memoryProfilingEnabled) {
+                        memoryProfileFlags[state.lastPc] |= kMemoryFlags_BranchTaken;
+                    }
                 }
                 break;
             case 0x98: // TYA - Transfer Y to Accumulator - Implied
@@ -614,9 +637,13 @@ public class Cpu implements InstructionTable {
             case 0xb0: // BCS - Branch if Carry Set - Relative
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                    memoryProfileTargetBranchAddress[state.lastPc] = relAddress(state.args[0]);
                 }
                 if (getCarryFlag()) {
                     state.pc = relAddress(state.args[0]);
+                    if (memoryProfilingEnabled) {
+                        memoryProfileFlags[state.lastPc] |= kMemoryFlags_BranchTaken;
+                    }
                 }
                 break;
             case 0xb8: // CLV - Clear Overflow Flag - Implied
@@ -637,9 +664,13 @@ public class Cpu implements InstructionTable {
             case 0xd0: // BNE - Branch if Not Equal to Zero - Relative
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                    memoryProfileTargetBranchAddress[state.lastPc] = relAddress(state.args[0]);
                 }
                 if (!getZeroFlag()) {
                     state.pc = relAddress(state.args[0]);
+                    if (memoryProfilingEnabled) {
+                        memoryProfileFlags[state.lastPc] |= kMemoryFlags_BranchTaken;
+                    }
                 }
                 break;
             case 0xd8: // CLD - Clear Decimal Mode - Implied
@@ -655,9 +686,13 @@ public class Cpu implements InstructionTable {
             case 0xf0: // BEQ - Branch if Equal to Zero - Relative
                 if (memoryProfilingEnabled) {
                     memoryProfileFlags[relAddress(state.args[0])] |= kMemoryFlags_PCTarget;
+                    memoryProfileTargetBranchAddress[state.lastPc] = relAddress(state.args[0]);
                 }
                 if (getZeroFlag()) {
                     state.pc = relAddress(state.args[0]);
+                    if (memoryProfilingEnabled) {
+                        memoryProfileFlags[state.lastPc] |= kMemoryFlags_BranchTaken;
+                    }
                 }
                 break;
             case 0xf8: // SED - Set Decimal Flag - Implied
