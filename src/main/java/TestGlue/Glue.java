@@ -163,11 +163,13 @@ public class Glue {
         boolean[] indirectRange = new boolean[0x10000];
         boolean[] injectLabel = new boolean[0x10000];
         Cpu cpu = machine.getCpu();
+        Set<String> mapLabelsGenerated = new HashSet<>();
         Map<String,String> mapLabelsForIndirects = new HashMap<>();
         for (int i = 0 ; i < cpu.memoryProfileFlags.length ; i++) {
             if ( cpu.memoryProfileLastAccessByInstructionAt[i] >= 0 ) {
                 injectLabel[cpu.memoryProfileLastAccessByInstructionAt[i]] = true;
             }
+            // Flag any memory that is used with an indirect or index as being accessed and suitable for memory dump output
             if ((cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[i] == -1) && (cpu.memoryProfileIndirectHi[i] != -1) && (cpu.memoryProfileIndirectHi[i] >= cpu.memoryProfileIndirectLo[i])) {
                 for (int j = cpu.memoryProfileIndirectLo[i] ; j <= cpu.memoryProfileIndirectHi[i] ; j++) {
                     indirectRange[i+j] = true;
@@ -179,15 +181,12 @@ public class Glue {
         boolean wasInstruction = false;
         boolean wasMemory = false;
         boolean forcePC = true;
-        for (int i = 0 ; i < 0x100 ; i++) {
+        for (int i = 1 ; i < 0x100 ; i++) {
             if ( indirectRange[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0 || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_IndX | Cpu.kMemoryFlags_IndYZero)) != 0 ) {
                 mapLabelsForIndirects.put("label_" + HexUtil.byteToHex(i).toLowerCase() , "$" + HexUtil.byteToHex(i).toLowerCase());
             }
         }
         for (int i = 0x100 ; i < cpu.memoryProfileFlags.length ; ) {
-            if (i == 0x84f) {
-                i=i;
-            }
             String line = "";
             int currentPC = i;
             if ( (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_ExecuteStartOp) != 0 ) {
@@ -200,7 +199,9 @@ public class Glue {
                     }
                 }
                 if ( injectLabel[i] || (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_PCTarget) != 0 ) {
-                    line += "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
+                    String theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
+                    line += theLabel;
+                    mapLabelsGenerated.add(theLabel);
                 }
                 wasInstruction = true;
                 wasMemory = false;
@@ -211,10 +212,26 @@ public class Glue {
                         selfModified = true;
                     }
                 }
+                boolean opCodeMultipleEntry = false;
+                for (int opLen = 1 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
+                    if ((cpu.memoryProfileFlags[i + opLen] & Cpu.kMemoryFlags_PCTarget) != 0) {
+                        opCodeMultipleEntry = true;
+                    }
+                }
                 if ( selfModified ) {
                     line = "; Self modified code : " + line + System.lineSeparator();
                     for (int opLen = 0 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
-                        line += "label_" + HexUtil.wordToHex(i + opLen).toLowerCase();
+                        String theLabel = "label_" + HexUtil.wordToHex(i + opLen).toLowerCase();
+                        mapLabelsGenerated.add(theLabel);
+                        line += theLabel;
+                        line += "\t!by $" + HexUtil.byteToHex(cpu.getBus().read(i + opLen)).toLowerCase() + System.lineSeparator();
+                    }
+                } else if ( opCodeMultipleEntry ) {
+                    line = "; Opcode multiple entry code : " + line + System.lineSeparator();
+                    for (int opLen = 0 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
+                        String theLabel = "label_" + HexUtil.wordToHex(i + opLen).toLowerCase();
+                        mapLabelsGenerated.add(theLabel);
+                        line += theLabel;
                         line += "\t!by $" + HexUtil.byteToHex(cpu.getBus().read(i + opLen)).toLowerCase() + System.lineSeparator();
                     }
                 }
@@ -264,7 +281,9 @@ public class Glue {
                         line += "; Write" + System.lineSeparator();
                     }
                 }
-                line += "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
+                String theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
+                mapLabelsGenerated.add(theLabel);
+                line += theLabel;
                 line += "\t!by $" + HexUtil.byteToHex(cpu.getBus().read(i)).toLowerCase();
 
                 i++;
@@ -281,6 +300,10 @@ public class Glue {
                 }
                 lines.add(line);
             }
+        }
+
+        for (String generated : mapLabelsGenerated) {
+            mapLabelsForIndirects.remove(generated);
         }
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(arg0, false));
