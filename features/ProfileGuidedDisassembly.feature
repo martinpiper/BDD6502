@@ -6,7 +6,7 @@ Feature:  Profile guided disassembly
   This is useful for reverse engineering code.
 
   @TC-21
-  Scenario: Simple profile guided disassembly
+  Scenario: Profile guided disassembly integration
     Given I have a simple overclocked 6502 system
     And I create file "target\test1.a" with
     """
@@ -99,7 +99,10 @@ Feature:  Profile guided disassembly
 #    Then include profile index register type
 #    Then include profile index range
 #    Then include profile write hint
+    Then profile use fill instead of PC adjust
+    Then profile set PC adjust limit to 256 bytes
     Then include profile branch not taken
+    Then profile exclude branches not taken
     Then output profile disassembly to file "target\test1dis.a"
 
     Given open file "target\test1dis.a" for reading
@@ -113,8 +116,7 @@ Feature:  Profile guided disassembly
     Then expect the next line to contain "label_042e = label_0431 - 3 ; Table start skipped"
     Then expect the next line to contain "label_045f = label_0460 - 1 ; Table start skipped"
     Then expect the next line to contain "* = $03ff"
-    Then expect the next line to contain "label_03ff	!by $20"
-    Then expect the next line to contain "* = $0400"
+    Then expect the next line to contain "!by $20"
     Then expect the next line to contain "label_0400	lda #$00"
     Then expect the next line to contain "sta label_03ff"
     Then expect the next line to contain "bne label_0408"
@@ -138,23 +140,22 @@ Feature:  Profile guided disassembly
     Then expect the next line to contain "label_0422	lda label_042e,y"
     Then expect the next line to contain "ldy #$08"
     Then expect the next line to contain "label_0427	rts"
-    Then expect the next line to contain "* = $0431"
+    Then expect the next line to contain "!fill 9"
     Then expect the next line to contain "label_0431	!by $03"
-    Then expect the next line to contain "label_0432	!by $04 ; Never accessed"
+    Then expect the next line to contain "!by $04 ; Never accessed"
     Then expect the next line to contain "label_0433	!by $05"
-    Then expect the next line to contain "label_0434	!by $06 ; Never accessed"
+    Then expect the next line to contain "!by $06 ; Never accessed"
     Then expect the next line to contain "label_0435	!by $07"
-    Then expect the next line to contain "* = $0438"
+    Then expect the next line to contain "!fill 2"
     Then expect the next line to contain "label_0438	jsr label_043c ; Self modified parameters"
     Then expect the next line to contain "label_0439 = label_0438 + 1"
     Then expect the next line to contain "label_043a = label_0438 + 2"
     Then expect the next line to contain "label_043b	rts"
     Then expect the next line to contain "label_043c	lda #$00"
     Then expect the next line to contain "label_043e	sta label_0439"
-    Then expect the next line to contain "label_0444 ; Branch not taken here"
-    Then expect the next line to contain "bne label_0444 ; Branch not taken"
+    Then expect the next line to contain "; Excluded: 	bne label_0444 ; Branch not taken"
     Then expect the next line to contain "rts"
-    Then expect the next line to contain "* = $0447"
+    Then expect the next line to contain "!fill 3"
     Then expect the next line to contain "; Self modified code : label_0447	jsr label_044a"
     Then expect the next line to contain "label_0447	!by $00"
     Then expect the next line to contain "label_0448	!by $4a"
@@ -169,27 +170,28 @@ Feature:  Profile guided disassembly
     Then expect the next line to contain "label_045c	jmp label_0470 ; Self modified parameters"
     Then expect the next line to contain "label_045d = label_045c + 1"
     Then expect the next line to contain "label_045e = label_045c + 2"
-    Then expect the next line to contain "* = $0460"
+    Then expect the next line to contain "!fill 1"
     Then expect the next line to contain "label_0460	!by <label_046a"
-    Then expect the next line to contain "label_0461	!by $6d ; Never accessed"
+    Then expect the next line to contain "!by $6d ; Never accessed"
     Then expect the next line to contain "label_0462	!by <label_0470"
-    Then expect the next line to contain "* = $0464"
+    Then expect the next line to contain "!fill 1"
     Then expect the next line to contain "label_0464	!by >label_046a"
-    Then expect the next line to contain "label_0465	!by $04 ; Never accessed"
+    Then expect the next line to contain "!by $04 ; Never accessed"
     Then expect the next line to contain "label_0466	!by >label_0470"
-    Then expect the next line to contain "* = $046a"
+    Then expect the next line to contain "!fill 3"
     Then expect the next line to contain "label_046a	inc label_fc"
     Then expect the next line to contain "rts"
-    Then expect the next line to contain "* = $0470"
+    Then expect the next line to contain "!fill 3"
     Then expect the next line to contain "label_0470	inc label_fe"
     Then expect the next line to contain "rts"
     Then expect end of file
     Given close current file
 
-    And I run the command line: ..\C64\acme.exe -o test.prg -f cbm target\test1dis.a
+    And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm target\test1dis.a
     Given I have a simple overclocked 6502 system
     And I load prg "test.prg"
-    When I execute the procedure at start until return
+    And I load labels "test.lbl"
+    When I execute the procedure at label_0400 until return
 
 
   @TC-22
@@ -205,8 +207,6 @@ Feature:  Profile guided disassembly
     # Note the minimal play routine code: ..\DebuggingDetails\RetrogradeMusicSelectSystem.a
     Given I set register A to 0x7d
     Given I set register X to 0x83
-    # This register might not be needed...
-    Given I set register Y to 0x01
     When I execute the procedure at 0x8ce until return
 
     Given I disable trace
@@ -217,10 +217,17 @@ Feature:  Profile guided disassembly
 #    Then include profile index range
 #    Then include profile write hint
     Then include profile branch not taken
+    Then profile use fill instead of PC adjust
+    Then profile set PC adjust limit to 256 bytes
+    Then profile avoid PC set in code
+    Then profile avoid PC adjust in code
+    Then profile avoid PC set in data
+    Then profile exclude branches not taken
+    Then profile output never accessed as a 0 byte
     Then profile exclude memory range from 0xd400 to 0xd4ff
     Then output profile disassembly to file "target\temp.a"
 
-    # cls && c:\work\c64\acme.exe --cpu 6502 -o c:\temp\t.prg --labeldump test.lbl -f cbm -v9 c:\work\BDD6502\target\temp.a c:\work\BDD6502\features\MinPlay.a && c:\work\c64\bin\LZMPi.exe -pp $37 -c64mbu c:\temp\t.prg c:\temp\tcmp.prg $cf80 && c:\temp\tcmp.prg
+    # cls && c:\work\c64\acme.exe --cpu 6502 -o c:\temp\t.prg --labeldump test.lbl -f cbm -v9 features\MinPlay.a && c:\work\c64\bin\LZMPi.exe -pp $37 -c64mbu c:\temp\t.prg c:\temp\tcmp.prg $cf80 && c:\temp\tcmp.prg
 
 
   @TC-23

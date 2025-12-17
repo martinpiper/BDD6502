@@ -383,25 +383,3 @@
 
 
 
-@TC-22
-    >> * = $0a1b
-        >> Cannot be removed
-        > However all previous * = can be removed
-            * = $0400
-            Can be replaced with:
-            * = $2400
-
-
-@TC-22
-    >> For data use !fill instead of *=X if the gap is <= 256 bytes
-    >> Or option to write !fill x for the gaps
-    >>> Note: tempWorkingExample.a
-
-
-@TC-22
-    >> Option to avoid saving out a start address
-    >> and other specified addresses...
-    >> Or all absolute addresses
-        >> In code
-        >> In data
-

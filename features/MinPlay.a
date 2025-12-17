@@ -36,6 +36,9 @@ label_d42c = $d42c
 label_d42e = $d42e
 label_d430 = $d430
 
+*=$c000
+!source "target\temp.a"
+
 *=$cf80
 	sei
 ;	lda #$7d

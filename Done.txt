@@ -1063,3 +1063,43 @@ Added: Given I am using C64 processor port options
         Then check each potential lo/hi pair for a particular opcode that modifies PC (jsr/jmp) against existing known target addresses for all branch/jsr/jmp encountered.
         If there is a match, replace the !by $XX with a corresponding !by <labelXXXX or !by >labelXXXX
         Probably with a comment containing the original byte value for reference
+
+
+
+@TC-22
+    >> * = $0a1b
+        >> Cannot be removed
+        > However all previous * = can be removed
+            * = $0400
+            Can be replaced with:
+            * = $2400
+
+
+@TC-22
+    >> For data use !fill instead of *=X if the gap is <= 256 bytes
+    >> Or option to write !fill x for the gaps
+    >>> Note: tempWorkingExample.a
+    Then profile use fill instead of PC adjust
+    Then profile set PC adjust limit to 256 bytes
+
+
+@TC-22
+    >> Option to avoid saving out a start address
+    >> and other specified addresses...
+    >> Or all absolute addresses
+        >> In code
+        >> In data
+    Then profile use fill instead of PC adjust
+    Then profile set PC adjust limit to 256 bytes
+    Then profile avoid PC set in code
+    Then profile avoid PC adjust in code
+    Then profile avoid PC set in data
+
+
+
+@TC-22
+    >> Strip branches not taken, comment out?
+    Then profile exclude branches not taken
+
+@TC-22
+    Then profile output never accessed as a 0 byte

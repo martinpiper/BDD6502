@@ -164,6 +164,35 @@ public class Glue {
         bincludeProfileBranchNotTaken = true;
     }
 
+    boolean bprofileUseFillInsteadOfPCAdjust = false;
+    @Then("^profile use fill instead of PC adjust$")
+    public void profileUseFillInsteadOfPCAdjust() {
+        bprofileUseFillInsteadOfPCAdjust = true;
+    }
+
+    int bprofileSetPCAdjustLimitToBytes = 0;
+    @Then("^profile set PC adjust limit to (.*) bytes$")
+    public void profileSetPCAdjustLimitToBytes(String arg0) throws Exception {
+        bprofileSetPCAdjustLimitToBytes = valueToInt(arg0);
+    }
+
+    boolean bprofileAvoidPCSetInCode = false;
+    @Then("^profile avoid PC set in code$")
+    public void profileAvoidPCSetInCode() {
+        bprofileAvoidPCSetInCode = true;
+    }
+
+    boolean bprofileAvoidPCAdjustInCode = false;
+    @Then("^profile avoid PC adjust in code$")
+    public void profileAvoidPCAdjustInCode() {
+        bprofileAvoidPCAdjustInCode = true;
+    }
+
+    boolean bprofileAvoidPCSetInData = false;
+    @Then("^profile avoid PC set in data$")
+    public void profileAvoidPCSetInData() {
+        bprofileAvoidPCSetInData = true;
+    }
     boolean[] excludeProfileMemoryRange = new boolean[0x10000];
     @Then("^output profile disassembly to file \"([^\"]*)\"$")
     public void outputProfileDisassemblyToFile(String arg0) throws Throwable {
@@ -290,10 +319,12 @@ public class Glue {
                 if ((cpu.memoryProfileTargetBranchAddress[i] != -1) && (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_BranchTaken) == 0) {
                     int targetAddress = cpu.memoryProfileTargetBranchAddress[i];
                     if ( (cpu.memoryProfileFlags[targetAddress] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write | Cpu.kMemoryFlags_Execute)) == 0 && !injectLabel[targetAddress] && !indirectRange[targetAddress]) {
-                        String theLabel = "label_" + HexUtil.wordToHex(targetAddress).toLowerCase();
-                        line += theLabel + " ; Branch not taken here" + System.lineSeparator();
-                        mapLabelsGenerated.add(theLabel);
-                        labelOut = true;
+                        if (!bprofileExcludeBranchesNotTaken) {
+                            String theLabel = "label_" + HexUtil.wordToHex(targetAddress).toLowerCase();
+                            line += theLabel + " ; Branch not taken here" + System.lineSeparator();
+                            mapLabelsGenerated.add(theLabel);
+                            labelOut = true;
+                        }
                     }
                 }
                 if ( injectLabel[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_PCTarget | Cpu.kMemoryFlags_IndX | Cpu.kMemoryFlags_IndYZero)) != 0 ) {
@@ -317,7 +348,10 @@ public class Glue {
                     if (bincludeProfileBranchNotTaken) {
                         line += " ; Branch not taken";
                     }
-                }
+                    if (bprofileExcludeBranchesNotTaken) {
+                        line = " ; Excluded: " + line;
+                    }
+                    }
                 boolean selfModified = false;
                 for (int opLen = 1 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
                     if ((cpu.memoryProfileFlags[i + opLen] & Cpu.kMemoryFlags_Write) != 0) {
@@ -397,9 +431,12 @@ public class Glue {
                     }
                 }
 
-                String theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
-                mapLabelsGenerated.add(theLabel);
-                line += theLabel;
+                String theLabel = "";
+                if ( injectLabel[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write | Cpu.kMemoryFlags_IndX | Cpu.kMemoryFlags_IndYZero)) != 0) {
+                    theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
+                    mapLabelsGenerated.add(theLabel);
+                    line += theLabel;
+                }
                 if ( (memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] > 0) && (memoryAddressActualMemoryAddressForLowHighTable[i] > 0)) {
                     line += "\t!by <label_" + HexUtil.wordToHex(memoryAddressActualMemoryAddressForLowHighTable[i]).toLowerCase() + " ; Was $" + HexUtil.byteToHex(cpu.getBus().read(i)).toLowerCase();
                 } else if ( (memoryAddressIsPotentiallyHighByteForOpcodeAddress[i] > 0) && (memoryAddressActualMemoryAddressForLowHighTable[i] > 0)) {
@@ -409,6 +446,9 @@ public class Glue {
                 }
                 if ( (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) == 0) {
                     line += " ; Never accessed";
+                    if (bprofileOutputNeverAccessedAsAByte >= 0) {
+                        line = theLabel + "\t!by " + HexUtil.byteToHex(bprofileOutputNeverAccessedAsAByte) + " ; " + line;
+                    }
                 }
                 /* // Debug...
                 if (memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] > 0) {
@@ -427,11 +467,37 @@ public class Glue {
 
             if (!line.isEmpty()) {
                 if (forcePC) {
-                    lines.add("* = $" + HexUtil.wordToHex(currentPC).toLowerCase());
+                    int delta = currentPC - lastPCOutput;
+                    if ((lastPCOutput != -1) && (delta <= bprofileSetPCAdjustLimitToBytes)) {
+                        if (delta > 0) {
+                            if (bprofileAvoidPCAdjustInCode && wasInstruction) {
+                            } else {
+                                if (bprofileUseFillInsteadOfPCAdjust) {
+                                    if (delta <= 9) {
+                                        lines.add("!fill " + delta);
+                                    } else {
+                                        lines.add("!fill $" + HexUtil.wordToHex(delta).toLowerCase().replaceFirst("^0+", ""));
+                                    }
+                                } else {
+                                    if (delta <= 9) {
+                                        lines.add("* = * + " + delta);
+                                    } else {
+                                        lines.add("* = * + $" + HexUtil.wordToHex(delta).toLowerCase().replaceFirst("^0+", ""));
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (bprofileAvoidPCSetInCode && wasInstruction) {
+                        } else if (bprofileAvoidPCSetInData && wasMemory) {
+                        } else {
+                            lines.add("* = $" + HexUtil.wordToHex(currentPC).toLowerCase());
+                        }
+                    }
                     forcePC = false;
-                    lastPCOutput = currentPC;
                 }
                 lines.add(line);
+                lastPCOutput = i;
             }
         }
 
@@ -471,6 +537,19 @@ public class Glue {
         for (int i = valueToInt(arg0) ; i < valueToInt(arg1) ; i++) {
             excludeProfileMemoryRange[i] = true;
         }
+    }
+
+    boolean bprofileExcludeBranchesNotTaken = false;
+    @Then("^profile exclude branches not taken$")
+    public void profileExcludeBranchesNotTaken() {
+        bprofileExcludeBranchesNotTaken = true;
+    }
+
+    int bprofileOutputNeverAccessedAsAByte = -1;
+    @Then("^profile output never accessed as a (.*) byte$")
+    public void profileOutputNeverAccessedAsAByte(String arg0) throws Exception {
+        int value = valueToInt(arg0);
+        bprofileOutputNeverAccessedAsAByte = value;
     }
 
     private class ProfileData {
