@@ -203,6 +203,8 @@ Feature:  Profile guided disassembly
     Given I enable trace with indent
 
     Given enable memory profiling
+    Given memory profile record writes from 0xd400 to 0xd4ff
+
 
     # Note the minimal play routine code: ..\DebuggingDetails\RetrogradeMusicSelectSystem.a
     Given I set register A to 0x7d
@@ -226,6 +228,20 @@ Feature:  Profile guided disassembly
     Then profile output never accessed as a 0 byte
     Then profile exclude memory range from 0xd400 to 0xd4ff
     Then output profile disassembly to file "target\temp.a"
+
+    # Now validate the writes
+    Given I have a simple overclocked 6502 system
+    And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm -v9 features\MinPlay.a
+    And I load prg "test.prg"
+    And I load labels "test.lbl"
+    Given enable memory profiling
+    Given memory profile record writes from 0xd400 to 0xd4ff
+    # Validates, per iteration, the recorded memory writes with the previous execution
+    Given enable memory profiling validation
+    Given I set register A to lo(label_837d)
+    Given I set register X to hi(label_837d)
+    When I execute the procedure at label_08ce until return
+    When I execute the procedure at label_093d until return for 10000 iterations
 
     # cls && c:\work\c64\acme.exe --cpu 6502 -o c:\temp\t.prg --labeldump test.lbl -f cbm -v9 features\MinPlay.a && c:\work\c64\bin\LZMPi.exe -pp $37 -c64mbu c:\temp\t.prg c:\temp\tcmp.prg $cf80 && c:\temp\tcmp.prg
 

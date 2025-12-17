@@ -1103,3 +1103,9 @@ Added: Given I am using C64 processor port options
 
 @TC-22
     Then profile output never accessed as a 0 byte
+
+
+
+* TC-22 Record and validate writes to specific ranges
+    Given enable memory profiling validation
+    Given memory profile record writes from 0xd400 to 0xd4ff

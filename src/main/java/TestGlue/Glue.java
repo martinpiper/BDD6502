@@ -16,6 +16,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import javafx.util.Pair;
 import mmarquee.automation.AutomationException;
 import mmarquee.automation.UIAutomation;
 import mmarquee.automation.controls.Application;
@@ -146,7 +147,7 @@ public class Glue {
         displayBombJack.enablePaletteLayerExpansionFunctionality();
     }
 
-
+    List<List<Pair<Integer,Integer>>> recordedMemoryWritesPerIteration = new LinkedList<List<Pair<Integer,Integer>>>();
     @Given("^enable memory profiling$")
     public void enableMemoryProfiling() {
         machine.getCpu().setMemoryProfilingEnabled(true);
@@ -539,6 +540,14 @@ public class Glue {
         }
     }
 
+    @Given("^memory profile record writes from (.+) to (.+)$")
+    public void memoryProfileRecordWritesFromXdToXdFf(String arg0, String arg1) throws Exception {
+        for (int i = valueToInt(arg0) ; i < valueToInt(arg1) ; i++) {
+            machine.getCpu().setMemoryProfileRecordWrites(i , true);
+        }
+    }
+
+
     boolean bprofileExcludeBranchesNotTaken = false;
     @Then("^profile exclude branches not taken$")
     public void profileExcludeBranchesNotTaken() {
@@ -551,6 +560,13 @@ public class Glue {
         int value = valueToInt(arg0);
         bprofileOutputNeverAccessedAsAByte = value;
     }
+
+    boolean benableMemoryProfilingValidation = false;
+    @Given("^enable memory profiling validation$")
+    public void enableMemoryProfilingValidation() {
+        benableMemoryProfilingValidation = true;
+    }
+
 
     private class ProfileData {
         boolean isSEI = false;
@@ -1941,6 +1957,17 @@ public class Glue {
         output = String.format("Executed procedure (%s) for %d instructions", arg1, numInstructions);
         scenario.write(output);
 //		System.out.println(output);
+
+        if (machine.getCpu().getMemoryProfilingEnabled()) {
+            if (benableMemoryProfilingValidation) {
+                List<Pair<Integer,Integer>> thisIteration = machine.getCpu().getAndClearMemoryProfileRecordWritesList();
+                List<Pair<Integer,Integer>> toCheckWith = recordedMemoryWritesPerIteration.get(0);
+                recordedMemoryWritesPerIteration.remove(0);
+                assertThat(thisIteration, is(equalTo(toCheckWith)));
+            } else {
+                recordedMemoryWritesPerIteration.add(machine.getCpu().getAndClearMemoryProfileRecordWritesList());
+            }
+        }
     }
 
     public void displayStateToScenario() {
@@ -1982,6 +2009,7 @@ public class Glue {
     public void i_continue_executing_the_procedure_at_for_no_more_than_instructions_until_pc(String arg1, String arg2) throws Throwable {
         executeProcedureAtForNoMoreThanInstructionsUntilPC("", arg1, arg2);
     }
+
 
     @When("^I execute the procedure at (.+) until return$")
     public void i_execute_the_procedure_at(String arg1) throws Throwable {

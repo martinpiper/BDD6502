@@ -25,9 +25,11 @@ package com.loomcom.symon;
 
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.util.HexUtil;
+import javafx.util.Pair;
 
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class provides a simulation of the MOS 6502 CPU's state machine.
@@ -227,7 +229,16 @@ public class Cpu implements InstructionTable {
         }
     }
 
-
+    boolean[] memoryProfileRecordWrites = new boolean[0x10000];
+    List<Pair<Integer,Integer>> memoryProfileRecordWritesList = new LinkedList<Pair<Integer,Integer>>();
+    public void setMemoryProfileRecordWrites(int address , boolean enable) {
+        memoryProfileRecordWrites[address] = enable;
+    }
+    public List<Pair<Integer,Integer>> getAndClearMemoryProfileRecordWritesList() {
+        List<Pair<Integer,Integer>> ret = memoryProfileRecordWritesList;
+        memoryProfileRecordWritesList = new LinkedList<Pair<Integer,Integer>>();
+        return ret;
+    }
     public static final int kMemoryFlags_Read = 0x01;
     public static final int kMemoryFlags_Write = 0x02;
     public static final int kMemoryFlags_Execute = 0x04;
@@ -262,6 +273,9 @@ public class Cpu implements InstructionTable {
         java.util.Arrays.fill(memoryProfileLastAccessByInstructionAt, -1);
         java.util.Arrays.fill(memoryProfileCalculatedAddressUsedWithoutIndirect, -1);
         java.util.Arrays.fill(memoryProfileTargetBranchAddress, -1);
+    }
+    public boolean getMemoryProfilingEnabled() {
+        return memoryProfilingEnabled;
     }
 
     /**
@@ -787,6 +801,9 @@ public class Cpu implements InstructionTable {
                 tmp = asl(bus.read(effectiveAddress));
                 bus.write(effectiveAddress, tmp);
                 if (memoryProfilingEnabled) {
+                    if (memoryProfileRecordWrites[effectiveAddress]) {
+                        memoryProfileRecordWritesList.add(new Pair<>(effectiveAddress, tmp));
+                    }
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_Write;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
                 }
@@ -844,6 +861,9 @@ public class Cpu implements InstructionTable {
                 tmp = rol(bus.read(effectiveAddress));
                 bus.write(effectiveAddress, tmp);
                 if (memoryProfilingEnabled) {
+                    if (memoryProfileRecordWrites[effectiveAddress]) {
+                        memoryProfileRecordWritesList.add(new Pair<>(effectiveAddress, tmp));
+                    }
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_Write;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
                 }
@@ -886,6 +906,9 @@ public class Cpu implements InstructionTable {
                 tmp = lsr(bus.read(effectiveAddress));
                 bus.write(effectiveAddress, tmp);
                 if (memoryProfilingEnabled) {
+                    if (memoryProfileRecordWrites[effectiveAddress]) {
+                        memoryProfileRecordWritesList.add(new Pair<>(effectiveAddress, tmp));
+                    }
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_Write;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
                 }
@@ -934,6 +957,9 @@ public class Cpu implements InstructionTable {
                 tmp = ror(bus.read(effectiveAddress));
                 bus.write(effectiveAddress, tmp);
                 if (memoryProfilingEnabled) {
+                    if (memoryProfileRecordWrites[effectiveAddress]) {
+                        memoryProfileRecordWritesList.add(new Pair<>(effectiveAddress, tmp));
+                    }
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_Write;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
                 }
@@ -952,6 +978,9 @@ public class Cpu implements InstructionTable {
             case 0x9d: // Absolute,X
                 bus.write(effectiveAddress, state.a);
                 if (memoryProfilingEnabled) {
+                    if (memoryProfileRecordWrites[effectiveAddress]) {
+                        memoryProfileRecordWritesList.add(new Pair<>(effectiveAddress, state.a));
+                    }
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Write;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
                     lastRegisterStoreUsed = 'a';
@@ -965,6 +994,9 @@ public class Cpu implements InstructionTable {
             case 0x94: // Zero Page,X
                 bus.write(effectiveAddress, state.y);
                 if (memoryProfilingEnabled) {
+                    if (memoryProfileRecordWrites[effectiveAddress]) {
+                        memoryProfileRecordWritesList.add(new Pair<>(effectiveAddress, state.y));
+                    }
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Write;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
                     lastRegisterStoreUsed = 'y';
@@ -978,6 +1010,9 @@ public class Cpu implements InstructionTable {
             case 0x96: // Zero Page,Y
                 bus.write(effectiveAddress, state.x);
                 if (memoryProfilingEnabled) {
+                    if (memoryProfileRecordWrites[effectiveAddress]) {
+                        memoryProfileRecordWritesList.add(new Pair<>(effectiveAddress, state.x));
+                    }
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Write;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
                     lastRegisterStoreUsed = 'x';
@@ -1088,6 +1123,9 @@ public class Cpu implements InstructionTable {
                 tmp = (bus.read(effectiveAddress) - 1) & 0xff;
                 bus.write(effectiveAddress, tmp);
                 if (memoryProfilingEnabled) {
+                    if (memoryProfileRecordWrites[effectiveAddress]) {
+                        memoryProfileRecordWritesList.add(new Pair<>(effectiveAddress, tmp));
+                    }
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_Write;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
                 }
@@ -1146,6 +1184,9 @@ public class Cpu implements InstructionTable {
                 tmp = (bus.read(effectiveAddress) + 1) & 0xff;
                 bus.write(effectiveAddress, tmp);
                 if (memoryProfilingEnabled) {
+                    if (memoryProfileRecordWrites[effectiveAddress]) {
+                        memoryProfileRecordWritesList.add(new Pair<>(effectiveAddress, tmp));
+                    }
                     memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_Write;
                     memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
                 }

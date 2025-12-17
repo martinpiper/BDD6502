@@ -380,6 +380,3 @@
     And the layer displays a debug window
         displayBombJack.getLastLayerAdded().setDisplayDebugWindow(true);
             Could use a more generic version of DisplaySprites4 without double buffering
-
-
-
