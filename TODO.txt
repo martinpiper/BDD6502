@@ -390,4 +390,10 @@
 
 
 
-* @TC-24 label_b4e7 label_b4ea second element for label_b4ea is pointing to the wrong > label
+* @TC-24 label_b4e7 label_b4ea are actually written to by the contents of label_b715
+    label_b715 looks like three low, three high, and two unknowns
+    >> It would be possible to trace back label_b4e7 and label_b4ea to label_b715 and label_b718
+
+
+
+* // TODO: Make config option, default off

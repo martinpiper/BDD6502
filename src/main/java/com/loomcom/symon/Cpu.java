@@ -248,6 +248,8 @@ public class Cpu implements InstructionTable {
     public static final int kMemoryFlags_PCTarget = 0x40;
     public static final int kMemoryFlags_BranchTaken = 0x80;
     public int[] memoryProfileFlags = new int[0x10000];
+    public int[] memoryProfileStoredAddress = new int[0x10000];
+    public char[] memoryProfileStoredAddressWithRegister = new char[0x10000];
     public int[] memoryProfileLastAccessByInstructionAt = new int[0x10000];
     public int[] memoryProfileCalculatedAddressUsedWithoutIndirect = new int[0x10000];
     public int[] memoryProfileLastOpcode = new int[0x10000];
@@ -264,9 +266,11 @@ public class Cpu implements InstructionTable {
     public char[] memoryProfileThisOpcodeStoredIntoLowAddress = new char[0x10000];
     public char[] memoryProfileThisOpcodeStoredIntoHighAddress = new char[0x10000];
     public char[] memoryProfileThisOpcodeLoadedInto = new char[0x10000];
+    public int[] memoryProfileThisOpcodeLoadedFromAddress = new int[0x10000];
 
     public boolean[] memoryProfileIsUsedMoreIndirectMemoryAccessLow = new boolean[0x100];
     public boolean[] memoryProfileIsUsedMoreIndirectMemoryAccessHigh = new boolean[0x100];
+    public int[] memoryProfileIsIndirectYInstructionForZPAddress = new int[0x10000];
 
 
     boolean memoryProfilingEnabled = false;
@@ -424,6 +428,7 @@ public class Cpu implements InstructionTable {
                             memoryProfileForJmpJsrIndYAt[state.args[0]+1] = state.lastPc;
                             memoryProfileIsUsedMoreIndirectMemoryAccessLow[state.args[0]]= true;
                             memoryProfileIsUsedMoreIndirectMemoryAccessHigh[state.args[0]+1]= true;
+                            memoryProfileIsIndirectYInstructionForZPAddress[state.lastPc] = state.args[0];
                         }
 
                         state.traceShouldShowReadAddress = true;
@@ -1216,6 +1221,9 @@ public class Cpu implements InstructionTable {
 
         if (memoryProfilingEnabled) {
             if (lastRegisterStoreUsed != '\0' && effectiveAddress > 1) {
+                memoryProfileStoredAddress[state.lastPc] = effectiveAddress;
+                memoryProfileStoredAddressWithRegister[state.lastPc] = lastRegisterStoreUsed;
+
                 if ( (memoryProfileFlags[effectiveAddress] & kMemoryFlags_Write) != 0) {
                     if (memoryProfileIsLowAddressForOpcode[effectiveAddress] && memoryProfileIsJmpJsrOpcode[effectiveAddress-1]) {
                         memoryProfileThisOpcodeStoredIntoLowAddress[state.lastPc] = lastRegisterStoreUsed;
@@ -1225,21 +1233,11 @@ public class Cpu implements InstructionTable {
                         memoryProfileThisOpcodeStoredIntoHighAddress[state.lastPc] = lastRegisterStoreUsed;
                         memoryProfileForJmpJsrIndYAt[state.lastPc] = effectiveAddress-2;
                     }
-                    // Check for (zp),y updates
-                    if (effectiveAddress <= 0xfe) {
-                        if (memoryProfileIsUsedMoreIndirectMemoryAccessLow[effectiveAddress] && memoryProfileIsUsedMoreIndirectMemoryAccessHigh[effectiveAddress+1]) {
-                            memoryProfileThisOpcodeStoredIntoLowAddress[state.lastPc] = lastRegisterStoreUsed;
-                            memoryProfileForJmpJsrIndYAt[state.lastPc] = effectiveAddress;
-                        }
-                        if (memoryProfileIsUsedMoreIndirectMemoryAccessHigh[effectiveAddress] && memoryProfileIsUsedMoreIndirectMemoryAccessLow[effectiveAddress-1]) {
-                            memoryProfileThisOpcodeStoredIntoHighAddress[state.lastPc] = lastRegisterStoreUsed;
-                            memoryProfileForJmpJsrIndYAt[state.lastPc] = effectiveAddress-1;
-                        }
-                    }
                 }
             }
             if (lastRegisterLoadUsed != '\0' && effectiveAddress > 1) {
                 memoryProfileThisOpcodeLoadedInto[state.lastPc] = lastRegisterLoadUsed;
+                memoryProfileThisOpcodeLoadedFromAddress[state.lastPc] = effectiveAddress;
             }
         }
 

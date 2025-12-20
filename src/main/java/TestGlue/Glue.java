@@ -302,8 +302,87 @@ public class Glue {
                 }
             }
 
+            // Handle (zp),y
+            if (cpu.memoryProfileIsIndirectYInstructionForZPAddress[i] > 0) {
+                int gotlowZPAddessSourceAddress = -1;
+                int gothighZPAddessSourceAddress = -1;
+                // Look for recent stores into the zp or zp+1
+                int zpAddr = cpu.memoryProfileIsIndirectYInstructionForZPAddress[i];
+                for (int j = i - 1 ; j > i-20 ; j--) {
+                    if (cpu.memoryProfileStoredAddress[j] == zpAddr) {
+                        char targetRegister = cpu.memoryProfileStoredAddressWithRegister[j];
+                        for (;j > i-20 ; j--) {
+                            // Look back for any load, with the register
+                            if (cpu.memoryProfileThisOpcodeLoadedInto[j] == targetRegister) {
+                                gotlowZPAddessSourceAddress = cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j];
+                                break;
+                            }
+                        }
+                    }
+                    if (gotlowZPAddessSourceAddress != -1) {
+                        break;
+                    }
+                }
+                if (gotlowZPAddessSourceAddress > 0) {
+                    for (int j = i - 1 ; j > i-20 ; j--) {
+                        if (cpu.memoryProfileStoredAddress[j] == zpAddr+1) {
+                            char targetRegister = cpu.memoryProfileStoredAddressWithRegister[j];
+                            for (;j > i-20 ; j--) {
+                                // Look back for any load, with the register
+                                if (cpu.memoryProfileThisOpcodeLoadedInto[j] == targetRegister) {
+                                    gothighZPAddessSourceAddress = cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j];
+                                    break;
+                                }
+                            }
+                        }
+                        if (gothighZPAddessSourceAddress != -1) {
+                            break;
+                        }
+                    }
+                }
+                if (gotlowZPAddessSourceAddress > 0 && gothighZPAddessSourceAddress > 0) {
+/*
+                    if (cpu.memoryProfileIndirectHi[gotlowZPAddessSourceAddress] != -1) {
+                        for (int r = cpu.memoryProfileIndirectLo[gotlowZPAddessSourceAddress] ; r <= cpu.memoryProfileIndirectHi[gotlowZPAddessSourceAddress] ; r++) {
+                            int address = cpu.getBus().read(gotlowZPAddessSourceAddress + r) | (cpu.getBus().read(gothighZPAddessSourceAddress + r) << 8);
+                            if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
+                                memoryAddressActualMemoryAddressForLowHighTable[gotlowZPAddessSourceAddress + r] = address;
+                                memoryAddressActualMemoryAddressForLowHighTable[gothighZPAddessSourceAddress + r] = address;
+                                memoryAddressIsPotentiallyLowByteForOpcodeAddress[gotlowZPAddessSourceAddress + r] = i;
+                                memoryAddressIsPotentiallyHighByteForOpcodeAddress[gothighZPAddessSourceAddress + r] = i;
+                                memoryAddressIsUsingIndexValue[gotlowZPAddessSourceAddress + r] = r;
+                                memoryAddressIsUsingIndexValue[gothighZPAddessSourceAddress + r] = r;
+                                injectLabel[address] = true;    // Ensure a label
+                            }
+                        }
+                    }
+*/
+                    if (cpu.memoryProfileIndirectHi[gotlowZPAddessSourceAddress] != -1) {
+                        for (int r = cpu.memoryProfileIndirectLo[gotlowZPAddessSourceAddress] ; r <= cpu.memoryProfileIndirectHi[gotlowZPAddessSourceAddress] ; r++) {
+                            int address = cpu.getBus().read(gotlowZPAddessSourceAddress + r) | (cpu.getBus().read(gothighZPAddessSourceAddress + r) << 8);
+                            if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
+                                memoryAddressIsPotentiallyLowByteForOpcodeAddress[gotlowZPAddessSourceAddress + r] = i;
+                                memoryAddressIsUsingIndexValue[gotlowZPAddessSourceAddress + r] = r;
+                            }
+                        }
+                    }
+                    if (cpu.memoryProfileIndirectHi[gothighZPAddessSourceAddress] != -1) {
+                        for (int r = cpu.memoryProfileIndirectLo[gothighZPAddessSourceAddress] ; r <= cpu.memoryProfileIndirectHi[gothighZPAddessSourceAddress] ; r++) {
+                            int address = cpu.getBus().read(gotlowZPAddessSourceAddress + r) | (cpu.getBus().read(gothighZPAddessSourceAddress + r) << 8);
+                            if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
+                                memoryAddressIsPotentiallyHighByteForOpcodeAddress[gothighZPAddessSourceAddress + r] = i;
+                                memoryAddressIsUsingIndexValue[gothighZPAddessSourceAddress + r] = r;
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }
+
+
             if (cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i] != '\0') {
-                for (int j = i - 1 ; j > i-6 ; j--) {
+                for (int j = i - 1 ; j > i-16 ; j--) {
                     if (cpu.memoryProfileThisOpcodeLoadedInto[j] == cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i]) {
                         if (cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] != -1) {
                             if (cpu.memoryProfileIndirectHi[j] != -1) {
@@ -311,13 +390,14 @@ public class Glue {
                                     memoryAddressIsPotentiallyLowByteForOpcodeAddress[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = cpu.memoryProfileForJmpJsrIndYAt[i];
                                     memoryAddressIsUsingIndexValue[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = r;
                                 }
+                                break;
                             }
                         }
                     }
                 }
             }
             if (cpu.memoryProfileThisOpcodeStoredIntoHighAddress[i] != '\0') {
-                for (int j = i - 1 ; j > i-6 ; j--) {
+                for (int j = i - 1 ; j > i-16 ; j--) {
                     if (cpu.memoryProfileThisOpcodeLoadedInto[j] == cpu.memoryProfileThisOpcodeStoredIntoHighAddress[i]) {
                         if (cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] != -1) {
                             if (cpu.memoryProfileIndirectHi[j] != -1) {
@@ -325,6 +405,7 @@ public class Glue {
                                     memoryAddressIsPotentiallyHighByteForOpcodeAddress[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = cpu.memoryProfileForJmpJsrIndYAt[i];
                                     memoryAddressIsUsingIndexValue[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = r;
                                 }
+                                break;
                             }
                         }
                     }
@@ -408,9 +489,11 @@ public class Glue {
                 checkForLabel(line);
 
                 if (cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i] != '\0') {
+                    // TODO: Make config option, default off
 //                    line += " ; Stored into low address with " + cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i];
                 }
                 if (cpu.memoryProfileThisOpcodeStoredIntoHighAddress[i] != '\0') {
+                    // TODO: Make config option, default off
 //                    line += " ; Stored into high address with " + cpu.memoryProfileThisOpcodeStoredIntoHighAddress[i];
                 }
 
@@ -525,6 +608,7 @@ public class Glue {
                     }
                 }
                 /* // Debug...
+                // TODO: Make config option, default off
                 if (memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] > 0) {
                     line += " ; Potential low byte by opcode at " + HexUtil.wordToHex(memoryAddressIsPotentiallyLowByteForOpcodeAddress[i]) + " index " + memoryAddressIsUsingIndexValue[i] + " address " + HexUtil.wordToHex(memoryAddressActualMemoryAddressForLowHighTable[i]);
                 }

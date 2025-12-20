@@ -8,9 +8,12 @@
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/MinPlay3.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/MinPlay3.a" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/ProfileGuidedDisassembly.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/ProfileGuidedDisassembly.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -1289,6 +1292,16 @@
           <properties class="java.lang.StringIndexOutOfBoundsException" package="java.lang" />
           <option name="timeStamp" value="10" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
+          <line>378</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
+          <line>344</line>
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
@@ -1296,14 +1309,10 @@
         <watch expression="debugState" />
       </configuration>
       <configuration name="Application">
-        <watch expression="machine.getCpu()" language="JAVA" />
-        <watch expression="cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i]" language="JAVA" />
-        <watch expression="cpu.memoryProfileThisOpcodeLoadedInto[j]" language="JAVA" />
-        <watch expression="i" language="JAVA" />
-        <watch expression="j" language="JAVA" />
-        <watch expression="cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j]" language="JAVA" />
-        <watch expression="cpu.memoryProfileIndirectHi[j]" language="JAVA" />
-        <watch expression="cpu.memoryProfileForJmpJsrIndYAt[i]" language="JAVA" />
+        <watch expression="gotlowZPAddessSourceAddress" language="JAVA" />
+        <watch expression="gothighZPAddessSourceAddress" language="JAVA" />
+        <watch expression="cpu.memoryProfileIndirectLo[gotlowZPAddessSourceAddress]" language="JAVA" />
+        <watch expression="cpu.memoryProfileIndirectHi[gotlowZPAddessSourceAddress]" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

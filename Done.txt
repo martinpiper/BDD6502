@@ -1129,3 +1129,7 @@ Added: Given I am using C64 processor port options
 
 
 * @TC-23: label_1838 and label_1851 are obviously lo/hi addresses, going into (xx),y
+
+
+
+* @TC-24 label_b4e7 label_b4ea second element for label_b4ea is pointing to the wrong > label

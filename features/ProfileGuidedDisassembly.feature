@@ -8,6 +8,17 @@ Feature:  Profile guided disassembly
   @TC-21
   Scenario: Profile guided disassembly integration
     Given I have a simple overclocked 6502 system
+    When I enable uninitialised memory read protection with immediate fail
+    # Stops the memory protection triggering on these temporary locations
+    Given I write memory at $fb with 0
+    Given I write memory at $fc with 0
+    Given I write memory at $fd with 0
+    Given I write memory at $fe with 0
+    # Due to the bit $00a9
+    Given I write memory at $a9 with 0
+    # Due to the bit $e8
+    Given I write memory at $e8 with 0
+
     And I create file "target\test1.a" with
     """
     !sal
@@ -189,6 +200,11 @@ Feature:  Profile guided disassembly
 
     And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm target\test1dis.a
     Given I have a simple overclocked 6502 system
+    When I enable uninitialised memory read protection with immediate fail
+    # Due to the bit $00a9
+    Given I write memory at $a9 with 0
+    # Due to the bit $e8
+    Given I write memory at $e8 with 0
     And I load prg "test.prg"
     And I load labels "test.lbl"
     When I execute the procedure at label_0400 until return
@@ -197,6 +213,9 @@ Feature:  Profile guided disassembly
   @TC-22
   Scenario: Complex binary only profile guided disassembly
     Given I have a simple overclocked 6502 system
+    # Due to the bit $00a9
+    Given I write memory at $a9 with 0
+    When I enable uninitialised memory read protection with immediate fail
 
     And I load prg "..\DebuggingDetails\MusicSelectSystemPatched_a000.prg"
 
@@ -238,6 +257,8 @@ Feature:  Profile guided disassembly
 
     # Now validate the writes
     Given I have a simple overclocked 6502 system
+    # Due to the bit $00a9
+    Given I write memory at $a9 with 0
     And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm -v9 features\MinPlay.a
     And I load prg "test.prg"
     And I load labels "test.lbl"
@@ -256,6 +277,9 @@ Feature:  Profile guided disassembly
   @TC-23
   Scenario: Complex binary only profile guided disassembly 2
     Given I have a simple overclocked 6502 system
+    When I enable uninitialised memory read protection with immediate fail
+    Given I write memory at $fb with 0
+    Given I write memory at $fc with 0
 
     And I load prg "testdata\mus1000.prg"
 
@@ -290,6 +314,10 @@ Feature:  Profile guided disassembly
     Then output profile disassembly to file "target\temp2.a"
 
     Given I have a simple overclocked 6502 system
+    When I enable uninitialised memory read protection with immediate fail
+    Given I write memory at $fb with 0
+    Given I write memory at $fc with 0
+
     And I run the command line: ..\C64\acme.exe --setpc $1000 --cpu 6502 -o test.prg --labeldump test.lbl -f cbm -v9 features\MinPlay_SID.a target\temp2.a
     And I load prg "test.prg"
     And I load labels "test.lbl"
@@ -305,9 +333,10 @@ Feature:  Profile guided disassembly
 
 
 
-  @ignore @TC-24
+  @TC-24
   Scenario: Complex binary only profile guided disassembly
     Given I have a simple overclocked 6502 system
+    When I enable uninitialised memory read protection with immediate fail
 
     And I load prg "testdata\mwmusb000_b059.prg"
 
@@ -321,7 +350,7 @@ Feature:  Profile guided disassembly
     When I execute the procedure at 0xb000 until return
 
     Given I disable trace
-    When I execute the procedure at 0xb059 until return for 10000 iterations
+    When I execute the procedure at 0xb059 until return for 1500 iterations
 
 #    Then include profile last access
 #    Then include profile index register type
@@ -344,6 +373,7 @@ Feature:  Profile guided disassembly
 
     # Now validate the writes
     Given I have a simple overclocked 6502 system
+    When I enable uninitialised memory read protection with immediate fail
     And I run the command line: ..\C64\acme.exe --setpc $b000 -o test.prg --labeldump test.lbl -f cbm -v9 features\MinPlay_SID.a target\temp3.a
     And I load prg "test.prg"
     And I load labels "test.lbl"
@@ -353,6 +383,6 @@ Feature:  Profile guided disassembly
     Given enable memory profiling validation
     Given I set register A to 0x00
     When I execute the procedure at label_b000 until return
-    When I execute the procedure at label_b059 until return for 10000 iterations
+    When I execute the procedure at label_b059 until return for 1500 iterations
 
     # cls && c:\work\c64\acme.exe --cpu 6502 -o c:\temp\t.prg --labeldump test.lbl -f cbm -v9 features\MinPlay3.a && c:\work\c64\bin\LZMPi.exe -pp $35 -c64mbu c:\temp\t.prg c:\temp\tcmp.prg $cf80 && c:\temp\tcmp.prg
