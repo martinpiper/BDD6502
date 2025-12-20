@@ -281,7 +281,9 @@ Feature:  Profile guided disassembly
     Then profile set PC adjust limit to 256 bytes
     Then profile avoid PC set in code
 #    Then profile avoid PC adjust in code
+#    Then profile preserve code spacing from 0x1000 to 0x17ff
 #    Then profile avoid PC adjust in data
+#    Then profile preserve data spacing from 0x1000 to 0x17ff
 
     Then profile exclude memory range from 0xd400 to 0xd4ff
     Then profile optimise labels

@@ -201,6 +201,7 @@ public class Glue {
         bprofileAvoidPCSetInData = true;
     }
     boolean[] excludeProfileMemoryRange = new boolean[0x10000];
+    boolean[] preserveCodeSpacingProfileMemoryRange = new boolean[0x10000];
     boolean[] preserveDataSpacingProfileMemoryRange = new boolean[0x10000];
     boolean[] profileFinalGenerateLabelHere = new boolean[0x10000];
     @Then("^output profile disassembly to file \"([^\"]*)\"$")
@@ -549,7 +550,7 @@ public class Glue {
                     int delta = currentPC - lastPCOutput;
                     if ((lastPCOutput != -1) && (delta <= bprofileSetPCAdjustLimitToBytes)) {
                         if (delta > 0) {
-                            if (bprofileAvoidPCAdjustInCode && wasInstruction) {
+                            if (bprofileAvoidPCAdjustInCode && wasInstruction && !preserveCodeSpacingProfileMemoryRange[currentPC]) {
                             } else {
                                 if (bprofileUseFillInsteadOfPCAdjust) {
                                     if (delta <= 9) {
@@ -567,7 +568,7 @@ public class Glue {
                             }
                         }
                     } else {
-                        if (bprofileAvoidPCSetInCode && wasInstruction) {
+                        if (bprofileAvoidPCSetInCode && wasInstruction && !preserveCodeSpacingProfileMemoryRange[currentPC]) {
                         } else if (bprofileAvoidPCSetInData && wasMemory) {
                         } else {
                             lines.add(prefix + "* = $" + HexUtil.wordToHex(currentPC).toLowerCase());
@@ -615,6 +616,13 @@ public class Glue {
     public void profileExcludeMemoryRangeFromXdToXdFf(String arg0, String arg1) throws Exception {
         for (int i = valueToInt(arg0) ; i < valueToInt(arg1) ; i++) {
             excludeProfileMemoryRange[i] = true;
+        }
+    }
+
+    @Then("^profile preserve code spacing from (.+) to (.+)$")
+    public void profilePreserveCodeSpacingFromXdToXdFf(String arg0, String arg1) throws Exception {
+        for (int i = valueToInt(arg0) ; i < valueToInt(arg1) ; i++) {
+            preserveCodeSpacingProfileMemoryRange[i] = true;
         }
     }
 

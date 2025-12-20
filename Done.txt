@@ -1122,3 +1122,7 @@ Added: Given I am using C64 processor port options
     Needs to be detected and output as such
     * Lo/hi could be tagged by the jmp(
     >> // Handle targets for jmp( that are not written to
+
+* @TC-23: >> Will need: Then profile preserve code spacing from 0x1000 to 0x10ff
+        As well as data spacing for the same range...
+
