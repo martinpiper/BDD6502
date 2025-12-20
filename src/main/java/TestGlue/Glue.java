@@ -225,7 +225,7 @@ public class Glue {
             if (excludeProfileMemoryRange[i]) {
                 continue;
             }
-            if ( indirectRange[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0 || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_IndX | Cpu.kMemoryFlags_IndYZero)) != 0 ) {
+            if ( indirectRange[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0 || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_IndXZero | Cpu.kMemoryFlags_IndYZero)) != 0 ) {
                 mapLabelsForIndirects.put("label_" + HexUtil.byteToHex(i).toLowerCase() , "$" + HexUtil.byteToHex(i).toLowerCase());
             }
         }
@@ -328,7 +328,7 @@ public class Glue {
                         }
                     }
                 }
-                if ( injectLabel[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_PCTarget | Cpu.kMemoryFlags_IndX | Cpu.kMemoryFlags_IndYZero)) != 0 ) {
+                if ( injectLabel[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_PCTarget | Cpu.kMemoryFlags_IndXZero | Cpu.kMemoryFlags_IndYZero)) != 0 ) {
                     String theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
                     line += theLabel;
                     mapLabelsGenerated.add(theLabel);
@@ -410,7 +410,7 @@ public class Glue {
                         line += "; IndYZero" + System.lineSeparator();
                     }
                 }
-                if ( (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_IndX) != 0 ) {
+                if ( (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_IndXZero) != 0 ) {
                     if (bincludeIndexRegisterType) {
                         line += "; IndX" + System.lineSeparator();
                     }
@@ -433,7 +433,7 @@ public class Glue {
                 }
 
                 String theLabel = "";
-                if ( injectLabel[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write | Cpu.kMemoryFlags_IndX | Cpu.kMemoryFlags_IndYZero)) != 0) {
+                if ( injectLabel[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write | Cpu.kMemoryFlags_IndXZero | Cpu.kMemoryFlags_IndYZero)) != 0) {
                     theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
                     mapLabelsGenerated.add(theLabel);
                     line += theLabel;

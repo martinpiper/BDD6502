@@ -243,7 +243,7 @@ public class Cpu implements InstructionTable {
     public static final int kMemoryFlags_Write = 0x02;
     public static final int kMemoryFlags_Execute = 0x04;
     public static final int kMemoryFlags_ExecuteStartOp = 0x08;
-    public static final int kMemoryFlags_IndX = 0x10;
+    public static final int kMemoryFlags_IndXZero = 0x10;
     public static final int kMemoryFlags_IndYZero = 0x20;
     public static final int kMemoryFlags_PCTarget = 0x40;
     public static final int kMemoryFlags_BranchTaken = 0x80;
@@ -379,9 +379,9 @@ public class Cpu implements InstructionTable {
                         tmp = (state.args[0] + state.x) & 0xff;
                         effectiveAddress = address(bus.read(tmp), bus.read(tmp + 1));
                         if (memoryProfilingEnabled) {
-                            memoryProfileFlags[tmp] |= kMemoryFlags_Read | kMemoryFlags_IndX;
+                            memoryProfileFlags[tmp] |= kMemoryFlags_Read | kMemoryFlags_IndXZero;
                             memoryProfileLastAccessByInstructionAt[tmp] = state.lastPc;
-                            memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_IndX;
+                            memoryProfileFlags[effectiveAddress] |= kMemoryFlags_Read | kMemoryFlags_IndXZero;
                             memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
                         }
 
@@ -1794,6 +1794,7 @@ public class Cpu implements InstructionTable {
             memoryProfileCalculatedAddressUsedWithoutIndirect[state.lastPc] = address(lowByte, hiByte);
             memoryProfileIndirectLo[address(lowByte, hiByte)] = Math.min(memoryProfileIndirectLo[address(lowByte, hiByte)] , state.x);
             memoryProfileIndirectHi[address(lowByte, hiByte)] = Math.max(memoryProfileIndirectHi[address(lowByte, hiByte)] , state.x);
+            memoryProfileFlags[address(lowByte, hiByte)] |= kMemoryFlags_IndXZero;
         }
 
         return (address(lowByte, hiByte) + state.x) & 0xffff;
@@ -1826,7 +1827,7 @@ public class Cpu implements InstructionTable {
             memoryProfileCalculatedAddressUsedWithoutIndirect[state.lastPc] = zp;
             memoryProfileIndirectLo[zp] = Math.min(memoryProfileIndirectLo[zp] , state.x);
             memoryProfileIndirectHi[zp] = Math.max(memoryProfileIndirectHi[zp] , state.x);
-            memoryProfileFlags[zp] |= kMemoryFlags_IndX;
+            memoryProfileFlags[zp] |= kMemoryFlags_IndXZero;
         }
 
         return (zp + state.x) & 0xff;

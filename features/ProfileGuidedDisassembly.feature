@@ -207,6 +207,7 @@ Feature:  Profile guided disassembly
 
 
     # Note the minimal play routine code: ..\DebuggingDetails\RetrogradeMusicSelectSystem.a
+    # 0x837d points to music data
     Given I set register A to 0x7d
     Given I set register X to 0x83
     When I execute the procedure at 0x8ce until return
@@ -214,10 +215,10 @@ Feature:  Profile guided disassembly
     Given I disable trace
     When I execute the procedure at 0x93d until return for 10000 iterations
 
-#    Then include profile last access
-#    Then include profile index register type
-#    Then include profile index range
-#    Then include profile write hint
+    Then include profile last access
+    Then include profile index register type
+    Then include profile index range
+    Then include profile write hint
     Then include profile branch not taken
     Then profile use fill instead of PC adjust
     Then profile set PC adjust limit to 256 bytes
