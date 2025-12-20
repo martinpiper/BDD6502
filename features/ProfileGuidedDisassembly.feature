@@ -224,7 +224,12 @@ Feature:  Profile guided disassembly
     Then profile set PC adjust limit to 256 bytes
     Then profile avoid PC set in code
     Then profile avoid PC adjust in code
+    Then profile avoid PC adjust in data
+    # Removing spaces in data is quite aggressive and can introduce problems
     Then profile avoid PC set in data
+    Then profile preserve data spacing from 0x837d to 0xffff
+    # This the data spacing is needed, so we protect it
+    Then profile preserve data spacing from 0x0ac4 to 0x0ac8
     Then profile exclude branches not taken
     Then profile output never accessed as a 0 byte
     Then profile exclude memory range from 0xd400 to 0xd4ff
@@ -257,6 +262,7 @@ Feature:  Profile guided disassembly
     Given I enable trace with indent
 
     Given enable memory profiling
+    Given memory profile record writes from 0xd400 to 0xd4ff
 
     Given I set register A to 0x00
     When I execute the procedure at 0x1000 until return
@@ -266,11 +272,31 @@ Feature:  Profile guided disassembly
      # Stop music
     When I execute the procedure at 0x1006 until return
 
-#    Then include profile last access
-#    Then include profile index register type
-#    Then include profile index range
-#    Then include profile write hint
+    Then include profile last access
+    Then include profile index register type
+    Then include profile index range
+    Then include profile write hint
     Then include profile branch not taken
+    Then profile use fill instead of PC adjust
+    Then profile set PC adjust limit to 256 bytes
+    Then profile avoid PC set in code
+#    Then profile avoid PC adjust in code
+#    Then profile avoid PC adjust in data
+
     Then profile exclude memory range from 0xd400 to 0xd4ff
+    Then profile optimise labels
     Then output profile disassembly to file "target\temp2.a"
 
+    Given I have a simple overclocked 6502 system
+    And I run the command line: ..\C64\acme.exe --setpc $1000 --cpu 6502 -o test.prg --labeldump test.lbl -f cbm -v9 features\MinPlay_SID.a target\temp2.a
+    And I load prg "test.prg"
+    And I load labels "test.lbl"
+    Given enable memory profiling
+    Given memory profile record writes from 0xd400 to 0xd4ff
+    # Validates, per iteration, the recorded memory writes with the previous execution
+    Given enable memory profiling validation
+
+    Given I set register A to 0x00
+    When I execute the procedure at 0x1000 until return
+    When I execute the procedure at 0x1003 until return for 10000 iterations
+    When I execute the procedure at 0x1006 until return

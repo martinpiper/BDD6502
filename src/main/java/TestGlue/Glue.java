@@ -189,12 +189,19 @@ public class Glue {
         bprofileAvoidPCAdjustInCode = true;
     }
 
+    boolean bprofileAvoidPCAdjustInData = false;
+    @Then("^profile avoid PC adjust in data")
+    public void profileAvoidPCAdjustInData() {
+        bprofileAvoidPCAdjustInData = true;
+    }
+
     boolean bprofileAvoidPCSetInData = false;
     @Then("^profile avoid PC set in data$")
     public void profileAvoidPCSetInData() {
         bprofileAvoidPCSetInData = true;
     }
     boolean[] excludeProfileMemoryRange = new boolean[0x10000];
+    boolean[] preserveDataSpacingProfileMemoryRange = new boolean[0x10000];
     boolean[] profileFinalGenerateLabelHere = new boolean[0x10000];
     @Then("^output profile disassembly to file \"([^\"]*)\"$")
     public void outputProfileDisassemblyToFile(String arg0) throws Throwable {
@@ -339,8 +346,12 @@ public class Glue {
 
                 }
             }
-//            memoryAddressIsUsingIndexValue[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = r;
 
+            // Always include destination targets as labels
+            // TODO: Could be made an option
+            if ( (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_PCTarget) != 0) {
+                profileFinalGenerateLabelHere[i] = true;
+            }
         }
 
         for (int i = 0x100 ; i < cpu.memoryProfileFlags.length ; ) {
@@ -519,6 +530,11 @@ public class Glue {
 
             if (!line.isEmpty()) {
                 if (forcePC) {
+                    String prefix = "";
+                    if (bprofileAvoidPCAdjustInData && !preserveDataSpacingProfileMemoryRange[currentPC]) {
+                        prefix  = "; Excluded : Data spacing not preserved : ";
+                    }
+
                     profileFinalGenerateLabelHere[currentPC] = true;
                     int delta = currentPC - lastPCOutput;
                     if ((lastPCOutput != -1) && (delta <= bprofileSetPCAdjustLimitToBytes)) {
@@ -527,15 +543,15 @@ public class Glue {
                             } else {
                                 if (bprofileUseFillInsteadOfPCAdjust) {
                                     if (delta <= 9) {
-                                        lines.add("!fill " + delta);
+                                        lines.add(prefix + "!fill " + delta);
                                     } else {
-                                        lines.add("!fill $" + HexUtil.wordToHex(delta).toLowerCase().replaceFirst("^0+", ""));
+                                        lines.add(prefix + "!fill $" + HexUtil.wordToHex(delta).toLowerCase().replaceFirst("^0+", ""));
                                     }
                                 } else {
                                     if (delta <= 9) {
-                                        lines.add("* = * + " + delta);
+                                        lines.add(prefix + "* = * + " + delta);
                                     } else {
-                                        lines.add("* = * + $" + HexUtil.wordToHex(delta).toLowerCase().replaceFirst("^0+", ""));
+                                        lines.add(prefix + "* = * + $" + HexUtil.wordToHex(delta).toLowerCase().replaceFirst("^0+", ""));
                                     }
                                 }
                             }
@@ -544,7 +560,7 @@ public class Glue {
                         if (bprofileAvoidPCSetInCode && wasInstruction) {
                         } else if (bprofileAvoidPCSetInData && wasMemory) {
                         } else {
-                            lines.add("* = $" + HexUtil.wordToHex(currentPC).toLowerCase());
+                            lines.add(prefix + "* = $" + HexUtil.wordToHex(currentPC).toLowerCase());
                         }
                     }
                     forcePC = false;
@@ -589,6 +605,13 @@ public class Glue {
     public void profileExcludeMemoryRangeFromXdToXdFf(String arg0, String arg1) throws Exception {
         for (int i = valueToInt(arg0) ; i < valueToInt(arg1) ; i++) {
             excludeProfileMemoryRange[i] = true;
+        }
+    }
+
+    @Then("^profile preserve data spacing from (.+) to (.+)$")
+    public void profilePreserveDataSpacingFromXdToXdFf(String arg0, String arg1) throws Exception {
+        for (int i = valueToInt(arg0) ; i < valueToInt(arg1) ; i++) {
+            preserveDataSpacingProfileMemoryRange[i] = true;
         }
     }
 
