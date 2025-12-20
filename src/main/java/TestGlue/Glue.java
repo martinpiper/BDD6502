@@ -195,8 +195,51 @@ public class Glue {
         bprofileAvoidPCSetInData = true;
     }
     boolean[] excludeProfileMemoryRange = new boolean[0x10000];
+    boolean[] profileFinalGenerateLabelHere = new boolean[0x10000];
     @Then("^output profile disassembly to file \"([^\"]*)\"$")
     public void outputProfileDisassemblyToFile(String arg0) throws Throwable {
+        if (!bprofileOptimiseLabels) {
+            Arrays.fill(profileFinalGenerateLabelHere,true);
+        }
+        outputProfileDisassemblyToFileInternal(arg0);
+        // Second pass
+        if (bprofileOptimiseLabels) {
+            outputProfileDisassemblyToFileInternal(arg0);
+        }
+    }
+    void checkForLabel(String line) {
+        if (!bprofileOptimiseLabels) {
+            return;
+        }
+        line = line.trim();
+        int newLine = line.lastIndexOf(System.lineSeparator());
+        if (newLine != -1) {
+            line = line.substring(newLine);
+        }
+        line = line.trim();
+        int pos = line.lastIndexOf("label_");
+        // Ignore any starting line labels
+        if (pos <= 3) {
+            return;
+        }
+        int pos2 = line.indexOf(";");
+        if ((pos2 != -1) && (pos2 < pos)) {
+            return;
+        }
+        line = line.substring(pos+6);
+        line = line.replace(',' , ' ');
+        line = line.replace(')' , ' ');
+        line = line.replace('x' , ' ');
+        line = line.replace('y' , ' ');
+        line = line + "    ";
+        line = line.substring(0,4);
+        line = line.trim();
+
+        int address = Integer.parseInt(line , 16);
+        profileFinalGenerateLabelHere[address] = true;
+    }
+
+    public void outputProfileDisassemblyToFileInternal(String arg0) throws Throwable {
         boolean[] indirectRange = new boolean[0x10000];
         boolean[] injectLabel = new boolean[0x10000];
         Cpu cpu = machine.getCpu();
@@ -213,6 +256,7 @@ public class Glue {
                 }
             }
             if ((cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[i] == -1) && cpu.memoryProfileIndirectHi[i] >= 1 && cpu.memoryProfileIndirectLo[i] >= 1) {
+                profileFinalGenerateLabelHere[i + cpu.memoryProfileIndirectLo[i]] = true;
                 mapLabelsForIndirects.put("label_" + HexUtil.wordToHex(i).toLowerCase(), "label_" + HexUtil.wordToHex(i + cpu.memoryProfileIndirectLo[i]).toLowerCase() + " - " + cpu.memoryProfileIndirectLo[i] + " ; Table start skipped");
             }
         }
@@ -329,14 +373,17 @@ public class Glue {
                     }
                 }
                 if ( injectLabel[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_PCTarget | Cpu.kMemoryFlags_IndXZero | Cpu.kMemoryFlags_IndYZero)) != 0 ) {
-                    String theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
-                    line += theLabel;
-                    mapLabelsGenerated.add(theLabel);
-                    labelOut = true;
+                    if (profileFinalGenerateLabelHere[currentPC]) {
+                        String theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
+                        line += theLabel;
+                        mapLabelsGenerated.add(theLabel);
+                        labelOut = true;
+                    }
                 }
                 wasInstruction = true;
                 wasMemory = false;
                 line += "\t" + cpu.getCpuState().disassembleOpForAddress(cpu.memoryProfileLastOpcode[i] , i , cpu.memoryProfileLastLastArgsLo[i] , cpu.memoryProfileLastLastArgsHi[i] , "label_").toLowerCase();
+                checkForLabel(line);
 
                 if (cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i] != '\0') {
 //                    line += " ; Stored into low address with " + cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i];
@@ -434,14 +481,18 @@ public class Glue {
 
                 String theLabel = "";
                 if ( injectLabel[i] || (cpu.memoryProfileFlags[i] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write | Cpu.kMemoryFlags_IndXZero | Cpu.kMemoryFlags_IndYZero)) != 0) {
-                    theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
-                    mapLabelsGenerated.add(theLabel);
-                    line += theLabel;
+                    if (profileFinalGenerateLabelHere[currentPC]) {
+                        theLabel = "label_" + HexUtil.wordToHex(currentPC).toLowerCase();
+                        mapLabelsGenerated.add(theLabel);
+                        line += theLabel;
+                    }
                 }
                 if ( (memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] > 0) && (memoryAddressActualMemoryAddressForLowHighTable[i] > 0)) {
                     line += "\t!by <label_" + HexUtil.wordToHex(memoryAddressActualMemoryAddressForLowHighTable[i]).toLowerCase() + " ; Was $" + HexUtil.byteToHex(cpu.getBus().read(i)).toLowerCase();
+                    checkForLabel(line);
                 } else if ( (memoryAddressIsPotentiallyHighByteForOpcodeAddress[i] > 0) && (memoryAddressActualMemoryAddressForLowHighTable[i] > 0)) {
                     line += "\t!by >label_" + HexUtil.wordToHex(memoryAddressActualMemoryAddressForLowHighTable[i]).toLowerCase() + " ; Was $" + HexUtil.byteToHex(cpu.getBus().read(i)).toLowerCase();
+                    checkForLabel(line);
                 } else {
                     line += "\t!by $" + HexUtil.byteToHex(cpu.getBus().read(i)).toLowerCase();
                 }
@@ -468,6 +519,7 @@ public class Glue {
 
             if (!line.isEmpty()) {
                 if (forcePC) {
+                    profileFinalGenerateLabelHere[currentPC] = true;
                     int delta = currentPC - lastPCOutput;
                     if ((lastPCOutput != -1) && (delta <= bprofileSetPCAdjustLimitToBytes)) {
                         if (delta > 0) {
@@ -565,6 +617,12 @@ public class Glue {
     @Given("^enable memory profiling validation$")
     public void enableMemoryProfilingValidation() {
         benableMemoryProfilingValidation = true;
+    }
+
+    boolean bprofileOptimiseLabels = false;
+    @Then("^profile optimise labels$")
+    public void profileOptimiseLabels() {
+        bprofileOptimiseLabels = true;
     }
 
 
@@ -1533,6 +1591,11 @@ public class Glue {
             }
             try {
                 String hex = decorated.substring(pos + 1, pos + 5);
+                hex = hex.replace(')',' ');
+                hex = hex.replace(',',' ');
+                hex = hex.replace('x',' ');
+                hex = hex.replace('y',' ');
+                hex = hex.trim();
 
                 int testAddr = Integer.parseInt(hex, 16);
 
@@ -1651,6 +1714,7 @@ public class Glue {
             machine.getCpu().stackPush(0xff);
             machine.getCpu().stackPush(0xff);
             machine.getCpu().setProgramCounter(valueToInt(arg1));
+            profileFinalGenerateLabelHere[valueToInt(arg1)] = true;
         }
 
         int maxInstructions = 0;

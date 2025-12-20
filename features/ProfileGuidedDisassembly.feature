@@ -215,10 +215,10 @@ Feature:  Profile guided disassembly
     Given I disable trace
     When I execute the procedure at 0x93d until return for 10000 iterations
 
-    Then include profile last access
-    Then include profile index register type
-    Then include profile index range
-    Then include profile write hint
+#    Then include profile last access
+#    Then include profile index register type
+#    Then include profile index range
+#    Then include profile write hint
     Then include profile branch not taken
     Then profile use fill instead of PC adjust
     Then profile set PC adjust limit to 256 bytes
@@ -228,6 +228,7 @@ Feature:  Profile guided disassembly
     Then profile exclude branches not taken
     Then profile output never accessed as a 0 byte
     Then profile exclude memory range from 0xd400 to 0xd4ff
+    Then profile optimise labels
     Then output profile disassembly to file "target\temp.a"
 
     # Now validate the writes
