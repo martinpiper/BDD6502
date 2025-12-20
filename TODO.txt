@@ -383,13 +383,12 @@
 
 
 
-* @TC-23 : Quite obvious that label_10aa points of lo/hi addresses for code
-    Needs to be detected and output as such
-    * Lo/hi could be tagged by the jmp(
-
-
-
 * @TC-23: Only the low byte of the jmp( is modified
 	sta label_140c
     label_140b	jmp (label_10b6) ; Self modified parameters
     label_140c = label_140b + 1
+        memoryAddressIsPotentiallyLowByteForOpcodeAddress
+        memoryAddressActualMemoryAddressForLowHighTable
+    >> Will need: Then profile preserve code spacing from 0x1000 to 0x10ff
+        As well as data spacing for the same range...
+

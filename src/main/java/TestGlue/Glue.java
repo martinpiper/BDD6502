@@ -291,6 +291,16 @@ public class Glue {
                 continue;
             }
 
+            // Handle targets for jmp( that are not written to
+            if (cpu.memoryProfileIsLowAddressForOpcode[i] && cpu.memoryProfileIsHighAddressForOpcode[i+1]) {
+                if ((cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_Write) == 0 && (cpu.memoryProfileFlags[i+1] & Cpu.kMemoryFlags_Write) == 0) {
+                    memoryAddressActualMemoryAddressForLowHighTable[i] = i;
+                    memoryAddressActualMemoryAddressForLowHighTable[i+1] = i;
+                    memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] = i;
+                    memoryAddressIsPotentiallyHighByteForOpcodeAddress[i+1] = i;
+                }
+            }
+
             if (cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i] != '\0') {
                 for (int j = i - 1 ; j > i-6 ; j--) {
                     if (cpu.memoryProfileThisOpcodeLoadedInto[j] == cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i]) {

@@ -752,6 +752,12 @@ public class Cpu implements InstructionTable {
                     memoryProfileFlags[lo] |= kMemoryFlags_Read;
                     memoryProfileFlags[hi] |= kMemoryFlags_Read;
                     memoryProfileFlags[state.pc] |= kMemoryFlags_PCTarget;
+
+                    memoryProfileIsJmpJsrOpcode[state.lastPc] = true;
+                    memoryProfileIsLowAddressForOpcode[state.lastPc + 1] = true;
+                    memoryProfileIsHighAddressForOpcode[state.lastPc + 2] = true;
+                    memoryProfileIsLowAddressForOpcode[lo] = true;
+                    memoryProfileIsHighAddressForOpcode[hi] = true;
                 }
                 /* TODO: For accuracy, allow a flag to enable broken behavior of early 6502s:
                  *
