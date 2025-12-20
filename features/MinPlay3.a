@@ -1,0 +1,18 @@
+!source "features\MinPlay_SID.a"
+
+*=$c000
+!source "target\temp3.a"
+
+*=$cf80
+	sei
+	lda #0
+	jsr label_b000
+.l1
+	lda #200
+.l2
+	cmp $d012
+	bne .l2
+	inc $d020
+	jsr label_b059
+	dec $d020
+	jmp .l1

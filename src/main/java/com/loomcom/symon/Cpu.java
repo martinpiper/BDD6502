@@ -257,13 +257,17 @@ public class Cpu implements InstructionTable {
     public int[] memoryProfileIndirectLo = new int[0x10000];
     public int[] memoryProfileIndirectHi = new int[0x10000];
     public int[] memoryProfileTargetBranchAddress = new int[0x10000];
-    public int[] memoryProfileForJmpJsrAt = new int[0x10000];
+    public int[] memoryProfileForJmpJsrIndYAt = new int[0x10000];
     public boolean[] memoryProfileIsJmpJsrOpcode = new boolean[0x10000];
     public boolean[] memoryProfileIsLowAddressForOpcode = new boolean[0x10000];
     public boolean[] memoryProfileIsHighAddressForOpcode = new boolean[0x10000];
     public char[] memoryProfileThisOpcodeStoredIntoLowAddress = new char[0x10000];
     public char[] memoryProfileThisOpcodeStoredIntoHighAddress = new char[0x10000];
     public char[] memoryProfileThisOpcodeLoadedInto = new char[0x10000];
+
+    public boolean[] memoryProfileIsUsedMoreIndirectMemoryAccessLow = new boolean[0x100];
+    public boolean[] memoryProfileIsUsedMoreIndirectMemoryAccessHigh = new boolean[0x100];
+
 
     boolean memoryProfilingEnabled = false;
     public void setMemoryProfilingEnabled(boolean flag) {
@@ -416,6 +420,10 @@ public class Cpu implements InstructionTable {
                             memoryProfileLastAccessByInstructionAt[effectiveAddress] = state.lastPc;
                             memoryProfileIndirectLo[tmp] = Math.min(memoryProfileIndirectLo[tmp] , state.y);
                             memoryProfileIndirectHi[tmp] = Math.max(memoryProfileIndirectHi[tmp] , state.y);
+                            memoryProfileForJmpJsrIndYAt[state.args[0]] = state.lastPc;
+                            memoryProfileForJmpJsrIndYAt[state.args[0]+1] = state.lastPc;
+                            memoryProfileIsUsedMoreIndirectMemoryAccessLow[state.args[0]]= true;
+                            memoryProfileIsUsedMoreIndirectMemoryAccessHigh[state.args[0]+1]= true;
                         }
 
                         state.traceShouldShowReadAddress = true;
@@ -1211,11 +1219,22 @@ public class Cpu implements InstructionTable {
                 if ( (memoryProfileFlags[effectiveAddress] & kMemoryFlags_Write) != 0) {
                     if (memoryProfileIsLowAddressForOpcode[effectiveAddress] && memoryProfileIsJmpJsrOpcode[effectiveAddress-1]) {
                         memoryProfileThisOpcodeStoredIntoLowAddress[state.lastPc] = lastRegisterStoreUsed;
-                        memoryProfileForJmpJsrAt[state.lastPc] = effectiveAddress-1;
+                        memoryProfileForJmpJsrIndYAt[state.lastPc] = effectiveAddress-1;
                     }
                     if (memoryProfileIsHighAddressForOpcode[effectiveAddress] && memoryProfileIsJmpJsrOpcode[effectiveAddress-2]) {
                         memoryProfileThisOpcodeStoredIntoHighAddress[state.lastPc] = lastRegisterStoreUsed;
-                        memoryProfileForJmpJsrAt[state.lastPc] = effectiveAddress-2;
+                        memoryProfileForJmpJsrIndYAt[state.lastPc] = effectiveAddress-2;
+                    }
+                    // Check for (zp),y updates
+                    if (effectiveAddress <= 0xfe) {
+                        if (memoryProfileIsUsedMoreIndirectMemoryAccessLow[effectiveAddress] && memoryProfileIsUsedMoreIndirectMemoryAccessHigh[effectiveAddress+1]) {
+                            memoryProfileThisOpcodeStoredIntoLowAddress[state.lastPc] = lastRegisterStoreUsed;
+                            memoryProfileForJmpJsrIndYAt[state.lastPc] = effectiveAddress;
+                        }
+                        if (memoryProfileIsUsedMoreIndirectMemoryAccessHigh[effectiveAddress] && memoryProfileIsUsedMoreIndirectMemoryAccessLow[effectiveAddress-1]) {
+                            memoryProfileThisOpcodeStoredIntoHighAddress[state.lastPc] = lastRegisterStoreUsed;
+                            memoryProfileForJmpJsrIndYAt[state.lastPc] = effectiveAddress-1;
+                        }
                     }
                 }
             }

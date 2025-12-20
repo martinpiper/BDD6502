@@ -308,7 +308,7 @@ public class Glue {
                         if (cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] != -1) {
                             if (cpu.memoryProfileIndirectHi[j] != -1) {
                                 for (int r = cpu.memoryProfileIndirectLo[j] ; r <= cpu.memoryProfileIndirectHi[j] ; r++) {
-                                    memoryAddressIsPotentiallyLowByteForOpcodeAddress[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = cpu.memoryProfileForJmpJsrAt[i];
+                                    memoryAddressIsPotentiallyLowByteForOpcodeAddress[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = cpu.memoryProfileForJmpJsrIndYAt[i];
                                     memoryAddressIsUsingIndexValue[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = r;
                                 }
                             }
@@ -322,7 +322,7 @@ public class Glue {
                         if (cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] != -1) {
                             if (cpu.memoryProfileIndirectHi[j] != -1) {
                                 for (int r = cpu.memoryProfileIndirectLo[j] ; r <= cpu.memoryProfileIndirectHi[j] ; r++) {
-                                    memoryAddressIsPotentiallyHighByteForOpcodeAddress[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = cpu.memoryProfileForJmpJsrAt[i];
+                                    memoryAddressIsPotentiallyHighByteForOpcodeAddress[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = cpu.memoryProfileForJmpJsrIndYAt[i];
                                     memoryAddressIsUsingIndexValue[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = r;
                                 }
                             }
@@ -419,9 +419,9 @@ public class Glue {
                         line += " ; Branch not taken";
                     }
                     if (bprofileExcludeBranchesNotTaken) {
-                        line = " ; Excluded: " + line;
+                        line = "; Excluded: " + line;
                     }
-                    }
+                }
                 boolean selfModified = false;
                 for (int opLen = 1 ; opLen < cpu.memoryProfileLastOpcodeLength[i]; opLen++) {
                     if ((cpu.memoryProfileFlags[i + opLen] & Cpu.kMemoryFlags_Write) != 0) {

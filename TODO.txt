@@ -387,3 +387,7 @@
 	sta label_140c
     label_140b	jmp (label_10b6) ; Self modified parameters
     label_140c = label_140b + 1
+
+
+
+* @TC-24 label_b4e7 label_b4ea second element for label_b4ea is pointing to the wrong > label

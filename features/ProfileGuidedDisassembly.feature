@@ -257,7 +257,7 @@ Feature:  Profile guided disassembly
   Scenario: Complex binary only profile guided disassembly 2
     Given I have a simple overclocked 6502 system
 
-    And I load prg "c:\temp\mus1000.prg"
+    And I load prg "testdata\mus1000.prg"
 
     Given I enable trace with indent
 
@@ -272,10 +272,10 @@ Feature:  Profile guided disassembly
      # Stop music
     When I execute the procedure at 0x1006 until return
 
-    Then include profile last access
-    Then include profile index register type
-    Then include profile index range
-    Then include profile write hint
+#    Then include profile last access
+#    Then include profile index register type
+#    Then include profile index range
+#    Then include profile write hint
     Then include profile branch not taken
     Then profile use fill instead of PC adjust
     Then profile set PC adjust limit to 256 bytes
@@ -299,6 +299,60 @@ Feature:  Profile guided disassembly
     Given enable memory profiling validation
 
     Given I set register A to 0x00
-    When I execute the procedure at 0x1000 until return
-    When I execute the procedure at 0x1003 until return for 10000 iterations
-    When I execute the procedure at 0x1006 until return
+    When I execute the procedure at label_1000 until return
+    When I execute the procedure at label_1003 until return for 10000 iterations
+    When I execute the procedure at label_1006 until return
+
+
+
+  @ignore @TC-24
+  Scenario: Complex binary only profile guided disassembly
+    Given I have a simple overclocked 6502 system
+
+    And I load prg "testdata\mwmusb000_b059.prg"
+
+    Given I enable trace with indent
+
+    Given enable memory profiling
+    Given memory profile record writes from 0xd400 to 0xd4ff
+
+
+    Given I set register A to 0x00
+    When I execute the procedure at 0xb000 until return
+
+    Given I disable trace
+    When I execute the procedure at 0xb059 until return for 10000 iterations
+
+#    Then include profile last access
+#    Then include profile index register type
+#    Then include profile index range
+#    Then include profile write hint
+    Then include profile branch not taken
+    Then profile use fill instead of PC adjust
+    Then profile set PC adjust limit to 256 bytes
+    Then profile avoid PC set in code
+#    Then profile avoid PC adjust in code
+#    Then profile avoid PC adjust in data
+    # Removing spaces in data is quite aggressive and can introduce problems
+#    Then profile avoid PC set in data
+#    Then profile preserve data spacing from 0x837d to 0xffff
+#    Then profile exclude branches not taken
+    Then profile output never accessed as a 0 byte
+    Then profile exclude memory range from 0xd400 to 0xd4ff
+    Then profile optimise labels
+    Then output profile disassembly to file "target\temp3.a"
+
+    # Now validate the writes
+    Given I have a simple overclocked 6502 system
+    And I run the command line: ..\C64\acme.exe --setpc $b000 -o test.prg --labeldump test.lbl -f cbm -v9 features\MinPlay_SID.a target\temp3.a
+    And I load prg "test.prg"
+    And I load labels "test.lbl"
+    Given enable memory profiling
+    Given memory profile record writes from 0xd400 to 0xd4ff
+    # Validates, per iteration, the recorded memory writes with the previous execution
+    Given enable memory profiling validation
+    Given I set register A to 0x00
+    When I execute the procedure at label_b000 until return
+    When I execute the procedure at label_b059 until return for 10000 iterations
+
+    # cls && c:\work\c64\acme.exe --cpu 6502 -o c:\temp\t.prg --labeldump test.lbl -f cbm -v9 features\MinPlay3.a && c:\work\c64\bin\LZMPi.exe -pp $35 -c64mbu c:\temp\t.prg c:\temp\tcmp.prg $cf80 && c:\temp\tcmp.prg

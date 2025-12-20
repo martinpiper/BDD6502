@@ -10,8 +10,7 @@
       <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/ProfileGuidedDisassembly.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/ProfileGuidedDisassembly.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -391,6 +390,14 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags @TC-23 --tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/ProfileGuidedDisassembly.feature" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner ProfileGuidedDisassembly.feature @TC-24" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @TC-24 --tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/ProfileGuidedDisassembly.feature" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -1155,6 +1162,7 @@
       <item itemvalue="Application.TestRunner ProfileGuidedDisassembly.feature @TC-21" />
       <item itemvalue="Application.TestRunner ProfileGuidedDisassembly.feature @TC-22" />
       <item itemvalue="Application.TestRunner ProfileGuidedDisassembly.feature @TC-23" />
+      <item itemvalue="Application.TestRunner ProfileGuidedDisassembly.feature @TC-24" />
       <item itemvalue="Application.TestRunner C64WithNewUserPort20to32Bit1.feature" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
@@ -1289,7 +1297,13 @@
       </configuration>
       <configuration name="Application">
         <watch expression="machine.getCpu()" language="JAVA" />
-        <watch expression="line" language="JAVA" />
+        <watch expression="cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i]" language="JAVA" />
+        <watch expression="cpu.memoryProfileThisOpcodeLoadedInto[j]" language="JAVA" />
+        <watch expression="i" language="JAVA" />
+        <watch expression="j" language="JAVA" />
+        <watch expression="cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j]" language="JAVA" />
+        <watch expression="cpu.memoryProfileIndirectHi[j]" language="JAVA" />
+        <watch expression="cpu.memoryProfileForJmpJsrIndYAt[i]" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>
