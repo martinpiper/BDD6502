@@ -285,163 +285,10 @@ public class Glue {
         int[] memoryAddressIsUsingIndexValue = new int[0x10000];
         int[] memoryAddressActualMemoryAddressForLowHighTable = new int[0x10000];
 
-        for (int i = 0x100 ; i < cpu.memoryProfileFlags.length ; i++) {
-            if (excludeProfileMemoryRange[i]) {
-                continue;
-            }
-
-            // Handle targets for jmp( that are not written to
-            if (cpu.memoryProfileIsLowAddressForOpcode[i] && cpu.memoryProfileIsHighAddressForOpcode[i+1]) {
-                if ((cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_Write) == 0 && (cpu.memoryProfileFlags[i+1] & Cpu.kMemoryFlags_Write) == 0) {
-                    memoryAddressActualMemoryAddressForLowHighTable[i] = i;
-                    memoryAddressActualMemoryAddressForLowHighTable[i+1] = i;
-                    memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] = i;
-                    memoryAddressIsPotentiallyHighByteForOpcodeAddress[i+1] = i;
-                }
-            }
-
-            // Handle (zp),y
-            if (cpu.memoryProfileIsIndirectYInstructionForZPAddress[i] > 0) {
-                int gotlowZPAddessSourceAddress = -1;
-                int gothighZPAddessSourceAddress = -1;
-                // Look for recent stores into the zp or zp+1
-                int zpAddr = cpu.memoryProfileIsIndirectYInstructionForZPAddress[i];
-                for (int j = i - 1 ; j > i-20 ; j--) {
-                    if (cpu.memoryProfileStoredAddress[j] == zpAddr) {
-                        char targetRegister = cpu.memoryProfileStoredAddressWithRegister[j];
-                        for (;j > i-20 ; j--) {
-                            // Look back for any load, with the register
-                            if (cpu.memoryProfileThisOpcodeLoadedInto[j] == targetRegister) {
-                                gotlowZPAddessSourceAddress = cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j];
-                                break;
-                            }
-                        }
-                    }
-                    if (gotlowZPAddessSourceAddress != -1) {
-                        break;
-                    }
-                }
-                if (gotlowZPAddessSourceAddress > 0) {
-                    for (int j = i - 1 ; j > i-20 ; j--) {
-                        if (cpu.memoryProfileStoredAddress[j] == zpAddr+1) {
-                            char targetRegister = cpu.memoryProfileStoredAddressWithRegister[j];
-                            for (;j > i-20 ; j--) {
-                                // Look back for any load, with the register
-                                if (cpu.memoryProfileThisOpcodeLoadedInto[j] == targetRegister) {
-                                    gothighZPAddessSourceAddress = cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j];
-                                    break;
-                                }
-                            }
-                        }
-                        if (gothighZPAddessSourceAddress != -1) {
-                            break;
-                        }
-                    }
-                }
-                if (gotlowZPAddessSourceAddress > 0 && gothighZPAddessSourceAddress > 0) {
-/*
-                    if (cpu.memoryProfileIndirectHi[gotlowZPAddessSourceAddress] != -1) {
-                        for (int r = cpu.memoryProfileIndirectLo[gotlowZPAddessSourceAddress] ; r <= cpu.memoryProfileIndirectHi[gotlowZPAddessSourceAddress] ; r++) {
-                            int address = cpu.getBus().read(gotlowZPAddessSourceAddress + r) | (cpu.getBus().read(gothighZPAddessSourceAddress + r) << 8);
-                            if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
-                                memoryAddressActualMemoryAddressForLowHighTable[gotlowZPAddessSourceAddress + r] = address;
-                                memoryAddressActualMemoryAddressForLowHighTable[gothighZPAddessSourceAddress + r] = address;
-                                memoryAddressIsPotentiallyLowByteForOpcodeAddress[gotlowZPAddessSourceAddress + r] = i;
-                                memoryAddressIsPotentiallyHighByteForOpcodeAddress[gothighZPAddessSourceAddress + r] = i;
-                                memoryAddressIsUsingIndexValue[gotlowZPAddessSourceAddress + r] = r;
-                                memoryAddressIsUsingIndexValue[gothighZPAddessSourceAddress + r] = r;
-                                injectLabel[address] = true;    // Ensure a label
-                            }
-                        }
-                    }
-*/
-                    if (cpu.memoryProfileIndirectHi[gotlowZPAddessSourceAddress] != -1) {
-                        for (int r = cpu.memoryProfileIndirectLo[gotlowZPAddessSourceAddress] ; r <= cpu.memoryProfileIndirectHi[gotlowZPAddessSourceAddress] ; r++) {
-                            int address = cpu.getBus().read(gotlowZPAddessSourceAddress + r) | (cpu.getBus().read(gothighZPAddessSourceAddress + r) << 8);
-                            if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
-                                memoryAddressIsPotentiallyLowByteForOpcodeAddress[gotlowZPAddessSourceAddress + r] = i;
-                                memoryAddressIsUsingIndexValue[gotlowZPAddessSourceAddress + r] = r;
-                            }
-                        }
-                    }
-                    if (cpu.memoryProfileIndirectHi[gothighZPAddessSourceAddress] != -1) {
-                        for (int r = cpu.memoryProfileIndirectLo[gothighZPAddessSourceAddress] ; r <= cpu.memoryProfileIndirectHi[gothighZPAddessSourceAddress] ; r++) {
-                            int address = cpu.getBus().read(gotlowZPAddessSourceAddress + r) | (cpu.getBus().read(gothighZPAddessSourceAddress + r) << 8);
-                            if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
-                                memoryAddressIsPotentiallyHighByteForOpcodeAddress[gothighZPAddessSourceAddress + r] = i;
-                                memoryAddressIsUsingIndexValue[gothighZPAddessSourceAddress + r] = r;
-                            }
-                        }
-                    }
-
-                    break;
-                }
-            }
-
-
-            if (cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i] != '\0') {
-                for (int j = i - 1 ; j > i-16 ; j--) {
-                    if (cpu.memoryProfileThisOpcodeLoadedInto[j] == cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i]) {
-                        if (cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] != -1) {
-                            if (cpu.memoryProfileIndirectHi[j] != -1) {
-                                for (int r = cpu.memoryProfileIndirectLo[j] ; r <= cpu.memoryProfileIndirectHi[j] ; r++) {
-                                    memoryAddressIsPotentiallyLowByteForOpcodeAddress[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = cpu.memoryProfileForJmpJsrIndYAt[i];
-                                    memoryAddressIsUsingIndexValue[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = r;
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (cpu.memoryProfileThisOpcodeStoredIntoHighAddress[i] != '\0') {
-                for (int j = i - 1 ; j > i-16 ; j--) {
-                    if (cpu.memoryProfileThisOpcodeLoadedInto[j] == cpu.memoryProfileThisOpcodeStoredIntoHighAddress[i]) {
-                        if (cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] != -1) {
-                            if (cpu.memoryProfileIndirectHi[j] != -1) {
-                                for (int r = cpu.memoryProfileIndirectLo[j] ; r <= cpu.memoryProfileIndirectHi[j] ; r++) {
-                                    memoryAddressIsPotentiallyHighByteForOpcodeAddress[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = cpu.memoryProfileForJmpJsrIndYAt[i];
-                                    memoryAddressIsUsingIndexValue[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = r;
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Now scan and calculate actual memory addresses for low/high tables
-        for (int i = 0x100 ; i < cpu.memoryProfileFlags.length ; i++) {
-            if (excludeProfileMemoryRange[i]) {
-                continue;
-            }
-
-            if (memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] > 0) {
-                for (int j = 0x100; j < cpu.memoryProfileFlags.length; j++) {
-                    if (excludeProfileMemoryRange[j]) {
-                        continue;
-                    }
-
-                    if (memoryAddressIsPotentiallyHighByteForOpcodeAddress[j] == memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] ) {
-                        if (memoryAddressIsUsingIndexValue[j] == memoryAddressIsUsingIndexValue[i] ) {
-                            int address = cpu.getBus().read(i) | (cpu.getBus().read(j) << 8);
-                            if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
-                                memoryAddressActualMemoryAddressForLowHighTable[i] = address;
-                                memoryAddressActualMemoryAddressForLowHighTable[j] = address;
-                                injectLabel[address] = true;    // Ensure a label
-                            }
-                        }
-                    }
-
-                }
-            }
-
-            // Always include destination targets as labels
-            // TODO: Could be made an option
-            if ( (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_PCTarget) != 0) {
-                profileFinalGenerateLabelHere[i] = true;
-            }
+        int resolveSteps = 0;
+        while (resolveSteps < 10 && resolveAnyTableLowHighAreas(cpu, memoryAddressActualMemoryAddressForLowHighTable, memoryAddressIsPotentiallyLowByteForOpcodeAddress, memoryAddressIsPotentiallyHighByteForOpcodeAddress, memoryAddressIsUsingIndexValue, injectLabel))
+        {
+            resolveSteps++;
         }
 
         boolean wasInstruction = false;
@@ -696,6 +543,212 @@ public class Glue {
             pw.println(line);
         }
         writer.close();
+    }
+
+    private boolean resolveAnyTableLowHighAreas(Cpu cpu, int[] memoryAddressActualMemoryAddressForLowHighTable, int[] memoryAddressIsPotentiallyLowByteForOpcodeAddress, int[] memoryAddressIsPotentiallyHighByteForOpcodeAddress, int[] memoryAddressIsUsingIndexValue, boolean[] injectLabel) throws MemoryAccessException {
+        boolean added = false;
+        for (int i = 0x100; i < cpu.memoryProfileFlags.length ; i++) {
+            if (excludeProfileMemoryRange[i]) {
+                continue;
+            }
+
+            char targetRegister = cpu.memoryProfileStoredAddressWithRegister[i];
+            int targetAddress = cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[i];
+            // Handle stores to a low/high table entry that come from another memory location
+            if ((targetRegister != '\0') && (targetAddress > 0) && (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_ExecuteStartOp) != 0 && memoryAddressActualMemoryAddressForLowHighTable[targetAddress] > 0) {
+                // It is a store into a known low/high table...
+                if (targetRegister != '\0') {
+                    for (int j = i-1;j > i-20 ; j--) {
+                        // Look back for any load, with the register
+                        if (cpu.memoryProfileThisOpcodeLoadedInto[j] == targetRegister) {
+                            if (memoryAddressActualMemoryAddressForLowHighTable[j] <= 0) {
+                                int gotAddress = cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j];
+                                if (gotAddress > 0) {
+                                    if (cpu.memoryProfileIndirectHi[j] != -1 && cpu.memoryProfileIndirectHi[i] != -1) {
+                                        int startTargetIndex = cpu.memoryProfileIndirectLo[i];
+                                        for (int r = cpu.memoryProfileIndirectLo[j]; r <= cpu.memoryProfileIndirectHi[j] ; r++) {
+//                                            int address = cpu.getBus().read(gotAddress + r) | (cpu.getBus().read(gotAddress + r) << 8);
+                                            int address = gotAddress + r;
+                                            if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
+                                                if ((cpu.memoryProfileFlags[targetAddress + startTargetIndex] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
+                                                    // Set the opcode to be the other source opcode for matching purposes
+                                                    if (memoryAddressIsPotentiallyLowByteForOpcodeAddress[targetAddress + startTargetIndex] > 0) {
+                                                        memoryAddressIsPotentiallyLowByteForOpcodeAddress[address] = j;
+                                                    }
+                                                    if (memoryAddressIsPotentiallyHighByteForOpcodeAddress[targetAddress + startTargetIndex] > 0) {
+                                                        memoryAddressIsPotentiallyHighByteForOpcodeAddress[address] = j;
+                                                    }
+                                                    // And copy the indexed used pairs
+                                                    memoryAddressIsUsingIndexValue[address] = memoryAddressIsUsingIndexValue[targetAddress + startTargetIndex];
+                                                    added = true;
+                                                }
+                                            }
+                                            startTargetIndex++;
+                                        }
+                                    }
+                                }
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            if (memoryAddressActualMemoryAddressForLowHighTable[i] > 0) {
+                continue;
+            }
+
+            // Handle targets for jmp( that are not written to
+            if (cpu.memoryProfileIsLowAddressForOpcode[i] && cpu.memoryProfileIsHighAddressForOpcode[i+1]) {
+                if ((cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_Write) == 0 && (cpu.memoryProfileFlags[i+1] & Cpu.kMemoryFlags_Write) == 0) {
+                    memoryAddressActualMemoryAddressForLowHighTable[i] = i;
+                    memoryAddressActualMemoryAddressForLowHighTable[i+1] = i;
+                    memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] = i;
+                    memoryAddressIsPotentiallyHighByteForOpcodeAddress[i+1] = i;
+                    added = true;
+                }
+            }
+
+            // Handle (zp),y
+            if (cpu.memoryProfileIsIndirectYInstructionForZPAddress[i] > 0) {
+                int gotlowZPAddessSourceAddress = -1;
+                int gothighZPAddessSourceAddress = -1;
+                // Look for recent stores into the zp or zp+1
+                int zpAddr = cpu.memoryProfileIsIndirectYInstructionForZPAddress[i];
+                for (int j = i - 1 ; j > i-20 ; j--) {
+                    if (cpu.memoryProfileStoredAddress[j] == zpAddr) {
+                        targetRegister = cpu.memoryProfileStoredAddressWithRegister[j];
+                        for (;j > i-20 ; j--) {
+                            // Look back for any load, with the register
+                            if (cpu.memoryProfileThisOpcodeLoadedInto[j] == targetRegister) {
+                                gotlowZPAddessSourceAddress = cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j];
+                                break;
+                            }
+                        }
+                    }
+                    if (gotlowZPAddessSourceAddress != -1) {
+                        break;
+                    }
+                }
+                if (gotlowZPAddessSourceAddress > 0) {
+                    for (int j = i - 1 ; j > i-20 ; j--) {
+                        if (cpu.memoryProfileStoredAddress[j] == zpAddr+1) {
+                            targetRegister = cpu.memoryProfileStoredAddressWithRegister[j];
+                            for (;j > i-20 ; j--) {
+                                // Look back for any load, with the register
+                                if (cpu.memoryProfileThisOpcodeLoadedInto[j] == targetRegister) {
+                                    gothighZPAddessSourceAddress = cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j];
+                                    break;
+                                }
+                            }
+                        }
+                        if (gothighZPAddessSourceAddress != -1) {
+                            break;
+                        }
+                    }
+                }
+                if (gotlowZPAddessSourceAddress > 0 && gothighZPAddessSourceAddress > 0) {
+                    if (memoryAddressActualMemoryAddressForLowHighTable[gotlowZPAddessSourceAddress] > 0) {
+                        continue;
+                    }
+                    if (memoryAddressActualMemoryAddressForLowHighTable[gothighZPAddessSourceAddress] > 0) {
+                        continue;
+                    }
+
+                    if (cpu.memoryProfileIndirectHi[gotlowZPAddessSourceAddress] != -1) {
+                        for (int r = cpu.memoryProfileIndirectLo[gotlowZPAddessSourceAddress]; r <= cpu.memoryProfileIndirectHi[gotlowZPAddessSourceAddress] ; r++) {
+                            int address = cpu.getBus().read(gotlowZPAddessSourceAddress + r) | (cpu.getBus().read(gothighZPAddessSourceAddress + r) << 8);
+                            if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
+                                memoryAddressIsPotentiallyLowByteForOpcodeAddress[gotlowZPAddessSourceAddress + r] = i;
+                                memoryAddressIsUsingIndexValue[gotlowZPAddessSourceAddress + r] = r;
+                                added = true;
+                            }
+                        }
+                    }
+                    if (cpu.memoryProfileIndirectHi[gothighZPAddessSourceAddress] != -1) {
+                        for (int r = cpu.memoryProfileIndirectLo[gothighZPAddessSourceAddress]; r <= cpu.memoryProfileIndirectHi[gothighZPAddessSourceAddress] ; r++) {
+                            int address = cpu.getBus().read(gotlowZPAddessSourceAddress + r) | (cpu.getBus().read(gothighZPAddessSourceAddress + r) << 8);
+                            if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
+                                memoryAddressIsPotentiallyHighByteForOpcodeAddress[gothighZPAddessSourceAddress + r] = i;
+                                memoryAddressIsUsingIndexValue[gothighZPAddessSourceAddress + r] = r;
+                                added = true;
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }
+
+
+            if (cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i] != '\0') {
+                for (int j = i - 1 ; j > i-16 ; j--) {
+                    if (cpu.memoryProfileThisOpcodeLoadedInto[j] == cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i]) {
+                        if (cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] != -1) {
+                            if (cpu.memoryProfileIndirectHi[j] != -1) {
+                                for (int r = cpu.memoryProfileIndirectLo[j]; r <= cpu.memoryProfileIndirectHi[j] ; r++) {
+                                    memoryAddressIsPotentiallyLowByteForOpcodeAddress[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = cpu.memoryProfileForJmpJsrIndYAt[i];
+                                    memoryAddressIsUsingIndexValue[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = r;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (cpu.memoryProfileThisOpcodeStoredIntoHighAddress[i] != '\0') {
+                for (int j = i - 1 ; j > i-16 ; j--) {
+                    if (cpu.memoryProfileThisOpcodeLoadedInto[j] == cpu.memoryProfileThisOpcodeStoredIntoHighAddress[i]) {
+                        if (cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] != -1) {
+                            if (cpu.memoryProfileIndirectHi[j] != -1) {
+                                for (int r = cpu.memoryProfileIndirectLo[j]; r <= cpu.memoryProfileIndirectHi[j] ; r++) {
+                                    memoryAddressIsPotentiallyHighByteForOpcodeAddress[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = cpu.memoryProfileForJmpJsrIndYAt[i];
+                                    memoryAddressIsUsingIndexValue[cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j] + r] = r;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Now scan and calculate actual memory addresses for low/high tables
+        for (int i = 0x100; i < cpu.memoryProfileFlags.length ; i++) {
+            if (excludeProfileMemoryRange[i]) {
+                continue;
+            }
+
+            if (memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] > 0) {
+                for (int j = 0x100; j < cpu.memoryProfileFlags.length; j++) {
+                    if (excludeProfileMemoryRange[j]) {
+                        continue;
+                    }
+
+                    if (memoryAddressIsPotentiallyHighByteForOpcodeAddress[j] == memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] ) {
+                        if (memoryAddressIsUsingIndexValue[j] == memoryAddressIsUsingIndexValue[i] ) {
+                            int address = cpu.getBus().read(i) | (cpu.getBus().read(j) << 8);
+                            if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
+                                memoryAddressActualMemoryAddressForLowHighTable[i] = address;
+                                memoryAddressActualMemoryAddressForLowHighTable[j] = address;
+                                injectLabel[address] = true;    // Ensure a label
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            // Always include destination targets as labels
+            // TODO: Could be made an option
+            if ( (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_PCTarget) != 0) {
+                profileFinalGenerateLabelHere[i] = true;
+            }
+        }
+
+        return added;
     }
 
     boolean bincludeIndexRegisterType = false;
