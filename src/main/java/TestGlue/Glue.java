@@ -734,6 +734,8 @@ public class Glue {
                                 memoryAddressActualMemoryAddressForLowHighTable[i] = address;
                                 memoryAddressActualMemoryAddressForLowHighTable[j] = address;
                                 injectLabel[address] = true;    // Ensure a label
+                                // Debug
+//                                System.out.println("Decision " + HexUtil.wordToHex(i) + " " + HexUtil.wordToHex(j) + " " + memoryAddressIsUsingIndexValue[i] + " opcode " + HexUtil.wordToHex(memoryAddressIsPotentiallyLowByteForOpcodeAddress[i]));
                             }
                         }
                     }

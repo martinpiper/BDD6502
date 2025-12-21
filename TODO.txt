@@ -391,3 +391,12 @@
 
 
 * // TODO: Make config option, default off
+
+
+
+* @TC-24 label_b71e => label_b71d label_b766 is not recognised as a low/high table
+    Opcode at $b0dc
+    >> If "for (;j > i-20 ; j--) {" uses -30 then label_b71e/label_b767 is now low/high, but B715/B718 is now missing?!
+    Decision B715 B718 0 opcode B006
+    Decision B716 B719 1 opcode B006
+    Decision B717 B71A 2 opcode B006
