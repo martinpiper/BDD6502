@@ -1,0 +1,1567 @@
+label_0b2d = label_0b5d - 48 ; Table start skipped
+label_fc = $fc
+label_fd = $fd
+label_fe = $fe
+label_ff = $ff
+label_a9 = $a9
+label_0b2e = label_0b5e - 48 ; Table start skipped
+label_0400	!by $01
+label_0401	inc label_0a1d
+	lda label_0a1d
+	cmp label_0a1c
+; Excluded: 	bcc label_0411 ; Branch not taken
+	lda #$00
+	sta label_0a1d
+label_0411	clc
+	lda label_0adf
+	adc label_0a39
+	sta label_0adf
+	cmp #$08
+	bcc label_0425
+	and #$07
+	sta label_0adf
+	sec
+label_0425	lda label_0ae0
+	adc label_0a3a
+	sta label_0ae0
+	ldx #$02
+label_0430	ldy label_0ac0,x
+	sty label_fe
+	clc
+	lda label_0a63,x
+	adc #$01
+	cmp label_0a36,x
+	bcc label_0454
+	inc label_0a66,x
+	clc
+	lda label_0a54,x
+	adc #$01
+	cmp #$03
+	bcc label_044f
+	lda #$00
+label_044f	sta label_0a54,x
+	lda #$00
+label_0454	sta label_0a63,x
+	lda label_0abd,x
+	sta label_fc
+	lda label_0aba,x
+	sta label_fd
+	lda label_0a1d
+; Excluded: 	bne label_04a1 ; Branch not taken
+	inc label_0a48,x
+	lda label_0a6c,x
+	cmp #$ff
+; Excluded: 	beq label_047b ; Branch not taken
+	cmp #$00
+	bne label_04a1
+	lda label_0ab7,x
+	cmp #$01
+	bne label_04a1
+label_047b	ldy #$00
+	sec
+	lda (label_fc),y
+	sbc #$01
+	cmp #$25
+	bcs label_04a1
+	tay
+	lda label_0ae3,y
+	sta label_049a
+	lda label_0b08,y
+	sta label_049b
+	ldy #$01
+	lda (label_fc),y
+	ldy label_fe
+label_0499	jsr label_07c8 ; Self modified parameters
+label_049a = label_0499 + 1
+label_049b = label_0499 + 2
+
+label_049c	jsr label_08c2
+label_049f	bne label_047b
+label_04a1	ldy label_fe
+	lda label_0a24,x
+	beq label_050e
+	lda label_0a3c,x
+	beq label_04bb
+	lda label_0a48,x
+	cmp label_0a45,x
+; Excluded: 	bcc label_04bb ; Branch not taken
+	lda label_0a3c,x
+	jsr label_082f
+label_04bb	lda label_0a4b,x
+	beq label_04c3
+label_04c3	lda label_0a30,x
+	beq label_04fe
+	cmp #$06
+	bcc label_04dc
+label_04dc	lda label_0a48,x
+	cmp #$01
+; Excluded: 	bcc label_04f6 ; Branch not taken
+	lda label_0a33,x
+	beq label_04ed
+	cmp label_0a48,x
+	bcc label_04f6
+label_04ed	lda label_0a30,x
+	tay
+	lda label_0ac4,y
+	bne label_04f9
+label_04f6	lda label_0a27,x
+label_04f9	ldy label_fe
+	sta label_0ace,y
+label_04fe	lda label_0a2d,x
+	beq label_0506
+label_0506	lda label_0a93,x
+; Excluded: 	beq label_050e ; Branch not taken
+	jsr label_06e5
+label_050e	lda label_0a1d
+; Excluded: 	bne label_0516 ; Branch not taken
+	jsr label_0526
+label_0516	lda label_fc
+	sta label_0abd,x
+	lda label_fd
+	sta label_0aba,x
+	dex
+	bmi label_054b
+	jmp label_0430
+label_0526	lda label_0ab7,x
+	sec
+	sbc #$01
+	sta label_0ab7,x
+	bcs label_0534
+	dec label_0a6c,x
+label_0534	lda label_0a6c,x
+	bne label_054b
+	lda label_0ab7,x
+	beq label_054c
+	cmp label_0a2a,x
+	bcs label_054b
+	lda label_0ace,y
+	and #$fe
+	sta label_0ace,y
+label_054b	rts
+label_054c	sta label_0acc,y
+	sta label_0a48,x
+	sta label_0a6f,x
+	sta label_0a75,x
+	sta label_0a72,x
+	sta label_0a63,x
+	sta label_0a66,x
+	sta label_0a54,x
+	cpx label_0a1b
+	bne label_0572
+	sta label_0adf
+	lda label_0a3b
+	sta label_0ae0
+label_0572	lda label_0a90,x
+	sta label_0acf,y
+	lda label_0a87,x
+	sta label_0ad0,y
+	lda label_0a8d,x
+	sta label_0acd,y
+	lda label_0a51,x
+	sta label_0a4e,x
+	ldy #$00
+	lda (label_fc),y
+	sta label_0a24,x
+	beq label_05b4
+	sta label_ff
+	lda label_0a5a,x
+	beq label_05a4
+label_05a4	lda label_0a57,x
+	beq label_05af
+label_05af	lda label_ff
+	jsr label_0813
+label_05b4	pha
+	tya
+	ldy label_fe
+	sta label_0acb,y
+	sta label_0a21,x
+	pla
+	sta label_0aca,y
+	sta label_0a1e,x
+	ldy #$01
+	lda (label_fc),y
+	ldy label_fe
+	sta label_0ab7,x
+	jsr label_08c2
+label_05d1	lda label_0a8a,x
+	sta label_0ace,y
+	sta label_0a27,x
+	ldy #$00
+	lda (label_fc),y
+	cmp #$19
+	bne label_05eb
+	iny
+	lda (label_fc),y
+	pha
+	jsr label_08c2
+label_05e9	pla
+; Opcode multiple entry code : 	bit label_00a9
+label_05ea	!by $2c
+label_05eb	!by $a9
+label_05ec	!by $00
+
+	sta label_0a6c,x
+	rts
+label_05f1	lda #$00
+	ldy #$9b
+label_05f5	sta label_0a1a,y
+	dey
+	bne label_05f5
+	ldy #$02
+label_05fd	lda #$02
+	sta label_0a2a,y
+	lda #$00
+	sta label_0a6c,y
+	lda #$01
+	sta label_0ab7,y
+	sta label_0ab4,y
+	dey
+	bpl label_05fd
+	sta label_0a1c
+	lda label_fc
+	sta label_0ac3
+	clc
+	adc #$04
+	sta label_0abd
+	lda label_fd
+	sta label_0ac4
+	adc #$00
+	sta label_0aba
+	ldx #$7e
+	ldy #$00
+label_062e	lda (label_fc),y
+	clc
+	adc label_0abd
+	sta label_0a40,x
+	php
+	iny
+	plp
+	lda (label_fc),y
+	adc label_0aba
+	sta label_0a3d,x
+	iny
+	inx
+	bpl label_062e
+	jsr label_0658
+label_0649	jsr label_0942
+label_064c	jsr label_0942
+label_064f	inc label_0400
+	rts
+label_0658	ldx #$17
+label_065a	lda #$00
+	sta label_0aca,x
+	dex
+	bpl label_065a
+	sta label_d418
+	rts
+label_0666	sta label_ff
+	txa
+label_0669	tay
+	lda label_0a96,y
+	clc
+	adc #$01
+	sta label_0a96,y
+	cmp label_ff
+	bcs label_0681
+	lda label_0a9c,y
+	sta label_fc
+	lda label_0aa2,y
+	sta label_fd
+label_0681	rts
+label_0682	txa
+label_0683	tay
+	lda label_fc
+	sta label_0a9c,y
+	lda label_fd
+	sta label_0aa2,y
+	lda #$00
+	sta label_0a96,y
+	rts
+label_0694	sta label_ff
+	txa
+	clc
+	adc #$03
+	bne label_0669
+label_069c	txa
+	clc
+	adc #$03
+	bne label_0683
+label_06a2	sta label_0a7e,x
+	rts
+label_06a6	cmp #$64
+	bcc label_06b0
+label_06b0	sta label_0a33,x
+	rts
+label_06b4	cmp #$63
+	bcc label_06be
+	sbc #$64
+	sta label_0a1b
+	rts
+label_06be	sta label_0a30,x
+	rts
+label_06c2	pha
+	and #$0f
+	sta label_0a7b,x
+	pla
+	lsr
+	lsr
+	lsr
+	lsr
+	sta label_0a78,x
+	rts
+label_06d5	sta label_0ae1
+	rts
+label_06d9	sta label_0a3b
+	rts
+label_06dd	clc
+	adc label_0ae2
+	sta label_0ae2
+	rts
+label_06e5	lda label_0a63,x
+	bne label_0723
+	lda label_0a78,x
+; Excluded: 	beq label_0724 ; Branch not taken
+	lda label_0a75,x
+	beq label_0711
+	lda label_0acc,y
+	sec
+	sbc label_0a93,x
+	sta label_0acc,y
+; Excluded: 	bcs label_0736 ; Branch not taken
+	lda label_0acd,y
+	sbc #$00
+	sta label_0acd,y
+	cmp label_0a7b,x
+	bcs label_0736
+label_0711	lda label_0acd,y
+	cmp label_0a78,x
+	bcc label_0724
+	cmp label_0a7b,x
+; Excluded: 	bcc label_0736 ; Branch not taken
+	lda #$01
+	sta label_0a75,x
+label_0723	rts
+label_0724	lda label_0acc,y
+	clc
+	adc label_0a93,x
+	sta label_0acc,y
+	lda label_0acd,y
+	adc #$00
+	sta label_0acd,y
+label_0736	rts
+label_0737	sta label_0a8a,x
+	rts
+label_07a6	pha
+	lsr
+	lsr
+	lsr
+	sta label_0a3a
+	pla
+	and #$07
+	sta label_0a39
+	rts
+label_07b4	sta label_0a1c
+	rts
+label_07c8	lda label_0aa8,x
+	sta label_fc
+	lda label_0aae,x
+	sta label_fd
+	lda label_0aab,x
+	sta label_0aa8,x
+	lda label_0ab1,x
+	sta label_0aae,x
+	jmp label_08c2
+label_0812	rts
+label_0813	and #$7f
+	clc
+	adc label_0a7e,x
+	asl
+	tay
+	lda label_0b2d,y
+	clc
+	adc label_0a69,x
+	pha
+	lda label_0b2e,y
+	adc #$00
+	tay
+	pla
+	rts
+label_082b	sta label_0a84,x
+	rts
+label_082f	cmp #$01
+	beq label_083c
+label_083b	rts
+label_083c	lda label_0a3f,x
+	cmp label_0a21,x
+	bcc label_0874
+	bne label_0850
+	lda label_0a42,x
+	cmp label_0a1e,x
+	beq label_083b
+	bcc label_0874
+label_0850	jsr label_088b
+label_0853	lda label_0a21,x
+	cmp label_0a3f,x
+; Excluded: 	bcc label_0812 ; Branch not taken
+	bne label_0865
+	lda label_0a1e,x
+	cmp label_0a42,x
+; Excluded: 	bcc label_0812 ; Branch not taken
+label_0865	lda label_0a42,x
+	sta label_0a1e,x
+	lda label_0a3f,x
+	sta label_0a21,x
+	jmp label_08b1
+label_0874	jsr label_089e
+label_0877	lda label_0a21,x
+	cmp label_0a3f,x
+	bcc label_0865
+	bne label_0812
+	lda label_0a1e,x
+	cmp label_0a42,x
+	bcs label_0812
+	bcc label_0865
+label_088b	clc
+	lda label_0a1e,x
+	adc label_0a81,x
+	sta label_0a1e,x
+	lda label_0a21,x
+	adc label_0a84,x
+	jmp label_08ae
+label_089e	sec
+	lda label_0a1e,x
+	sbc label_0a81,x
+	sta label_0a1e,x
+	lda label_0a21,x
+	sbc label_0a84,x
+label_08ae	sta label_0a21,x
+label_08b1	lda label_0a21,x
+	sta label_0acb,y
+	lda label_0a1e,x
+	sta label_0aca,y
+	rts
+label_08be	sta label_0a93,x
+	rts
+label_08c2	clc
+	lda label_fc
+	adc #$02
+	sta label_fc
+	bcc label_08cd
+	inc label_fd
+label_08cd	rts
+label_08ce	sta label_fc
+	stx label_fd
+	lda #$00
+	sta label_0400
+	jmp label_05f1
+label_08da	sta label_0a45,x
+	rts
+label_08e2	sta label_0a3c,x
+	rts
+label_08ea	sta label_0a36,x
+	rts
+label_08ee	sta label_0a90,x
+	rts
+label_08f2	sta label_0ae2
+	rts
+label_08f6	jsr label_0813
+label_08f9	sta label_0a42,x
+	tya
+	sta label_0a3f,x
+	rts
+label_0901	pha
+	lda label_0aa8,x
+	sta label_0aab,x
+	lda label_0aae,x
+	sta label_0ab1,x
+	lda label_fc
+	sta label_0aa8,x
+	lda label_fd
+	sta label_0aae,x
+	ldy #$02
+	lda (label_fc),y
+	sta label_ff
+	pla
+	clc
+	adc label_0ac3
+	sta label_fc
+	lda label_ff
+	adc label_0ac4
+	sta label_fd
+	pla
+	pla
+	jmp label_047b
+label_0931	sta label_0a87,x
+	rts
+label_093d	lda label_0400
+; Excluded: 	beq label_0957 ; Branch not taken
+label_0942	jsr label_0401
+label_0945	ldy #$18
+label_0947	lda label_0aca,y
+	sta label_d400,y
+	dey
+	bpl label_0947
+	nop
+	lda label_0ae2
+	sta label_d418
+label_0957	rts
+label_0958	sta label_0a81,x
+	rts
+label_0a17	sta label_0a8d,x
+label_0a1a	rts
+label_0a1b	!by $00
+label_0a1c	!by $01
+label_0a1d	!by $00
+label_0a1e	!by $46
+	!by $27
+	!by $27
+label_0a21	!by $06
+	!by $01
+	!by $01
+label_0a24	!by $a9
+	!by $82
+	!by $82
+label_0a27	!by $41
+	!by $00
+	!by $00
+label_0a2a	!by $02
+	!by $02
+	!by $02
+label_0a2d	!by $00
+	!by $00
+	!by $00
+label_0a30	!by $00
+	!by $00
+	!by $00
+label_0a33	!by $00
+label_0a34	!by $00
+	!by $00
+label_0a36	!by $00
+	!by $00
+	!by $00
+label_0a39	!by $04
+label_0a3a	!by $07
+label_0a3b	!by $f0
+label_0a3c	!by $01
+label_0a3d	!by $00
+	!by $00
+label_0a3f	!by $02
+label_0a40	!by $00
+	!by $00
+label_0a42	!by $4e
+	!by $00
+	!by $00
+label_0a45	!by $00
+	!by $00
+	!by $00
+label_0a48	!by $03
+	!by $59
+	!by $59
+label_0a4b	!by $00
+	!by $00
+	!by $00
+label_0a4e	!by $00
+	!by $00
+	!by $00
+label_0a51	!by $00
+	!by $00
+	!by $00
+label_0a54	!by $00
+	!by $02
+	!by $02
+label_0a57	!by $00
+	!by $00
+	!by $00
+label_0a5a	!by $00
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+label_0a63	!by $00
+	!by $00
+	!by $00
+label_0a66	!by $03
+	!by $59
+	!by $59
+label_0a69	!by $00
+	!by $00
+	!by $00
+label_0a6c	!by $00
+	!by $01
+	!by $05
+label_0a6f	!by $00
+	!by $00
+	!by $00
+label_0a72	!by $00
+	!by $00
+	!by $00
+label_0a75	!by $00
+	!by $00
+	!by $00
+label_0a78	!by $0d
+	!by $00
+	!by $00
+label_0a7b	!by $02
+	!by $00
+	!by $00
+label_0a7e	!by $00
+	!by $00
+	!by $00
+label_0a81	!by $90
+	!by $00
+	!by $00
+label_0a84	!by $01
+	!by $00
+	!by $00
+label_0a87	!by $00
+	!by $00
+	!by $00
+label_0a8a	!by $41
+	!by $00
+	!by $00
+label_0a8d	!by $08
+	!by $00
+	!by $00
+label_0a90	!by $08
+	!by $00
+	!by $00
+label_0a93	!by $50
+	!by $00
+	!by $00
+label_0a96	!by $00
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+label_0a9c	!by $37
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+label_0aa2	!by $94
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+label_0aa8	!by $3f
+	!by $00
+	!by $00
+label_0aab	!by $00
+	!by $00
+	!by $00
+label_0aae	!by $94
+	!by $00
+	!by $00
+label_0ab1	!by $00
+	!by $00
+	!by $00
+label_0ab4	!by $01
+	!by $01
+	!by $01
+label_0ab7	!by $08
+	!by $27
+	!by $a7
+label_0aba	!by $99
+label_0abb	!by $94
+	!by $96
+label_0abd	!by $08
+label_0abe	!by $c6
+	!by $eb
+label_0ac0	!by $00
+	!by $07
+	!by $0e
+label_0ac3	!by $11
+label_0ac4	!by $94
+!fill 2
+label_0ac7	!by $11
+	!by 00 ; 	!by $81 ; Never accessed
+	!by $51
+label_0aca	!by $46
+label_0acb	!by $06
+label_0acc	!by $f0
+label_0acd	!by $08
+label_0ace	!by $41
+label_0acf	!by $08
+label_0ad0	!by $00
+	!by $27
+	!by $01
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+	!by $27
+	!by $01
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+	!by $00
+label_0adf	!by $04
+label_0ae0	!by $06
+label_0ae1	!by $c1
+label_0ae2	!by $1f
+label_0ae3	!by <label_08f2 ; Was $f2
+	!by <label_08ee ; Was $ee
+	!by <label_0737 ; Was $37
+	!by <label_0a17 ; Was $17
+	!by <label_06a6 ; Was $a6
+	!by <label_08ea ; Was $ea
+	!by <label_06b4 ; Was $b4
+	!by 00 ; 	!by $e6 ; Never accessed
+	!by <label_08da ; Was $da
+	!by <label_0931 ; Was $31
+	!by 00 ; 	!by $de ; Never accessed
+	!by <label_082b ; Was $2b
+	!by <label_0958 ; Was $58
+	!by <label_08be ; Was $be
+	!by <label_08e2 ; Was $e2
+	!by <label_0666 ; Was $66
+	!by <label_0682 ; Was $82
+	!by <label_0694 ; Was $94
+	!by <label_069c ; Was $9c
+	!by <label_06a2 ; Was $a2
+	!by <label_06c2 ; Was $c2
+	!by 00 ; 	!by $d1 ; Never accessed
+	!by <label_06d5 ; Was $d5
+	!by <label_06d9 ; Was $d9
+	!by 00 ; 	!by $bb ; Never accessed
+	!by 00 ; 	!by $bc ; Never accessed
+	!by <label_06dd ; Was $dd
+	!by 00 ; 	!by $a2 ; Never accessed
+	!by <label_07a6 ; Was $a6
+	!by 00 ; 	!by $35 ; Never accessed
+	!by 00 ; 	!by $b8 ; Never accessed
+	!by 00 ; 	!by $e1 ; Never accessed
+	!by 00 ; 	!by $c4 ; Never accessed
+	!by <label_08f6 ; Was $f6
+	!by <label_0901 ; Was $01
+	!by <label_07c8 ; Was $c8
+	!by <label_07b4 ; Was $b4
+label_0b08	!by >label_08f2 ; Was $08
+	!by >label_08ee ; Was $08
+	!by >label_0737 ; Was $07
+	!by >label_0a17 ; Was $0a
+	!by >label_06a6 ; Was $06
+	!by >label_08ea ; Was $08
+	!by >label_06b4 ; Was $06
+	!by 00 ; 	!by $08 ; Never accessed
+	!by >label_08da ; Was $08
+	!by >label_0931 ; Was $09
+	!by 00 ; 	!by $08 ; Never accessed
+	!by >label_082b ; Was $08
+	!by >label_0958 ; Was $09
+	!by >label_08be ; Was $08
+	!by >label_08e2 ; Was $08
+	!by >label_0666 ; Was $06
+	!by >label_0682 ; Was $06
+	!by >label_0694 ; Was $06
+	!by >label_069c ; Was $06
+	!by >label_06a2 ; Was $06
+	!by >label_06c2 ; Was $06
+	!by 00 ; 	!by $06 ; Never accessed
+	!by >label_06d5 ; Was $06
+	!by >label_06d9 ; Was $06
+	!by 00 ; 	!by $07 ; Never accessed
+	!by 00 ; 	!by $07 ; Never accessed
+	!by >label_06dd ; Was $06
+	!by 00 ; 	!by $07 ; Never accessed
+	!by >label_07a6 ; Was $07
+	!by 00 ; 	!by $09 ; Never accessed
+	!by 00 ; 	!by $07 ; Never accessed
+	!by 00 ; 	!by $07 ; Never accessed
+	!by 00 ; 	!by $07 ; Never accessed
+	!by >label_08f6 ; Was $08
+	!by >label_0901 ; Was $09
+	!by >label_07c8 ; Was $07
+	!by >label_07b4 ; Was $07
+label_0b5d	!by $1b
+label_0b5e	!by $04
+	!by 00 ; 	!by $59 ; Never accessed
+	!by 00 ; 	!by $04 ; Never accessed
+	!by $9c
+	!by $04
+	!by 00 ; 	!by $e2 ; Never accessed
+	!by 00 ; 	!by $04 ; Never accessed
+	!by 00 ; 	!by $2c ; Never accessed
+	!by 00 ; 	!by $05 ; Never accessed
+	!by $7b
+	!by $05
+	!by 00 ; 	!by $ce ; Never accessed
+	!by 00 ; 	!by $05 ; Never accessed
+	!by $27
+	!by $06
+	!by 00 ; 	!by $84 ; Never accessed
+	!by 00 ; 	!by $06 ; Never accessed
+	!by 00 ; 	!by $e8 ; Never accessed
+	!by 00 ; 	!by $06 ; Never accessed
+	!by 00 ; 	!by $51 ; Never accessed
+	!by 00 ; 	!by $07 ; Never accessed
+	!by 00 ; 	!by $c0 ; Never accessed
+	!by 00 ; 	!by $07 ; Never accessed
+	!by 00 ; 	!by $36 ; Never accessed
+	!by 00 ; 	!by $08 ; Never accessed
+	!by 00 ; 	!by $b3 ; Never accessed
+	!by 00 ; 	!by $08 ; Never accessed
+	!by $38
+	!by $09
+	!by 00 ; 	!by $c4 ; Never accessed
+	!by 00 ; 	!by $09 ; Never accessed
+	!by 00 ; 	!by $59 ; Never accessed
+	!by 00 ; 	!by $0a ; Never accessed
+	!by 00 ; 	!by $f6 ; Never accessed
+	!by 00 ; 	!by $0a ; Never accessed
+	!by 00 ; 	!by $9d ; Never accessed
+	!by 00 ; 	!by $0b ; Never accessed
+	!by 00 ; 	!by $4e ; Never accessed
+	!by 00 ; 	!by $0c ; Never accessed
+	!by 00 ; 	!by $09 ; Never accessed
+	!by 00 ; 	!by $0d ; Never accessed
+	!by $d0
+	!by $0d
+	!by 00 ; 	!by $a2 ; Never accessed
+	!by 00 ; 	!by $0e ; Never accessed
+	!by 00 ; 	!by $81 ; Never accessed
+	!by 00 ; 	!by $0f ; Never accessed
+	!by $6d
+	!by $10
+	!by 00 ; 	!by $67 ; Never accessed
+	!by 00 ; 	!by $11 ; Never accessed
+	!by $70
+	!by $12
+	!by 00 ; 	!by $88 ; Never accessed
+	!by 00 ; 	!by $13 ; Never accessed
+	!by $b2
+	!by $14
+	!by $ed
+	!by $15
+	!by 00 ; 	!by $3a ; Never accessed
+	!by 00 ; 	!by $17 ; Never accessed
+	!by $9c
+	!by $18
+	!by 00 ; 	!by $13 ; Never accessed
+	!by 00 ; 	!by $1a ; Never accessed
+	!by 00 ; 	!by $a0 ; Never accessed
+	!by 00 ; 	!by $1b ; Never accessed
+	!by 00 ; 	!by $44 ; Never accessed
+	!by 00 ; 	!by $1d ; Never accessed
+	!by 00 ; 	!by $02 ; Never accessed
+	!by 00 ; 	!by $1f ; Never accessed
+	!by $da
+	!by $20
+	!by 00 ; 	!by $ce ; Never accessed
+	!by 00 ; 	!by $22 ; Never accessed
+	!by $e0
+	!by $24
+	!by $11
+	!by $27
+	!by 00 ; 	!by $64 ; Never accessed
+	!by 00 ; 	!by $29 ; Never accessed
+	!by $da
+	!by $2b
+	!by 00 ; 	!by $75 ; Never accessed
+	!by 00 ; 	!by $2e ; Never accessed
+	!by $38
+	!by $31
+	!by $26
+	!by $34
+	!by 00 ; 	!by $40 ; Never accessed
+	!by 00 ; 	!by $37 ; Never accessed
+	!by $89
+	!by $3a
+	!by 00 ; 	!by $04 ; Never accessed
+	!by 00 ; 	!by $3e ; Never accessed
+	!by $b4
+	!by $41
+	!by 00 ; 	!by $9c ; Never accessed
+	!by 00 ; 	!by $45 ; Never accessed
+	!by $c0
+	!by $49
+	!by 00 ; 	!by $22 ; Never accessed
+	!by 00 ; 	!by $4e ; Never accessed
+	!by 00 ; 	!by $c8 ; Never accessed
+	!by 00 ; 	!by $52 ; Never accessed
+	!by $b4
+	!by $57
+	!by 00 ; 	!by $eb ; Never accessed
+	!by 00 ; 	!by $5c ; Never accessed
+	!by $71
+	!by $62
+	!by 00 ; 	!by $4c ; Never accessed
+	!by 00 ; 	!by $68 ; Never accessed
+	!by $80
+	!by $6e
+	!by 00 ; 	!by $12 ; Never accessed
+	!by 00 ; 	!by $75 ; Never accessed
+	!by 00 ; 	!by $08 ; Never accessed
+	!by 00 ; 	!by $7c ; Never accessed
+	!by $68
+	!by $83
+	!by 00 ; 	!by $39 ; Never accessed
+	!by 00 ; 	!by $8b ; Never accessed
+	!by $80
+	!by $93
+* = $837d
+label_837d	!by $87
+	!by $01
+	!by $d6
+	!by $01
+	!by $00
+	!by $01
+	!by $17
+	!by $c1
+	!by $07
+	!by $64
+	!by $01
+	!by $10
+	!by $25
+	!by $01
+	!by $02
+	!by $0a
+	!by $0a
+	!by $8a
+	!by $04
+	!by $08
+	!by $15
+	!by $d2
+	!by $0e
+	!by $3c
+	!by $0d
+	!by $90
+	!by $0c
+	!by $01
+	!by $03
+	!by $41
+	!by $18
+	!by $e6
+	!by $1d
+	!by $41
+	!by $22
+	!by $9a
+	!by $0f
+	!by $01
+	!by $11
+	!by $00
+	!by $1b
+	!by $01
+	!by $00
+	!by $30
+	!by $19
+	!by $00
+	!by $10
+	!by $0f
+	!by $00
+	!by $30
+	!by $19
+	!by $00
+	!by $11
+	!by $00
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_83b7	!by $00
+	!by $05
+	!by $19
+	!by $00
+	!by $10
+	!by $80
+	!by $11
+	!by $00
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_83c3	!by $a6
+	!by $05
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_83c9	!by $00
+	!by $05
+	!by $19
+	!by $00
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_83d1	!by $00
+	!by $05
+	!by $19
+	!by $00
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_83d9	!by $00
+	!by $05
+	!by $19
+	!by $00
+	!by $10
+	!by $20
+	!by $01
+	!by $1f
+	!by $11
+	!by $00
+	!by $22
+	!by $9d
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_83e9	!by $a6
+	!by $0b
+	!by $9d
+	!by $06
+	!by $9d
+	!by $06
+	!by $23
+	!by $96
+	!by $02
+!fill 1
+label_83f3	!by $ad
+	!by $05
+	!by $9d
+	!by $0c
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_83fb	!by $a6
+	!by $05
+	!by $9d
+	!by $06
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_8403	!by $a6
+	!by $05
+	!by $22
+	!by $98
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_840b	!by $a6
+	!by $05
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_8411	!by $9a
+	!by $05
+	!by $23
+	!by $96
+	!by $02
+!fill 1
+label_8417	!by $ad
+	!by $0b
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_841d	!by $a6
+	!by $05
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_8423	!by $a6
+	!by $05
+	!by $22
+	!by $9a
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_842b	!by $a6
+	!by $0b
+	!by $9a
+	!by $0c
+	!by $23
+	!by $96
+	!by $02
+!fill 1
+label_8433	!by $ad
+	!by $05
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_8439	!by $00
+	!by $0b
+	!by $19
+	!by $00
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_8441	!by $a6
+	!by $05
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_8447	!by $00
+	!by $05
+	!by $19
+	!by $00
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_844f	!by $a6
+	!by $05
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_8455	!by $00
+	!by $05
+	!by $19
+	!by $00
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_845d	!by $a6
+	!by $05
+	!by $23
+	!by $96
+	!by $02
+!fill 1
+label_8463	!by $ad
+	!by $05
+	!by $00
+	!by $06
+	!by $19
+	!by $00
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_846d	!by $a6
+	!by $05
+	!by $9a
+	!by $06
+	!by $22
+	!by $9f
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_8477	!by $a6
+	!by $0b
+	!by $9d
+	!by $06
+	!by $9d
+	!by $06
+	!by $23
+	!by $96
+	!by $02
+!fill 1
+label_8481	!by $ad
+	!by $05
+	!by $9d
+	!by $0c
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_8489	!by $a6
+	!by $05
+	!by $9d
+	!by $06
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_8491	!by $a6
+	!by $05
+	!by $22
+	!by $98
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_8499	!by $a6
+	!by $05
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_849f	!by $9a
+	!by $05
+	!by $23
+	!by $96
+	!by $02
+!fill 1
+label_84a5	!by $ad
+	!by $0b
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_84ab	!by $a6
+	!by $05
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_84b1	!by $a6
+	!by $05
+	!by $22
+	!by $9a
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_84b9	!by $a6
+	!by $0b
+	!by $9a
+	!by $0c
+	!by $23
+	!by $96
+	!by $02
+!fill 1
+label_84c1	!by $ad
+	!by $05
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_84c7	!by $00
+	!by $0b
+	!by $19
+	!by $00
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_84cf	!by $a6
+	!by $05
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_84d5	!by $00
+	!by $05
+	!by $19
+	!by $00
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_84dd	!by $a6
+	!by $05
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_84e3	!by $00
+	!by $05
+	!by $19
+	!by $00
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_84eb	!by $a6
+	!by $05
+	!by $23
+	!by $96
+	!by $02
+!fill 1
+label_84f1	!by $ad
+	!by $05
+	!by $00
+	!by $06
+	!by $19
+	!by $00
+	!by $23
+	!by $8f
+	!by $02
+!fill 1
+label_84fb	!by $a6
+	!by $05
+	!by $9a
+	!by $06
+	!by $10
+	!by $ff
+!fill 7
+label_8508	!by $00
+	!by $01
+	!by $02
+	!by $09
+	!by $0a
+	!by $0a
+	!by $04
+	!by $0f
+	!by $15
+	!by $d2
+	!by $0e
+	!by $9b
+	!by $03
+	!by $81
+	!by $22
+	!by $9a
+	!by $09
+	!by $04
+	!by $0d
+	!by $c8
+	!by $0c
+	!by $00
+	!by $03
+	!by $41
+	!by $07
+	!by $03
+	!by $11
+	!by $00
+	!by $06
+	!by $14
+	!by $14
+	!by $03
+	!by $23
+	!by $47
+	!by $02
+!fill 1
+label_852c	!by $14
+	!by $fe
+	!by $23
+	!by $70
+	!by $02
+!fill 1
+label_8532	!by $14
+	!by $00
+	!by $23
+	!by $47
+	!by $02
+!fill 1
+label_8538	!by $23
+	!by $70
+	!by $02
+!fill 1
+label_853c	!by $14
+	!by $05
+	!by $23
+	!by $47
+	!by $02
+!fill 1
+label_8542	!by $14
+	!by $fe
+	!by $23
+	!by $70
+	!by $02
+!fill 1
+label_8548	!by $14
+	!by $00
+	!by $23
+	!by $47
+	!by $02
+!fill 1
+label_854e	!by $23
+	!by $70
+	!by $02
+!fill 1
+label_8552	!by $10
+	!by $ff
+!fill 3
+label_8557	!by $00
+	!by $01
+	!by $02
+	!by $09
+	!by $03
+	!by $41
+	!by $04
+	!by $00
+	!by $15
+	!by $d2
+	!by $0e
+	!by $ff
+	!by $0d
+	!by $2c
+	!by $0c
+	!by $01
+	!by $0f
+	!by $00
+	!by $07
+	!by $05
+	!by $05
+	!by $04
+	!by $00
+	!by $00
+	!by $19
+	!by $03
+	!by $13
+	!by $00
+	!by $03
+	!by $41
+	!by $0a
+	!by $4a
+	!by $11
+	!by $00
+	!by $b2
+	!by $18
+	!by $b5
+	!by $0c
+	!by $b2
+	!by $06
+	!by $b2
+	!by $0c
+	!by $b2
+	!by $0c
+	!by $b2
+	!by $06
+	!by $b5
+	!by $0c
+	!by $b4
+	!by $0c
+	!by $b2
+	!by $18
+	!by $b5
+	!by $0c
+	!by $ad
+	!by $06
+	!by $b0
+	!by $0c
+	!by $b4
+	!by $0c
+	!by $b0
+	!by $06
+	!by $b4
+	!by $0c
+	!by $b5
+	!by $0c
+	!by $10
+	!by $04
+	!by $03
+	!by $11
+	!by $0a
+	!by $aa
+	!by $11
+	!by $00
+	!by $be
+	!by $0c
+	!by $c1
+	!by $0c
+	!by $be
+	!by $06
+	!by $c1
+	!by $0c
+	!by $be
+	!by $06
+	!by $c1
+	!by $0c
+	!by $be
+	!by $06
+	!by $c3
+	!by $0c
+	!by $be
+	!by $06
+	!by $c1
+	!by $0c
+	!by $10
+	!by $08
+	!by $00
+	!by $80
+	!by $19
+	!by $01
+	!by $12
+	!by $ff
+!fill 7
+label_85c4	!by $ca
+	!by $01
+	!by $b2
+	!by $05
+	!by $d1
+	!by $01
+	!by $b2
+	!by $05
+	!by $ca
+	!by $01
+	!by $be
+	!by $05
+	!by $ca
+	!by $01
+	!by $b2
+	!by $05
+	!by $07
+	!by $00
+	!by $d1
+	!by $01
+	!by $03
+	!by $81
+	!by $c1
+	!by $05
+	!by $03
+	!by $41
+	!by $07
+	!by $03
+	!by $ca
+	!by $01
+	!by $be
+	!by $05
+	!by $ca
+	!by $01
+	!by $b2
+	!by $05
+	!by $d1
+	!by $01
+	!by $b2
+	!by $05
+	!by $24
+	!by $d1
+	!by $01
+	!by $be
+	!by $05
+	!by $b2
+	!by $06
+	!by $b2
+	!by $06
+	!by $be
+	!by $06
+	!by $07
+	!by $00
+	!by $03
+	!by $81
+	!by $c1
+	!by $06
+	!by $03
+	!by $41
+	!by $07
+	!by $03
+	!by $b2
+	!by $06
+	!by $ca
+	!by $01
+	!by $be
+	!by $05
+	!by $ca
+	!by $01
+	!by $be
+	!by $05
+	!by $24
+	!by $03
+	!by $81
+	!by $ca
+	!by $01
+	!by $03
+	!by $41
+	!by $24
+	!by $03
+	!by $81
+	!by $d1
+	!by $01
+	!by $03
+	!by $41
+	!by $24
+	!by $8d
