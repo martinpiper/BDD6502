@@ -370,12 +370,11 @@ Feature:  Profile guided disassembly
 #    Then profile always set PC when moving from code to data
 #    Then profile always set PC when moving from data to code
     Then profile avoid PC adjust in code
-#    Then profile avoid PC adjust in data
+    # This piece of music uses pointers, these can be relocated
+    Then profile avoid PC adjust in data
     # Removing spaces in data is quite aggressive and can introduce problems
     Then profile avoid PC set in data
-    # At the moment the data likes to be at this address...
-    Then profile output PC set at address 0xb4c2
-    Then profile preserve data spacing from 0xb4c2 to 0xffff
+#    Then profile preserve data spacing from 0xb4c2 to 0xffff
     Then profile exclude branches not taken
     Then profile output never accessed as a 0 byte
     Then profile exclude memory range from 0xd400 to 0xd4ff

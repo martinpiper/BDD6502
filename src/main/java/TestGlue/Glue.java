@@ -597,7 +597,7 @@ public class Glue {
 
 
             if (memoryAddressActualMemoryAddressForLowHighTable[i] > 0) {
-                continue;
+//                continue;
             }
 
             // Handle targets for jmp( that are not written to
@@ -620,7 +620,7 @@ public class Glue {
                 for (int j = i - 1 ; j > i-20 ; j--) {
                     if (cpu.memoryProfileStoredAddress[j] == zpAddr) {
                         targetRegister = cpu.memoryProfileStoredAddressWithRegister[j];
-                        for (;j > i-20 ; j--) {
+                        for (;j > i-30 ; j--) {
                             // Look back for any load, with the register
                             if (cpu.memoryProfileThisOpcodeLoadedInto[j] == targetRegister) {
                                 gotlowZPAddessSourceAddress = cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j];
@@ -636,7 +636,7 @@ public class Glue {
                     for (int j = i - 1 ; j > i-20 ; j--) {
                         if (cpu.memoryProfileStoredAddress[j] == zpAddr+1) {
                             targetRegister = cpu.memoryProfileStoredAddressWithRegister[j];
-                            for (;j > i-20 ; j--) {
+                            for (;j > i-30 ; j--) {
                                 // Look back for any load, with the register
                                 if (cpu.memoryProfileThisOpcodeLoadedInto[j] == targetRegister) {
                                     gothighZPAddessSourceAddress = cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[j];
@@ -678,7 +678,7 @@ public class Glue {
                         }
                     }
 
-                    break;
+//                    break;
                 }
             }
 
