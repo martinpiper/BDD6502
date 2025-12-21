@@ -1,6 +1,6 @@
 !source "features\MinPlay_SID.a"
 
-*=$b000
+*=$c000
 !source "target\temp3.a"
 
 *=$cf80

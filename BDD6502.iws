@@ -6,12 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Done.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Done.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/MinPlay3.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/MinPlay3.a" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/ProfileGuidedDisassembly.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/ProfileGuidedDisassembly.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
@@ -1294,12 +1292,12 @@
         </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>378</line>
+          <line>376</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>344</line>
+          <line>342</line>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
       </breakpoints>

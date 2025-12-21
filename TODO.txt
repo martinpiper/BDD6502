@@ -393,6 +393,8 @@
 * @TC-24 label_b4e7 label_b4ea are actually written to by the contents of label_b715
     label_b715 looks like three low, three high, and two unknowns
     >> It would be possible to trace back label_b4e7 and label_b4ea to label_b715 and label_b718
+        # At the moment the data likes to be at this address...
+        Then profile output PC set at address 0xb4c2
 
 
 

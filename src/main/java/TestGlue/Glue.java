@@ -270,9 +270,7 @@ public class Glue {
         }
         int lastPCOutput = -1;
         List<String> lines = new LinkedList<String>();
-        boolean wasInstruction = false;
-        boolean wasMemory = false;
-        boolean forcePC = true;
+
         for (int i = 1 ; i < 0x100 ; i++) {
             if (excludeProfileMemoryRange[i]) {
                 continue;
@@ -446,12 +444,24 @@ public class Glue {
             }
         }
 
+        boolean wasInstruction = false;
+        boolean wasMemory = false;
+        boolean forcePC = true;
+        boolean previousWasInstruction = false;
+        boolean previousWasMemory = false;
+
+        // Now disassemble
         for (int i = 0x100 ; i < cpu.memoryProfileFlags.length ; ) {
+
+            previousWasInstruction = wasInstruction;
+            previousWasMemory = wasMemory;
+
             boolean labelOut = false;
             if (excludeProfileMemoryRange[i]) {
                 i++;
                 continue;
             }
+
             String line = "";
             int currentPC = i;
             if ( (cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_ExecuteStartOp) != 0 ) {
@@ -624,17 +634,27 @@ public class Glue {
             }
 
             if (!line.isEmpty()) {
-                if (forcePC) {
+                if ( sprofileOutputPCSetAtAddress.contains(currentPC) || forcePC) {
                     String prefix = "";
-                    if (bprofileAvoidPCAdjustInData && !preserveDataSpacingProfileMemoryRange[currentPC]) {
-                        prefix  = "; Excluded : Data spacing not preserved : ";
-                    }
 
                     profileFinalGenerateLabelHere[currentPC] = true;
+
+                    boolean alwaysSetPC = false;
+                    if (bprofileAlwaysSetPCWhenMovingFromCodeToData && previousWasInstruction && wasMemory) {
+                        alwaysSetPC = true;
+                    }
+                    if (bprofileAlwaysSetPCWhenMovingFromDataToCode && previousWasMemory && wasInstruction) {
+                        alwaysSetPC = true;
+                    }
+                    if (sprofileOutputPCSetAtAddress.contains(currentPC)) {
+                        alwaysSetPC = true;
+                    }
+
                     int delta = currentPC - lastPCOutput;
-                    if ((lastPCOutput != -1) && (delta <= bprofileSetPCAdjustLimitToBytes)) {
+                    if (!alwaysSetPC && (lastPCOutput != -1) && (delta <= bprofileSetPCAdjustLimitToBytes)) {
                         if (delta > 0) {
                             if (bprofileAvoidPCAdjustInCode && wasInstruction && !preserveCodeSpacingProfileMemoryRange[currentPC]) {
+                            } else if (bprofileAvoidPCAdjustInData && wasMemory && !preserveDataSpacingProfileMemoryRange[currentPC]) {
                             } else {
                                 if (bprofileUseFillInsteadOfPCAdjust) {
                                     if (delta <= 9) {
@@ -652,8 +672,8 @@ public class Glue {
                             }
                         }
                     } else {
-                        if (bprofileAvoidPCSetInCode && wasInstruction && !preserveCodeSpacingProfileMemoryRange[currentPC]) {
-                        } else if (bprofileAvoidPCSetInData && wasMemory) {
+                        if (!alwaysSetPC && bprofileAvoidPCSetInCode && wasInstruction && !preserveCodeSpacingProfileMemoryRange[currentPC]) {
+                        } else if (!alwaysSetPC && bprofileAvoidPCSetInData && wasMemory && !preserveDataSpacingProfileMemoryRange[currentPC]) {
                         } else {
                             lines.add(prefix + "* = $" + HexUtil.wordToHex(currentPC).toLowerCase());
                         }
@@ -748,6 +768,23 @@ public class Glue {
     @Then("^profile optimise labels$")
     public void profileOptimiseLabels() {
         bprofileOptimiseLabels = true;
+    }
+
+    boolean bprofileAlwaysSetPCWhenMovingFromCodeToData = false;
+    @Then("^profile always set PC when moving from code to data$")
+    public void profileAlwaysSetPCWhenMovingFromCodeToData() {
+        bprofileAlwaysSetPCWhenMovingFromCodeToData = true;
+    }
+    boolean bprofileAlwaysSetPCWhenMovingFromDataToCode = false;
+    @Then("^profile always set PC when moving from data to code")
+    public void profileAlwaysSetPCWhenMovingFromDataToCode() {
+        bprofileAlwaysSetPCWhenMovingFromDataToCode = true;
+    }
+
+    Set<Integer> sprofileOutputPCSetAtAddress = new HashSet<>();
+    @Then("^profile output PC set at address (.*)$")
+    public void profileOutputPCSetAtAddress(String arg0) throws ScriptException {
+        sprofileOutputPCSetAtAddress.add(valueToInt(arg0));
     }
 
 
@@ -1005,6 +1042,7 @@ public class Glue {
         displayC64 = null;
     }
 
+    int instanceExecutionIteratons;
     public void initMachine() throws MemoryRangeException, MemoryAccessException {
         machine = new SimpleMachine();
         machine.getCpu().reset();
@@ -1023,6 +1061,7 @@ public class Glue {
 
         profileEnable = false;
         profileClear = false;
+        instanceExecutionIteratons = 0;
         initProfile();
     }
 
@@ -1186,6 +1225,12 @@ public class Glue {
         traceOveride = true;
         indentTrace = true;
         lastStackValue = -1;
+    }
+
+    int si_enable_trace_with_indentAtIteration = -1;
+    @Given("^I enable trace with indent at iteration (.*)$")
+    public void i_enable_trace_with_indentAtIteration(String arg0) throws Throwable {
+        si_enable_trace_with_indentAtIteration = valueToInt(arg0);
     }
 
     @Given("^I disable trace$")
@@ -1822,7 +1867,15 @@ public class Glue {
     public void executeProcedureAtForNoMoreThanInstructionsUntilPC(String arg1, String arg2, String arg3) throws Throwable {
         checkScenario();
 
-        String output = String.format("Execute procedure (%s) for no more than (%s) instructions until pc (%s)", arg1, arg2, arg3);
+        instanceExecutionIteratons++;
+        if (si_enable_trace_with_indentAtIteration == instanceExecutionIteratons) {
+            traceOveride = true;
+            indentTrace = true;
+            lastStackValue = -1;
+        }
+
+
+        String output = String.format("Execute procedure (%s) for no more than (%s) instructions until pc (%s) iterations (%d)", arg1, arg2, arg3, instanceExecutionIteratons);
         scenario.write(output);
 //		System.out.println(output);
 

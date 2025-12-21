@@ -253,6 +253,8 @@ Feature:  Profile guided disassembly
     Then profile output never accessed as a 0 byte
     Then profile exclude memory range from 0xd400 to 0xd4ff
     Then profile optimise labels
+    # Reload the data so the memory is exactly the same before profiled execution
+    And I load prg "..\DebuggingDetails\MusicSelectSystemPatched_a000.prg"
     Then output profile disassembly to file "target\temp.a"
 
     # Now validate the writes
@@ -311,6 +313,8 @@ Feature:  Profile guided disassembly
 
     Then profile exclude memory range from 0xd400 to 0xd4ff
     Then profile optimise labels
+    # Reload the data so the memory is exactly the same before profiled execution
+    And I load prg "testdata\mus1000.prg"
     Then output profile disassembly to file "target\temp2.a"
 
     Given I have a simple overclocked 6502 system
@@ -337,20 +341,23 @@ Feature:  Profile guided disassembly
   Scenario: Complex binary only profile guided disassembly
     Given I have a simple overclocked 6502 system
     When I enable uninitialised memory read protection with immediate fail
+    Given I disable trace
+
 
     And I load prg "testdata\mwmusb000_b059.prg"
 
-    Given I enable trace with indent
+#    Given I enable trace with indent
 
     Given enable memory profiling
     Given memory profile record writes from 0xd400 to 0xd4ff
 
+#    Given I enable trace with indent at iteration 1598
 
     Given I set register A to 0x00
     When I execute the procedure at 0xb000 until return
 
     Given I disable trace
-    When I execute the procedure at 0xb059 until return for 1500 iterations
+    When I execute the procedure at 0xb059 until return for 10000 iterations
 
 #    Then include profile last access
 #    Then include profile index register type
@@ -360,29 +367,41 @@ Feature:  Profile guided disassembly
     Then profile use fill instead of PC adjust
     Then profile set PC adjust limit to 256 bytes
     Then profile avoid PC set in code
-#    Then profile avoid PC adjust in code
+#    Then profile always set PC when moving from code to data
+#    Then profile always set PC when moving from data to code
+    Then profile avoid PC adjust in code
 #    Then profile avoid PC adjust in data
     # Removing spaces in data is quite aggressive and can introduce problems
-#    Then profile avoid PC set in data
-#    Then profile preserve data spacing from 0x837d to 0xffff
-#    Then profile exclude branches not taken
+    Then profile avoid PC set in data
+    # At the moment the data likes to be at this address...
+    Then profile output PC set at address 0xb4c2
+    Then profile preserve data spacing from 0xb4c2 to 0xffff
+    Then profile exclude branches not taken
     Then profile output never accessed as a 0 byte
     Then profile exclude memory range from 0xd400 to 0xd4ff
     Then profile optimise labels
+    # Reload the data so the memory is exactly the same before profiled execution
+    And I load prg "testdata\mwmusb000_b059.prg"
     Then output profile disassembly to file "target\temp3.a"
 
     # Now validate the writes
     Given I have a simple overclocked 6502 system
     When I enable uninitialised memory read protection with immediate fail
-    And I run the command line: ..\C64\acme.exe --setpc $b000 -o test.prg --labeldump test.lbl -f cbm -v9 features\MinPlay_SID.a target\temp3.a
+    Given I disable trace
+    And I run the command line: ..\C64\acme.exe --setpc $c000 -o test.prg --labeldump test.lbl -f cbm -v9 features\MinPlay_SID.a target\temp3.a
     And I load prg "test.prg"
     And I load labels "test.lbl"
     Given enable memory profiling
     Given memory profile record writes from 0xd400 to 0xd4ff
     # Validates, per iteration, the recorded memory writes with the previous execution
     Given enable memory profiling validation
+
+#    Given I enable trace with indent at iteration 1598
+
     Given I set register A to 0x00
     When I execute the procedure at label_b000 until return
-    When I execute the procedure at label_b059 until return for 1500 iterations
+    When I execute the procedure at label_b059 until return for 10000 iterations
+#    When I execute the procedure at $b000 until return
+#    When I execute the procedure at $b059 until return for 10000 iterations
 
     # cls && c:\work\c64\acme.exe --cpu 6502 -o c:\temp\t.prg --labeldump test.lbl -f cbm -v9 features\MinPlay3.a && c:\work\c64\bin\LZMPi.exe -pp $35 -c64mbu c:\temp\t.prg c:\temp\tcmp.prg $cf80 && c:\temp\tcmp.prg
