@@ -567,7 +567,6 @@ public class Glue {
                                     if (cpu.memoryProfileIndirectHi[j] != -1 && cpu.memoryProfileIndirectHi[i] != -1) {
                                         int startTargetIndex = cpu.memoryProfileIndirectLo[i];
                                         for (int r = cpu.memoryProfileIndirectLo[j]; r <= cpu.memoryProfileIndirectHi[j] ; r++) {
-//                                            int address = cpu.getBus().read(gotAddress + r) | (cpu.getBus().read(gotAddress + r) << 8);
                                             int address = gotAddress + r;
                                             if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
                                                 if ((cpu.memoryProfileFlags[targetAddress + startTargetIndex] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
@@ -580,7 +579,6 @@ public class Glue {
                                                     }
                                                     // And copy the indexed used pairs
                                                     memoryAddressIsUsingIndexValue[address] = memoryAddressIsUsingIndexValue[targetAddress + startTargetIndex];
-                                                    added = true;
                                                 }
                                             }
                                             startTargetIndex++;
@@ -596,10 +594,6 @@ public class Glue {
             }
 
 
-            if (memoryAddressActualMemoryAddressForLowHighTable[i] > 0) {
-//                continue;
-            }
-
             // Handle targets for jmp( that are not written to
             if (cpu.memoryProfileIsLowAddressForOpcode[i] && cpu.memoryProfileIsHighAddressForOpcode[i+1]) {
                 if ((cpu.memoryProfileFlags[i] & Cpu.kMemoryFlags_Write) == 0 && (cpu.memoryProfileFlags[i+1] & Cpu.kMemoryFlags_Write) == 0) {
@@ -607,7 +601,6 @@ public class Glue {
                     memoryAddressActualMemoryAddressForLowHighTable[i+1] = i;
                     memoryAddressIsPotentiallyLowByteForOpcodeAddress[i] = i;
                     memoryAddressIsPotentiallyHighByteForOpcodeAddress[i+1] = i;
-                    added = true;
                 }
             }
 
@@ -663,7 +656,6 @@ public class Glue {
                             if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
                                 memoryAddressIsPotentiallyLowByteForOpcodeAddress[gotlowZPAddessSourceAddress + r] = i;
                                 memoryAddressIsUsingIndexValue[gotlowZPAddessSourceAddress + r] = r;
-                                added = true;
                             }
                         }
                     }
@@ -673,16 +665,13 @@ public class Glue {
                             if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
                                 memoryAddressIsPotentiallyHighByteForOpcodeAddress[gothighZPAddessSourceAddress + r] = i;
                                 memoryAddressIsUsingIndexValue[gothighZPAddessSourceAddress + r] = r;
-                                added = true;
                             }
                         }
                     }
-
-//                    break;
                 }
             }
 
-
+            // Handle other lo/hi values
             if (cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i] != '\0') {
                 for (int j = i - 1 ; j > i-16 ; j--) {
                     if (cpu.memoryProfileThisOpcodeLoadedInto[j] == cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i]) {
@@ -731,6 +720,10 @@ public class Glue {
                         if (memoryAddressIsUsingIndexValue[j] == memoryAddressIsUsingIndexValue[i] ) {
                             int address = cpu.getBus().read(i) | (cpu.getBus().read(j) << 8);
                             if ((cpu.memoryProfileFlags[address] & (Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write)) != 0) {
+                                if (memoryAddressActualMemoryAddressForLowHighTable[i] <= 0 || memoryAddressActualMemoryAddressForLowHighTable[j] <= 0) {
+                                    added = true;
+                                }
+
                                 memoryAddressActualMemoryAddressForLowHighTable[i] = address;
                                 memoryAddressActualMemoryAddressForLowHighTable[j] = address;
                                 injectLabel[address] = true;    // Ensure a label
