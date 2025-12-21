@@ -396,7 +396,7 @@ Feature:  Profile guided disassembly
     # Validates, per iteration, the recorded memory writes with the previous execution
     Given enable memory profiling validation
 
-    Given I enable trace with indent
+#    Given I enable trace with indent
 #    Given I enable trace with indent at iteration 1598
 
     Given I set register A to 0x00
