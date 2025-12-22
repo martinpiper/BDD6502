@@ -264,8 +264,10 @@ public class Glue {
                 }
             }
             if ((cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[i] == -1) && cpu.memoryProfileIndirectHi[i] >= 1 && cpu.memoryProfileIndirectLo[i] >= 1) {
-                profileFinalGenerateLabelHere[i + cpu.memoryProfileIndirectLo[i]] = true;
-                mapLabelsForIndirects.put("label_" + HexUtil.wordToHex(i).toLowerCase(), "label_" + HexUtil.wordToHex(i + cpu.memoryProfileIndirectLo[i]).toLowerCase() + " - " + cpu.memoryProfileIndirectLo[i] + " ; Table start skipped");
+                if (!excludeProfileMemoryRange[i + cpu.memoryProfileIndirectLo[i]]) {
+                    profileFinalGenerateLabelHere[i + cpu.memoryProfileIndirectLo[i]] = true;
+                    mapLabelsForIndirects.put("label_" + HexUtil.wordToHex(i).toLowerCase(), "label_" + HexUtil.wordToHex(i + cpu.memoryProfileIndirectLo[i]).toLowerCase() + " - " + cpu.memoryProfileIndirectLo[i] + " ; Table start skipped");
+                }
             }
         }
         int lastPCOutput = -1;
@@ -325,11 +327,15 @@ public class Glue {
                     int targetAddress = cpu.memoryProfileTargetBranchAddress[i];
                     if ( (cpu.memoryProfileFlags[targetAddress] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write | Cpu.kMemoryFlags_Execute)) == 0 && !injectLabel[targetAddress] && !indirectRange[targetAddress]) {
                         if (!bprofileExcludeBranchesNotTaken) {
-                            injectLabel[targetAddress] = true;
-                            String theLabel = "label_" + HexUtil.wordToHex(targetAddress).toLowerCase();
-                            line += theLabel + " ; Branch not taken here" + System.lineSeparator();
-                            mapLabelsGenerated.add(theLabel);
-                            labelOut = true;
+                            if (bprofileExcludeBranchesNotTakenHere) {
+                                line = "; Blind branch excluded : " + line;
+                            } else {
+                                injectLabel[targetAddress] = true;
+                                String theLabel = "label_" + HexUtil.wordToHex(targetAddress).toLowerCase();
+                                line += theLabel + " ; Branch not taken here" + System.lineSeparator();
+                                mapLabelsGenerated.add(theLabel);
+                                labelOut = true;
+                            }
                         }
                     }
                 }
@@ -808,6 +814,12 @@ public class Glue {
         bprofileExcludeBranchesNotTaken = true;
     }
 
+    boolean bprofileExcludeBranchesNotTakenHere = false;
+    @Then("^profile exclude blind branches not taken$")
+    public void profileExcludeBranchesNotTakenHere() {
+        bprofileExcludeBranchesNotTakenHere = true;
+    }
+
     int bprofileOutputNeverAccessedAsAByte = -1;
     @Then("^profile output never accessed as a (.*) byte$")
     public void profileOutputNeverAccessedAsAByte(String arg0) throws Exception {
@@ -842,6 +854,30 @@ public class Glue {
     @Then("^profile output PC set at address (.*)$")
     public void profileOutputPCSetAtAddress(String arg0) throws ScriptException {
         sprofileOutputPCSetAtAddress.add(valueToInt(arg0));
+    }
+
+    @Then("^profile mark as code from (.*) to (.*) inclusive$")
+    public void profileMarkAsCodeFromXbToXbInclusive(String arg0, String arg1) throws ScriptException, MemoryAccessException {
+        machine.getCpu().memoryProfileFlags[valueToInt(arg0)] |= Cpu.kMemoryFlags_PCTarget;
+        for (int i = valueToInt(arg0) ; i <= valueToInt(arg1) ; ) {
+            int opcode = machine.getBus().read(i);
+            int instructionSize = Cpu.instructionSizes[opcode];
+            if ( (machine.getCpu().memoryProfileFlags[i] & Cpu.kMemoryFlags_ExecuteStartOp) == 0) {
+                machine.getCpu().memoryProfileFlags[i] |= Cpu.kMemoryFlags_Execute | Cpu.kMemoryFlags_ExecuteStartOp;
+                machine.getCpu().memoryProfileLastOpcodeLength[i] = instructionSize;
+                machine.getCpu().memoryProfileLastOpcode[i] = opcode;
+                if (instructionSize > 1) {
+                    machine.getCpu().memoryProfileLastLastArgsLo[i] = machine.getBus().read(i + 1);
+                    if (instructionSize > 2) {
+                        machine.getCpu().memoryProfileLastLastArgsHi[i] = machine.getBus().read(i + 2);
+                    }
+                }
+                for (int j = 1 ; j < instructionSize ; j++) {
+                    machine.getCpu().memoryProfileFlags[i+j] |= Cpu.kMemoryFlags_Execute;
+                }
+            }
+            i += instructionSize;
+        }
     }
 
 

@@ -1,16 +1,16 @@
-label_07 = $07
-label_08 = $08
 label_6c = $6c
 label_6d = $6d
 label_6e = $6e
+label_9d00 = label_9d01 - 1 ; Table start skipped
+label_9c00 = label_9c01 - 1 ; Table start skipped
+label_07 = $07
+label_08 = $08
 label_6b = $6b
 label_9e = $9e
 label_bc = $bc
 label_bd = $bd
 label_be = $be
 label_bf = $bf
-label_9d00 = label_9d01 - 1 ; Table start skipped
-label_9c00 = label_9c01 - 1 ; Table start skipped
 label_06f4	!by $00
 label_9c01	!by $00
 	!by $20
@@ -1458,6 +1458,22 @@ label_b465	!by >label_b56c ; Was $b5
 	!by >label_b61b ; Was $b6
 	!by >label_b63e ; Was $b6
 	!by >label_b661 ; Was $b6
+label_b46d	!by <label_b572 ; Was $72
+	!by <label_b595 ; Was $95
+	!by <label_b5b8 ; Was $b8
+	!by <label_b5db ; Was $db
+	!by <label_b5fe ; Was $fe
+	!by <label_b621 ; Was $21
+	!by <label_b644 ; Was $44
+	!by <label_b667 ; Was $67
+label_b475	!by >label_b572 ; Was $b5
+	!by >label_b595 ; Was $b5
+	!by >label_b5b8 ; Was $b5
+	!by >label_b5db ; Was $b5
+	!by >label_b5fe ; Was $b5
+	!by >label_b621 ; Was $b6
+	!by >label_b644 ; Was $b6
+	!by >label_b667 ; Was $b6
 label_b47d	!by <label_b6ec ; Was $ec
 	!by <label_b70f ; Was $0f
 	!by <label_b732 ; Was $32
@@ -1474,6 +1490,22 @@ label_b485	!by >label_b6ec ; Was $b6
 	!by >label_b79b ; Was $b7
 	!by >label_b7be ; Was $b7
 	!by >label_b7e1 ; Was $b7
+label_b48d	!by <label_b6f2 ; Was $f2
+	!by <label_b715 ; Was $15
+	!by <label_b738 ; Was $38
+	!by <label_b75b ; Was $5b
+	!by <label_b77e ; Was $7e
+	!by <label_b7a1 ; Was $a1
+	!by <label_b7c4 ; Was $c4
+	!by <label_b7e7 ; Was $e7
+label_b495	!by >label_b6f2 ; Was $b6
+	!by >label_b715 ; Was $b7
+	!by >label_b738 ; Was $b7
+	!by >label_b75b ; Was $b7
+	!by >label_b77e ; Was $b7
+	!by >label_b7a1 ; Was $b7
+	!by >label_b7c4 ; Was $b7
+	!by >label_b7e7 ; Was $b7
 label_b49d	sty label_9e
 	lda #$80
 	sta label_bf
@@ -1482,6 +1514,8 @@ label_b49d	sty label_9e
 	lda label_6d
 	sbc label_6b
 	bcs label_b4b1
+	eor #$ff
+	adc #$01
 label_b4b1	sta label_bc
 	sec
 	lda label_6e
@@ -1496,6 +1530,15 @@ label_b4be	sta label_bd
 label_b4c7	ldx label_6b
 	cpx label_6d
 	bcc label_b4df
+	dec label_06f4
+	lda label_6d
+	sta label_6b
+	stx label_6d
+	tax
+	lda label_6e
+	ldy label_6c
+	sta label_6c
+	sty label_6e
 label_b4df	ldx label_bd
 	beq label_b505
 	lda label_9d00,x
@@ -1507,11 +1550,12 @@ label_b4df	ldx label_bd
 	lda label_9c00,x
 	ldx label_bc
 	sbc label_9c00,x
-label_b501 ; Branch not taken here
 	bcs label_b501 ; Branch not taken
 	tax
 	lda label_9e00,x
 	jmp label_b519
+label_b501	lda #$ff
+	bne label_b519
 label_b505	lda #$00
 	beq label_b519
 label_b509	ldx label_bd
@@ -1542,23 +1586,34 @@ label_b525	lda label_6b
 	and #$07
 	tax
 	bit label_06f4
-label_b555 ; Branch not taken here
-	bmi label_b555 ; Branch not taken
+	bmi label_b555
 	lda label_b45d,x
 	sta label_b553
 	lda label_b465,x
 	sta label_b554
 	ldx label_bc
-label_b552	jmp label_b63e ; Self modified parameters
+label_b552	jmp label_b5b2 ; Self modified parameters
 label_b553 = label_b552 + 1
 label_b554 = label_b552 + 2
 
+label_b555	lda label_b46d,x
+	sta label_b567
+	lda label_b475,x
+	sta label_b568
+	ldx label_bc
+	inx
+	beq label_b569 ; Branch not taken
+label_b566	jmp label_b621 ; Self modified parameters
+label_b567 = label_b566 + 1
+label_b568 = label_b566 + 2
+
+label_b569	ldy label_9e
+	rts
 label_b56c	lda #$80
 	eor (label_07),y
 	sta (label_07),y
-	dex
-label_b569 ; Branch not taken here
-	beq label_b569 ; Branch not taken
+label_b572	dex
+	beq label_b569
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -1576,8 +1631,8 @@ label_b58e	clc
 label_b58f	lda #$40
 	eor (label_07),y
 	sta (label_07),y
-	dex
-	beq label_b569 ; Branch not taken
+label_b595	dex
+	beq label_b569
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -1595,8 +1650,8 @@ label_b5b1	clc
 label_b5b2	lda #$20
 	eor (label_07),y
 	sta (label_07),y
-	dex
-	beq label_b569 ; Branch not taken
+label_b5b8	dex
+	beq label_b569
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -1614,8 +1669,8 @@ label_b5d4	clc
 label_b5d5	lda #$10
 	eor (label_07),y
 	sta (label_07),y
-	dex
-	beq label_b569 ; Branch not taken
+label_b5db	dex
+	beq label_b569
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -1633,8 +1688,8 @@ label_b5f7	clc
 label_b5f8	lda #$08
 	eor (label_07),y
 	sta (label_07),y
-	dex
-	beq label_b645 ; Branch not taken
+label_b5fe	dex
+	beq label_b645
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -1652,8 +1707,8 @@ label_b61a	clc
 label_b61b	lda #$04
 	eor (label_07),y
 	sta (label_07),y
-	dex
-	beq label_b694 ; Branch not taken
+label_b621	dex
+	beq label_b694
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -1671,7 +1726,7 @@ label_b63d	clc
 label_b63e	lda #$02
 	eor (label_07),y
 	sta (label_07),y
-	dex
+label_b644	dex
 label_b645	beq label_b694
 	lda label_bf
 	adc label_bd
@@ -1690,8 +1745,8 @@ label_b660	clc
 label_b661	lda #$01
 	eor (label_07),y
 	sta (label_07),y
-	dex
-	beq label_b694 ; Branch not taken
+label_b667	dex
+	beq label_b694
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -1736,24 +1791,35 @@ label_b6b2	tya
 	and #$07
 	tax
 	bit label_06f4
-label_b6d5 ; Branch not taken here
-	bmi label_b6d5 ; Branch not taken
+	bmi label_b6d5
 	lda label_b47d,x
 	sta label_b6d3
 	lda label_b485,x
 	sta label_b6d4
 	ldx label_bc
 	beq label_b694 ; Branch not taken
-label_b6d2	jmp label_b79b ; Self modified parameters
+label_b6d2	jmp label_b755 ; Self modified parameters
 label_b6d3 = label_b6d2 + 1
 label_b6d4 = label_b6d2 + 2
 
+label_b6d5	lda label_b48d,x
+	sta label_b6e7
+	lda label_b495,x
+	sta label_b6e8
+	ldx label_bc
+	inx
+	beq label_b694 ; Branch not taken
+label_b6e6	jmp label_b7e7 ; Self modified parameters
+label_b6e7 = label_b6e6 + 1
+label_b6e8 = label_b6e6 + 2
+
+label_b6e9	ldy label_9e
+	rts
 label_b6ec	lda #$80
 	eor (label_07),y
 	sta (label_07),y
-	dex
-label_b6e9 ; Branch not taken here
-	beq label_b6e9 ; Branch not taken
+label_b6f2	dex
+	beq label_b6e9
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -1771,8 +1837,8 @@ label_b70e	clc
 label_b70f	lda #$40
 	eor (label_07),y
 	sta (label_07),y
-	dex
-	beq label_b6e9 ; Branch not taken
+label_b715	dex
+	beq label_b6e9
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -1790,8 +1856,8 @@ label_b731	clc
 label_b732	lda #$20
 	eor (label_07),y
 	sta (label_07),y
-	dex
-	beq label_b6e9 ; Branch not taken
+label_b738	dex
+	beq label_b6e9
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -1809,8 +1875,8 @@ label_b754	clc
 label_b755	lda #$10
 	eor (label_07),y
 	sta (label_07),y
-	dex
-	beq label_b7c5 ; Branch not taken
+label_b75b	dex
+	beq label_b7c5
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -1828,8 +1894,8 @@ label_b777	clc
 label_b778	lda #$08
 	eor (label_07),y
 	sta (label_07),y
-	dex
-	beq label_b7c5 ; Branch not taken
+label_b77e	dex
+	beq label_b7c5
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -1847,8 +1913,8 @@ label_b79a	clc
 label_b79b	lda #$04
 	eor (label_07),y
 	sta (label_07),y
-	dex
-	beq label_b811 ; Branch not taken
+label_b7a1	dex
+	beq label_b811
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -1866,7 +1932,7 @@ label_b7bd	clc
 label_b7be	lda #$02
 	eor (label_07),y
 	sta (label_07),y
-	dex
+label_b7c4	dex
 label_b7c5	beq label_b811
 	lda label_bf
 	adc label_bd
@@ -1885,8 +1951,8 @@ label_b7e0	clc
 label_b7e1	lda #$01
 	eor (label_07),y
 	sta (label_07),y
-	dex
-	beq label_b811 ; Branch not taken
+label_b7e7	dex
+	beq label_b811
 	lda label_bf
 	adc label_bd
 	sta label_bf
@@ -2004,7 +2070,7 @@ label_b8c4	dex
 	ldy label_9e
 	rts
 label_b8ca	lda label_06f4
-	beq label_b8d6 ; Branch not taken
+	beq label_b8d6
 	dex
 label_b8d0	lda label_be
 	eor (label_07),y

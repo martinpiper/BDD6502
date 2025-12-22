@@ -500,6 +500,85 @@ Feature:  Profile guided disassembly
     And C64 video display saves debug BMP images to leaf filename "target/frames/TC-25-C64-1-"
     And render a C64 video display frame
 
+       # This aims to exercise combinations of line drawing operations to get maximum code coverage
+    And I create file "target\elitedemo_includes.a" with
+      """
+      label_6b = $6b
+      label_b49d = $b49d
+      """
+    And I create file "target\elitedemo.a" with
+      """
+      !sal
+      excludeStart2
+      start2
+        jsr DoDraw
+        jsr DoDraw
+
+      ; Apply velocity
+        ldx #3
+      .cl1
+        lda coords,x
+        clc
+        adc velocity,x
+        sta coords,x
+        dex
+        bpl .cl1
+
+      !macro MDoTest .i , .max {
+        lda coords + .i
+        cmp #4
+        bcs .o1
+        lda velocity + .i
+        bpl .o1
+        eor #$ff
+        clc
+        adc #1
+        sta velocity + .i
+        jmp .o2
+      .o1
+        cmp #.max
+        bcc .o2
+        lda velocity + .i
+        bmi .o2
+        eor #$ff
+        clc
+        adc #1
+        sta velocity + .i
+      .o2
+        }
+        +MDoTest 0 , 250
+        +MDoTest 1 , 195
+        +MDoTest 2 , 250
+        +MDoTest 3 , 195
+        rts
+
+      DoDraw
+        ldx #3
+      .cl2
+        lda coords,x
+        sta+1 label_6b,x
+        dex
+        bpl .cl2
+        jsr label_b49d
+        rts
+
+      coords
+        !by 100 , 100 , 100, 100
+      velocity
+        !by 1 , 2 , 3 , 4
+      excludeEnd2
+      """
+    And I run the command line: ..\C64\acme.exe --setpc $400 -o target\elitedemo.prg --labeldump target\elitedemo.lbl -f cbm target\elitedemo.a target\elitedemo_includes.a
+    And I load prg "target\elitedemo.prg"
+    And I load labels "target\elitedemo.lbl"
+    Given I fill memory from $4000 to $6000 exclusive with $00
+    Given I fill memory from $6000 to $6400 exclusive with $10
+    Then profile exclude memory range from excludeStart2 to excludeEnd2
+    Given C64 video display does not save debug BMP images
+    When I execute the procedure at start2 until return for 10000 iterations
+    And C64 video display saves debug BMP images to leaf filename "target/frames/TC-25-C64-1-"
+    And render a C64 video display frame
+
 #    Then include profile last access
 #    Then include profile index register type
 #    Then include profile index range
@@ -517,12 +596,17 @@ Feature:  Profile guided disassembly
 #    Then profile preserve data spacing from 0x9c21 to 0x9dff
 #    Then profile preserve data spacing from 0xa000 to 0xa1ff
 #    Then profile exclude branches not taken
+    # Less aggressive than all not taken branches
+#    Then profile exclude blind branches not taken
 #    Then profile output never accessed as a 0 byte
     Then profile exclude memory range from 0x4000 to 0x5fff
+    # This is because none of the tests was able to exercise this part of the code
+    Then profile mark as code from 0xb501 to 0xb504 inclusive
     Then profile optimise labels
     # Reload the data so the memory is exactly the same before profiled execution
     And I load prg "testdata\eld.prg"
     Then output profile disassembly to file "target\elitelinedraw.a"
+
 
     # Now test the disassembled code to make sure it works when relocated elsewhere
     Given clear all external devices
@@ -575,7 +659,6 @@ Feature:  Profile guided disassembly
       """
       !source "target\elitelinedraw.lbl"
       !sal
-      *=$400
       excludeStart
       coords
         !by 0 , 0 , 255, 199
@@ -614,7 +697,7 @@ Feature:  Profile guided disassembly
         rts
       excludeEnd
       """
-    And I run the command line: ..\C64\acme.exe -o target\eliteinit.prg --labeldump target\eliteinit.lbl -f cbm target\eliteinit.a
+    And I run the command line: ..\C64\acme.exe --setpc $400 -o target\eliteinit.prg --labeldump target\eliteinit.lbl -f cbm target\eliteinit.a
     And I load prg "target\eliteinit.prg"
     And I load labels "target\eliteinit.lbl"
     Then profile exclude memory range from excludeStart to excludeEnd
@@ -624,3 +707,61 @@ Feature:  Profile guided disassembly
     And C64 video display saves debug BMP images to leaf filename "target/frames/TC-25-C64-2-"
     And render a C64 video display frame
     Then expect image "target/frames/TC-25-C64-1-029720.bmp" to be identical to "target/frames/TC-25-C64-2-029720.bmp"
+
+
+  @TC-26
+  Scenario: Run Elite's line draw
+    Given clear all external devices
+    Given a new C64 video display
+    And show C64 video window
+    And C64 video display saves debug BMP images to leaf filename "target/frames/TC-26-C64-"
+    And force C64 displayed bank to 2
+
+    Given I have a simple overclocked 6502 system
+    Given I am using C64 processor port options
+    Given add C64 hardware
+    When I enable uninitialised memory read protection with immediate fail
+    Given I disable trace
+
+    # Same as the game code initialisation
+    Given I write memory at $01 with $35
+    Given I write memory at $d011 with $3b
+    Given I write memory at $d018 with $81
+    Given I write memory at $d020 with 2
+
+    And I create file "target\elitedemo2.a" with
+      """
+      !sal
+        sei
+        ldx #$ff
+        txs
+        lda #$35
+        sta $01
+        lda #$3b
+        sta $d011
+        lda #$81
+        sta $d018
+        lda #2
+        sta $dd00
+        lda #2
+        sta $d020
+      .l1
+        jsr start2
+        jmp .l1
+      !source "target\elitedemo.a"
+      !source "target\elitelinedraw.a"
+
+      * = $4000
+        !fill $2000 , 0
+      * = $6000
+        !fill (40*25) , $10
+      """
+    And I run the command line: ..\C64\acme.exe --setpc $400 -o target\elitedemo.prg --labeldump target\elitedemo.lbl -f cbm target\elitedemo2.a
+    And I load prg "target\elitedemo.prg"
+    And I load labels "target\elitedemo.lbl"
+#    Given C64 video display does not save debug BMP images
+    Given I disable trace
+#    When I execute the procedure at start until return
+    When I execute the procedure at start2 until return for 1000 iterations
+
+    # c:\work\c64\bin\LZMPi.exe -c64mbu c:\work\BDD6502\target\elitedemo.prg c:\temp\ed.prg $400
