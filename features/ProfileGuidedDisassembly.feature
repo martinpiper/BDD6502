@@ -405,3 +405,163 @@ Feature:  Profile guided disassembly
 #    When I execute the procedure at $b059 until return for 10000 iterations
 
     # cls && c:\work\c64\acme.exe --cpu 6502 -o c:\temp\t.prg --labeldump test.lbl -f cbm -v9 features\MinPlay3.a && c:\work\c64\bin\LZMPi.exe -pp $35 -c64mbu c:\temp\t.prg c:\temp\tcmp.prg $cf80 && c:\temp\tcmp.prg
+
+
+
+  # Using information from here: https://github.com/martinpiper/DebuggingDetails/blob/main/Elite.txt
+  @TC-25
+  Scenario: Analyse Elite's line draw
+    Given clear all external devices
+    Given a new C64 video display
+    And show C64 video window
+    And C64 video display saves debug BMP images to leaf filename "target/frames/TC-25-C64-1-"
+    And force C64 displayed bank to 2
+
+    Given I have a simple overclocked 6502 system
+    Given I am using C64 processor port options
+    Given add C64 hardware
+    When I enable uninitialised memory read protection with immediate fail
+    Given I disable trace
+    And I load prg "testdata\eld.prg"
+    # Same as the game code initialisation
+    Given I write memory at $01 with $35
+    Given I write memory at $d011 with $3b
+    Given I write memory at $d018 with $81
+    And render a C64 video display frame
+    Given I fill memory from $4000 to $6000 exclusive with $00
+    And render a C64 video display frame
+
+    Given enable memory profiling
+    Given memory profile record writes from 0x4000 to 0x5fff
+
+    And I start writing memory at $6b
+    And I write the following hex bytes
+      | 10 20 30 40 |
+    When I execute the procedure at $b49d until return
+    And render a C64 video display frame
+    And I start writing memory at $6b
+    And I write the following hex bytes
+      | 0 0 ff c7 |
+    When I execute the procedure at $b49d until return
+    And render a C64 video display frame
+
+    Given C64 video display does not save debug BMP images
+    # This aims to exercise combinations of line drawing operations to get maximum code coverage
+    And I create file "target\eliteinit.a" with
+      """
+      !sal
+      *=$400
+      excludeStart
+      coords
+        !by 0 , 0 , 255, 199
+      coords2
+        !by 0, 199 , 255 , 0
+      start
+        ldx #3
+      .cl1
+        lda coords,x
+        sta $6b,x
+        dex
+        bpl .cl1
+        jsr $b49d
+        inc coords
+        bne start
+        inc coords+1
+        lda coords+1
+        cmp #$c8
+        bne start
+
+        ; And now the opposite case
+      start2
+        ldx #3
+      .cl2
+        lda coords2,x
+        sta $6b,x
+        dex
+        bpl .cl2
+        jsr $b49d
+        inc coords2
+        bne start2
+        inc coords2+3
+        lda coords2+3
+        cmp #$c8
+        bne start2
+        rts
+      excludeEnd
+      """
+    And I run the command line: ..\C64\acme.exe -o target\eliteinit.prg --labeldump target\eliteinit.lbl -f cbm target\eliteinit.a
+    And I load prg "target\eliteinit.prg"
+    And I load labels "target\eliteinit.lbl"
+    Then profile exclude memory range from excludeStart to excludeEnd
+    Then profile exclude memory range from $06f4 to $06f5
+#    When I execute the procedure at start until return
+    And render a C64 video display frame
+
+#    Then include profile last access
+#    Then include profile index register type
+#    Then include profile index range
+#    Then include profile write hint
+
+    Then include profile branch not taken
+    Then profile use fill instead of PC adjust
+    Then profile set PC adjust limit to 256 bytes
+#    Then profile always set PC when moving from code to data
+#    Then profile always set PC when moving from data to code
+#    Then profile avoid PC set in code
+#    Then profile avoid PC adjust in code
+#    Then profile avoid PC set in data
+#    Then profile avoid PC adjust in data
+    Then profile preserve data spacing from 0x9c00 to 0x9dff
+    Then profile preserve data spacing from 0xa000 to 0xa1ff
+#    Then profile exclude branches not taken
+#    Then profile output never accessed as a 0 byte
+    Then profile exclude memory range from 0x4000 to 0x5fff
+    Then profile optimise labels
+    # Reload the data so the memory is exactly the same before profiled execution
+    And I load prg "testdata\eld.prg"
+    Then output profile disassembly to file "target\elitelinedraw.a"
+
+
+    Given clear all external devices
+    Given a new C64 video display
+    And show C64 video window
+    And C64 video display saves debug BMP images to leaf filename "target/frames/TC-25-C64-2-"
+    And force C64 displayed bank to 2
+
+    Given I have a simple overclocked 6502 system
+    Given I am using C64 processor port options
+    Given add C64 hardware
+    When I enable uninitialised memory read protection with immediate fail
+    Given I enable trace with indent
+
+    Given I write memory at $01 with $35
+    Given I write memory at $d011 with $3b
+    Given I write memory at $d018 with $81
+    Given I write memory at $d020 with 2
+
+    # Set this memory as written because the draw code uses EOR which reads "uninitialised" memory
+    Given I fill memory from $4000 to $6000 exclusive with $00
+    Given I fill memory from $6000 to $6400 exclusive with $10
+    And render a C64 video display frame
+    And render a C64 video display frame
+
+    And I create file "target\elitelinedraw_defs.a" with
+      """
+      label_06f4 !by 0
+      """
+    And I run the command line: ..\C64\acme.exe --setpc $c000 -o target\elitelinedraw.prg --labeldump target\elitelinedraw.lbl -f cbm target\elitelinedraw.a target\elitelinedraw_defs.a
+#    And I run the command line: ..\C64\acme.exe --setpc $c000 -o target\elitelinedraw.prg --labeldump target\elitelinedraw.lbl -f cbm target\elitelinedraw.a
+    And I load prg "target\elitelinedraw.prg"
+    And I load labels "target\elitelinedraw.lbl"
+
+#    Given I enable trace with indent
+    And I start writing memory at label_6b
+    And I write the following hex bytes
+      | 10 20 30 40 |
+    When I execute the procedure at label_b49d until return
+    And I start writing memory at label_6b
+    And I write the following hex bytes
+      | 0 0 ff c7 |
+    When I execute the procedure at label_b49d until return
+    And render a C64 video display frame
+    And render a C64 video display frame

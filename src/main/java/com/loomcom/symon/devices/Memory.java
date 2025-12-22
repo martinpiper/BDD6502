@@ -176,6 +176,10 @@ public class Memory extends Device {
         Arrays.fill(this.mem, val);
     }
 
+    public void fill(int val, int from, int toExclusive) {
+        Arrays.fill(this.mem, val, from, toExclusive);
+    }
+
     public String toString() {
         return "Memory: " + getMemoryRange().toString();
     }

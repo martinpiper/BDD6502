@@ -325,6 +325,7 @@ public class Glue {
                     int targetAddress = cpu.memoryProfileTargetBranchAddress[i];
                     if ( (cpu.memoryProfileFlags[targetAddress] & (Cpu.kMemoryFlags_Read | Cpu.kMemoryFlags_Write | Cpu.kMemoryFlags_Execute)) == 0 && !injectLabel[targetAddress] && !indirectRange[targetAddress]) {
                         if (!bprofileExcludeBranchesNotTaken) {
+                            injectLabel[targetAddress] = true;
                             String theLabel = "label_" + HexUtil.wordToHex(targetAddress).toLowerCase();
                             line += theLabel + " ; Branch not taken here" + System.lineSeparator();
                             mapLabelsGenerated.add(theLabel);
@@ -534,6 +535,14 @@ public class Glue {
 
         for (String generated : mapLabelsGenerated) {
             mapLabelsForIndirects.remove(generated);
+        }
+        if (bprofileOptimiseLabels) {
+            for (int i = 0x100 ; i < profileFinalGenerateLabelHere.length; i++) {
+                if (!profileFinalGenerateLabelHere[i]) {
+                    String toRemove = "label_" + HexUtil.wordToHex(i).toLowerCase();
+                    mapLabelsForIndirects.remove(toRemove);
+                }
+            }
         }
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(arg0, false));
@@ -1085,7 +1094,9 @@ public class Glue {
         userPort24BitAddress = null;
 
         if (displayC64 != null) {
-            displayC64.getWindow().dispatchEvent(new WindowEvent(displayBombJack.getWindow(), WindowEvent.WINDOW_CLOSING));
+            if (displayBombJack != null) {
+                displayC64.getWindow().dispatchEvent(new WindowEvent(displayBombJack.getWindow(), WindowEvent.WINDOW_CLOSING));
+            }
         }
         displayC64 = null;
     }
@@ -1123,6 +1134,14 @@ public class Glue {
     public void i_fill_memory_with(String arg1) throws Throwable {
         Memory mem = machine.getRam();
         mem.fill(valueToInt(arg1));
+    }
+
+    @Given("^I fill memory from (.+) to (.+) exclusive with (.+)$")
+    public void i_fill_memory_with(String arg1 , String arg2 , String arg3) throws Throwable {
+        int value = valueToInt(arg3);
+        for (int address = valueToInt(arg1) ; address < valueToInt(arg2) ; address++) {
+            machine.getBus().write(address, value);
+        }
     }
 
     @When("^I enable uninitialised memory read protection$")
