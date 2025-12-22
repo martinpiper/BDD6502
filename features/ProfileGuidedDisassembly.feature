@@ -668,7 +668,7 @@ Feature:  Profile guided disassembly
         ldx #3
       .cl1
         lda coords,x
-        sta label_6b,x
+        sta+1 label_6b,x
         dex
         bpl .cl1
         jsr label_b49d
@@ -732,6 +732,9 @@ Feature:  Profile guided disassembly
     And I create file "target\elitedemo2.a" with
       """
       !sal
+        jmp RealStart
+      !source "target\elitelinedraw.a"
+      RealStart
         sei
         ldx #$ff
         txs
@@ -749,14 +752,14 @@ Feature:  Profile guided disassembly
         jsr start2
         jmp .l1
       !source "target\elitedemo.a"
-      !source "target\elitelinedraw.a"
+
 
       * = $4000
         !fill $2000 , 0
       * = $6000
         !fill (40*25) , $10
       """
-    And I run the command line: ..\C64\acme.exe --setpc $400 -o target\elitedemo.prg --labeldump target\elitedemo.lbl -f cbm target\elitedemo2.a
+    And I run the command line: ..\C64\acme.exe -v9 --setpc $400 -o target\elitedemo.prg --labeldump target\elitedemo.lbl -f cbm target\elitedemo2.a
     And I load prg "target\elitedemo.prg"
     And I load labels "target\elitedemo.lbl"
 #    Given C64 video display does not save debug BMP images

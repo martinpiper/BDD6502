@@ -1,0 +1,27 @@
+!sal
+  jmp RealStart
+!source "target\elitelinedraw.a"
+RealStart
+  sei
+  ldx #$ff
+  txs
+  lda #$35
+  sta $01
+  lda #$3b
+  sta $d011
+  lda #$81
+  sta $d018
+  lda #2
+  sta $dd00
+  lda #2
+  sta $d020
+.l1
+  jsr start2
+  jmp .l1
+!source "target\elitedemo.a"
+
+
+* = $4000
+  !fill $2000 , 0
+* = $6000
+  !fill (40*25) , $10

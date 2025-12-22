@@ -1,0 +1,39 @@
+!source "target\elitelinedraw.lbl"
+!sal
+excludeStart
+coords
+  !by 0 , 0 , 255, 199
+coords2
+  !by 0, 199 , 255 , 0
+start
+  ldx #3
+.cl1
+  lda coords,x
+  sta label_6b,x
+  dex
+  bpl .cl1
+  jsr label_b49d
+  inc coords
+  bne start
+  inc coords+1
+  lda coords+1
+  cmp #$c8
+  bne start
+
+  ; And now the opposite case
+start2
+  ldx #3
+.cl2
+  lda coords2,x
+  sta label_6b,x
+  dex
+  bpl .cl2
+  jsr label_b49d
+  inc coords2
+  bne start2
+  inc coords2+3
+  lda coords2+3
+  cmp #$c8
+  bne start2
+  rts
+excludeEnd
