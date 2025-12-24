@@ -768,3 +768,30 @@ Feature:  Profile guided disassembly
     When I execute the procedure at start2 until return for 1000 iterations
 
     # c:\work\c64\bin\LZMPi.exe -c64mbu c:\work\BDD6502\target\elitedemo.prg c:\temp\ed.prg $400
+
+
+    @TC-27
+      Scenario: Convert simple Acme source to Kick Assembler source syntax
+        Given I create file "target\test-TC-26-1.a" with
+        """
+        label_6c = $6c
+        label_9d00 = label_9c01 - 1 ; Table start skipped
+        * = $1234
+        label_9c01	!by $00
+          ; Note spaces and tabs
+          !by $20
+        	!by $21
+        	!fill 9
+        """
+      When converting simple ACME syntax in file "target\test-TC-26-1.a" to Kick Assembler output file "target\test-TC-26-1.asm"
+      Then open file "target\test-TC-26-1.asm" for reading
+      And ignoring empty lines
+      # https://www.theweb.dk/KickAssembler/webhelp/content/ch03s05.html
+      Then expect the next line to contain ".label label_6c = $6c"
+      Then expect the next line to contain ".label label_9d00 = label_9c01 - 1 // Table start skipped"
+      Then expect the next line to contain "* = $1234"
+      Then expect the next line to contain "label_9c01: .byte $00"
+      Then expect the next line to contain "// Note spaces and tabs"
+      Then expect the next line to contain ".byte $20"
+      Then expect the next line to contain ".byte $21"
+      Then expect the next line to contain ".fill 9,0"

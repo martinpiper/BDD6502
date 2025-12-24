@@ -9,6 +9,7 @@ import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 import com.loomcom.symon.util.HexUtil;
 import com.replicanet.cukesplus.PropertiesResolution;
+import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -878,6 +879,49 @@ public class Glue {
             }
             i += instructionSize;
         }
+    }
+
+    @When("^converting simple ACME syntax in file \"([^\"]*)\" to Kick Assembler output file \"([^\"]*)\"$")
+    public void convertingSimpleACMESyntaxInFileToKickAssemblerOutputFile(String arg0, String arg1) throws Throwable {
+        BufferedReader br = new BufferedReader(new FileReader(arg0));
+        PrintWriter output = new PrintWriter(new FileWriter(arg1));
+
+        String line;
+        while ((line = br.readLine()) != null) {
+            // Normalise whitespace and end of line
+            line = line.replace("\n" , "");
+            line = line.replace("\r" , "");
+            line = line.replace("\t" , " ");
+            line = line.replace("  " , " ");
+            // Now spot syntax changes
+            line = line.replace(";" , "//");
+            line = line.replace("!by" , ".byte");
+            String trimmedLine = line.trim();
+            if (!trimmedLine.startsWith("//")) {
+                if (line.contains("*")) {
+                } else if (line.contains("=")) {
+                    line = ".label " + line;
+                } else if (!line.startsWith(" ")) {
+                    // It's a label...
+                    int pos = line.indexOf(' ');
+                    if (pos != -1) {
+                        line = line.substring(0, pos) + ":" + line.substring(pos);
+                    }
+                } else if (line.contains("!fill")) {
+                    int pos = line.indexOf("!fill");
+                    if (pos != -1) {
+                        line = line.substring(0,pos) + "." + line.substring(pos + 1) + ",0";
+
+                    }
+                }
+            }
+            if (line.startsWith(" ")) {
+                line = "\t" + line.substring(1);
+            }
+            output.println(line);
+        }
+        br.close();
+        output.close();
     }
 
 
