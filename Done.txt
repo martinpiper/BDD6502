@@ -1151,3 +1151,8 @@ Added: Given I am using C64 processor port options
     Decision B715 B718 0 opcode B006
     Decision B716 B719 1 opcode B006
     Decision B717 B71A 2 opcode B006
+
+
+
+* Quickly automate pasting the clipboard into the active window, regardless of its paste support
+    >> https://github.com/martinpiper/PasteByTyping
