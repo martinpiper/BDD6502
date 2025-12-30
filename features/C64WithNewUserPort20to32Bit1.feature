@@ -6,6 +6,7 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
   Scenario: Simple C64 and user port interface test
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/C64WithNewUserPort20to32Bit1.a"
+    # c:\Users\marti\Desktop\EF3\easytransfer-win32-1.2.0\easytransfer\ef3xfer.exe -x c:\work\BDD6502\testcmp.prg
     And I run the command line: ..\C64\bin\LZMPi.exe -c64mbu test.prg testcmp.prg $800
 
     Given clear all external devices
@@ -18,6 +19,7 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     Given a new video display with overscan and 16 colours
     Given set the video display to RGB colour 5 6 5
     Given set the video display with 32 palette banks
+    And the display uses exact address matching
 	And enable video display bus debug output
     Given video display processes 24 pixels per instruction
     Given video display refresh window every 32 instructions
@@ -45,19 +47,45 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
     And trim "0" bytes from the start of temporary memory
     And add temporary memory to the 32 bit interface memory address '0x0'
     And enable user port bus debug output
-    Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
+    # Note: If comparing simulated output with emulated output, some layers need a merge layer
+    # Layer 3
+    Given add a 2-to-1 merge layer with registers at '0xa200'
     And the layer has 16 colours
     And the layer has overscan
+		# Layer 3-1
+    Given add a Mode7 layer with registers at '0xa000' and addressEx '0x08'
+    And the layer has 16 colours
+    And the layer has overscan
+    And the layer uses exact address matching
+		# Layer 3-0
     Given add a Tiles layer with registers at '0x9e00' and screen addressEx '0x80' and planes addressEx '0x40'
     And the layer has 16 colours
     And the layer has overscan
-    Given add a Sprites2 layer with registers at '0x9200' and addressEx '0x08' and running at 14.31818MHz
+#		And the layer uses exact address matching
+	# Layer 2
+    Given add a Sprites4 layer with registers at '0xb800' and addressEx '0x05' and running at 12.096MHz
     And the layer has 16 colours
     And the layer has overscan
-#    Given add a Sprites layer with registers at '0x9800' and addressEx '0x10'
-    Given add a Sprites V9.5 layer with registers at '0x9800' and addressEx '0x10' and running at 16MHz
+    And the layer uses exact address matching
+#    And the layer displays a debug window
+    # Layer 1
+    Given add a 2-to-1 merge layer with registers at '0xa202'
     And the layer has 16 colours
     And the layer has overscan
+      Given add a Chars V4.0 layer with registers at '0xa800' and screen addressEx '0x90' and planes addressEx '0x30'
+      And the layer has 16 colours
+      And the layer has overscan
+      And the layer uses exact address matching
+      Given add a Chars V4.0 layer with registers at '0x9000' and screen addressEx '0x80' and planes addressEx '0x20'
+      And the layer has 16 colours
+      And the layer has overscan
+      And the layer uses exact address matching
+    # Layer 0
+    Given add a Sprites4 layer with registers at '0x8800' and addressEx '0x05' and running at 12.096MHz
+    And the layer has 16 colours
+    And the layer has overscan
+    And the layer uses exact address matching
+
 
     When enable remote debugging
 #    And wait for debugger connection

@@ -1,0 +1,126 @@
+; ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/C64WithNewUserPort20to32Bit1Minimal.a"
+; ..\C64\bin\LZMPi.exe -c64mbu test.prg testcmp.prg $800
+; c:\Users\marti\Desktop\EF3\easytransfer-win32-1.2.0\easytransfer\ef3xfer.exe -x c:\work\BDD6502\testcmp.prg
+; ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/C64WithNewUserPort20to32Bit1Minimal.a" && ..\C64\bin\LZMPi.exe -c64mbu test.prg testcmp.prg $800 && c:\Users\marti\Desktop\EF3\easytransfer-win32-1.2.0\easytransfer\ef3xfer.exe -x c:\work\BDD6502\testcmp.prg
+
+kBus24Bit_VideoLayer_HasOverscan=1
+kBus24Bit_VideoLayer_ExpandedPalettes = 1
+kBus24Bit_VideoLayer_ExpandedPaletteLayers = 1
+kBus24Bit_SpritesMaxNum = 32
+kHardwareTest_UsingSprites4 = 1
+kBus24Bit_Sprites4_Controls2		= $b800
+kBus24Bit_Sprites4_Registers2		= $b808
+
+!ct pet
+!sal
+!pdb "target/t.pdb"
+!source "C64/stdlib/stdlib.a"
+!source "C64/stdlib/LongBranches.a"
+!source "C64/stdlib/PETSCII.a"
+
+
+*=$800
+!zn
+; The code "start" entry which initialises the stack is not called before this, which is fine for unit testing
+; When running on a real C64 the "start" entry initialises the machine properly
+start
+	sei
+	lda #ProcessorPortDefault
+	jsr InitialiseMachine
+
+    ; Very minimal interface bit twiddling
+    lda #%00111100
+    sta CIA2PortADDR
+	lda #$ff
+	sta CIA2PortBDDR
+
+    ; PA2 toggle
+	lda #%000
+	sta CIA2PortASerialBusVICBank
+	lda #CIA2PortASerialBusVICBank_PA2
+	sta CIA2PortASerialBusVICBank
+	lda #%000
+	sta CIA2PortASerialBusVICBank
+	lda #CIA2PortASerialBusVICBank_PA2
+	sta CIA2PortASerialBusVICBank
+
+!if 0 {
+    ; Small delay
+    ldx #0
+    ldy #100
+.wl1
+    dex
+    bne .wl1
+    dey
+    bne .wl1
+}
+
+    ; Other bits toggle
+    lda #%01000000
+    sta CIA1TimerAControl
+	lda #%00000000
+	sta CIA1TimerAControl
+    lda #%01000000
+    sta CIA1TimerAControl
+	lda #%00000000
+	sta CIA1TimerAControl
+
+	lda #%01000000
+	sta CIA2TimerAControl
+	lda #%00000000
+	sta CIA2TimerAControl
+	lda #%01000000
+	sta CIA2TimerAControl
+	lda #%00000000
+	sta CIA2TimerAControl
+
+	lda #CIA2PortASerialBusVICBank_Inv_ATN
+	sta CIA2PortASerialBusVICBank
+	lda #0
+	sta CIA2PortASerialBusVICBank
+	lda #CIA2PortASerialBusVICBank_Inv_ATN
+	sta CIA2PortASerialBusVICBank
+	lda #0
+	sta CIA2PortASerialBusVICBank
+
+    ; Data values out
+    lda #%00000000
+    sta CIA2PortBRS232
+    lda #%00000001
+    sta CIA2PortBRS232
+    lda #%00000010
+    sta CIA2PortBRS232
+    lda #%00000100
+    sta CIA2PortBRS232
+    lda #%00001000
+    sta CIA2PortBRS232
+    lda #%00010000
+    sta CIA2PortBRS232
+    lda #%00100000
+    sta CIA2PortBRS232
+    lda #%01000000
+    sta CIA2PortBRS232
+    lda #%10000000
+    sta CIA2PortBRS232
+
+.ol0
+    ldx #0
+.ol1
+    stx CIA2PortBRS232
+    inx
+    bne .ol1
+
+	lda #$ff
+	sta CIA2PortBDDR
+
+    ; End
+.dl1
+    inc VIC2BorderColour
+    lda CIA2PortBRS232
+    jmp .dl1
+
+Initialise_NoPreserveStack = 1
+Initialise_NoIRQServiceRoutine = 1
+Initialise_NoMACROWaitForTheLastScan = 1
+!source "C64/stdlib/Initialise.a"
+
