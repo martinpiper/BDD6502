@@ -1,7 +1,11 @@
 ; ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/C64WithNewUserPort20to32Bit1Minimal.a"
 ; ..\C64\bin\LZMPi.exe -c64mbu test.prg testcmp.prg $800
 ; c:\Users\marti\Desktop\EF3\easytransfer-win32-1.2.0\easytransfer\ef3xfer.exe -x c:\work\BDD6502\testcmp.prg
+; curl --request POST --data-binary "@c:\work\BDD6502\testcmp.prg" http://c64u/v1/runners:run_prg
+; curl --request PUT http://c64u/v1/machine:reset
+; curl --request PUT http://c64u/v1/machine:poweroff
 ; ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/C64WithNewUserPort20to32Bit1Minimal.a" && ..\C64\bin\LZMPi.exe -c64mbu test.prg testcmp.prg $800 && c:\Users\marti\Desktop\EF3\easytransfer-win32-1.2.0\easytransfer\ef3xfer.exe -x c:\work\BDD6502\testcmp.prg
+; ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/C64WithNewUserPort20to32Bit1Minimal.a" && ..\C64\bin\LZMPi.exe -c64mbu test.prg testcmp.prg $800 && curl --request POST --data-binary "@c:\work\BDD6502\testcmp.prg" http://c64u/v1/runners:run_prg
 
 kBus24Bit_VideoLayer_HasOverscan=1
 kBus24Bit_VideoLayer_ExpandedPalettes = 1
@@ -28,6 +32,11 @@ start
 	lda #ProcessorPortDefault
 	jsr InitialiseMachine
 
+	+MACROWaitForTheLastScanPlus1_A
+	+MACROWaitForTheLastScan_A
+	+MACROWaitForTheLastScanPlus1_A
+	+MACROWaitForTheLastScan_A
+
     ; Very minimal interface bit twiddling
     lda #%00111100
     sta CIA2PortADDR
@@ -43,17 +52,6 @@ start
 	sta CIA2PortASerialBusVICBank
 	lda #CIA2PortASerialBusVICBank_PA2
 	sta CIA2PortASerialBusVICBank
-
-!if 0 {
-    ; Small delay
-    ldx #0
-    ldy #100
-.wl1
-    dex
-    bne .wl1
-    dey
-    bne .wl1
-}
 
     ; Other bits toggle
     lda #%01000000

@@ -7,6 +7,7 @@ Feature: C64 with new UserPort20To32Bit1 and old UserPortTo24 interfaces
 
     And I run the command line: ..\C64\acme.exe -v3 --lib ../ -o test.prg --labeldump test.lbl -f cbm "features/C64WithNewUserPort20to32Bit1.a"
     # c:\Users\marti\Desktop\EF3\easytransfer-win32-1.2.0\easytransfer\ef3xfer.exe -x c:\work\BDD6502\testcmp.prg
+    # curl --request POST --data-binary "@c:\work\BDD6502\testcmp.prg" http://c64u/v1/runners:run_prg
     And I run the command line: ..\C64\bin\LZMPi.exe -c64mbu test.prg testcmp.prg $800
 
     Given clear all external devices
