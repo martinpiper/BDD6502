@@ -246,7 +246,7 @@ Feature:  Profile guided disassembly
     Then profile avoid PC adjust in data
     # Removing spaces in data is quite aggressive and can introduce problems
     Then profile avoid PC set in data
-    Then profile preserve data spacing from 0x837d to 0xffff
+    Then profile preserve data spacing from 0x837e to 0xffff
     # This the data spacing is needed, so we protect it
     Then profile preserve data spacing from 0x0ac4 to 0x0ac8
     Then profile exclude branches not taken
