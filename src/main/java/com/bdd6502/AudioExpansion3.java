@@ -217,30 +217,7 @@ public class AudioExpansion3 extends MemoryBus implements Runnable {
                 if (voiceInternalCounter >= counterShiftValue) {
                     voiceInternalCounter -= counterShiftValue;
 
-                    // Decode the delta
-                    int delta = 0;
-                    int numBits = 0;
-                    int gotBit = 1;
-                    while(getNextBit() == 0) {
-                        numBits++;
-                    }
-                    if (numBits > 0) {
-                        // Anything else except the 0 special case...
-                        while (numBits > 0) {
-                            delta <<= 1;
-                            delta |= gotBit;
-                            gotBit = getNextBit();
-                            numBits--;
-                        }
-                        if (gotBit != 0) {
-                            delta = -delta;
-                        }
-                    }
-
-                    // Testing the result of signed int maths with unsigned byte two's complement based maths
-                    // HW: Note implementation uses normal unsigned adders
-//                    byte testSample = (byte)currentSample;
-//                    testSample += (byte) (delta & 0xff);
+                    int delta = decodeDelta();
 
                     sample += delta;
                     currentSample = sample + 0x80;
@@ -249,18 +226,7 @@ public class AudioExpansion3 extends MemoryBus implements Runnable {
 //                        int z=0;
 //                    }
 
-                    if (voiceAddressAdd >= voiceLength) {
-                        voiceAddressAdd = 0;
-                        // HW: Note the comparison result should only be used when the offset adders are stable
-                        // HW: Note the active flag is a reset only if it is previously active, do not use a level to clear this flag
-                        if ((voiceControl & 0x02) > 0) {
-                            voiceAddressAdd = 0;
-                            currentSample = 0x80;
-                            bitsRemaining = 0;
-                        } else {
-                            voiceControl = 0;
-                        }
-                    }
+                    checkLength();
                 }
             } else {
                 // HW: Add 0x80 as the middle part of 8 bit unsigned samples for inactive channels
@@ -269,16 +235,64 @@ public class AudioExpansion3 extends MemoryBus implements Runnable {
             }
 
             // HW: This will be implemented with a 0x10000 byte ROM containing a multiply/divide lookup table
-            int sampleAfterVolume = (sample * (voiceVolume & 0xff)) / 255;
-            sampleAfterVolume += 0x80;
-
-            if (sampleAfterVolume > 255) {
-                sampleAfterVolume = 255;
-            } else if (sampleAfterVolume < 0) {
-                sampleAfterVolume = 0;
-            }
+            int sampleAfterVolume = applyVolume(sample);
             sampleBuffer[i] = (byte)(sampleAfterVolume & 0xff);
         }
+    }
+
+    private int applyVolume(int sample) {
+        int sampleAfterVolume = (sample * (voiceVolume & 0xff)) / 255;
+        sampleAfterVolume += 0x80;
+
+        if (sampleAfterVolume > 255) {
+            sampleAfterVolume = 255;
+        } else if (sampleAfterVolume < 0) {
+            sampleAfterVolume = 0;
+        }
+        return sampleAfterVolume;
+    }
+
+    private void checkLength() {
+        if (voiceAddressAdd >= voiceLength) {
+            voiceAddressAdd = 0;
+            // HW: Note the comparison result should only be used when the offset adders are stable
+            // HW: Note the active flag is a reset only if it is previously active, do not use a level to clear this flag
+            if ((voiceControl & 0x02) > 0) {
+                voiceAddressAdd = 0;
+                currentSample = 0x80;
+                bitsRemaining = 0;
+            } else {
+                voiceControl = 0;
+            }
+        }
+    }
+
+    private int decodeDelta() {
+        // Decode the delta
+        int delta = 0;
+        int numBits = 0;
+        int gotBit = 1;
+        while(getNextBit() == 0) {
+            numBits++;
+        }
+        if (numBits > 0) {
+            // Anything else except the 0 special case...
+            while (numBits > 0) {
+                delta <<= 1;
+                delta |= gotBit;
+                gotBit = getNextBit();
+                numBits--;
+            }
+            if (gotBit != 0) {
+                delta = -delta;
+            }
+        }
+
+        // Testing the result of signed int maths with unsigned byte two's complement based maths
+        // HW: Note implementation uses normal unsigned adders
+//                    byte testSample = (byte)currentSample;
+//                    testSample += (byte) (delta & 0xff);
+        return delta;
     }
 
     @Override
