@@ -153,6 +153,10 @@ public class Glue {
     public void enableMemoryProfiling() {
         machine.getCpu().setMemoryProfilingEnabled(true);
     }
+    @Given("^disable memory profiling$")
+    public void disableMemoryProfiling() {
+        machine.getCpu().setMemoryProfilingEnabled(false);
+    }
 
     boolean bincludeProfileLastAccess = false;
     @Then("^include profile last access$")
@@ -836,6 +840,10 @@ public class Glue {
     @Given("^enable memory profiling validation$")
     public void enableMemoryProfilingValidation() {
         benableMemoryProfilingValidation = true;
+    }
+    @Given("^disable memory profiling validation$")
+    public void disableMemoryProfilingValidation() {
+        benableMemoryProfilingValidation = false;
     }
 
     boolean bprofileOptimiseLabels = false;

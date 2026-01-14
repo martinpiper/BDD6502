@@ -846,6 +846,29 @@ Feature:  Profile guided disassembly
     Given memory profile record writes from 0xe000 to 0xffff
 
     Given C64 cycles to pixels multiplier is 0
+
+    # For debugging purposes
+#    Given disable memory profiling
+#    Given disable memory profiling validation
+    Given I enable trace with indent
+    Given I write memory at $e3 with 0
+#    Given I write memory at $0803 with $6f
+    # Two paths and two walls...
+    # 6a = path
+    # 6f = wall
+    And I start writing memory at $2d24
+    And I write the following hex bytes
+      | 6a 10 0f 6a 10 14 6f 0f 0e 6f 16 0d ff |
+    And I start writing memory at $2d24
+    # Remaps the black colour, in the second object, to white
+    And I write the following hex bytes
+      | 65 0e 0f 65 1e 2f 10 ff |
+
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    Then expect image "target/frames/TC-28-C64-1-000001.bmp" to be identical to "target/frames/TC-28-C64-2-000009.bmp"
+
+
     Given I write memory at $e3 with 0
     When I execute the procedure at start until return
     And render a C64 video display frame
@@ -858,28 +881,55 @@ Feature:  Profile guided disassembly
     Given I write memory at $e3 with 3
     When I execute the procedure at start until return
     And render a C64 video display frame
+    Given I write memory at $e3 with 4
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    Given I write memory at $e3 with 5
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    Given I write memory at $e3 with 6
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    Given I write memory at $e3 with 7
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    Given I write memory at $e3 with 8
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    Given I write memory at $e3 with 9
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    Given I write memory at $e3 with $a
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    # Causes memory at $f0bb to be accessed during the map draw
+#    Given I write memory at $e3 with $d
+#    When I execute the procedure at start until return
+#    And render a C64 video display frame
 
-    Then include profile last access
-    Then include profile index register type
-    Then include profile index range
-    Then include profile write hint
+
+#    Then include profile last access
+#    Then include profile index register type
+#    Then include profile index range
+#    Then include profile write hint
 
     Then include profile branch not taken
 #    Then profile use fill instead of PC adjust
     Then profile set PC adjust limit to 256 bytes
     Then profile always set PC when moving from code to data
     Then profile always set PC when moving from data to code
-#    Then profile avoid PC set in code
-#    Then profile avoid PC adjust in code
-#    Then profile avoid PC set in data
-#    Then profile avoid PC adjust in data
-#    Then profile preserve data spacing from 0x9c21 to 0x9dff
-#    Then profile preserve data spacing from 0xa000 to 0xa1ff
-#    Then profile exclude branches not taken
+    Then profile avoid PC set in code
+    Then profile avoid PC adjust in code
+    Then profile avoid PC set in data
+    Then profile avoid PC adjust in data
+    Then profile preserve data spacing from 0x0800 to 0x5900
+    Then profile exclude branches not taken
     # Less aggressive than all not taken branches
 #    Then profile exclude blind branches not taken
 #    Then profile output never accessed as a 0 byte
     Then profile exclude memory range from start to end
+    # Exclude graphics memory in the last VIC bank
+    Then profile exclude memory range from $c000 to $ffff
     Then profile optimise labels
     # Reload the data so the memory is exactly the same before profiled execution
     And I load prg "C:\temp\ln3.prg"
@@ -901,6 +951,9 @@ Feature:  Profile guided disassembly
     And I create file "target\test1.a" with
     """
     !sal
+    *=$200
+    label_e000 = $e000
+    label_d000 = $d000
     !source "target\LastNinja3MapDraw.a"
     *=$5600
     start
@@ -928,9 +981,9 @@ Feature:  Profile guided disassembly
     Given I write memory at $d021 with 0
 
     Given I write memory at $c2 with $00
-    Given I write memory at $c3 with $0f
-    Given I write memory at $c4 with $0b
-    Given I write memory at $c5 with $0c
+#    Given I write memory at $c3 with $0f
+#    Given I write memory at $c4 with $0b
+#    Given I write memory at $c5 with $0c
 
     Given enable memory profiling
     Given memory profile record writes from 0xe000 to 0xffff
@@ -954,3 +1007,4 @@ Feature:  Profile guided disassembly
     Then expect image "target/frames/TC-28-C64-1-000003.bmp" to be identical to "target/frames/TC-28-C64-2-000003.bmp"
     Then expect image "target/frames/TC-28-C64-1-000005.bmp" to be identical to "target/frames/TC-28-C64-2-000005.bmp"
     Then expect image "target/frames/TC-28-C64-1-000007.bmp" to be identical to "target/frames/TC-28-C64-2-000007.bmp"
+
