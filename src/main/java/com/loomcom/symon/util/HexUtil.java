@@ -127,6 +127,13 @@ public class HexUtil {
         return sb.toString();
     }
 
+    public static String wordToHex(int val , boolean bestFit) {
+        if (bestFit && val < 0x100) {
+            return byteToHex(val);
+        }
+        return wordToHex(val);
+    }
+
     public static String intToHexSpaces(int val) {
         StringBuilder sb = new StringBuilder(4);
         sb.append(HEX_CONSTANTS[(val >> 24) & 0xff]);

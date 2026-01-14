@@ -6,7 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/AudioExpansion3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/ProfileGuidedDisassembly.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/ProfileGuidedDisassembly.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayC64.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/DisplayC64.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/Cpu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/Memory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/Memory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/util/HexUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/loomcom/symon/util/HexUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/eliteinit.a" beforeDir="false" afterPath="$PROJECT_DIR$/target/eliteinit.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/temp.a" beforeDir="false" afterPath="$PROJECT_DIR$/target/temp.a" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -105,7 +112,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestAudioHardware.feature  @TC-20 Audio3">
+  <component name="RunManager" selected="Application.TestRunner ProfileGuidedDisassembly.feature @TC-28">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -410,6 +417,14 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags @TC-27 --tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/ProfileGuidedDisassembly.feature" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner ProfileGuidedDisassembly.feature @TC-28" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @TC-28 --tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/ProfileGuidedDisassembly.feature" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -1177,6 +1192,7 @@
       <item itemvalue="Application.TestRunner ProfileGuidedDisassembly.feature @TC-25" />
       <item itemvalue="Application.TestRunner ProfileGuidedDisassembly.feature @TC-26" />
       <item itemvalue="Application.TestRunner ProfileGuidedDisassembly.feature @TC-27" />
+      <item itemvalue="Application.TestRunner ProfileGuidedDisassembly.feature @TC-28" />
       <item itemvalue="Application.TestRunner C64WithNewUserPort20to32Bit1.feature" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />
@@ -1304,9 +1320,9 @@
           <option name="timeStamp" value="10" />
         </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/TestGlue/Glue.java</url>
-          <line>554</line>
-          <option name="timeStamp" value="56" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/Memory.java</url>
+          <line>168</line>
+          <option name="timeStamp" value="61" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

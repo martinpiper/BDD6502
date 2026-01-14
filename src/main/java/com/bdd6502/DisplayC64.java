@@ -408,7 +408,7 @@ public class DisplayC64 {
                         }
                     } else {
                         if (isBitmap) {
-                            currentCharBits = theRAM.read(charsBitmapAddress + ((xpos + (ypos * 40)) * 8) + yLine, false);
+                            currentCharBits = theRAM.read((charsBitmapAddress & 0xe000) + ((xpos + (ypos * 40)) * 8) + yLine, false);
                         } else {
                             currentCharBits = theRAM.read(charsBitmapAddress + (currentChar * 8) + yLine, false);
                         }

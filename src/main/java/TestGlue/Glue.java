@@ -264,10 +264,14 @@ public class Glue {
                     indirectRange[i+j] = true;
                 }
             }
-            if ((cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[i] == -1) && cpu.memoryProfileIndirectHi[i] >= 1 && cpu.memoryProfileIndirectLo[i] >= 1) {
+            if ( (cpu.memoryProfileCalculatedAddressUsedWithoutIndirect[i] == -1) && cpu.memoryProfileIndirectHi[i] >= 1 && cpu.memoryProfileIndirectLo[i] >= 1) {
                 if (!excludeProfileMemoryRange[i + cpu.memoryProfileIndirectLo[i]]) {
-                    profileFinalGenerateLabelHere[i + cpu.memoryProfileIndirectLo[i]] = true;
-                    mapLabelsForIndirects.put("label_" + HexUtil.wordToHex(i).toLowerCase(), "label_" + HexUtil.wordToHex(i + cpu.memoryProfileIndirectLo[i]).toLowerCase() + " - " + cpu.memoryProfileIndirectLo[i] + " ; Table start skipped");
+                        profileFinalGenerateLabelHere[i + cpu.memoryProfileIndirectLo[i]] = true;
+                    if (i >= 0x100) {
+                        mapLabelsForIndirects.put("label_" + HexUtil.wordToHex(i).toLowerCase(), "label_" + HexUtil.wordToHex(i + cpu.memoryProfileIndirectLo[i]).toLowerCase() + " - " + cpu.memoryProfileIndirectLo[i] + " ; Table start skipped");
+                    } else {
+                        mapLabelsForIndirects.put("label_" + HexUtil.byteToHex(i).toLowerCase(), "label_" + HexUtil.byteToHex(i + cpu.memoryProfileIndirectLo[i]).toLowerCase() + " - " + cpu.memoryProfileIndirectLo[i] + " ; Table start skipped");
+                    }
                 }
             }
         }
@@ -350,7 +354,7 @@ public class Glue {
                 }
                 wasInstruction = true;
                 wasMemory = false;
-                line += "\t" + cpu.getCpuState().disassembleOpForAddress(cpu.memoryProfileLastOpcode[i] , i , cpu.memoryProfileLastLastArgsLo[i] , cpu.memoryProfileLastLastArgsHi[i] , "label_").toLowerCase();
+                line += "\t" + cpu.getCpuState().disassembleOpForAddress(cpu.memoryProfileLastOpcode[i] , i , cpu.memoryProfileLastLastArgsLo[i] , cpu.memoryProfileLastLastArgsHi[i] , "label_", true).toLowerCase();
                 checkForLabel(line);
 
                 if (cpu.memoryProfileThisOpcodeStoredIntoLowAddress[i] != '\0') {
@@ -1286,6 +1290,12 @@ public class Glue {
         comparingAddress = valueToInt(arg1);
     }
 
+    int C64CyclesToPixelsMultiplier = 8;
+    @Given("^C64 cycles to pixels multiplier is (.+)$")
+    public void C64_cycles_to_pixels_multiplier_is(String arg1) throws Throwable {
+        C64CyclesToPixelsMultiplier = valueToInt(arg1);
+    }
+
     @Given("^I write the following hex bytes$")
     public void i_write_the_following_hex_bytes(List<String> arg1) throws Throwable {
         for (String arg : arg1) {
@@ -1914,6 +1924,11 @@ public class Glue {
                 hex = hex.replace('y',' ');
                 hex = hex.trim();
 
+                int pos2 = hex.indexOf(' ');
+                if (pos2 != -1) {
+                    hex = hex.substring(0,pos2);
+                }
+
                 int testAddr = Integer.parseInt(hex, 16);
 
                 String foundLabel = reverseLabelMap.get(testAddr);
@@ -2317,7 +2332,7 @@ public class Glue {
             int deltaCycles = machine.getCpu().getClockCycles() - beforeCycles;
             if (deltaCycles > 0) {
                 if (displayC64 != null && displayC64.isVisible()) {
-                    displayC64.calculatePixelsFor(deltaCycles * 8);
+                    displayC64.calculatePixelsFor(deltaCycles * C64CyclesToPixelsMultiplier);
                 }
 
                 if (regularTimedIRQCyclesReset > 0) {

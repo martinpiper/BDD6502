@@ -2151,6 +2151,10 @@ public class Cpu implements InstructionTable {
         }
 
         public String disassembleOpForAddress(int tir , int tpc , int targs0 , int targs1 , String labelPrefix) {
+            return disassembleOpForAddress(tir , tpc , targs0 , targs1 , labelPrefix , false);
+        }
+
+        public String disassembleOpForAddress(int tir , int tpc , int targs0 , int targs1 , String labelPrefix, boolean bestFitValue) {
             String mnemonic = opcodeNames[tir];
 
             if (mnemonic == null) {
@@ -2164,10 +2168,10 @@ public class Cpu implements InstructionTable {
                     sb.append(" " + labelPrefix + HexUtil.wordToHex(address(targs0, targs1)));
                     break;
                 case ABX:
-                    sb.append(" " + labelPrefix + HexUtil.wordToHex(address(targs0, targs1)) + ",X");
+                    sb.append(" " + labelPrefix + HexUtil.wordToHex(address(targs0, targs1), bestFitValue) + ",X");
                     break;
                 case ABY:
-                    sb.append(" " + labelPrefix + HexUtil.wordToHex(address(targs0, targs1)) + ",Y");
+                    sb.append(" " + labelPrefix + HexUtil.wordToHex(address(targs0, targs1), bestFitValue) + ",Y");
                     break;
                 case IMM:
                     sb.append(" #$" + HexUtil.byteToHex(targs0));
@@ -2185,7 +2189,7 @@ public class Cpu implements InstructionTable {
                     int signedOffset = targs0 << 24;
                     signedOffset >>= 24;
 //                    sb.append(" " + labelPrefix + HexUtil.wordToHex(tpc + 2 + signedOffset) + " ; $" + HexUtil.wordToHex(tpc + 2) + " $" + HexUtil.byteToHex(targs0));
-                    sb.append(" " + labelPrefix + HexUtil.wordToHex(tpc + 2 + signedOffset));
+                    sb.append(" " + labelPrefix + HexUtil.wordToHex(tpc + 2 + signedOffset, bestFitValue));
                     break;
                 case ZPG:
                     sb.append(" " + labelPrefix + HexUtil.byteToHex(targs0));

@@ -795,3 +795,162 @@ Feature:  Profile guided disassembly
       Then expect the next line to contain ".byte $20"
       Then expect the next line to contain ".byte $21"
       Then expect the next line to contain ".fill 9,0"
+
+
+
+
+  # Using information from here: https://github.com/martinpiper/DebuggingDetails/blob/main/Last%20Ninja%203.txt
+  @TC-28
+  Scenario: Analyse Last Ninja 3 map draw
+
+    And I create file "target\test1.a" with
+    """
+    !sal
+    *=$5600
+    start
+    ;  jsr $7047
+      jsr $6e47
+      ; Copy the background colour
+      lda $c0
+      sta $d021
+      rts
+    end
+    """
+    And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm target\test1.a
+
+    Given clear all external devices
+    Given a new C64 video display
+    And show C64 video window
+    And C64 video display saves debug BMP images to leaf filename "target/frames/TC-28-C64-1-"
+    And force C64 displayed bank to 0
+
+    Given I have a simple overclocked 6502 system
+    Given I am using C64 processor port options
+    Given add C64 hardware
+    When I enable uninitialised memory read protection with immediate fail
+    Given I disable trace
+    And I load prg "C:\temp\ln3.prg"
+    Given I fill memory from $e000 to $10000 exclusive with $00
+    And I load prg "test.prg"
+    And I load labels "test.lbl"
+
+    # Same as the game code initialisation
+    Given I write memory at $01 with $35
+    Given I write memory at $d011 with $3b
+    Given I write memory at $d016 with $18
+    Given I write memory at $d018 with $39
+    Given I write memory at $d020 with 2
+    Given I write memory at $d021 with 0
+
+    Given enable memory profiling
+    Given memory profile record writes from 0xe000 to 0xffff
+
+    Given C64 cycles to pixels multiplier is 0
+    Given I write memory at $e3 with 0
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    Given I write memory at $e3 with 1
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    Given I write memory at $e3 with 2
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    Given I write memory at $e3 with 3
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+
+    Then include profile last access
+    Then include profile index register type
+    Then include profile index range
+    Then include profile write hint
+
+    Then include profile branch not taken
+#    Then profile use fill instead of PC adjust
+    Then profile set PC adjust limit to 256 bytes
+    Then profile always set PC when moving from code to data
+    Then profile always set PC when moving from data to code
+#    Then profile avoid PC set in code
+#    Then profile avoid PC adjust in code
+#    Then profile avoid PC set in data
+#    Then profile avoid PC adjust in data
+#    Then profile preserve data spacing from 0x9c21 to 0x9dff
+#    Then profile preserve data spacing from 0xa000 to 0xa1ff
+#    Then profile exclude branches not taken
+    # Less aggressive than all not taken branches
+#    Then profile exclude blind branches not taken
+#    Then profile output never accessed as a 0 byte
+    Then profile exclude memory range from start to end
+    Then profile optimise labels
+    # Reload the data so the memory is exactly the same before profiled execution
+    And I load prg "C:\temp\ln3.prg"
+    Then output profile disassembly to file "target\LastNinja3MapDraw.a"
+
+    # Now test the disassembled code to make sure it works when relocated elsewhere
+    Given clear all external devices
+    Given a new C64 video display
+    And show C64 video window
+    And C64 video display saves debug BMP images to leaf filename "target/frames/TC-28-C64-2-"
+    And force C64 displayed bank to 0
+
+    Given I have a simple overclocked 6502 system
+    Given I am using C64 processor port options
+    Given add C64 hardware
+    When I enable uninitialised memory read protection with immediate fail
+#    And I load prg "C:\temp\ln3.prg"
+
+    And I create file "target\test1.a" with
+    """
+    !sal
+    !source "target\LastNinja3MapDraw.a"
+    *=$5600
+    start
+    ;  jsr $7047
+      jsr label_6e47
+      ; Copy the background colour
+      lda label_c0
+      sta $d021
+      rts
+    """
+
+    And I run the command line: ..\C64\acme.exe -o target\LastNinja3MapDraw.prg --labeldump target\LastNinja3MapDraw.lbl -f cbm target\test1.a
+    And I load prg "target\LastNinja3MapDraw.prg"
+    And I load labels "target\LastNinja3MapDraw.lbl"
+    Given I fill memory from $e000 to $10000 exclusive with $00
+
+#    Given I enable trace with indent
+
+    # Same as the game code initialisation
+    Given I write memory at $01 with $35
+    Given I write memory at $d011 with $3b
+    Given I write memory at $d016 with $18
+    Given I write memory at $d018 with $39
+    Given I write memory at $d020 with 2
+    Given I write memory at $d021 with 0
+
+    Given I write memory at $c2 with $00
+    Given I write memory at $c3 with $0f
+    Given I write memory at $c4 with $0b
+    Given I write memory at $c5 with $0c
+
+    Given enable memory profiling
+    Given memory profile record writes from 0xe000 to 0xffff
+    Given enable memory profiling validation
+
+#    Given I enable trace with indent
+    Given I write memory at label_e3 with 0
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    Given I write memory at label_e3 with 1
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    Given I write memory at label_e3 with 2
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+    Given I write memory at label_e3 with 3
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+
+    Then expect image "target/frames/TC-28-C64-1-000001.bmp" to be identical to "target/frames/TC-28-C64-2-000001.bmp"
+    Then expect image "target/frames/TC-28-C64-1-000003.bmp" to be identical to "target/frames/TC-28-C64-2-000003.bmp"
+    Then expect image "target/frames/TC-28-C64-1-000005.bmp" to be identical to "target/frames/TC-28-C64-2-000005.bmp"
+    Then expect image "target/frames/TC-28-C64-1-000007.bmp" to be identical to "target/frames/TC-28-C64-2-000007.bmp"

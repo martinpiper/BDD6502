@@ -195,7 +195,7 @@ label_05d1	lda label_0a8a,x
 	pha
 	jsr label_08c2
 label_05e9	pla
-; Opcode multiple entry code : 	bit label_00a9
+; Opcode multiple entry code : 	bit label_a9
 label_05ea	!by $2c
 label_05eb	!by $a9
 label_05ec	!by $00
@@ -908,7 +908,6 @@ label_0b5e	!by $04
 	!by 00 ; 	!by $8b ; Never accessed
 	!by $80
 	!by $93
-* = $837d
 label_837d	!by $87
 	!by $01
 	!by $d6

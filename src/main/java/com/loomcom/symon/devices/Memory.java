@@ -165,6 +165,9 @@ public class Memory extends Device {
         if (logRead && !memWritten[address]) {
             uninitialisedReadOccured = true;
         }
+        if (address >= this.mem.length) {
+            throw new MemoryAccessException("Read out of bounds at: " + HexUtil.wordToHex(address));
+        }
         return this.mem[address];
     }
 
