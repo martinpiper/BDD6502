@@ -1015,7 +1015,7 @@ Feature:  Profile guided disassembly
     Given clear all external devices
     Given a new C64 video display
     And show C64 video window
-    And C64 video display saves debug BMP images to leaf filename "target/frames/TC-28-C64-1-"
+    And C64 video display saves debug BMP images to leaf filename "target/frames/TC-28-2-C64-1-"
     And force C64 displayed bank to 0
 
     Given I have a simple overclocked 6502 system
@@ -1036,7 +1036,7 @@ Feature:  Profile guided disassembly
     Given I write memory at $d020 with 2
     Given I write memory at $d021 with 0
 
-#    Given C64 cycles to pixels multiplier is 0
+    Given C64 cycles to pixels multiplier is 0
 
     # For debugging purposes
 #    Given disable memory profiling
@@ -1052,10 +1052,16 @@ Feature:  Profile guided disassembly
     And I write the following hex bytes
       | 6a 10 0f 6a 10 14 6f 0f 0e 6f 16 0d ff |
 
+    When I execute the procedure at start until return
+    And render a C64 video display frame
+
     And I start writing memory at $2d24
     # Remaps the black colour, in the second object, to white
     And I write the following hex bytes
       | 65 0e 0f 65 1e 2f 10 ff |
+
+    When I execute the procedure at start until return
+    And render a C64 video display frame
 
     And I start writing memory at $2d24
     # Three gravel ($17), second one X flip, third using $39 remaps colour $f to $0 (light grey to black)
