@@ -105,7 +105,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner ProfileGuidedDisassembly.feature @TC-28">
+  <component name="RunManager" selected="Application.TestRunner ProfileGuidedDisassembly.feature @TC-28-2">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
