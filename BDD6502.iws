@@ -7,7 +7,6 @@
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/ProfileGuidedDisassembly.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/ProfileGuidedDisassembly.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -411,6 +410,14 @@
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
       <option name="PROGRAM_PARAMETERS" value="--tags @TC-27 --tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/ProfileGuidedDisassembly.feature" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRunner ProfileGuidedDisassembly.feature @TC-28-2" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @TC-28-2 --tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/ProfileGuidedDisassembly.feature" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -1187,6 +1194,7 @@
       <item itemvalue="Application.TestRunner ProfileGuidedDisassembly.feature @TC-26" />
       <item itemvalue="Application.TestRunner ProfileGuidedDisassembly.feature @TC-27" />
       <item itemvalue="Application.TestRunner ProfileGuidedDisassembly.feature @TC-28" />
+      <item itemvalue="Application.TestRunner ProfileGuidedDisassembly.feature @TC-28-2" />
       <item itemvalue="Application.TestRunner C64WithNewUserPort20to32Bit1.feature" />
       <item itemvalue="Application.TestRunner Scroller VerifyByScreenshots.feature" />
       <item itemvalue="Application.TestRunner TestAudioHardware.feature" />

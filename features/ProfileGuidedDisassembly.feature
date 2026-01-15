@@ -850,31 +850,9 @@ Feature:  Profile guided disassembly
     # For debugging purposes
 #    Given disable memory profiling
 #    Given disable memory profiling validation
-    Given I enable trace with indent
+#    Given I enable trace with indent
     Given I write memory at $e3 with 0
 #    Given I write memory at $0803 with $6f
-
-    And I start writing memory at $2d24
-    # Two paths and two walls...
-    # 6a = path
-    # 6f = wall
-    And I write the following hex bytes
-      | 6a 10 0f 6a 10 14 6f 0f 0e 6f 16 0d ff |
-
-    And I start writing memory at $2d24
-    # Remaps the black colour, in the second object, to white
-    And I write the following hex bytes
-      | 65 0e 0f 65 1e 2f 10 ff |
-
-    And I start writing memory at $2d24
-    # Three gravel ($17), second one X flip, third using $39 remaps colour $f to $0 (light grey to black)
-    And I write the following hex bytes
-      | 17 10 19 17 98 19 17 1c 39 0f ff |
-
-    When I execute the procedure at start until return
-    And render a C64 video display frame
-    Then expect image "target/frames/TC-28-C64-1-000001.bmp" to be identical to "target/frames/TC-28-C64-2-000009.bmp"
-
 
     Given I write memory at $e3 with 0
     When I execute the procedure at start until return
@@ -977,7 +955,7 @@ Feature:  Profile guided disassembly
     And I load labels "target\LastNinja3MapDraw.lbl"
     Given I fill memory from $e000 to $10000 exclusive with $00
 
-#    Given I enable trace with indent
+#    Given I enable with indent
 
     # Same as the game code initialisation
     Given I write memory at $01 with $35
@@ -1015,3 +993,74 @@ Feature:  Profile guided disassembly
     Then expect image "target/frames/TC-28-C64-1-000005.bmp" to be identical to "target/frames/TC-28-C64-2-000005.bmp"
     Then expect image "target/frames/TC-28-C64-1-000007.bmp" to be identical to "target/frames/TC-28-C64-2-000007.bmp"
 
+  # Using information from here: https://github.com/martinpiper/DebuggingDetails/blob/main/Last%20Ninja%203.txt
+  @TC-28-2
+  Scenario: Last Ninja 3 map draw with some custom data
+
+    And I create file "target\test1.a" with
+    """
+    !sal
+    *=$5600
+    start
+    ;  jsr $7047
+      jsr $6e47
+      ; Copy the background colour
+      lda $c0
+      sta $d021
+      rts
+    end
+    """
+    And I run the command line: ..\C64\acme.exe -o test.prg --labeldump test.lbl -f cbm target\test1.a
+
+    Given clear all external devices
+    Given a new C64 video display
+    And show C64 video window
+    And C64 video display saves debug BMP images to leaf filename "target/frames/TC-28-C64-1-"
+    And force C64 displayed bank to 0
+
+    Given I have a simple overclocked 6502 system
+    Given I am using C64 processor port options
+    Given add C64 hardware
+    When I enable uninitialised memory read protection with immediate fail
+    Given I disable trace
+    And I load prg "C:\temp\ln3.prg"
+    Given I fill memory from $e000 to $10000 exclusive with $00
+    And I load prg "test.prg"
+    And I load labels "test.lbl"
+
+    # Same as the game code initialisation
+    Given I write memory at $01 with $35
+    Given I write memory at $d011 with $3b
+    Given I write memory at $d016 with $18
+    Given I write memory at $d018 with $39
+    Given I write memory at $d020 with 2
+    Given I write memory at $d021 with 0
+
+#    Given C64 cycles to pixels multiplier is 0
+
+    # For debugging purposes
+#    Given disable memory profiling
+#    Given disable memory profiling validation
+    Given I enable trace with indent
+    Given I write memory at $e3 with 0
+#    Given I write memory at $0803 with $6f
+
+    And I start writing memory at $2d24
+    # Two paths and two walls...
+    # 6a = path
+    # 6f = wall
+    And I write the following hex bytes
+      | 6a 10 0f 6a 10 14 6f 0f 0e 6f 16 0d ff |
+
+    And I start writing memory at $2d24
+    # Remaps the black colour, in the second object, to white
+    And I write the following hex bytes
+      | 65 0e 0f 65 1e 2f 10 ff |
+
+    And I start writing memory at $2d24
+    # Three gravel ($17), second one X flip, third using $39 remaps colour $f to $0 (light grey to black)
+    And I write the following hex bytes
+      | 17 10 19 17 98 19 17 1c 39 0f ff |
+
+    When I execute the procedure at start until return
+    And render a C64 video display frame
