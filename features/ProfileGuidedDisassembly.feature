@@ -853,16 +853,23 @@ Feature:  Profile guided disassembly
     Given I enable trace with indent
     Given I write memory at $e3 with 0
 #    Given I write memory at $0803 with $6f
+
+    And I start writing memory at $2d24
     # Two paths and two walls...
     # 6a = path
     # 6f = wall
-    And I start writing memory at $2d24
     And I write the following hex bytes
       | 6a 10 0f 6a 10 14 6f 0f 0e 6f 16 0d ff |
+
     And I start writing memory at $2d24
     # Remaps the black colour, in the second object, to white
     And I write the following hex bytes
       | 65 0e 0f 65 1e 2f 10 ff |
+
+    And I start writing memory at $2d24
+    # Three gravel ($17), second one X flip, third using $39 remaps colour $f to $0 (light grey to black)
+    And I write the following hex bytes
+      | 17 10 19 17 98 19 17 1c 39 0f ff |
 
     When I execute the procedure at start until return
     And render a C64 video display frame
