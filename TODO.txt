@@ -349,7 +349,7 @@
 		>> Note with maxbits of 7 the encoding is lossless
 		>> Playback of compressed then decompressed data: "C:\Users\Marti\Downloads\ffmpeg-20200422-2e38c63-win64-static\ffmpeg-20200422-2e38c63-win64-static\bin\ffplay.exe" -f u8 -ar 12500 c:\temp\aburner_left.vcd.decomp
 
-		>> Sizes:
+		>> Sizes: dir C:\Temp\aburner_*.vcd
 			896,987		aburner_left.vcd
 			1,343,276	aburner_left3.vcd
 			417,759		aburner_left6.vcd
