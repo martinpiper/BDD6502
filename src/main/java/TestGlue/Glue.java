@@ -104,7 +104,6 @@ public class Glue {
     MenuItem currentMenuItem;
     @When("^automation expand main menu item \"([^\"]*)\"$")
     public void automationExpandMainMenuItem(String name) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
         currentMenuItem = currentWindow.getMainMenu().getMenuItem(name);
         currentMenuItem.expand();
     }
@@ -114,6 +113,15 @@ public class Glue {
         List<MenuItem> items = currentMenuItem.getItems();
         for (MenuItem item : items) {
             System.out.println(item.getName());
+        }
+        Pattern matcher = Pattern.compile(pattern);
+        for (MenuItem item : items) {
+            String name = item.getName();
+            if (matcher.matcher(name).matches()) {
+                currentMenuItem = item;
+                currentMenuItem.click();
+                return;
+            }
         }
         currentMenuItem = currentMenuItem.getMenuItem(Pattern.compile(pattern));
         currentMenuItem.click();
