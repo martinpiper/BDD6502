@@ -275,6 +275,7 @@ public class AudioExpansion3 extends MemoryBus implements Runnable {
         while(getNextBit() == 0) {
             numBits++;
         }
+        assert(numBits <= 7);   // Enforce hardware limit of 7 unsigned bits for the delta
         if (numBits > 0) {
             // Anything else except the 0 special case...
             while (numBits > 0) {
@@ -283,6 +284,7 @@ public class AudioExpansion3 extends MemoryBus implements Runnable {
                 gotBit = getNextBit();
                 numBits--;
             }
+            assert(delta <= 127);   // Enforce hardware limit of 7 unsigned bits for the delta
             if (gotBit != 0) {
                 delta = -delta;
             }

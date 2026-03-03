@@ -215,6 +215,8 @@ Feature: Tests the video and audio hardware expansion together
     Given load binary file "C:\temp\aburner_right6.vcd" into temporary memory
     Given write data from temporary memory to address24 '873536+1326593' and addressEx '0x06' using bank switch register at '0x8030' and addressEx '0x01'
 
+    # Wait for a stable video window...
+    When render 2 video display frames
 
     # Audio3 1 registers
     # Control
