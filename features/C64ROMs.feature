@@ -251,3 +251,78 @@ Feature: C64 ROM tests
     And render a C64 video display frame
 
     Then expect image "testdata/TC-12-000115.bmp" to be identical to "target/frames/TC-12-000115.bmp"
+
+
+
+  @TC-12-2
+  Scenario: Test C64 binary cartridge interface
+    Given a new C64 video display
+    And show C64 video window
+    Given I have a simple overclocked 6502 system
+    Given I am using C64 processor port options
+    Given a ROM from file "..\..\VICE\C64\kernal" at $e000
+    Given a ROM from file "..\..\VICE\C64\basic" at $a000
+    Given a CHARGEN ROM from file "..\..\VICE\C64\chargen"
+    Given add C64 hardware
+
+    Given add C64 display window to C64 keyboard buffer hook
+    Given add C64 regular IRQ trigger of "100000" cycles
+
+    # Explicitly check the various processor port and cart kill expected behaviours
+    And I create file "test.a" with
+    """
+    !source "stdlib/stdlib.a"
+    !sal
+    * = C64Cartridge_Lo_8K
+    !word start
+    !word start
+    +M_CBM80
+    start
+      +MWordValueToAddress_A FuncC000 , $fb
+      +MWordValueToAddress_A $c000 , $fd
+      ldy #0
+    .cl1  lda ($fb),y
+      sta ($fd),y
+      +MIncAddr16 $fb , $fc
+      +MIncAddr16 $fd , $fe
+      lda $fe
+      cmp #$d0
+      bcc .cl1
+
+      jmp $c000
+
+    FuncC000
+    !pseudopc $c000
+      +MCopyMemorySlowOnceFromToLength_A $8000 , $400 , $100
+
+      lda #ProcessorPortAllRAM
+      sta ZPProcessorPort
+      +MCopyMemorySlowOnceFromToLength_A $8000 , $500 , $100
+
+      lda #ProcessorPortDefault
+      sta ZPProcessorPort
+      +MCopyMemorySlowOnceFromToLength_A $8000 , $600 , $100
+
+      ; Kill cart test
+      lda #$80
+      sta $df00
+      +MCopyMemorySlowOnceFromToLength_A $8000 , $700 , $100
+
+      EndTest
+    """
+    And I run the command line: ..\C64\acme.exe --lib ../C64/ -o test.bin --labeldump test.lbl -f plain test.a
+
+    # Type 61 = C64MegaCart: https://github.com/martinpiper/Vice-3.1-with-C64MegaCart/blob/d233877793732bfebb0d6328665756eabbf4c137/vice-3.1/src/cartridge.h#L210C9-L210C40
+    And I load cartridge binary "test.bin" type 61 bank size 0x2000 bank address 0x8000 game 1 exrom 0
+    And I load labels "test.lbl"
+
+    And I enable trace with indent
+    When I execute the indirect procedure at $fffc until return or until PC = EndTest
+
+    # Check the various processor port and cart kill expected results
+    When I hex dump memory between $400 and $800
+    Then property "test.BDD6502.lastHexDump" must contain string "400: 09 80 09 80 c3 c2 cd 38  30"
+    Then property "test.BDD6502.lastHexDump" must contain string "500: 00 00 00 00 00 00 00 00"
+    Then property "test.BDD6502.lastHexDump" must contain string "600: 09 80 09 80 c3 c2 cd 38  30"
+    Then property "test.BDD6502.lastHexDump" must contain string "700: 00 00 00 00 00 00 00 00"
+

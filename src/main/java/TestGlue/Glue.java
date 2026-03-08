@@ -2714,6 +2714,54 @@ public class Glue {
         in.close();
     }
 
+    @Given("^I load cartridge binary \"(.*?)\" type (.*) bank size (.*) bank address (.*) game (.*) exrom (.*)$")
+    public void i_load_crt(String filename, String type, String bankSize, String bankAddress, String game, String exrom) throws Throwable {
+        FileInputStream in = null;
+        in = new FileInputStream(filename);
+        int iType = valueToInt(type);
+        int iBankSize = valueToInt(bankSize);
+        int iBankAddress = valueToInt(bankAddress);
+        int iGame = valueToInt(game);
+        int iExrom = valueToInt(exrom);
+
+        machine.getBus().addCRTInfo(iType , iExrom , iGame);
+
+        byte[] bankData = new byte[iBankSize];
+        int chipBank = 0;
+        int c;
+        while ((c = in.read(bankData)) != -1) {
+            // Fill any remaining data with 0xff, normal erased flash memory
+            for (int i = c ; i < iBankSize; i++) {
+                bankData[i] = (byte) 0xff;
+            }
+            Device chip = new Device(iBankAddress , iBankAddress + iBankSize - 1 , "CRTChip " + chipBank + ":$" + Integer.toHexString(iBankAddress)) {
+                int chipData[] = new int[iBankSize];
+                @Override
+                public void write(int address, int data) throws MemoryAccessException {
+                    chipData[address] = data;
+                }
+
+                @Override
+                public int read(int address, boolean logRead) throws MemoryAccessException {
+                    return chipData[address];
+                }
+
+                @Override
+                public String toString() {
+                    return null;
+                }
+            };
+            int addr = 0;
+            while (addr < iBankSize) {
+                chip.write(addr,bankData[addr]);
+                addr++;
+            }
+            machine.getBus().addCRTChip(chip,chipBank);
+            chipBank++;
+        }
+        in.close();
+    }
+
     @Given("^I load bin \"(.*?)\" at (.+)$")
     public void i_load_bin_at(String arg1, String arg2) throws Throwable {
         FileInputStream in = null;

@@ -273,6 +273,7 @@ public class Bus {
 
     int crtBank = 0;
     int crtEasyFlashControl = 0;
+    int cartControlC64MegaCart = 0;
     public int read(int address, boolean logRead) throws MemoryAccessException {
         if (processorPort && 0x0001 == address) {
             // Return the contents of the processor port if it is active
@@ -281,11 +282,16 @@ public class Bus {
         if (processorPort && crtActive) {
             int pp = theProcessorPort & 0b111;
             if (0b111 == pp || 0b011 == pp) {
-                if (address >= 0x8000 && address <= 0x9fff) {
+                boolean bankActive = true;
+                // C64MegaCart: Cart kill check
+                if (crtType == 61 && (cartControlC64MegaCart & 0x80) != 0) {
+                    bankActive = false;
+                }
+                if (bankActive && address >= 0x8000 && address <= 0x9fff) {
                     if (crtBank < crtChips8000.size()) {
                         Device chip = crtChips8000.get(crtBank);
                         if (null != chip) {
-                            return chip.read(address - 0x8000, logRead);
+                            return chip.read(address - 0x8000, logRead) & 0xff;
                         }
                     }
                 }
@@ -322,6 +328,20 @@ public class Bus {
                     }
                     if (crtActive && crtType == 0x20 && address == 0xde02) {
                         crtEasyFlashControl = value;
+                    }
+                    // C64MegaCart
+                    if (crtActive && crtType == 61) {
+                        if (address >= 0xde00 && address <= 0xdeff) {
+                            crtBank = value;
+                        }
+                        // df00-dfff
+                        if (address >= 0xdf00) {
+                            cartControlC64MegaCart = value;
+                        }
+                        // de00-dfff
+                        if (address >= 0xde00) {
+                            crtBank = value | ((cartControlC64MegaCart & 0x3f) << 8);
+                        }
                     }
                 }
             }
