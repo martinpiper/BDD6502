@@ -340,7 +340,7 @@ public class Bus {
                         }
                         // de00-dfff
                         if (address >= 0xde00) {
-                            crtBank = value | ((cartControlC64MegaCart & 0x3f) << 8);
+                            crtBank = (crtBank & 0xff) | ((cartControlC64MegaCart & 0x3f) << 8);
                         }
                     }
                 }
