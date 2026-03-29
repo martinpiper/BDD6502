@@ -36,6 +36,7 @@ start
 	jsr TestInterface_ReadRAM
 	jsr TestInterface_ReadRAMWithOffset
 	jsr TestInterface_WriteRAMLong
+;	jmp .doScrollTest ; Debug
 } else {
 	; Simple sample stream demo
 	jsr Bus20To32Bit1_Init
@@ -79,6 +80,7 @@ start
 	inc VIC2BorderColour
 	+TestForPortBitsLoop_A CIA1KeyboardColumnJoystickA , JoystickBits_Right, .tl1
 
+.doScrollTest
     +MBASICTextPrint .pressFireText
 	+WaitForFire_A
 .il1
@@ -141,8 +143,10 @@ TestInterface_Passthrough
 
 	+MBASICTextPrint .bootedC64
 
+;	+WaitForFire_A ; Debug
+
 	jsr Bus24Bit_Init
-	jsr APU_ResetDisable
+	jsr APU_ResetDisableClear
 
 	jsr HardwareTest_VideoPattern0
 	+MBASICTextPrint .testPatternDone
