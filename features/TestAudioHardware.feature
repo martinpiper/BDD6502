@@ -233,11 +233,8 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x0d' to 24bit bus at '0x8038' and addressEx '0x01'
     # Rate
     # 25000 Hz
-    Given write data byte '0x00' to 24bit bus at '0x8039' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x803a' and addressEx '0x01'
-    # 12500 Hz
-    Given write data byte '0x00' to 24bit bus at '0x8039' and addressEx '0x01'
-    Given write data byte '0x08' to 24bit bus at '0x803a' and addressEx '0x01'
+    Given write data byte '0xc2' to 24bit bus at '0x8039' and addressEx '0x01'
+    Given write data byte '0x55' to 24bit bus at '0x803a' and addressEx '0x01'
     # Control
     Given write data byte '0x03' to 24bit bus at '0x8031' and addressEx '0x01'
 
@@ -256,11 +253,8 @@ Feature: Tests the video and audio hardware expansion together
     Given write data byte '0x0d' to 24bit bus at '0x8138' and addressEx '0x01'
     # Rate
     # 25000 Hz
-    Given write data byte '0x00' to 24bit bus at '0x8139' and addressEx '0x01'
-    Given write data byte '0x10' to 24bit bus at '0x813a' and addressEx '0x01'
-    # 12500 Hz
-    Given write data byte '0x00' to 24bit bus at '0x8139' and addressEx '0x01'
-    Given write data byte '0x08' to 24bit bus at '0x813a' and addressEx '0x01'
+    Given write data byte '0xc2' to 24bit bus at '0x8139' and addressEx '0x01'
+    Given write data byte '0x55' to 24bit bus at '0x813a' and addressEx '0x01'
     # Control
     Given write data byte '0x03' to 24bit bus at '0x8131' and addressEx '0x01'
 
