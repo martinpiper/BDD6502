@@ -15,9 +15,7 @@ public class AudioExpansion3 extends MemoryBus implements Runnable {
     int addressRegisters = 0x8000, addressExRegisters = 0x01;
     int addressExSampleBank = 0x06;
 
-    // 2MHz /8 /8 gives 31250 Hz and ample time to latch, add, select, apply volume for 8 voices, accumulate and output in a cyclic pattern
-    // The real hardware LOADOUTPUT period gives 25000 Hz
-    public static final int sampleRate = 37313;
+    public static final int sampleRate = 74626 / 2;// Divided by 2 from real hardware 74626 Hz to reduce CPU, note the counterShift and counterShiftValue test differs to the hardware to compensate
     static final int samplesToMix = 8;
     public static final int counterShift = 15;
     public static final int counterShiftValue = 1<<counterShift;
@@ -213,11 +211,9 @@ public class AudioExpansion3 extends MemoryBus implements Runnable {
 
             if ((voiceControl & 0x01) != 0) {
                 // HW: Note add is clocked before any sample read
-                int voiceInternalCounterBefore = voiceInternalCounter;
                 voiceInternalCounter += voiceRate;
-                voiceInternalCounter &= 0xffff;
-                // Emulate the edge detect and latch
-                if ( (voiceInternalCounterBefore & counterShiftValue) == 0 && (voiceInternalCounter & counterShiftValue) == counterShiftValue) {
+                if (voiceInternalCounter >= counterShiftValue) {
+                    voiceInternalCounter -= counterShiftValue;
                     int delta = decodeDelta();
 
                     sample += delta;

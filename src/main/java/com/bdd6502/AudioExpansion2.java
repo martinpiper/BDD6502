@@ -22,7 +22,6 @@ public class AudioExpansion2 extends MemoryBus implements Runnable {
 //    public static final int counterShift = 15;
     public static final int counterShift = 14;
     public static final int counterShiftValue = 1<<counterShift;
-    public static final int counterShiftMask = counterShiftValue - 1;
     byte[] sampleBuffer = new byte[samplesToMix];
 
     SourceDataLine line = null;

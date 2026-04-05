@@ -1,0 +1,131 @@
+kHardwareTest_UsingSprites4 = 1
+kBus24Bit_Sprites4_Controls2		= $b800
+kBus24Bit_Sprites4_Registers2		= $b808
+
+kBus24Bit_VideoLayer_HasOverscan=1
+kBus24Bit_VideoLayer_ExpandedPalettes = 1
+kBus24Bit_VideoLayer_ExpandedPaletteLayers = 1
+;kBus24Bit_VideoLayer_VBlankUseNMI = 1
+kBus24Bit_SpritesMaxNum = 32
+
+!sal
+!pdb "target/t.pdb"
+!source "stdlib/stdlib.a"
+!source "stdlib/Comparisons.a"
+!source "stdlib/LongBranches.a"
+!source "BombJack/stdlib/Bus24Bit_Macros.a"
+!source "BombJack/stdlib/Bus20To32Bit1_Macros.a"
+!source "BombJack/stdlib/Video_Macros.a"
+!source "BombJack/stdlib/APU_Macros.a"
+!source "VideoHardware/asm/AfterBurner/Audio2_Macros.a"
+
+kAudio3SampleRate_Full = 0x8000
+kAudio3SampleRate_25000Hz = 0x55C2
+kAudio3SampleRate_12500Hz = 0x2ae1
+
+*=$200
+!zn
+	+MStopInitStack_X
+start
+
+	lda #ProcessorPortAllRAMWithIO
+	jsr InitialiseMachine
+
+	jsr Bus24Bit_Init
+	jsr Bus20To32Bit1_Init
+	jsr APU_ResetDisableClear
+	jsr Video_DisableDisplay
+	jsr APU_ResetDisableClear
+
+	jsr Audio_Init
+
+    jsr Audio2_Disable
+
+	jsr Bus24Bit_Init
+	jsr Bus20To32Bit1_Init
+	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Bank
+	lda #0
+	ldy #12
+	jsr Bus24Bit_WriteAForY
+
+	jsr Bus24Bit_Init
+	jsr Bus20To32Bit1_Init
+    jsr DoCopy
+
+	jsr Bus24Bit_Init
+	jsr Bus20To32Bit1_Init
+	jsr APU_ResetDisableClear
+	jsr Video_DisableDisplay
+	jsr APU_ResetDisableClear
+
+	jsr Bus24Bit_Init
+	jsr Bus20To32Bit1_Init
+	jsr HardwareTest_VideoPattern0
+
+	jsr Bus24Bit_Init
+	jsr Bus20To32Bit1_Init
+	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Volume
+	+MBus24Bit_Send8BitValue 255
+	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Control
+	+MBus24Bit_Send8BitValue 0
+
+;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , TotalSampleEnd - TotalSampleStart , kAudio3SampleRate_12500Hz
+;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $4000 , kAudio3SampleRate_Full
+	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_Full
+;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_Full / 13
+;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_25000Hz
+;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_12500Hz / 10
+;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_12500Hz
+
+	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Control
+	+MBus24Bit_Send8BitValue kAudio2Register_Control_Enable
+
+
+	rts
+
+Initialise_NoPreserveStack = 1
+Initialise_NoIRQServiceRoutine = 1
+Initialise_NoMACROWaitForTheLastScan = 1
+!source "stdlib/Initialise.a"
+
+!source "BombJack/stdlib/Bus24Bit.a"
+!source "BombJack/stdlib/Bus20To32Bit1.a"
+!source "BombJack/stdlib/APU.a"
+!source "BombJack/stdlib/Audio.a"
+!source "BombJack/stdlib/Video.a"
+!source "BombJack/stdlib/HardwareTest.a"
+!source "VideoHardware/asm/AfterBurner/Audio2.a"
+
+TotalSampleStart
+SampleStart
+!bin "c:\temp\t.vcd" , $4000
+;!bin "c:\temp\t.vcd"
+;!bin "c:\temp\t.vcd"
+;!bin "c:\temp\t.vcd"
+SampleEnd
+
+;SampleStart2
+;!bin "c:\temp\t.vcd" , $4000 , $4000
+;SampleEnd2
+
+SampleStart3
+;!bin "c:\work\c64\VideoHardware\assets\Demo14\Audio\aburner_left.vcd" , $3000 , $8000
+SampleEnd3
+TotalSampleEnd
+
+DoCopy
+;!for .i , $1a {
+;!for .i , 1 {
+;    +MBus24Bit_SetAddress_A $06 , $9c8 * (.i-1)
+;    +MBus24Bit_FastCopyLarge SampleStart , SampleEnd - SampleStart
+;}
+
+    +MBus24Bit_SetAddress_A $06 , $0000
+    +MBus24Bit_FastCopyLarge SampleStart , SampleEnd - SampleStart
+
+;    +MBus24Bit_SetAddress_A $06 , $4000
+;    +MBus24Bit_FastCopyLarge SampleStart2 , SampleEnd2 - SampleStart2
+
+;    +MBus24Bit_SetAddress_A $06 , $8000
+;    +MBus24Bit_FastCopyLarge SampleStart3 , SampleEnd3 - SampleStart3
+    rts
