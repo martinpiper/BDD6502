@@ -9,5 +9,7 @@ Feature: Automates Windows processes
     When automation find window from pattern ".*APU.*Proteus.*"
     When automation focus window
     When automation expand main menu item "Debug"
-    When automation click current menu item "Run Simulation.*F12"
+#    When automation scan the entire desktop
+    When I run the command line ignoring return code: java.exe -jar target\BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar --scan
+    When automation click current menu item "Run Simulation"
     Then automation wait for window close

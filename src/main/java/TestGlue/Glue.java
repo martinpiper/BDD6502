@@ -127,6 +127,13 @@ public class Glue {
         currentMenuItem.click();
     }
 
+    @When("^automation scan the entire desktop")
+    public void automationScanTheEntireDesktop() throws Throwable {
+        String []args = {"--scan"};
+        TestRunner.main(args);
+    }
+
+
     @Given("^add C64 display window to C64 keyboard buffer hook$")
     public void addC64DisplayWindowToCKeyboardBufferHook() {
         displayC64.enableKeyboardBufferHook();

@@ -9,6 +9,7 @@ import de.quippy.javamod.multimedia.MultimediaContainer;
 import de.quippy.javamod.multimedia.MultimediaContainerManager;
 import de.quippy.javamod.multimedia.mod.ModMixer;
 import de.quippy.javamod.system.Helpers;
+import mmarquee.automation.AutomationException;
 import mmarquee.automation.ControlType;
 import mmarquee.automation.Element;
 import mmarquee.automation.UIAutomation;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -78,22 +80,33 @@ public class TestRunner {
         return Byte.toUnsignedInt(data);
     }
 
+    static HashSet<String> processed = new HashSet<>();
     public static void main(String args[]) throws Exception {
         if (args.length >= 1 && args[0].compareToIgnoreCase("--scan") == 0) {
             UIAutomation automation = UIAutomation.getInstance();
             List<Window> windows = automation.getDesktopWindows();
             for (Window window : windows) {
-                System.out.println(">>>> Window");
-                System.out.println(window.toString());
-                System.out.println(window.getName());
-                System.out.println(window.getClassName());
+                String windowID = "window:";
+//                System.out.println(">>>> Window");
+                try {
+//                    System.out.println(window.toString());
+                } catch (Exception e) {}
+                try {
+                    windowID += "name:" + window.getName();
+//                    System.out.println(window.getName());
+                } catch (Exception e) {}
+                try {
+                    windowID += "classname:" + window.getClassName();
+//                    System.out.println(window.getClassName());
+                } catch (Exception e) {}
 
                 // https://github.com/mmarquee/ui-automation
                 // https://mmarquee.github.io/ui-automation/docs/developer.html
 
                 try {
                     Document document = window.getDocument(0);
-                    System.out.println("Document " + document.getText());
+                    windowID += "document:" + document.getText();
+//                    System.out.println("Document " + document.getText());
                 } catch (Exception e) {}
 
                 // https://learn.microsoft.com/en-us/windows/win32/winauto/inspect-objects
@@ -102,6 +115,7 @@ public class TestRunner {
 
                 // https://learn.microsoft.com/en-us/dotnet/api/system.windows.automation.treescope?view=windowsdesktop-7.0
                 TreeScope scope = new TreeScope(TreeScope.SUBTREE);
+//                TreeScope scope = new TreeScope(TreeScope.CHILDREN | TreeScope.DESCENDANTS);
 
 //                Class c = Class.forName("mmarquee.automation.controls.Window");
                 Class c = Class.forName("mmarquee.automation.controls.AutomationBase");
@@ -110,32 +124,9 @@ public class TestRunner {
                 Object retObj = method.invoke(window, scope, automation.createTrueCondition());
                 List<Element> elements = (List<Element>) retObj;
 
-                System.out.println("Num elements " + elements.size());
+//                System.out.println("Num elements " + elements.size());
                 for (Element element : elements) {
-                    System.out.println(">>>> Element");
-                    System.out.println(element.toString());
-                    System.out.println(element.getName());
-                    System.out.println(element.getClassName());
-                    System.out.println(element.getFullDescription());
-
-                    try {
-                        ElementBuilder eb = new ElementBuilder(element);
-                        TextBox textBox = new TextBox(eb);
-                        System.out.println("TextBox " + textBox.getValueFromIAccessible());
-                    } catch (Exception e) {}
-
-                    try {
-                        ElementBuilder eb = new ElementBuilder(element);
-                        EditBox editBox = new EditBox(eb);
-                        System.out.println("EditBox " + editBox.getText());
-                    } catch (Exception e) {}
-
-                    try {
-                        Text t = new Text(element);
-                        System.out.println("Text " + t.getText());
-                    } catch (Exception e) {}
-
-
+                    recursiveFindElements(windowID + ":_:", element, scope, automation);
 //                    WinDef.HWND hwnd = window.getNativeWindowHandle();
 //                    User32.INSTANCE.PostMessage(hwnd, 0,0,0);
                     // com.sun.jna.platform.win32
@@ -143,18 +134,6 @@ public class TestRunner {
 
                     // Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     // System.out.println(clipboard.getData(DataFlavor.stringFlavor));
-
-                    /*
-                    List<Element> elements2 = element.findAll(scope, automation.createTrueCondition());
-                    System.out.println("Num elements2 " + elements.size());
-                    for (Element element2 : elements2) {
-                        System.out.println(">>>> Element2");
-                        System.out.println(element2.toString());
-                        System.out.println(element2.getName());
-                        System.out.println(element2.getClassName());
-                        System.out.println(element2.getFullDescription());
-                    }
-                    */
 
                 }
 
@@ -836,6 +815,78 @@ public class TestRunner {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
+    }
+
+    private static void recursiveFindElements(String previousID, Element element, TreeScope scope, UIAutomation automation) throws AutomationException {
+        String elementID = previousID + ":.:" + dumpElement(element);
+        System.out.println(elementID);
+        elementID += ":.:";
+
+        List<Element> elements2 = element.findAll(scope, automation.createTrueCondition());
+//        System.out.println("Num elements2 " + elements2.size());
+        for (Element element2 : elements2) {
+            String nowElementID = dumpElement(element2);
+
+            try {
+                if (processed.add(nowElementID)) {
+                    recursiveFindElements(elementID + nowElementID, element2, scope, automation);
+                }
+            } catch (Exception e) {}
+        }
+    }
+
+    private static String dumpElement(Element element2) {
+        String elementID = "";
+        try {
+//                System.out.println(element2.toString());
+        } catch (Exception e) {}
+        try {
+            elementID += ":automationid:"+ element2.getAutomationId();
+        } catch (Exception e) {}
+        try {
+            elementID += ":runtimeid:"+ element2.getRuntimeId();
+        } catch (Exception e) {}
+        try {
+            elementID += ":culture:"+ element2.getCulture();
+        } catch (Exception e) {}
+        try {
+            elementID += ":frameworkid:"+ element2.getFrameworkId();
+        } catch (Exception e) {}
+        try {
+            elementID += ":provdesc:"+ element2.getProviderDescription();
+        } catch (Exception e) {}
+        try {
+            elementID += ":status:"+ element2.getItemStatus();
+        } catch (Exception e) {}
+        try {
+            elementID += ":procid:"+ element2.getProcessId();
+        } catch (Exception e) {}
+        try {
+            elementID += ":name:"+ element2.getName();
+        } catch (Exception e) {}
+        try {
+            elementID += ":classname:"+ element2.getClassName();
+        } catch (Exception e) {}
+        try {
+            elementID += ":fulldesc:"+ element2.getFullDescription();
+        } catch (Exception e) {}
+        try {
+            ElementBuilder eb = new ElementBuilder(element2);
+            TextBox textBox = new TextBox(eb);
+            elementID += ":textbox:" + textBox.getValueFromIAccessible();
+        } catch (Exception e) {}
+
+        try {
+            ElementBuilder eb = new ElementBuilder(element2);
+            EditBox editBox = new EditBox(eb);
+            elementID += ":editbox:" + editBox.getText();
+        } catch (Exception e) {}
+
+        try {
+            Text t = new Text(element2);
+            elementID += ":text:" + t.getText();
+        } catch (Exception e) {}
+        return elementID;
     }
 
     private static void compressDataFile(String inputFilename, String outputFilename) throws IOException {
