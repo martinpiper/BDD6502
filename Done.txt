@@ -1156,3 +1156,7 @@ Added: Given I am using C64 processor port options
 
 * Quickly automate pasting the clipboard into the active window, regardless of its paste support
     >> https://github.com/martinpiper/PasteByTyping
+
+
+
+* Add emulation assert checks for the DDR being output, in write mode, when the interface might attempt output, a logic contention.

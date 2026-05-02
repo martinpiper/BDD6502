@@ -286,6 +286,8 @@ public class Cpu implements InstructionTable {
         return memoryProfilingEnabled;
     }
 
+    public static int sLastDebugPC = 0;
+
     /**
      * Performs an individual instruction cycle.
      */
@@ -298,6 +300,7 @@ public class Cpu implements InstructionTable {
         opBeginTime = System.nanoTime();
         // Store the address from which the IR was read, for debugging
         state.lastPc = state.pc;
+        sLastDebugPC = state.pc;
 
         // Check for Interrupts before doing anything else.
         // This will set the PC and jump to the interrupt vector.

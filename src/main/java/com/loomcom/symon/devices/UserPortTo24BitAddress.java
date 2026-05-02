@@ -4,6 +4,7 @@ import com.bdd6502.APUData;
 import com.bdd6502.DisplayBombJack;
 import com.bdd6502.MemoryBus;
 import com.bdd6502.MemoryInternal;
+import com.loomcom.symon.Cpu;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 import com.loomcom.symon.util.HexUtil;
@@ -61,7 +62,9 @@ public class UserPortTo24BitAddress extends Device {
             debug += " 32 bit mode ";
             debug += " PortA DDR " + HexUtil.byteToHex(registerDDRPortA);
             debug += " PortB DDR " + HexUtil.byteToHex(registerDDRPortB);
-            Bus32LatchAddressCalculate();
+            try {
+                Bus32LatchAddressCalculate();
+            } catch (Exception ignore) {}
             debug += " current latch " + HexUtil.byteToHex(bus32LatchAddress);
 
             for (int i = 0 ; i < bus32Latches.length ; i++) {
@@ -274,6 +277,12 @@ public class UserPortTo24BitAddress extends Device {
                 }
                 break;
             case 0x101: // CIA2PortBRS232
+                if (add32Bit1Mode) {
+                    Bus32LatchAddressCalculate();
+                    if ((bus32LatchAddress == 5) && registerDDRPortB != 0) {
+                        throw new MemoryAccessException("During $dd01 write bus32LatchAddress = 5, and registerDDRPortB != 0 at $" + HexUtil.wordToHex(Cpu.sLastDebugPC));
+                    }
+                }
                 if (registerDDRPortB == 0xff) {
                     if (add32Bit1Mode) {
                         Bus32LatchAddressCalculate();
@@ -388,6 +397,16 @@ public class UserPortTo24BitAddress extends Device {
                 break;
             case 0x103:
                 registerDDRPortB = data;
+
+                if (add32Bit1Mode) {
+                    Bus32LatchAddressCalculate();
+                    if ((bus32Latches[7] & kbus32_latch7_ResetDone) == kbus32_latch7_ResetDone) {
+                        if ((bus32LatchAddress == 5 || bus32LatchAddress == 13) && registerDDRPortB != 0x00) {
+                            throw new MemoryAccessException("on registerDDRPortB write bus32LatchAddress = 5 or 13, and registerDDRPortB != 0 at $" + HexUtil.wordToHex(Cpu.sLastDebugPC));
+                        }
+                    }
+                }
+
                 break;
             case 0x10e:
                 CIA2TimerAControl = data;
@@ -462,7 +481,7 @@ public class UserPortTo24BitAddress extends Device {
         bus32Latches[12] = (bus32FastDMACounter >> 8) & 0xff;
     }
 
-    private void Bus32LatchAddressCalculate() {
+    private void Bus32LatchAddressCalculate() throws MemoryAccessException {
         // Decode in LSB bit order:
         // .SP1 = $01
         // .SP2 = $02
@@ -494,7 +513,13 @@ public class UserPortTo24BitAddress extends Device {
             }
         } else {
             // Input to tri-state = float high
-            bus32LatchAddress |= 0x08;
+            registerDDRPortB |= 0x08;
+        }
+
+        if ( (bus32Latches[7] & kbus32_latch7_ResetDone) == kbus32_latch7_ResetDone) {
+            if ((bus32LatchAddress == 5 || bus32LatchAddress == 13) && registerDDRPortB != 0x00) {
+                throw new MemoryAccessException("bus32LatchAddress = 5 or 13, and registerDDRPortB != 0 at $" + HexUtil.wordToHex(Cpu.sLastDebugPC));
+            }
         }
     }
 
@@ -583,6 +608,12 @@ public class UserPortTo24BitAddress extends Device {
                     // CPU emulation does a fake read before a write. Which might be technically correct for RAM but this is the user port, which complicates error detection with the DDR.
                     return 0xff;
                 }
+                if (add32Bit1Mode) {
+                    if ((bus32LatchAddress == 5 || bus32LatchAddress == 13 || bus32FastDMAStart) && registerDDRPortB != 0x00) {
+                        throw new MemoryAccessException("During $dd01 read bus32LatchAddress == 5 or 13 or bus32FastDMAStart, and registerDDRPortB != 0 at $" + HexUtil.wordToHex(Cpu.sLastDebugPC));
+                    }
+                }
+
 
                 int toReturn = 0xff;
                 if (registerDDRPortB == 0x00) {

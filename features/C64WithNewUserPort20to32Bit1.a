@@ -295,8 +295,8 @@ TestInterface_DMATransfer
 	+MBus24Bit_Get8BitValueToA
 
 	; Setup a very short DMA
-	jsr Bus20To32Bit1_WriteMode
 	jsr Bus20To32Bit1_SetLatch11
+	jsr Bus20To32Bit1_WriteMode
 	+MBus24Bit_Send8BitValue $f8
 	jsr Bus20To32Bit1_SetLatch12
 	+MBus24Bit_Send8BitValue $ff
@@ -318,6 +318,7 @@ TestInterface_DMATransfer
 	and #kBus20To32Bit1_latch13_DMAInProgress
 	bne .dmal1
 	
+    jsr Bus20To32Bit1_SetLatch7
 	jsr Bus20To32Bit1_WriteMode
 	+MBASICTextPrint .completeDMA
 
@@ -326,12 +327,11 @@ TestInterface_DMATransfer
 
 TestInterface_DMATransferAgain
 	; Reset the 24 bit interface
-	jsr Bus20To32Bit1_WriteMode
 	jsr Bus20To32Bit1_SetLatch7
+	jsr Bus20To32Bit1_WriteMode
 	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_RAM | kBus20To32Bit1_latch7_InternalPA2
 
 	; Setup a short DMA, that continues using the old external address and current internal address
-	jsr Bus20To32Bit1_WriteMode
 	jsr Bus20To32Bit1_SetLatch11
 	+MBus24Bit_Send8BitValue $f4
 	jsr Bus20To32Bit1_SetLatch12
@@ -354,6 +354,7 @@ TestInterface_DMATransferAgain
 	and #kBus20To32Bit1_latch13_DMAInProgress
 	bne .dmal3
 
+	jsr Bus20To32Bit1_SetLatch7
 	jsr Bus20To32Bit1_WriteMode
 	+MBASICTextPrint .completeDMA
 
@@ -361,8 +362,8 @@ TestInterface_DMATransferAgain
 
 TestInterface_DMATransferAgain2
 	; Reset the 24 bit interface
-	jsr Bus20To32Bit1_WriteMode
 	jsr Bus20To32Bit1_SetLatch7
+	jsr Bus20To32Bit1_WriteMode
 	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_PassthroughDisable
 	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_PassthroughDisable | kBus20To32Bit1_latch7_InternalPA2
 	jsr Bus20To32Bit1_SetLatch4
@@ -372,7 +373,6 @@ TestInterface_DMATransferAgain2
 	+MBus24Bit_Send8BitValue kBus20To32Bit1_latch7_ResetDone | kBus20To32Bit1_latch7_RAM | kBus20To32Bit1_latch7_InternalPA2
 
 	; Setup a DMA
-	jsr Bus20To32Bit1_WriteMode
 	jsr Bus20To32Bit1_SetLatch11
 	+MBus24Bit_Send8BitValue $80
 	jsr Bus20To32Bit1_SetLatch12
@@ -395,6 +395,7 @@ TestInterface_DMATransferAgain2
 	and #kBus20To32Bit1_latch13_DMAInProgress
 	bne .dmal2
 
+	jsr Bus20To32Bit1_SetLatch7
 	jsr Bus20To32Bit1_WriteMode
 	+MBASICTextPrint .completeDMA
 
@@ -419,6 +420,7 @@ TestInterface_ReadRAM
 	inx
 	bne .l2
 
+	jsr Bus20To32Bit1_SetLatch7
 	jsr Bus20To32Bit1_WriteMode
 
 	+MBASICTextPrint .readDataComplete
@@ -478,6 +480,7 @@ TestInterface_ReadRAMWithOffset
 
 	+MBASICTextPrint .readDataWithOffsetComplete2
 
+    jsr Bus20To32Bit1_SetLatch7
 	jsr Bus20To32Bit1_WriteMode
 
 	rts
@@ -525,6 +528,7 @@ TestInterface_ScrollScreen
 }
 
 
+	jsr Bus20To32Bit1_SetLatch7
 	jsr Bus20To32Bit1_WriteMode
 
 	rts
