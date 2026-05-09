@@ -71,17 +71,22 @@ start
 
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , TotalSampleEnd - TotalSampleStart , kAudio3SampleRate_12500Hz
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $4000 , kAudio3SampleRate_Full
-	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_Full
+;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_Full
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_Full / 13
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_25000Hz
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_12500Hz / 10
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_12500Hz
+	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $8000 , kAudio3SampleRate_Full / 9	; With 4/5MHz
+;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $8000 , kAudio3SampleRate_Full
 
 	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Control
 	+MBus24Bit_Send8BitValue kAudio2Register_Control_Enable
 
-
 	rts
+.l1
+	+MByteValueToAddress_A VIC2Colour_Red , VIC2BorderColour
+	+MByteValueToAddress_A VIC2Colour_Blue , VIC2BorderColour
+	jmp .l1
 
 Initialise_NoPreserveStack = 1
 Initialise_NoIRQServiceRoutine = 1
@@ -99,14 +104,11 @@ Initialise_NoMACROWaitForTheLastScan = 1
 TotalSampleStart
 SampleStart
 !bin "c:\temp\t.vcd" , $4000
-;!bin "c:\temp\t.vcd"
-;!bin "c:\temp\t.vcd"
-;!bin "c:\temp\t.vcd"
 SampleEnd
 
-;SampleStart2
-;!bin "c:\temp\t.vcd" , $4000 , $4000
-;SampleEnd2
+SampleStart2
+!bin "c:\temp\t.vcd" , $4000 , $4000
+SampleEnd2
 
 SampleStart3
 ;!bin "c:\work\c64\VideoHardware\assets\Demo14\Audio\aburner_left.vcd" , $3000 , $8000
@@ -123,8 +125,8 @@ DoCopy
     +MBus24Bit_SetAddress_A $06 , $0000
     +MBus24Bit_FastCopyLarge SampleStart , SampleEnd - SampleStart
 
-;    +MBus24Bit_SetAddress_A $06 , $4000
-;    +MBus24Bit_FastCopyLarge SampleStart2 , SampleEnd2 - SampleStart2
+    +MBus24Bit_SetAddress_A $06 , $4000
+    +MBus24Bit_FastCopyLarge SampleStart2 , SampleEnd2 - SampleStart2
 
 ;    +MBus24Bit_SetAddress_A $06 , $8000
 ;    +MBus24Bit_FastCopyLarge SampleStart3 , SampleEnd3 - SampleStart3
