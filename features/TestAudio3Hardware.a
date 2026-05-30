@@ -48,6 +48,8 @@ start
 	ldy #12
 	jsr Bus24Bit_WriteAForY
 
+	+WaitForFire_A
+
 	jsr Bus24Bit_Init
 	jsr Bus20To32Bit1_Init
     jsr DoCopy
@@ -68,6 +70,7 @@ start
 	+MBus24Bit_Send8BitValue 255
 	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Control
 	+MBus24Bit_Send8BitValue 0
+	
 
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , TotalSampleEnd - TotalSampleStart , kAudio3SampleRate_12500Hz
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $4000 , kAudio3SampleRate_Full
@@ -76,8 +79,8 @@ start
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_25000Hz
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_12500Hz / 10
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_12500Hz
-	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $8000 , kAudio3SampleRate_Full / 9	; With 4/5MHz
-;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $8000 , kAudio3SampleRate_Full
+;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $8000 , kAudio3SampleRate_Full / 9	; With 4/5MHz
+	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $8000 , kAudio3SampleRate_Full
 
 	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Control
 	+MBus24Bit_Send8BitValue kAudio2Register_Control_Enable
