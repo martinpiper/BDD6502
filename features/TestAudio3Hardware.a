@@ -52,7 +52,6 @@ start
 
 	jsr Bus24Bit_Init
 	jsr Bus20To32Bit1_Init
-    jsr DoCopy
 
 	jsr Bus24Bit_Init
 	jsr Bus20To32Bit1_Init
@@ -64,6 +63,10 @@ start
 	jsr Bus20To32Bit1_Init
 	jsr HardwareTest_VideoPattern0
 
+	jsr Video_DisableDisplay
+    jsr DoCopy
+
+.playIt
 	jsr Bus24Bit_Init
 	jsr Bus20To32Bit1_Init
 	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Volume
@@ -85,7 +88,20 @@ start
 	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Control
 	+MBus24Bit_Send8BitValue kAudio2Register_Control_Enable
 
-	rts
+;	rts
+
+
+	+WaitForFire_A
+	+MByteValueToAddress_A VIC2Colour_Red , VIC2BorderColour
+	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Volume
+	+MBus24Bit_Send8BitValue 255
+	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Control
+	+MBus24Bit_Send8BitValue 0
+	+WaitForFire_A
+	+MByteValueToAddress_A VIC2Colour_Blue , VIC2BorderColour
+	jmp .playIt
+
+
 .l1
 	+MByteValueToAddress_A VIC2Colour_Red , VIC2BorderColour
 	+MByteValueToAddress_A VIC2Colour_Blue , VIC2BorderColour
@@ -106,16 +122,16 @@ Initialise_NoMACROWaitForTheLastScan = 1
 
 TotalSampleStart
 SampleStart
-!bin "c:\temp\t.vcd" , $4000
+!bin "c:\temp\t.vcd" , $8000 , $0
+;!for .i , $40 {
+;!fill $100 , $01
+;!fill $100 , $11
+;}
 SampleEnd
 
-SampleStart2
-!bin "c:\temp\t.vcd" , $4000 , $4000
-SampleEnd2
-
-SampleStart3
+;SampleStart3
 ;!bin "c:\work\c64\VideoHardware\assets\Demo14\Audio\aburner_left.vcd" , $3000 , $8000
-SampleEnd3
+;SampleEnd3
 TotalSampleEnd
 
 DoCopy
@@ -125,11 +141,17 @@ DoCopy
 ;    +MBus24Bit_FastCopyLarge SampleStart , SampleEnd - SampleStart
 ;}
 
-    +MBus24Bit_SetAddress_A $06 , $0000
-    +MBus24Bit_FastCopyLarge SampleStart , SampleEnd - SampleStart
+;    +MBus24Bit_SetAddress_A $06 , $0000
+;    +MBus24Bit_FastCopyLarge SampleStart , SampleEnd - SampleStart
 
-    +MBus24Bit_SetAddress_A $06 , $4000
-    +MBus24Bit_FastCopyLarge SampleStart2 , SampleEnd2 - SampleStart2
+	+MBus24Bit_SetAddress_A $06 , $0000
+	+MWordValueTo_AX SampleStart
+	ldy #0
+	jsr Bus24Bit_FastCopySmallData
+!for .i , 2 {
+	ldx #$40
+	jsr Bus24Bit_FastCopySmallDataRepeatForX
+}
 
 ;    +MBus24Bit_SetAddress_A $06 , $8000
 ;    +MBus24Bit_FastCopyLarge SampleStart3 , SampleEnd3 - SampleStart3
