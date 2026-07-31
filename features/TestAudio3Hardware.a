@@ -41,34 +41,35 @@ start
 
     jsr Audio2_Disable
 
-	jsr Bus24Bit_Init
-	jsr Bus20To32Bit1_Init
-	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Bank
-	lda #0
-	ldy #12
-	jsr Bus24Bit_WriteAForY
+	jsr Audio3Init
 
 	+WaitForFire_A
 
 	jsr Bus24Bit_Init
-	jsr Bus20To32Bit1_Init
+;	jsr Bus20To32Bit1_Init
 
 	jsr Bus24Bit_Init
-	jsr Bus20To32Bit1_Init
+;	jsr Bus20To32Bit1_Init
 	jsr APU_ResetDisableClear
 	jsr Video_DisableDisplay
 	jsr APU_ResetDisableClear
 
 	jsr Bus24Bit_Init
-	jsr Bus20To32Bit1_Init
+;	jsr Bus20To32Bit1_Init
 	jsr HardwareTest_VideoPattern0
 
 	jsr Video_DisableDisplay
+	
+	jsr Audio3Init
+
+	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Bank
+	+MBus24Bit_Send8BitValue $10
+
     jsr DoCopy
 
 .playIt
 	jsr Bus24Bit_Init
-	jsr Bus20To32Bit1_Init
+;	jsr Bus20To32Bit1_Init
 	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Volume
 	+MBus24Bit_Send8BitValue 255
 	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Control
@@ -83,7 +84,7 @@ start
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_12500Hz / 10
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_12500Hz
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $8000 , kAudio3SampleRate_Full / 9	; With 4/5MHz
-	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $8000 , kAudio3SampleRate_Full
+	+MAudio2_SetSample kAudio2_LeftChannel , $100002 , $8000 , kAudio3SampleRate_Full
 
 	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Control
 	+MBus24Bit_Send8BitValue kAudio2Register_Control_Enable
@@ -107,10 +108,16 @@ start
 	+MByteValueToAddress_A VIC2Colour_Blue , VIC2BorderColour
 	jmp .l1
 
-Initialise_NoPreserveStack = 1
-Initialise_NoIRQServiceRoutine = 1
-Initialise_NoMACROWaitForTheLastScan = 1
-!source "stdlib/Initialise.a"
+
+Audio3Init
+	jsr Bus24Bit_Init
+;	jsr Bus20To32Bit1_Init
+	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Bank
+	lda #0
+	ldy #12
+	jsr Bus24Bit_WriteAForY
+	rts
+
 
 !source "BombJack/stdlib/Bus24Bit.a"
 !source "BombJack/stdlib/Bus20To32Bit1.a"
@@ -134,25 +141,27 @@ SampleEnd
 ;SampleEnd3
 TotalSampleEnd
 
+
+Initialise_NoPreserveStack = 1
+Initialise_NoIRQServiceRoutine = 1
+Initialise_NoMACROWaitForTheLastScan = 1
+!source "stdlib/Initialise.a"
+
 DoCopy
-;!for .i , $1a {
-;!for .i , 1 {
-;    +MBus24Bit_SetAddress_A $06 , $9c8 * (.i-1)
-;    +MBus24Bit_FastCopyLarge SampleStart , SampleEnd - SampleStart
-;}
-
-;    +MBus24Bit_SetAddress_A $06 , $0000
-;    +MBus24Bit_FastCopyLarge SampleStart , SampleEnd - SampleStart
-
-	+MBus24Bit_SetAddress_A $06 , $0000
-	+MWordValueTo_AX SampleStart
+!for .ii , $80 {
+!set .i = .ii-1
+	+MBus24Bit_SetAddress_A $06 , ($100 * .i) + $0002
+	+MWordValueTo_AX SampleStart + ($100 * .i)
 	ldy #0
 	jsr Bus24Bit_FastCopySmallData
-!for .i , 2 {
-	ldx #$40
-	jsr Bus24Bit_FastCopySmallDataRepeatForX
+;	ldx #$10
+;	jsr Bus24Bit_FastCopySmallDataRepeatForX
 }
 
-;    +MBus24Bit_SetAddress_A $06 , $8000
-;    +MBus24Bit_FastCopyLarge SampleStart3 , SampleEnd3 - SampleStart3
+	; Terminate data stream
+	+MBus24Bit_Send8BitValue $ff
+	+MBus24Bit_Send8BitValueFromA
+	+MBus24Bit_Send8BitValueFromA
+	+MBus24Bit_Send8BitValueFromA
+
     rts
