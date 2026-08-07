@@ -114,8 +114,18 @@ public class UserPortTo24BitAddressTest {
         int apuDataStart = Glue.valueToInt("APUData_Start");
         int apuDataSize = Glue.valueToInt("APUData_Size");
 
+        int codeBank = 0;
+        while (apuCodeSize > 0) {
+            int thisChunkSize = Math.min(0x2000, apuCodeSize);
 
-        apu.apuData.writeDataFromFile(0x8000, 0x02, "target/apu.bin", apuCodeStart, apuCodeSize);
+            apu.apuData.writeData(0x2000, 0x02, 0x01 | (codeBank << 2));
+
+            apu.apuData.writeDataFromFile(0x8000, 0x02, "target/apu.bin", apuCodeStart, thisChunkSize);
+
+            apuCodeSize -= 0x2000;
+            apuCodeStart += 0x2000;
+            codeBank++;
+        }
         apu.apuData.writeDataFromFile(0x4000, 0x02, "target/apu.bin", apuDataStart, apuDataSize);
     }
 
@@ -449,5 +459,37 @@ public class UserPortTo24BitAddressTest {
         display.calculatePixelsUntil(0, 0);
 
         assertThat(memoryAddressByteSequence, is(empty()));
+    }
+
+
+    @Test
+    public void checkAPU9() throws Exception {
+
+        DisplayBombJack display = getDisplayBombJack();
+
+        addAPUCodeData("features/checkAPU9.a");
+
+        display.calculateAFrame();
+
+        assertThat(memoryAddressByteSequence, is(empty()));
+
+        // No APU reset
+        apu.apuData.writeData(0x2000, 0x02, 0x01);
+        apu.apuData.writeData(0x2000, 0x02, 0x03);
+
+        display.calculateAFrame();
+        String debugState = apu.getDebugOutputLastState();
+
+        assertThat(memoryAddressByteSequence, contains(
+                fromAddrValue(0x9c00,0x01,0x73) ,
+                fromAddrValue(0x9c01,0x01,0x11) ,
+                fromAddrValue(0x9c02,0x01,0x22) ,
+                fromAddrValue(0x9c03,0x01,0x33) ,
+                fromAddrValue(0x9c04,0x01,0x44) ,
+                fromAddrValue(0x9c05,0x01,0xc7) ,
+                fromAddrValue(0x9c06,0x01,0x99) ,
+                fromAddrValue(0x9c07,0x01,0xef)
+        ));
+
     }
 }

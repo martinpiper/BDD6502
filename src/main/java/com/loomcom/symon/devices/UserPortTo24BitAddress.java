@@ -926,7 +926,7 @@ public class UserPortTo24BitAddress extends Device {
         }
 
         apuPC++;
-        apuPC &= 0x07ff;
+        apuPC &= 0x1fff;
 
         if (MemoryBus.addressActive(instruction , kAPU_Reset_ADDRB1)) {
             apuADDRB1 = 0;
@@ -969,7 +969,7 @@ public class UserPortTo24BitAddress extends Device {
     }
 
     private int getAPUInstruction(int thePC) {
-        thePC = thePC & 0x7ff;
+        thePC = thePC & 0x1fff;
         return (apuData.getApuInstructions()[thePC * 4] & 0xff) | ((apuData.getApuInstructions()[(thePC * 4) + 1] & 0xff) << 8) | ((apuData.getApuInstructions()[(thePC * 4) + 2] & 0xff) << 16) | ((apuData.getApuInstructions()[(thePC * 4) + 3] & 0xff) << 24);
     }
 
@@ -1274,7 +1274,7 @@ public class UserPortTo24BitAddress extends Device {
         if (MemoryBus.addressActive(instruction, kAPU_PCLoad16)) {
             // The PC load is latched on the clock input, so the address of the next instruction is the same as the loaded value
             apuPC = apuDataReg[0] | (apuDataReg[1] << 8);
-            apuPC &= 0x07ff;
+            apuPC &= 0x1fff;
         }
     }
 

@@ -37,7 +37,7 @@ public class APUData extends MemoryBus {
         return apuRegisters;
     }
 
-    byte apuInstructions[] = new byte[0x2000];
+    byte apuInstructions[] = new byte[0x8000];
     byte apuData[] = new byte[0x2000];
     byte apuRegisters[] = new byte[0x2000];
 
@@ -67,7 +67,9 @@ public class APUData extends MemoryBus {
             }
             if (MemoryBus.addressActive(address, addressInstructions)) {
                 busContention = 8;
-                apuInstructions[address & 0x1fff] = data;
+                int bank = (apuRegisters[0] >> 2) & 0x03;
+                bank = bank << 13;
+                apuInstructions[((address & 0x1fff) + bank) & 0x7fff] = data;
             }
             if (MemoryBus.addressActive(address, addressData)) {
                 busContention = 8;
