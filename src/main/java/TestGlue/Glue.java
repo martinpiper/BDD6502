@@ -9,7 +9,6 @@ import com.loomcom.symon.machines.Machine;
 import com.loomcom.symon.machines.SimpleMachine;
 import com.loomcom.symon.util.HexUtil;
 import com.replicanet.cukesplus.PropertiesResolution;
-import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -20,8 +19,7 @@ import cucumber.api.java.en.When;
 import javafx.util.Pair;
 import mmarquee.automation.AutomationException;
 import mmarquee.automation.UIAutomation;
-import mmarquee.automation.controls.Application;
-import mmarquee.automation.controls.ElementBuilder;
+import mmarquee.automation.controls.*;
 import mmarquee.automation.controls.MenuItem;
 import mmarquee.automation.controls.Window;
 import org.apache.commons.io.FileUtils;
@@ -32,6 +30,8 @@ import javax.imageio.ImageIO;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -40,6 +40,7 @@ import java.text.ParseException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -121,6 +122,38 @@ public class Glue {
                 currentMenuItem = item;
                 currentMenuItem.click();
                 return;
+            }
+        }
+        try {
+            currentMenuItem = currentMenuItem.getMenuItem(Pattern.compile(pattern));
+            currentMenuItem.click();
+        } catch (Exception ignored) {
+            Robot robot = new Robot();
+            // It was not able to find so fallback to the other method of using the keyboard
+            int downAttempts = 50;
+            while (downAttempts-- > 0) {
+                robot.keyPress(KeyEvent.VK_DOWN);
+                robot.keyRelease(KeyEvent.VK_DOWN);
+
+                try {
+                    StatusBar bar = currentWindow.getStatusBar();
+                    System.out.println(bar);
+                } catch (Exception ignored2) {}
+
+                String ret = TestRunner.AutomationScan();
+                System.out.print(ret);
+                Matcher matches = matcher.matcher(ret);
+                if (matches.matches()) {
+                    robot.keyPress(KeyEvent.VK_ENTER);
+                    robot.keyRelease(KeyEvent.VK_ENTER);
+                    return;
+                }
+                if (ret.contains(pattern)) {
+                    robot.keyPress(KeyEvent.VK_ENTER);
+                    robot.keyRelease(KeyEvent.VK_ENTER);
+                    return;
+                }
+
             }
         }
         currentMenuItem = currentMenuItem.getMenuItem(Pattern.compile(pattern));

@@ -81,52 +81,55 @@ public class TestRunner {
     }
 
     static HashSet<String> processed = new HashSet<>();
-    public static void main(String args[]) throws Exception {
-        if (args.length >= 1 && args[0].compareToIgnoreCase("--scan") == 0) {
-            UIAutomation automation = UIAutomation.getInstance();
-            List<Window> windows = automation.getDesktopWindows();
-            for (Window window : windows) {
-                String windowID = "window:";
+
+    public static String AutomationScan() throws AutomationException {
+        processed.clear();
+        String ret = "";
+        UIAutomation automation = UIAutomation.getInstance();
+        List<Window> windows = automation.getDesktopWindows();
+        for (Window window : windows) {
+            String windowID = "window:";
 //                System.out.println(">>>> Window");
-                try {
+            try {
 //                    System.out.println(window.toString());
-                } catch (Exception e) {}
-                try {
-                    windowID += "name:" + window.getName();
+            } catch (Exception e) {}
+            try {
+                windowID += "name:" + window.getName();
 //                    System.out.println(window.getName());
-                } catch (Exception e) {}
-                try {
-                    windowID += "classname:" + window.getClassName();
+            } catch (Exception e) {}
+            try {
+                windowID += "classname:" + window.getClassName();
 //                    System.out.println(window.getClassName());
-                } catch (Exception e) {}
+            } catch (Exception e) {}
 
-                // https://github.com/mmarquee/ui-automation
-                // https://mmarquee.github.io/ui-automation/docs/developer.html
+            // https://github.com/mmarquee/ui-automation
+            // https://mmarquee.github.io/ui-automation/docs/developer.html
 
-                try {
-                    Document document = window.getDocument(0);
-                    windowID += "document:" + document.getText();
+            try {
+                Document document = window.getDocument(0);
+                windowID += "document:" + document.getText();
 //                    System.out.println("Document " + document.getText());
-                } catch (Exception e) {}
+            } catch (Exception e) {}
 
-                // https://learn.microsoft.com/en-us/windows/win32/winauto/inspect-objects
-                // C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x86\inspect.exe
+            // https://learn.microsoft.com/en-us/windows/win32/winauto/inspect-objects
+            // C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x86\inspect.exe
 
 
-                // https://learn.microsoft.com/en-us/dotnet/api/system.windows.automation.treescope?view=windowsdesktop-7.0
-                TreeScope scope = new TreeScope(TreeScope.SUBTREE);
+            // https://learn.microsoft.com/en-us/dotnet/api/system.windows.automation.treescope?view=windowsdesktop-7.0
+            TreeScope scope = new TreeScope(TreeScope.SUBTREE);
 //                TreeScope scope = new TreeScope(TreeScope.CHILDREN | TreeScope.DESCENDANTS);
 
 //                Class c = Class.forName("mmarquee.automation.controls.Window");
+            try {
                 Class c = Class.forName("mmarquee.automation.controls.AutomationBase");
-                Method method = c.getDeclaredMethod("findAll", TreeScope.class , PointerByReference.class);
+                Method method = c.getDeclaredMethod("findAll", TreeScope.class, PointerByReference.class);
                 method.setAccessible(true);
                 Object retObj = method.invoke(window, scope, automation.createTrueCondition());
                 List<Element> elements = (List<Element>) retObj;
 
 //                System.out.println("Num elements " + elements.size());
                 for (Element element : elements) {
-                    recursiveFindElements(windowID + ":_:", element, scope, automation);
+                    ret += recursiveFindElements(windowID + ":_:", element, scope, automation);
 //                    WinDef.HWND hwnd = window.getNativeWindowHandle();
 //                    User32.INSTANCE.PostMessage(hwnd, 0,0,0);
                     // com.sun.jna.platform.win32
@@ -136,8 +139,14 @@ public class TestRunner {
                     // System.out.println(clipboard.getData(DataFlavor.stringFlavor));
 
                 }
-
-            }
+            } catch (Exception ignored) {}
+        }
+        return ret;
+    }
+    public static void main(String args[]) throws Exception {
+        if (args.length >= 1 && args[0].compareToIgnoreCase("--scan") == 0) {
+            String ret = AutomationScan();
+            System.out.print(ret);
             return;
         }
         if (args.length >= 1 && args[0].compareToIgnoreCase("--execVideoTest") == 0) {
@@ -817,22 +826,26 @@ public class TestRunner {
         }
     }
 
-    private static void recursiveFindElements(String previousID, Element element, TreeScope scope, UIAutomation automation) throws AutomationException {
+    private static String recursiveFindElements(String previousID, Element element, TreeScope scope, UIAutomation automation) throws AutomationException {
+        String ret = "";
         String elementID = previousID + ":.:" + dumpElement(element);
-        System.out.println(elementID);
+//        System.out.println(elementID);
+        ret += elementID;
+        ret += "\n";
         elementID += ":.:";
 
         List<Element> elements2 = element.findAll(scope, automation.createTrueCondition());
 //        System.out.println("Num elements2 " + elements2.size());
         for (Element element2 : elements2) {
-            String nowElementID = dumpElement(element2);
-
             try {
+                String nowElementID = dumpElement(element2);
+
                 if (processed.add(nowElementID)) {
-                    recursiveFindElements(elementID + nowElementID, element2, scope, automation);
+                    ret += recursiveFindElements(elementID + nowElementID, element2, scope, automation);
                 }
-            } catch (Exception e) {}
+            } catch (Exception ignore) {}
         }
+        return ret;
     }
 
     private static String dumpElement(Element element2) {

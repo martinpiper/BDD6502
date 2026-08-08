@@ -6,8 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.a" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/TestVideoHardware.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/TestVideoHardware.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/AutomateWindows.feature" beforeDir="false" afterPath="$PROJECT_DIR$/features/AutomateWindows.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -106,7 +109,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner TestVideoHardware.feature  @TC-1">
+  <component name="RunManager" selected="Application.TestRunner in BombJack TestAPU.feature">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -888,6 +891,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestRunner in BombJack TestAPU.feature" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
+      <module name="BDD6502" />
+      <option name="PROGRAM_PARAMETERS" value="--tags ~@ignore --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features/TestAPU.feature" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../BombJack" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestRunner in BombJack TestAudio3.feature" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
@@ -1278,6 +1290,7 @@
       <item itemvalue="Application.TestRunner features/PerformanceTesting.feature" />
       <item itemvalue="Application.TestRunner in BombJack" />
       <item itemvalue="Application.TestRunner in BombJack TestAudio3.feature" />
+      <item itemvalue="Application.TestRunner in BombJack TestAPU.feature" />
       <item itemvalue="Application.TestRunner no parameters" />
       <item itemvalue="Application.TestRunner printIO.feature" />
       <item itemvalue="Application.TestRunner simple.feature @RemoteDebugger" />
@@ -1297,9 +1310,9 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
-        <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU9" />
         <item itemvalue="Maven.BDD6502 [install]" />
+        <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU9" />
+        <item itemvalue="JUnit.UserPortTo24BitAddressTest" />
         <item itemvalue="Maven.BDD6502 [install] (1)" />
         <item itemvalue="JUnit.UserPortTo24BitAddressTest.checkAPU4" />
       </list>
@@ -1340,20 +1353,6 @@
     </option>
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/java/com/loomcom/symon/devices/UserPortTo24BitAddressTest.java</url>
-          <line>482</line>
-          <option name="timeStamp" value="97" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/bdd6502/APUData.java</url>
-          <line>58</line>
-          <option name="timeStamp" value="99" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="JUnit">
         <watch expression="debugState" />
