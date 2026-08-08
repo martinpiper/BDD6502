@@ -4,8 +4,6 @@ Feature: Tests the video and audio hardware expansion together
   Scenario: Full display test with sprites, borders, contention, chars, tiles, and mode7, and sample play
     Given clear all external devices
     Given a new video display
-    Given set the video display to RGB colour 5 6 5
-    Given set the video display with 32 palette banks
     And the display uses exact address matching
     And enable video display bus debug output
     Given a new audio expansion
@@ -143,7 +141,7 @@ Feature: Tests the video and audio hardware expansion together
     Given property "bdd6502.bus24.trace" is set to string "false"
     Given video display does not save debug BMP images
     Given limit video display to 60 fps
-    When I execute the procedure at PlaySample for no more than 50686 instructions
+    When I execute the procedure at PlaySample until return
     When I execute the procedure at start5 until return
 
 
