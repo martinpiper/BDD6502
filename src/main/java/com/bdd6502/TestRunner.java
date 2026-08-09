@@ -129,6 +129,15 @@ public class TestRunner {
 
 //                System.out.println("Num elements " + elements.size());
                 for (Element element : elements) {
+                    if (windowID.contains("cmd.exe")) {
+                        continue;
+                    }
+                    if (windowID.contains("FeatureEditor")) {
+                        continue;
+                    }
+                    if (windowID.contains("CukesPlus")) {
+                        continue;
+                    }
                     ret += recursiveFindElements(windowID + ":_:", element, scope, automation);
 //                    WinDef.HWND hwnd = window.getNativeWindowHandle();
 //                    User32.INSTANCE.PostMessage(hwnd, 0,0,0);
@@ -881,7 +890,7 @@ public class TestRunner {
             elementID += ":classname:"+ element2.getClassName();
         } catch (Exception e) {}
         try {
-            elementID += ":fulldesc:"+ element2.getFullDescription();
+//            elementID += ":fulldesc:"+ element2.getFullDescription(); // Crashes often
         } catch (Exception e) {}
         try {
             ElementBuilder eb = new ElementBuilder(element2);
