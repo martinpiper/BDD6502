@@ -62,10 +62,10 @@ start
 	
 	jsr Audio3Init
 
-	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Bank
-	+MBus24Bit_Send8BitValue $10
+;	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Bank
+;	+MBus24Bit_Send8BitValue $10
 
-    jsr DoCopy
+;    jsr DoCopy
 
 .playIt
 	jsr Bus24Bit_Init
@@ -84,7 +84,8 @@ start
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_12500Hz / 10
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $10000 , kAudio3SampleRate_12500Hz
 ;	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $8000 , kAudio3SampleRate_Full / 9	; With 4/5MHz
-	+MAudio2_SetSample kAudio2_LeftChannel , $100002 , $8000 , kAudio3SampleRate_Full
+;	+MAudio2_SetSample kAudio2_LeftChannel , $100002 , $8000 , kAudio3SampleRate_Full
+	+MAudio2_SetSample kAudio2_LeftChannel , 0 , $80000 , kAudio3SampleRate_Full
 
 	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Control
 	+MBus24Bit_Send8BitValue kAudio2Register_Control_Enable
@@ -114,7 +115,7 @@ Audio3Init
 ;	jsr Bus20To32Bit1_Init
 	+MBus24Bit_SetAddress_A kAudio2_EBBS , kAudio2_LeftChannel + kAudio2Register_Bank
 	lda #0
-	ldy #12
+	ldy #kAudio2Register__size
 	jsr Bus24Bit_WriteAForY
 	rts
 
@@ -129,7 +130,8 @@ Audio3Init
 
 TotalSampleStart
 SampleStart
-!bin "c:\temp\t.vcd" , $8000 , $0
+;!bin "c:\temp\t.vcd" , $8000 , $0
+!bin "c:\work\c64\VideoHardware\assets\Demo14\Audio\aburner_left.vcd" , $8000
 ;!for .i , $40 {
 ;!fill $100 , $01
 ;!fill $100 , $11
@@ -148,15 +150,12 @@ Initialise_NoMACROWaitForTheLastScan = 1
 !source "stdlib/Initialise.a"
 
 DoCopy
-!for .ii , $80 {
-!set .i = .ii-1
-	+MBus24Bit_SetAddress_A $06 , ($100 * .i) + $0002
-	+MWordValueTo_AX SampleStart + ($100 * .i)
+	+MBus24Bit_SetAddress_A $06 , $0000
+	+MWordValueTo_AX SampleStart
 	ldy #0
 	jsr Bus24Bit_FastCopySmallData
-;	ldx #$10
-;	jsr Bus24Bit_FastCopySmallDataRepeatForX
-}
+	ldx #$7f
+	jsr Bus24Bit_FastCopySmallDataRepeatForX
 
 	; Terminate data stream
 	+MBus24Bit_Send8BitValue $ff
