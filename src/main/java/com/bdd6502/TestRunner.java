@@ -116,7 +116,8 @@ public class TestRunner {
 
 
             // https://learn.microsoft.com/en-us/dotnet/api/system.windows.automation.treescope?view=windowsdesktop-7.0
-            TreeScope scope = new TreeScope(TreeScope.SUBTREE);
+//            TreeScope scope = new TreeScope(TreeScope.SUBTREE);
+            TreeScope scope = new TreeScope(TreeScope.CHILDREN);    // Faster than "subtree"
 //                TreeScope scope = new TreeScope(TreeScope.CHILDREN | TreeScope.DESCENDANTS);
 
 //                Class c = Class.forName("mmarquee.automation.controls.Window");
@@ -152,6 +153,56 @@ public class TestRunner {
         }
         return ret;
     }
+
+    public static String AutomationScanFromWindow(Window window) throws AutomationException {
+        processed.clear();
+        String ret = "";
+        UIAutomation automation = UIAutomation.getInstance();
+        String windowID = "window:";
+        try {
+        } catch (Exception e) {}
+        try {
+            windowID += "name:" + window.getName();
+        } catch (Exception e) {}
+        try {
+            windowID += "classname:" + window.getClassName();
+        } catch (Exception e) {}
+
+        // https://github.com/mmarquee/ui-automation
+        // https://mmarquee.github.io/ui-automation/docs/developer.html
+
+        try {
+            Document document = window.getDocument(0);
+            windowID += "document:" + document.getText();
+        } catch (Exception e) {}
+
+
+//        TreeScope scope = new TreeScope(TreeScope.SUBTREE);
+        TreeScope scope = new TreeScope(TreeScope.CHILDREN);
+        try {
+            Class c = Class.forName("mmarquee.automation.controls.AutomationBase");
+            Method method = c.getDeclaredMethod("findAll", TreeScope.class, PointerByReference.class);
+            method.setAccessible(true);
+            Object retObj = method.invoke(window, scope, automation.createTrueCondition());
+            List<Element> elements = (List<Element>) retObj;
+
+            for (Element element : elements) {
+                if (windowID.contains("cmd.exe")) {
+                    continue;
+                }
+                if (windowID.contains("FeatureEditor")) {
+                    continue;
+                }
+                if (windowID.contains("CukesPlus")) {
+                    continue;
+                }
+                ret += recursiveFindElements(windowID + ":_:", element, scope, automation);
+            }
+        } catch (Exception ignored) {}
+        return ret;
+    }
+
+
     public static void main(String args[]) throws Exception {
         if (args.length >= 1 && args[0].compareToIgnoreCase("--scan") == 0) {
             String ret = AutomationScan();

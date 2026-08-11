@@ -140,7 +140,8 @@ public class Glue {
                     System.out.println(bar);
                 } catch (Exception ignored2) {}
 
-                String ret = TestRunner.AutomationScan();
+//                String ret = TestRunner.AutomationScan();
+                String ret = TestRunner.AutomationScanFromWindow(currentWindow);
                 System.out.print(ret);
                 Matcher matches = matcher.matcher(ret);
                 if (matches.matches()) {
