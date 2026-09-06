@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="30239cae-a485-4bc5-a345-9ee29f9f7082" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/BDD6502.iws" beforeDir="false" afterPath="$PROJECT_DIR$/BDD6502.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestGlue/Glue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bdd6502/TestRunner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/BDD6502-1.0.9-SNAPSHOT.jar" afterDir="false" />
     </list>
     <list id="de4ccb03-c646-4b46-ac3e-c1621e99013f" name="dontcheckin" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -108,7 +104,7 @@
       <command value="currentLineRead" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestRunner AutomateWindows.feature (1)">
+  <component name="RunManager" selected="Application.TestRunner VideoHardware @Demo15">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method v="2">
@@ -761,7 +757,7 @@
     <configuration name="TestRunner VideoHardware @Demo14" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
-      <option name="PROGRAM_PARAMETERS" value="--tags @Demo14 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @Demo14 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue macros --glue TestGlue features" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/VideoHardware" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -770,7 +766,7 @@
     <configuration name="TestRunner VideoHardware @Demo15" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.bdd6502.TestRunner" />
       <module name="BDD6502" />
-      <option name="PROGRAM_PARAMETERS" value="--tags @Demo15 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue TestGlue features" />
+      <option name="PROGRAM_PARAMETERS" value="--tags @Demo15 --monochrome --format pretty --format html:target/cucumber --format json:target/cucumber.json --glue macros --glue TestGlue features" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../C64/VideoHardware" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -1364,6 +1360,15 @@
           <line>153</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/loomcom/symon/devices/UserPortTo24BitAddress.java</url>
+          <line>971</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.AssertionError" package="java.lang" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
@@ -1376,6 +1381,8 @@
         <watch expression="mapLabelsForIndirects" />
         <watch expression="state" language="JAVA" />
         <watch expression="windowID" />
+        <watch expression="getAPUInstruction(4095)" language="JAVA" />
+        <watch expression="getAPUInstruction(4096)" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>
