@@ -24,6 +24,7 @@
 package com.loomcom.symon;
 
 import com.loomcom.symon.devices.Device;
+import com.loomcom.symon.devices.Memory;
 import com.loomcom.symon.exceptions.MemoryAccessException;
 import com.loomcom.symon.exceptions.MemoryRangeException;
 
@@ -227,6 +228,10 @@ public class Bus {
         addDevice(device, 0);
     }
 
+    Memory sCHARROM = null;
+    public void addCHARROM(Memory device) {
+        sCHARROM = device;
+    }
 
     /**
      * Remove a device from the bus.
@@ -279,6 +284,15 @@ public class Bus {
             // Return the contents of the processor port if it is active
             return theProcessorPort;
         }
+
+        // Checks for CHARROM being active. This is a very special case...
+        if (processorPort && sCHARROM != null && address >= 0xd000 && address < 0xe000) {
+            int pp = theProcessorPort & 0b111;
+            if (0b011 == pp) {
+                return sCHARROM.read(address & 0xfff, false) & 0xff;
+            }
+        }
+
         if (processorPort && crtActive) {
             int pp = theProcessorPort & 0b111;
             if (0b111 == pp || 0b011 == pp) {

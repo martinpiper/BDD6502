@@ -308,6 +308,10 @@ Feature: C64 ROM tests
       sta $df00
       +MCopyMemorySlowOnceFromToLength_A $8000 , $700 , $100
 
+      ; Read CHARROM test
+      +MByteValueToAddress_A ProcessorPortCharROMBASICKERNAL , ZPProcessorPort
+      +MCopyMemorySlowOnceFromToLength_A CHARROM , $100 , $100
+
       EndTest
     """
     And I run the command line: ..\C64\acme.exe --lib ../C64/ -o test.bin --labeldump test.lbl -f plain test.a
@@ -325,4 +329,6 @@ Feature: C64 ROM tests
     Then property "test.BDD6502.lastHexDump" must contain string "500: 00 00 00 00 00 00 00 00"
     Then property "test.BDD6502.lastHexDump" must contain string "600: 09 80 09 80 c3 c2 cd 38  30"
     Then property "test.BDD6502.lastHexDump" must contain string "700: 00 00 00 00 00 00 00 00"
-
+    # Checks for read CHARROM data
+    When I hex dump memory between $100 and $200
+    Then property "test.BDD6502.lastHexDump" must contain string "100: 3c 66 6e 6e 60 62 3c 00  18 3c 66 7e 66 66 66 00"

@@ -4155,7 +4155,7 @@ public class Glue {
         if (displayC64 != null) {
             displayC64.setTheCHARGEN(memory);
         }
-        // Not going to add this to the device memory map
+        machine.getCpu().getBus().addCHARROM(memory);
     }
 
     boolean c64IOExpected = false;
